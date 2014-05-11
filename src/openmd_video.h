@@ -45,7 +45,7 @@
 #include <strings.h>
 #include "v4l2_utils.h"
 
-#define DEVICE_PATH "/dev/video"
+#define DEVICE_PATH "/dev/video0"
 
 // global variable
 struct v4l2_device_info *openmd_video;

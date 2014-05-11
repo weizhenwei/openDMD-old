@@ -43,9 +43,17 @@
 #define OPENMD_LOG_H
 
 #include <stdio.h>
+#include <syslog.h>
+#include <stdarg.h>
 
-#define openmd_log printf
+#define OPENMD_IDENT "openmd"
+#define OPENMD_LOGOPT LOG_PID
+#define OPENMD_FACILITY LOG_USER
 
-void openmd_logx();
+void openmd_openlog(const char *ident, int logopt, int facility);
+
+void openmd_log(int priority, const char *format, ...);
+
+void openmd_closelog();
 
 #endif

@@ -54,19 +54,24 @@ int main(int argc, char *argv[])
     // set locale according current environment
     setlocale(LC_ALL, "");
 
+    openmd_openlog(OPENMD_IDENT, OPENMD_LOGOPT, OPENMD_FACILITY);
+    
+
     openmd_video = openmd_video_create(devpath);
     assert(openmd_video != NULL);
 
     ret = openmd_video_open(openmd_video);
-    assert(ret != 0);
+    assert(ret != -1);
 
     ret = openmd_video_init(openmd_video);
-    assert(ret != 0);
+    assert(ret != -1);
 
     ret = openmd_video_close(openmd_video);
-    assert(ret != 0);
+    assert(ret != -1);
 
     openmd_video_release(openmd_video);
+
+    openmd_closelog();
 
     return 0;
 }

@@ -48,7 +48,7 @@ struct v4l2_device_info *openmd_video_create(const char *device_path)
     struct v4l2_device_info *device;
     device = (struct v4l2_device_info *)malloc(sizeof(struct v4l2_device_info));
     if (device == NULL) {
-	openmd_log("malloc failed.");
+	openmd_log(LOG_ERR, "malloc for struct v4l2_device_info failed.\n");
 	return device;
     }
 
@@ -63,8 +63,9 @@ int openmd_video_open(struct v4l2_device_info *v4l2_info)
 {
     int fd = -1;
     const char *devpath = v4l2_info->video_device_path;
+    openmd_log(LOG_INFO, "video device:%s\n", devpath);
     if ((fd = open(devpath, O_RDWR)) == -1) {
-	openmd_log("open video device failded");
+	openmd_log(LOG_ERR, "open video device failded.\n");
 	return -1;
     }
 
@@ -86,7 +87,7 @@ int openmd_video_init(struct v4l2_device_info *v4l2_info)
 int openmd_video_close(struct v4l2_device_info *v4l2_info)
 {
     if (close(v4l2_info->video_device_fd) == -1) {
-	openmd_log("close video device failed");
+	openmd_log(LOG_ERR, "close video device failed");
 	return -1;
     }
 

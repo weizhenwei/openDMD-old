@@ -64,32 +64,32 @@ int video_capability(struct v4l2_device_info *v4l2_info)
     // get the device capability.
     struct v4l2_capability *capture = &v4l2_info->cap;
     if ((ret = ioctl(v4l2_info->video_device_fd, VIDIOC_QUERYCAP, capture)) == -1) {
-	openmd_log("query device capability");
+	openmd_log(LOG_ERR, "query device capability failed.\n");
 	return ret;
     }
 
-    openmd_log("**********Device Capability informations**********\n");
-    openmd_log("driver: %s\n", capture->driver);
-    openmd_log("card: %s\n", capture->card);
-    openmd_log("bus_info: %s\n", capture->bus_info);
-    openmd_log("version: %x\n", capture->version);
-    openmd_log("capabilities: 0X%x\n", capture->capabilities);
+    openmd_log(LOG_INFO, "**********Device Capability informations**********\n");
+    openmd_log(LOG_INFO, "driver: %s\n", capture->driver);
+    openmd_log(LOG_INFO, "card: %s\n", capture->card);
+    openmd_log(LOG_INFO, "bus_info: %s\n", capture->bus_info);
+    openmd_log(LOG_INFO, "version: %x\n", capture->version);
+    openmd_log(LOG_INFO, "capabilities: 0X%x\n", capture->capabilities);
     if (capture->capabilities & V4L2_CAP_VIDEO_CAPTURE) {
-	openmd_log("Capture capability is supported\n");
+	openmd_log(LOG_INFO, "Capture capability is supported\n");
     } else {
-	openmd_log("Capture capability is not supported\n");
+	openmd_log(LOG_INFO, "Capture capability is not supported\n");
 
     }
     if (capture->capabilities & V4L2_CAP_VIDEO_OUTPUT) {
-	openmd_log("Output capability is supported\n");
+	openmd_log(LOG_INFO, "Output capability is supported\n");
     } else {
-	openmd_log("Output capability is not supported\n");
+	openmd_log(LOG_INFO, "Output capability is not supported\n");
 
     }
     if (capture->capabilities & V4L2_CAP_STREAMING) {
-	openmd_log("Streaming capability is supported\n");
+	openmd_log(LOG_INFO, "Streaming capability is supported\n");
     } else {
-	openmd_log("Streaming capability is not supported\n");
+	openmd_log(LOG_INFO, "Streaming capability is not supported\n");
     }
 
     return ret;

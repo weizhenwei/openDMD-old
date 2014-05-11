@@ -41,8 +41,29 @@
 
 #include "openmd_log.h"
 
-void openmd_logx()
+void openmd_openlog(const char *ident, int logopt, int facility)
 {
-    // TODO
+    openlog(ident, logopt, facility);
 }
 
+void openmd_log(int priority, const char *format, ...)
+{
+    va_list var_list;
+    if (format == NULL) {
+	return;
+    }
+
+    va_start(var_list, format);
+    va_end(var_list);
+    vsyslog(priority, format, var_list);
+
+    // TODO: why va_start and va_end again ?
+    va_start(var_list, format);
+    va_end(var_list);
+    vfprintf(stdout, format, var_list);
+}
+
+void openmd_closelog()
+{
+    closelog();
+}
