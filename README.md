@@ -1,4 +1,4 @@
 openMD
 ======
 
-a motion detection project for domestic use.
+a distributed motion detection project for domestic use.
