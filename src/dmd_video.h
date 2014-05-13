@@ -43,6 +43,7 @@
 #define DMD_VIDEO_H
 
 #include <strings.h>
+#include <assert.h>
 #include "v4l2_utils.h"
 
 #define DEVICE_PATH "/dev/video0"

@@ -57,6 +57,7 @@ struct v4l2_device_info *dmd_video_create(const char *device_path)
     device->video_device_path = device_path;
     device->reqbuffer_count = REQ_COUNT;
     device->buffers = malloc(device->reqbuffer_count * sizeof(struct mmap_buffer));
+    assert(device->buffers != NULL);
 
     return device;
 }
