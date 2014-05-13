@@ -40,10 +40,10 @@
  */
 #include <locale.h>
 #include "v4l2_utils.h"
-#include "openmd_log.h"
-#include "openmd_video.h"
+#include "dmd_log.h"
+#include "dmd_video.h"
 
-extern struct v4l2_device_info *openmd_video;
+extern struct v4l2_device_info *dmd_video;
 
 int main(int argc, char *argv[])
 {
@@ -54,24 +54,24 @@ int main(int argc, char *argv[])
     // set locale according current environment
     setlocale(LC_ALL, "");
 
-    openmd_openlog(OPENMD_IDENT, OPENMD_LOGOPT, OPENMD_FACILITY);
+    dmd_openlog(DMD_IDENT, DMD_LOGOPT, DMD_FACILITY);
     
 
-    openmd_video = openmd_video_create(devpath);
-    assert(openmd_video != NULL);
+    dmd_video = dmd_video_create(devpath);
+    assert(dmd_video != NULL);
 
-    ret = openmd_video_open(openmd_video);
+    ret = dmd_video_open(dmd_video);
     assert(ret != -1);
 
-    ret = openmd_video_init(openmd_video);
+    ret = dmd_video_init(dmd_video);
     assert(ret != -1);
 
-    ret = openmd_video_close(openmd_video);
+    ret = dmd_video_close(dmd_video);
     assert(ret != -1);
 
-    openmd_video_release(openmd_video);
+    dmd_video_release(dmd_video);
 
-    openmd_closelog();
+    dmd_closelog();
 
     return 0;
 }

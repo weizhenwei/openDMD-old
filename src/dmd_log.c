@@ -28,7 +28,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: openmd_log.c
+ * File: dmd_log.c
  *
  * Brief: log utility of the project
  *
@@ -39,14 +39,14 @@
  * *****************************************************************************
  */
 
-#include "openmd_log.h"
+#include "dmd_log.h"
 
-void openmd_openlog(const char *ident, int logopt, int facility)
+void dmd_openlog(const char *ident, int logopt, int facility)
 {
     openlog(ident, logopt, facility);
 }
 
-void openmd_log(int priority, const char *format, ...)
+void dmd_log(int priority, const char *format, ...)
 {
     va_list var_list;
     if (format == NULL) {
@@ -63,7 +63,7 @@ void openmd_log(int priority, const char *format, ...)
     vfprintf(stdout, format, var_list);
 }
 
-void openmd_closelog()
+void dmd_closelog()
 {
     closelog();
 }

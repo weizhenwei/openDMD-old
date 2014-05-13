@@ -1,8 +1,8 @@
 AUTOMAKE_OPTIONS = foreign
 
-bin_PROGRAMS = openmd
+bin_PROGRAMS = opendmd
 
-openmd_SOURCES = main.c \
-	       openmd_log.h openmd_log.c \
-	       openmd_video.h openmd_video.c \
+opendmd_SOURCES = main.c \
+	       dmd_log.h dmd_log.c \
+	       dmd_video.h dmd_video.c \
 	       v4l2_utils.h v4l2_utils.c

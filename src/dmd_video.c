@@ -28,7 +28,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: openmd_video.c
+ * File: dmd_video.c
  *
  * Brief: video manipulation interface of the project 
  *
@@ -39,16 +39,16 @@
  * *****************************************************************************
  */
 
-#include "openmd_video.h"
-#include "openmd_log.h"
+#include "dmd_video.h"
+#include "dmd_log.h"
 
 
-struct v4l2_device_info *openmd_video_create(const char *device_path)
+struct v4l2_device_info *dmd_video_create(const char *device_path)
 {
     struct v4l2_device_info *device;
     device = (struct v4l2_device_info *)malloc(sizeof(struct v4l2_device_info));
     if (device == NULL) {
-	openmd_log(LOG_ERR, "malloc for struct v4l2_device_info failed.\n");
+	dmd_log(LOG_ERR, "malloc for struct v4l2_device_info failed.\n");
 	return device;
     }
 
@@ -59,13 +59,13 @@ struct v4l2_device_info *openmd_video_create(const char *device_path)
     return device;
 }
 
-int openmd_video_open(struct v4l2_device_info *v4l2_info)
+int dmd_video_open(struct v4l2_device_info *v4l2_info)
 {
     int fd = -1;
     const char *devpath = v4l2_info->video_device_path;
-    openmd_log(LOG_INFO, "video device:%s\n", devpath);
+    dmd_log(LOG_INFO, "video device:%s\n", devpath);
     if ((fd = open(devpath, O_RDWR)) == -1) {
-	openmd_log(LOG_ERR, "open video device failded.\n");
+	dmd_log(LOG_ERR, "open video device failded.\n");
 	return -1;
     }
 
@@ -74,7 +74,7 @@ int openmd_video_open(struct v4l2_device_info *v4l2_info)
     return 1;
 }
 
-int openmd_video_init(struct v4l2_device_info *v4l2_info)
+int dmd_video_init(struct v4l2_device_info *v4l2_info)
 {
     int ret;
     // query video device's capability
@@ -84,17 +84,17 @@ int openmd_video_init(struct v4l2_device_info *v4l2_info)
 
 }
 
-int openmd_video_close(struct v4l2_device_info *v4l2_info)
+int dmd_video_close(struct v4l2_device_info *v4l2_info)
 {
     if (close(v4l2_info->video_device_fd) == -1) {
-	openmd_log(LOG_ERR, "close video device failed");
+	dmd_log(LOG_ERR, "close video device failed");
 	return -1;
     }
 
     return 1;
 }
 
-void openmd_video_release(struct v4l2_device_info *v4l2_info)
+void dmd_video_release(struct v4l2_device_info *v4l2_info)
 {
     if (v4l2_info != NULL) {
 	free(v4l2_info);

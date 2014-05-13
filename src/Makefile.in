@@ -32,7 +32,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-bin_PROGRAMS = openmd$(EXEEXT)
+bin_PROGRAMS = opendmd$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -45,10 +45,10 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_openmd_OBJECTS = main.$(OBJEXT) openmd_log.$(OBJEXT) \
-	openmd_video.$(OBJEXT) v4l2_utils.$(OBJEXT)
-openmd_OBJECTS = $(am_openmd_OBJECTS)
-openmd_LDADD = $(LDADD)
+am_opendmd_OBJECTS = main.$(OBJEXT) dmd_log.$(OBJEXT) \
+	dmd_video.$(OBJEXT) v4l2_utils.$(OBJEXT)
+opendmd_OBJECTS = $(am_opendmd_OBJECTS)
+opendmd_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -57,8 +57,8 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(openmd_SOURCES)
-DIST_SOURCES = $(openmd_SOURCES)
+SOURCES = $(opendmd_SOURCES)
+DIST_SOURCES = $(opendmd_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -149,9 +149,9 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
-openmd_SOURCES = main.c \
-	       openmd_log.h openmd_log.c \
-	       openmd_video.h openmd_video.c \
+opendmd_SOURCES = main.c \
+	       dmd_log.h dmd_log.c \
+	       dmd_video.h dmd_video.c \
 	       v4l2_utils.h v4l2_utils.c
 
 all: all-am
@@ -225,9 +225,9 @@ uninstall-binPROGRAMS:
 
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
-openmd$(EXEEXT): $(openmd_OBJECTS) $(openmd_DEPENDENCIES) $(EXTRA_openmd_DEPENDENCIES) 
-	@rm -f openmd$(EXEEXT)
-	$(LINK) $(openmd_OBJECTS) $(openmd_LDADD) $(LIBS)
+opendmd$(EXEEXT): $(opendmd_OBJECTS) $(opendmd_DEPENDENCIES) $(EXTRA_opendmd_DEPENDENCIES) 
+	@rm -f opendmd$(EXEEXT)
+	$(LINK) $(opendmd_OBJECTS) $(opendmd_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -235,9 +235,9 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmd_log.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmd_video.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/openmd_log.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/openmd_video.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/v4l2_utils.Po@am__quote@
 
 .c.o:

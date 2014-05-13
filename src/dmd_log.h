@@ -28,9 +28,9 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: open_video.h
+ * File: dmd_log.h
  *
- * Brief: video manipulation interface of the project 
+ * Brief: log utility of the project
  *
  * Date: 2014.05.10
  *
@@ -39,26 +39,21 @@
  * *****************************************************************************
  */
 
-#ifndef OPENMD_VIDEO_H
-#define OPENMD_VIDEO_H
+#ifndef DMD_LOG_H
+#define DMD_LOG_H
 
-#include <strings.h>
-#include "v4l2_utils.h"
+#include <stdio.h>
+#include <syslog.h>
+#include <stdarg.h>
 
-#define DEVICE_PATH "/dev/video0"
+#define DMD_IDENT "opendmd"
+#define DMD_LOGOPT LOG_PID
+#define DMD_FACILITY LOG_USER
 
-// global variable
-struct v4l2_device_info *openmd_video;
+void dmd_openlog(const char *ident, int logopt, int facility);
 
-struct v4l2_device_info *openmd_video_create(const char *device_path);
+void dmd_log(int priority, const char *format, ...);
 
-int openmd_video_open(struct v4l2_device_info *v4l2_info);
-
-int openmd_video_init(struct v4l2_device_info *v4l2_info);
-
-int openmd_video_close(struct v4l2_device_info *v4l2_info);
-
-void openmd_video_release(struct v4l2_device_info *v4l2_info);
-
+void dmd_closelog();
 
 #endif
