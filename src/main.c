@@ -66,6 +66,12 @@ int main(int argc, char *argv[])
     ret = dmd_video_init(dmd_video);
     assert(ret != -1);
 
+    ret = dmd_video_streamon(dmd_video);
+    assert(ret != -1);
+
+    ret = dmd_video_streamoff(dmd_video);
+    assert(ret != -1);
+
     ret = dmd_video_close(dmd_video);
     assert(ret != -1);
 

@@ -55,6 +55,8 @@ struct v4l2_device_info *dmd_video_create(const char *device_path)
     bzero(device, sizeof(device));
 
     device->video_device_path = device_path;
+    device->reqbuffer_count = REQ_COUNT;
+    device->buffers = malloc(device->reqbuffer_count * sizeof(struct mmap_buffer));
 
     return device;
 }
@@ -82,6 +84,116 @@ int dmd_video_init(struct v4l2_device_info *v4l2_info)
 	return ret;
     }
 
+    // query and set video input format
+    if ((ret = video_input(v4l2_info)) == -1) {
+	return ret;
+    }
+
+    // traverse video stream format
+    if ((ret = video_fmtdesc(v4l2_info)) == -1) {
+	return ret;
+    }
+
+    // set video stream data format
+    if ((ret = video_setfmt(v4l2_info)) == -1) {
+	return ret;
+    }
+    // get video stream data format
+    if ((ret = video_getfmt(v4l2_info)) == -1) {
+	return ret;
+    }
+    
+    // memory map for the request buffer
+    if ((ret = video_mmap(v4l2_info)) == -1) {
+	return ret;
+    }
+
+    return ret;
+}
+
+/*
+ * enum v4l2_buf_type {
+ * 	V4L2_BUF_TYPE_VIDEO_CAPTURE        = 1,
+ * 	V4L2_BUF_TYPE_VIDEO_OUTPUT         = 2,
+ * 	V4L2_BUF_TYPE_VIDEO_OVERLAY        = 3,
+ * 	V4L2_BUF_TYPE_VBI_CAPTURE          = 4,
+ * 	V4L2_BUF_TYPE_VBI_OUTPUT           = 5,
+ * 	V4L2_BUF_TYPE_SLICED_VBI_CAPTURE   = 6,
+ * 	V4L2_BUF_TYPE_SLICED_VBI_OUTPUT    = 7,
+ * #if 1
+ * 	// Experimental
+ * 	V4L2_BUF_TYPE_VIDEO_OUTPUT_OVERLAY = 8,
+ * #endif
+ * 	V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE = 9,
+ * 	V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE  = 10,
+ * 	V4L2_BUF_TYPE_PRIVATE              = 0x80,
+ * };
+ *
+ * open the video stream
+ */
+
+int dmd_video_streamon(struct v4l2_device_info *v4l2_info)
+{
+    int ret = 0, i = 0;
+    int n_buffer = v4l2_info->reqbuffer_count;
+    int fd = v4l2_info->video_device_fd;
+
+    // place kernel requestbuffers to a  queue
+    for (i = 0; i < n_buffer; i++) {
+	struct v4l2_buffer buf;
+	bzero(&buf, sizeof(struct v4l2_buffer));
+
+	buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+	buf.memory = V4L2_MEMORY_MMAP;
+	buf.index = i;
+	
+	// requestbuffer to queue
+	if ((ret = ioctl(fd, VIDIOC_QBUF, &buf)) == -1) {
+	    dmd_log(LOG_ERR, "ioctl VIDIOC_QBUF failed.\n");
+	    return ret;
+	}
+    }
+    
+    // start stream on, start capture data
+    enum v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    if ((ret = ioctl(fd, VIDIOC_STREAMON, &type)) == -1) {
+	dmd_log(LOG_ERR, "ioctl VIDIOC_STREAMON failed.\n");
+	return ret;
+    }
+
+
+    dmd_log(LOG_INFO, "Video stream is now on!\n");
+
+    return ret;
+}
+
+int dmd_video_streamoff(struct v4l2_device_info *v4l2_info)
+{
+
+    int ret = 0;
+    unsigned int i = 0;
+    int n_buffer = v4l2_info->reqbuffer_count;
+    int fd = v4l2_info->video_device_fd;
+    struct mmap_buffer *buffers = v4l2_info->buffers;
+
+    // stop stream off, stop capture
+    enum v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    if ((ret = ioctl(fd, VIDIOC_STREAMOFF, &type)) == -1) {
+	dmd_log(LOG_ERR, "ioctl VIDIOC_STREAMOFF failed.\n");
+	return ret;
+    }
+
+    dmd_log(LOG_INFO, "Video stream is now off!\n");
+
+    // munmap
+    for (i = 0; i < n_buffer; i++) {
+	if ((ret = munmap(buffers[i].start, buffers[i].length)) == -1) {
+	    dmd_log(LOG_ERR, "munmap failed.\n");
+	    return ret;
+	}
+    }
+
+    return ret;
 }
 
 int dmd_video_close(struct v4l2_device_info *v4l2_info)

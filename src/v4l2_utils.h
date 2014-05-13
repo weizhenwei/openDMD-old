@@ -63,8 +63,13 @@
 #include <string.h>
 #include <sys/time.h>
 
+struct mmap_buffer {
+    void *start;
+    unsigned int length;
+};
+
 struct v4l2_device_info {
-    int    video_device_fd;                  // video device fd;
+    int video_device_fd;                     // video device fd;
     const char *video_device_path;           // video device path;
     struct v4l2_capability cap;              // video device capabilities;
     struct v4l2_input input;                 // video input;
@@ -72,12 +77,12 @@ struct v4l2_device_info {
     struct v4l2_format format;               // video stream data format;
     struct v4l2_requestbuffers reqbuffers;   // memory mapping buffers;
     struct v4l2_buffer buffer;               // video buffer;
+
+    int reqbuffer_count;                     // req.count;
+    struct mmap_buffer *buffers;             // mmap buffers;
+
 };
 
-struct mmap_buffer {
-    void *start;
-    unsigned int length;
-};
 
 // query video device's capability
 int video_capability(struct v4l2_device_info *v4l2_info);
