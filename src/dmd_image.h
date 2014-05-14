@@ -28,60 +28,37 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: main.c
+ * File: dmd_image.h
  *
- * Brief: main entry point of the project
+ * Brief: process the captured image from video device. 
  *
- * Date: 2014.05.10
+ * Date: 2014.05.14
  *
  * Author: weizhenwei <weizhenwei1988@gmail.com>
  *
  * *****************************************************************************
  */
-#include <locale.h>
+
+#ifndef DMD_IMAGE_H
+#define DMD_IMAGE_H
+
+#include <stdio.h>
+#include <sys/select.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <assert.h>
+#include <linux/limits.h>
+
 #include "v4l2_utils.h"
 #include "dmd_log.h"
-#include "dmd_video.h"
-#include "dmd_image.h"
 
-extern struct v4l2_device_info *dmd_video;
+#define FILE_NAME "/home/wzw/image%d.jpg"
 
-int main(int argc, char *argv[])
-{
+static int process_image(void *addr, int length);
 
-    int ret = -1;
-    const char *devpath = DEVICE_PATH;
+static int read_frame(int fd, struct mmap_buffer *buffers);
 
-    // set locale according current environment
-    setlocale(LC_ALL, "");
+int dmd_image_capture(struct v4l2_device_info *v4l2_info);
 
-    dmd_openlog(DMD_IDENT, DMD_LOGOPT, DMD_FACILITY);
-    
-
-    dmd_video = dmd_video_create(devpath);
-    assert(dmd_video != NULL);
-
-    ret = dmd_video_open(dmd_video);
-    assert(ret != -1);
-
-    ret = dmd_video_init(dmd_video);
-    assert(ret != -1);
-
-    ret = dmd_video_streamon(dmd_video);
-    assert(ret != -1);
-
-    ret = dmd_image_capture(dmd_video);
-    assert(ret != -1);
-
-    ret = dmd_video_streamoff(dmd_video);
-    assert(ret != -1);
-
-    ret = dmd_video_close(dmd_video);
-    assert(ret != -1);
-
-    dmd_video_release(dmd_video);
-
-    dmd_closelog();
-
-    return 0;
-}
+#endif

@@ -5,4 +5,5 @@ bin_PROGRAMS = opendmd
 opendmd_SOURCES = main.c \
 	       dmd_log.h dmd_log.c \
 	       dmd_video.h dmd_video.c \
+	       dmd_image.h dmd_image.c \
 	       v4l2_utils.h v4l2_utils.c

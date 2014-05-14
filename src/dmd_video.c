@@ -210,6 +210,10 @@ int dmd_video_close(struct v4l2_device_info *v4l2_info)
 void dmd_video_release(struct v4l2_device_info *v4l2_info)
 {
     if (v4l2_info != NULL) {
+	if (v4l2_info->buffers) {
+	    free(v4l2_info->buffers);
+	}
+
 	free(v4l2_info);
     }
 }

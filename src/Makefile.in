@@ -46,7 +46,7 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_opendmd_OBJECTS = main.$(OBJEXT) dmd_log.$(OBJEXT) \
-	dmd_video.$(OBJEXT) v4l2_utils.$(OBJEXT)
+	dmd_video.$(OBJEXT) dmd_image.$(OBJEXT) v4l2_utils.$(OBJEXT)
 opendmd_OBJECTS = $(am_opendmd_OBJECTS)
 opendmd_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -152,6 +152,7 @@ AUTOMAKE_OPTIONS = foreign
 opendmd_SOURCES = main.c \
 	       dmd_log.h dmd_log.c \
 	       dmd_video.h dmd_video.c \
+	       dmd_image.h dmd_image.c \
 	       v4l2_utils.h v4l2_utils.c
 
 all: all-am
@@ -235,6 +236,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmd_image.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmd_log.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmd_video.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
