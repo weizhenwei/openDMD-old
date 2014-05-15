@@ -41,27 +41,112 @@
 
 #include "dmd_image.h"
 
-static int process_image(void *addr, int length)
+static void YUYV422toRGB888(unsigned char *yuyv, int width,
+	int height, unsigned char *rgb)
 {
-    FILE *fp;
-    static int num = 0;
-    // at linux/limits.h, #define PATH_MAX 4096
-    char image_name[PATH_MAX];
+    int line, column;
+    unsigned char *py, *pu, *pv;
+    unsigned char *tmp = rgb;
 
-    sprintf(image_name, FILE_NAME, num++);
-    fp = fopen(image_name, "wb");
-    if (fp == NULL) {
+    py = yuyv;
+    pu = yuyv + 1;
+    pv = yuyv + 3;
+
+#define CLIP(x) ((x) >= 0xFF ? 0xFF : ((x) <= 0x00 ? 0x00 : (x)))
+
+    for (line = 0; line < height; line++) {
+	for (column = 0; column < width; column++) {
+	    *tmp++ = CLIP((double)*py + 1.402 * ((double) * pv - 128.0));
+	    *tmp++ = CLIP((double)*py - 0.344 * ((double) * pu - 128.0)
+		    - 0.714 * ((double) *pv - 128.0));
+	    *tmp++ = CLIP((double)*py + 1.772 * ((double) * pu - 128.0));
+
+	    py += 2;
+
+	    if ((column & 1) == 1) {
+		pu += 4;
+		pv += 4;
+	    } // if
+	} // for inner
+    } // for outer
+
+}
+
+static int write_jpeg(char *filename, unsigned char *buf, int quality,
+	int width, int height, int gray)
+{
+    struct jpeg_compress_struct cinfo;
+    struct jpeg_error_mgr jerr;
+
+    FILE *fp;
+    int i = 0;
+    unsigned char *line;
+    int line_length;
+
+    if ((fp = fopen(filename, "wb")) == NULL) {
 	dmd_log(LOG_ERR, "fopen error.\n");
 	return -1;
     }
 
-    fwrite(addr, length, 1, fp);
+    cinfo.err = jpeg_std_error(&jerr);
+    jpeg_create_compress(&cinfo);
+    jpeg_stdio_dest(&cinfo, fp);
+    cinfo.image_width = width;
+    cinfo.image_height = height;
+    cinfo.input_components = gray ? 1 : 3;
+    cinfo.in_color_space = gray ? JCS_GRAYSCALE : JCS_RGB;
+
+    jpeg_set_defaults(&cinfo);
+    jpeg_set_quality(&cinfo, quality, TRUE);
+    jpeg_start_compress(&cinfo, TRUE);
+
+    line_length = gray ? width : width * 3;
+
+    line = buf;
+    for (i = 0; i < height; i++) {
+	jpeg_write_scanlines(&cinfo, &line, 1);
+	line += line_length;
+    }
+
+    jpeg_finish_compress(&cinfo);
+    jpeg_destroy_compress(&cinfo);
+
+
+    fclose(fp);
+
+    return 0;
+}
+
+static int process_image(void *yuyv, int length, int width, int height)
+{
+    int ret = -1;
+    static int num = 0;
+
+    // at linux/limits.h, #define PATH_MAX 4096
+    char image_name[PATH_MAX];
+
+    assert(length > 0);
+
+    unsigned char *src = (unsigned char *)yuyv;
+    unsigned char *rgb = (unsigned char *)malloc(
+	    width * height * 3 * sizeof(unsigned char));
+    assert(rgb);
+
+    YUYV422toRGB888(yuyv, width, height, rgb);
+
+    sprintf(image_name, FILE_NAME, num++);
+
+    ret = write_jpeg(image_name, rgb, 100, width, height, 0);
+    assert( ret == 0);
+
+    free(rgb);
+
     usleep(500);
 
     return 0;
 }
 
-static int read_frame(int fd, struct mmap_buffer *buffers)
+static int read_frame(int fd, struct mmap_buffer *buffers, int width, int height)
 {
     int ret = 0;
     struct v4l2_buffer buf;
@@ -77,7 +162,8 @@ static int read_frame(int fd, struct mmap_buffer *buffers)
     }
 
     // read process space's data to a file
-    process_image(buffers[buf.index].start, buffers[buf.index].length);
+    process_image(buffers[buf.index].start,
+	    buffers[buf.index].length, width, height);
 
     // put buf back to queue
     if ((ret = ioctl(fd, VIDIOC_QBUF, &buf)) == -1) {
@@ -94,6 +180,8 @@ int dmd_image_capture(struct v4l2_device_info *v4l2_info)
     unsigned int count = 5;
 
     int fd = v4l2_info->video_device_fd;
+    int width = v4l2_info->width;
+    int height = v4l2_info->height;
     struct mmap_buffer *buffers = v4l2_info->buffers;
     
     while (count-- > 0) {
@@ -120,7 +208,7 @@ int dmd_image_capture(struct v4l2_device_info *v4l2_info)
 		return -1;
 	    }
 
-	    if (read_frame(fd, buffers) == 0)
+	    if (read_frame(fd, buffers, width, height) == 0)
 		break;
 	}
     }

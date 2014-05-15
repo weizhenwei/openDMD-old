@@ -11,13 +11,17 @@ AM_INIT_AUTOMAKE(opendmd, 0.0.1)
 # Checks for programs.
 AC_PROG_CC
 
+# for static library generation
+AC_PROG_RANLIB
+
 # Checks for libraries.
 
 # Checks for header files.
-AC_CHECK_HEADERS([fcntl.h locale.h malloc.h stdlib.h string.h \
+AC_CHECK_HEADERS([fcntl.h locale.h malloc.h stddef.h stdlib.h string.h \
 		  strings.h sys/ioctl.h sys/time.h syslog.h unistd.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
+AC_TYPE_SIZE_T
 
 # Checks for library functions.
 AC_FUNC_MALLOC
@@ -26,6 +30,7 @@ AC_CHECK_FUNCS([bzero munmap select setlocale])
 
 #Attention: this is import, list the Makefile need to generate
 #AC_OUTPUT(Makefile src/Makefile)
-AC_CONFIG_FILES([Makefile
+AC_CONFIG_FILES([Makefile \
+		 libjpeg/Makefile \
 		 src/Makefile])
 AC_OUTPUT

@@ -1,0 +1,33 @@
+This directory libjpeg is part of jpegsrc.v9a.tar.gz,
+which is from www.ijg.org. Download the whole source code from:
+    http://www.ijg.org/files/jpegsrc.v9a.tar.gz
+
+
+This directory aims to use libjpeg to convert YUYV422 to jpeg format.
+check the library integrity:
+    gcc -o libjepg.so -fPIC -shared *.c
+
+The following is part of the Makefile of jpegsrc.v9a.tar.gz,
+which is associated with library building.
+Any one of SYSDEPSOURCES is enough.
+
+# Sources to build library
+LIBSOURCES = jaricom.c jcapimin.c jcapistd.c jcarith.c jccoefct.c jccolor.c \
+        jcdctmgr.c jchuff.c jcinit.c jcmainct.c jcmarker.c jcmaster.c \
+        jcomapi.c jcparam.c jcprepct.c jcsample.c jctrans.c jdapimin.c \
+        jdapistd.c jdarith.c jdatadst.c jdatasrc.c jdcoefct.c jdcolor.c \
+        jddctmgr.c jdhuff.c jdinput.c jdmainct.c jdmarker.c jdmaster.c \
+        jdmerge.c jdpostct.c jdsample.c jdtrans.c jerror.c jfdctflt.c \
+        jfdctfst.c jfdctint.c jidctflt.c jidctfst.c jidctint.c jquant1.c \
+        jquant2.c jutils.c jmemmgr.c jmemnobs.c
+
+
+# System dependent sources
+SYSDEPSOURCES = jmemansi.c jmemname.c jmemnobs.c jmemdos.c jmemmac.c
+
+# Headers which are installed to support the library
+INSTINCLUDES = jerror.h jmorecfg.h jpeglib.h
+
+# Headers which are not installed
+OTHERINCLUDES = cderror.h cdjpeg.h jdct.h jinclude.h jmemsys.h jpegint.h \
+        jversion.h transupp.h

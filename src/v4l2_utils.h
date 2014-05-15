@@ -63,6 +63,9 @@
 #include <string.h>
 #include <sys/time.h>
 
+#define PICTURE_WIDTH 640
+#define PICTURE_HEIGHT 480
+
 struct mmap_buffer {
     void *start;
     unsigned int length;
@@ -80,6 +83,9 @@ struct v4l2_device_info {
 
     int reqbuffer_count;                     // req.count;
     struct mmap_buffer *buffers;             // mmap buffers;
+
+    int width;                               // picture width;
+    int height;                              // picture height;
 
 };
 

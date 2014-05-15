@@ -232,8 +232,8 @@ int video_setfmt(struct v4l2_device_info *v4l2_info)
 
     // stream data format
     fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-    fmt.fmt.pix.width = 640;
-    fmt.fmt.pix.height = 480;
+    fmt.fmt.pix.width = v4l2_info->width;
+    fmt.fmt.pix.height = v4l2_info->height;
     fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_YUYV;
     fmt.fmt.pix.field = V4L2_FIELD_INTERLACED;
 

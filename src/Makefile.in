@@ -48,7 +48,7 @@ PROGRAMS = $(bin_PROGRAMS)
 am_opendmd_OBJECTS = main.$(OBJEXT) dmd_log.$(OBJEXT) \
 	dmd_video.$(OBJEXT) dmd_image.$(OBJEXT) v4l2_utils.$(OBJEXT)
 opendmd_OBJECTS = $(am_opendmd_OBJECTS)
-opendmd_LDADD = $(LDADD)
+opendmd_DEPENDENCIES = $(top_srcdir)/libjpeg/libjpeg.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -102,6 +102,7 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -149,6 +150,8 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
+INCLUDES = -I$(top_srcdir)/libjpeg
+opendmd_LDADD = $(top_srcdir)/libjpeg/libjpeg.a
 opendmd_SOURCES = main.c \
 	       dmd_log.h dmd_log.c \
 	       dmd_video.h dmd_video.c \
