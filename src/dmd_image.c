@@ -41,6 +41,22 @@
 
 #include "dmd_image.h"
 
+/*    YUYV data stream: Y0 U0 Y1 V0 Y2 U1 Y3 V1
+ *    first pixel:  Y0 U0 V0
+ *    second pixel: Y1 U0 V0
+ *    third pixel:  Y2 U1 V1
+ *    forth pixel:  Y3 U1 V1
+ *  every two adjacent pixels owes different Y, but share the same U and V.
+ *  so Y jumps by every 2 bytes, U and V jumps by every 4 bytes;
+ *  When Y jump 2 times, U and V jumps one time.
+ *
+ *  YUYV422(YCbCr) convert to RGB888:
+ *      R = Y + 1.402 * (V - 128)
+ *      G = Y - 0.34414 * (U - 128) - 0.71414 * (V - 128)
+ *      B = Y + 1.772 * (U - 128)
+ *  0 <= R <= 255, 0 <= G <= 255, 0 <= B <= 255;
+ *
+ */
 void YUYV422toRGB888(unsigned char *yuyv, int width,
 	int height, unsigned char *rgb)
 {
@@ -57,13 +73,13 @@ void YUYV422toRGB888(unsigned char *yuyv, int width,
     for (line = 0; line < height; line++) {
 	for (column = 0; column < width; column++) {
 	    *tmp++ = CLIP((double)*py + 1.402 * ((double) * pv - 128.0));
-	    *tmp++ = CLIP((double)*py - 0.344 * ((double) * pu - 128.0)
-		    - 0.714 * ((double) *pv - 128.0));
+	    *tmp++ = CLIP((double)*py - 0.34414 * ((double) * pu - 128.0)
+		    - 0.71414 * ((double) *pv - 128.0));
 	    *tmp++ = CLIP((double)*py + 1.772 * ((double) * pu - 128.0));
 
-	    py += 2;
+	    py += 2; // jump to the adjcent pixel, or
 
-	    if ((column & 1) == 1) {
+	    if ((column % 2) == 1) { // jump to next u and v macro
 		pu += 4;
 		pv += 4;
 	    } // if
