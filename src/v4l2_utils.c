@@ -166,7 +166,7 @@ int video_fmtdesc(struct v4l2_device_info *v4l2_info)
     fmtdesc.index = 0;
     fmtdesc.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 
-    printf("\n**********vidioc enumeration stream format informations**********\n");
+    dmd_log(LOG_INFO, "\n***vidioc enumeration stream format informations***\n");
     while (1) {
 	if ((ret = ioctl(fd, VIDIOC_ENUM_FMT, &fmtdesc)) == -1) {
 	    if (errno == EINVAL) { // take it as normal exit
@@ -188,7 +188,7 @@ int video_fmtdesc(struct v4l2_device_info *v4l2_info)
 	if (fmtdesc.type == V4L2_BUF_TYPE_VIDEO_CAPTURE) {
 	    dmd_log(LOG_INFO, "video capture type:");
 	}
-	if (fmtdesc.pixelformat = V4L2_PIX_FMT_YUYV) {
+	if (fmtdesc.pixelformat == V4L2_PIX_FMT_YUYV) {
 	    dmd_log(LOG_INFO, "V4L2_PIX_FMT_YUYV\n");
 	}
 
@@ -336,7 +336,7 @@ int video_getfmt(struct v4l2_device_info *v4l2_info)
 int video_mmap(struct v4l2_device_info *v4l2_info)
 {
     // step 1, requestbuffers allocating memory
-    int ret = 0, i = 0, j = 0;
+    int ret = 0;
     int fd = v4l2_info->video_device_fd;
 
     struct v4l2_requestbuffers req;

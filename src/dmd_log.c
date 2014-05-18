@@ -57,10 +57,12 @@ void dmd_log(int priority, const char *format, ...)
     va_end(var_list);
     vsyslog(priority, format, var_list);
 
+#if defined(DEBUG)
     // TODO: why va_start and va_end again ?
     va_start(var_list, format);
     va_end(var_list);
     vfprintf(stdout, format, var_list);
+#endif
 }
 
 void dmd_closelog()

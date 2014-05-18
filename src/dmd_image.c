@@ -41,7 +41,7 @@
 
 #include "dmd_image.h"
 
-static void YUYV422toRGB888(unsigned char *yuyv, int width,
+void YUYV422toRGB888(unsigned char *yuyv, int width,
 	int height, unsigned char *rgb)
 {
     int line, column;
@@ -72,7 +72,7 @@ static void YUYV422toRGB888(unsigned char *yuyv, int width,
 
 }
 
-static int write_jpeg(char *filename, unsigned char *buf, int quality,
+int write_jpeg(char *filename, unsigned char *buf, int quality,
 	int width, int height, int gray)
 {
     struct jpeg_compress_struct cinfo;
@@ -117,7 +117,7 @@ static int write_jpeg(char *filename, unsigned char *buf, int quality,
     return 0;
 }
 
-static int process_image(void *yuyv, int length, int width, int height)
+int process_image(void *yuyv, int length, int width, int height)
 {
     int ret = -1;
     static int num = 0;
@@ -127,12 +127,11 @@ static int process_image(void *yuyv, int length, int width, int height)
 
     assert(length > 0);
 
-    unsigned char *src = (unsigned char *)yuyv;
     unsigned char *rgb = (unsigned char *)malloc(
 	    width * height * 3 * sizeof(unsigned char));
     assert(rgb);
 
-    YUYV422toRGB888(yuyv, width, height, rgb);
+    YUYV422toRGB888((unsigned char *)yuyv, width, height, rgb);
 
     sprintf(image_name, FILE_NAME, num++);
 
@@ -141,16 +140,15 @@ static int process_image(void *yuyv, int length, int width, int height)
 
     free(rgb);
 
-    usleep(500);
+    usleep(1000);
 
     return 0;
 }
 
-static int read_frame(int fd, struct mmap_buffer *buffers, int width, int height)
+int read_frame(int fd, struct mmap_buffer *buffers, int width, int height)
 {
     int ret = 0;
     struct v4l2_buffer buf;
-    unsigned int i;
     bzero(&buf, sizeof(struct v4l2_buffer));
 
     buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
@@ -177,7 +175,7 @@ static int read_frame(int fd, struct mmap_buffer *buffers, int width, int height
 
 int dmd_image_capture(struct v4l2_device_info *v4l2_info)
 {
-    unsigned int count = 5;
+    unsigned int count = 100;
 
     int fd = v4l2_info->video_device_fd;
     int width = v4l2_info->width;

@@ -57,18 +57,18 @@
 #include "jpeglib.h"
 #include "jerror.h"
 
-#define FILE_NAME "/home/wzw/image%d.jpg"
+#define FILE_NAME "/home/wzw/openDMD/image%d.jpg"
 
 // rgb format should be the base for futher convert.
-static void YUYV422toRGB888(unsigned char *yuyv, int width,
+void YUYV422toRGB888(unsigned char *yuyv, int width,
 	int height, unsigned char *rgb);
 
-static int write_jpeg(char *filename, unsigned char *buf, int quality,
+int write_jpeg(char *filename, unsigned char *buf, int quality,
 	int width, int height, int gray);
 
-static int process_image(void *yuyv, int length, int width, int height);
+int process_image(void *yuyv, int length, int width, int height);
 
-static int read_frame(int fd, struct mmap_buffer *buffers,
+int read_frame(int fd, struct mmap_buffer *buffers,
 	int width, int height);
 
 int dmd_image_capture(struct v4l2_device_info *v4l2_info);

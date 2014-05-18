@@ -693,6 +693,7 @@ ac_subst_files=''
 ac_user_opts='
 enable_option_checking
 enable_dependency_tracking
+enable_debug
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1321,6 +1322,7 @@ Optional Features:
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --disable-dependency-tracking  speeds up one-time build
   --enable-dependency-tracking   do not reject slow dependency extractors
+  --enable-debug          enable debug mode(default=no)
 
 Some influential environment variables:
   CC          C compiler command
@@ -4470,6 +4472,27 @@ _ACEOF
 
 fi
 done
+
+
+# set CFLAGS.
+CFLAGS="-Wall "
+# add --enable-debug option.
+# Check whether --enable-debug was given.
+if test "${enable_debug+set}" = set; then :
+  enableval=$enable_debug; enable_debug=yes
+else
+  enable_debug=no
+
+fi
+
+if test "x$enable_debug" = "xyes"; then :
+  CFLAGS+="-DDEBUG "
+elif test "x$enable_debug" = "xno"; then :
+  CFLAGS+=" "
+else
+  echo "enable-debug with wrong value"
+
+fi
 
 
 #Attention: this is import, list the Makefile need to generate

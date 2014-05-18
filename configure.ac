@@ -28,6 +28,20 @@ AC_FUNC_MALLOC
 AC_FUNC_MMAP
 AC_CHECK_FUNCS([bzero munmap select setlocale])
 
+# set CFLAGS.
+CFLAGS="-Wall "
+# add --enable-debug option.
+AC_ARG_ENABLE( [debug], 
+	      AS_HELP_STRING([--enable-debug], [enable debug mode(default=no)]),
+	      [enable_debug=yes],
+	      [enable_debug=no]
+	      )
+AS_IF([test "x$enable_debug" = "xyes"], [CFLAGS+="-DDEBUG "],
+      [test "x$enable_debug" = "xno"], [CFLAGS+=" "],
+      [echo "enable-debug with wrong value"]
+      )
+
+
 #Attention: this is import, list the Makefile need to generate
 #AC_OUTPUT(Makefile src/Makefile)
 AC_CONFIG_FILES([Makefile \
