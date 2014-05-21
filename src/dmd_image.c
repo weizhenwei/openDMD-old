@@ -40,6 +40,8 @@
  */
 
 #include "dmd_image.h"
+extern unsigned char *referenceYUYV;
+static int flag = -1;
 
 /*    YUYV data stream: Y0 U0 Y1 V0 Y2 U1 Y3 V1
  *    first pixel:  Y0 U0 V0
@@ -57,12 +59,15 @@
  *  0 <= R <= 255, 0 <= G <= 255, 0 <= B <= 255;
  *
  */
-void YUYV422toRGB888(unsigned char *yuyv, int width,
-	int height, unsigned char *rgb)
+int YUYV422toRGB888(unsigned char *yuyv, int width,
+	int height, unsigned char *rgb, int length)
 {
     int line, column;
     unsigned char *py, *pu, *pv;
     unsigned char *tmp = rgb;
+    unsigned int counter = 0;
+    unsigned char *ref = referenceYUYV;
+    unsigned int index = 0;
 
     py = yuyv;
     pu = yuyv + 1;
@@ -77,15 +82,58 @@ void YUYV422toRGB888(unsigned char *yuyv, int width,
 		    - 0.71414 * ((double) *pv - 128.0));
 	    *tmp++ = CLIP((double)*py + 1.772 * ((double) * pu - 128.0));
 
+	    // whether pixel changed
+	    if (column % 2 == 0) {
+		if (flag == 2) {
+		    dmd_log(LOG_INFO, "00000 py = %d, pu = %d, pv = %d\n", *py, *pu, *pv);
+		    dmd_log(LOG_INFO, "00000 refpy = %d, refpu = %d, refpv = %d\n",
+			    *(ref + index + 0), *(ref + index + 1), *(ref + index + 3));
+		}
+
+		int absy = abs(*(ref + index + 0) - *py);
+		int absu = abs(*(ref + index + 1) - *pu);
+		int absv = abs(*(ref + index + 3) - *pv);
+		if (absy >= ABSY || absu >= ABSCbCr || absv >= ABSCbCr)
+		    counter++;
+
+		*(ref + index + 0) = *py;
+	    } else {
+		if (flag == 2) {
+		    dmd_log(LOG_INFO, "11111 py = %d, pu = %d, pv = %d\n", *py, *pu, *pv);
+		    dmd_log(LOG_INFO, "11111 refpy = %d, refpu = %d, refpv = %d\n",
+			    *(ref + index + 2), *(ref + index + 1), *(ref + index + 3));
+		}
+
+		int absy = abs(*(ref + index + 2) - *py);
+		int absu = abs(*(ref + index + 1) - *pu);
+		int absv = abs(*(ref + index + 3) - *pv);
+		if (absy >= ABSY || absu >= ABSCbCr || absv >= ABSCbCr)
+		    counter++;
+
+		*(ref + index + 2) = *py;
+	    }
+
 	    py += 2; // jump to the adjcent pixel, or
 
-	    if ((column % 2) == 1) { // jump to next u and v macro
+	    if (column % 2 == 1) { // jump to next u and v macro
+		*(ref + index + 1) = *pu;
+		*(ref + index + 3) = *pv;
+
 		pu += 4;
 		pv += 4;
+		index += 4;
 	    } // if
 	} // for inner
     } // for outer
 
+    memcpy(referenceYUYV, yuyv, length);
+    flag = 1;
+    if (counter >= DIFF) {
+	dmd_log(LOG_INFO, "diff counter = %d, captured a picture.\n",counter);
+	return 0;
+    } else {
+	return -1;
+    }
 }
 
 int write_jpeg(char *filename, unsigned char *buf, int quality,
@@ -146,17 +194,22 @@ int process_image(void *yuyv, int length, int width, int height)
     unsigned char *rgb = (unsigned char *)malloc(
 	    width * height * 3 * sizeof(unsigned char));
     assert(rgb);
+    if (referenceYUYV == NULL) {
+	dmd_log(LOG_INFO, "referenceYUYV == NULL\n");
+	flag = 1;
+	referenceYUYV = (unsigned char *)malloc(length * sizeof(unsigned char));
+	assert(referenceYUYV);
+	bzero(referenceYUYV, length * sizeof(unsigned char));
+    }
 
-    YUYV422toRGB888((unsigned char *)yuyv, width, height, rgb);
-
-    sprintf(image_name, FILE_NAME, num++);
-
-    ret = write_jpeg(image_name, rgb, 100, width, height, 0);
-    assert( ret == 0);
+    ret = YUYV422toRGB888((unsigned char *)yuyv, width, height, rgb, length);
+    if ( ret == 0) {
+	sprintf(image_name, FILE_NAME, num++);
+	ret = write_jpeg(image_name, rgb, 100, width, height, 0);
+	assert( ret == 0);
+    }
 
     free(rgb);
-
-    usleep(1000);
 
     return 0;
 }
@@ -191,14 +244,12 @@ int read_frame(int fd, struct mmap_buffer *buffers, int width, int height)
 
 int dmd_image_capture(struct v4l2_device_info *v4l2_info)
 {
-    unsigned int count = 100;
-
     int fd = v4l2_info->video_device_fd;
     int width = v4l2_info->width;
     int height = v4l2_info->height;
     struct mmap_buffer *buffers = v4l2_info->buffers;
     
-    while (count-- > 0) {
+    while (1) {
 	for (;;) {
 	    fd_set fds;
 	    struct timeval tv;
@@ -225,7 +276,7 @@ int dmd_image_capture(struct v4l2_device_info *v4l2_info)
 	    if (read_frame(fd, buffers, width, height) == 0)
 		break;
 	}
-    }
+    } // while
 
     return 0;
 }

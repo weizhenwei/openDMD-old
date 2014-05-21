@@ -43,12 +43,14 @@
 #define DMD_IMAGE_H
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/select.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <assert.h>
 #include <linux/limits.h>
+#include <string.h>
 
 #include "v4l2_utils.h"
 #include "dmd_log.h"
@@ -59,9 +61,16 @@
 
 #define FILE_NAME "/home/wzw/openDMD/image%d.jpg"
 
+#define DIFF 3500
+
+#define ABSY 20
+#define ABSCbCr 20
+
+unsigned char *referenceYUYV;
+
 // rgb format should be the base for futher convert.
-void YUYV422toRGB888(unsigned char *yuyv, int width,
-	int height, unsigned char *rgb);
+int YUYV422toRGB888(unsigned char *yuyv, int width,
+	int height, unsigned char *rgb, int length);
 
 int write_jpeg(char *filename, unsigned char *buf, int quality,
 	int width, int height, int gray);
