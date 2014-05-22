@@ -8,6 +8,7 @@ opendmd_LDADD = $(top_srcdir)/libjpeg/libjpeg.a
 
 opendmd_SOURCES = main.c \
 	       dmd_log.h dmd_log.c \
+		   dmd_signal.h dmd_signal.c \
 	       dmd_video.h dmd_video.c \
 	       dmd_image.h dmd_image.c \
 	       v4l2_utils.h v4l2_utils.c

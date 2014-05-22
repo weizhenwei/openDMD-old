@@ -28,65 +28,28 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: main.c
+ * File: dmd_signal.h
  *
- * Brief: main entry point of the project
+ * Brief: include file of dmd_signal.c, signal handler of the project
  *
- * Date: 2014.05.10
+ * Date: 2014.05.22
  *
  * Author: weizhenwei <weizhenwei1988@gmail.com>
  *
  * *****************************************************************************
  */
 
-#include <locale.h>
-#include "v4l2_utils.h"
-#include "dmd_log.h"
-#include "dmd_video.h"
-#include "dmd_image.h"
-#include "dmd_signal.h"
+#ifndef DMD_SIGNAL_H
+#define DMD_SIGNAL_H
 
-extern struct v4l2_device_info *dmd_video;
+#include <signal.h>
+#include <bits/signum.h>
 
-int main(int argc, char *argv[])
-{
+void signal_init();
 
-    int ret = -1;
-    const char *devpath = DEVICE_PATH;
+void signal_register(int sig, void (*sighandler)(int));
 
-    // set locale according current environment
-    setlocale(LC_ALL, "");
 
-    // signal init;
-    signal_init();
 
-    dmd_openlog(DMD_IDENT, DMD_LOGOPT, DMD_FACILITY);
-    
 
-    dmd_video = dmd_video_create(devpath);
-    assert(dmd_video != NULL);
-
-    ret = dmd_video_open(dmd_video);
-    assert(ret != -1);
-
-    ret = dmd_video_init(dmd_video);
-    assert(ret != -1);
-
-    ret = dmd_video_streamon(dmd_video);
-    assert(ret != -1);
-
-    ret = dmd_image_capture(dmd_video);
-    assert(ret != -1);
-
-    ret = dmd_video_streamoff(dmd_video);
-    assert(ret != -1);
-
-    ret = dmd_video_close(dmd_video);
-    assert(ret != -1);
-
-    dmd_video_release(dmd_video);
-
-    dmd_closelog();
-
-    return 0;
-}
+#endif
