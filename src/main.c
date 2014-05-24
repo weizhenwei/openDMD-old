@@ -48,20 +48,29 @@
 
 extern struct v4l2_device_info *dmd_video;
 
-int main(int argc, char *argv[])
+extern time_t lasttime;
+extern unsigned short int counter_in_minute;
+
+void init(void)
 {
-
-    int ret = -1;
-    const char *devpath = DEVICE_PATH;
-
-    // set locale according current environment
-    setlocale(LC_ALL, "");
-
     // signal init;
     signal_init();
 
+    lasttime = time(&lasttime);
+    counter_in_minute = 0;
+
     dmd_openlog(DMD_IDENT, DMD_LOGOPT, DMD_FACILITY);
-    
+}
+
+void clean(void)
+{
+    dmd_closelog();
+}
+
+void working_progress()
+{
+    int ret = -1;
+    const char *devpath = DEVICE_PATH;
 
     dmd_video = dmd_video_create(devpath);
     assert(dmd_video != NULL);
@@ -85,8 +94,18 @@ int main(int argc, char *argv[])
     assert(ret != -1);
 
     dmd_video_release(dmd_video);
+}
 
-    dmd_closelog();
+int main(int argc, char *argv[])
+{
+    // set locale according current environment
+    setlocale(LC_ALL, "");
+
+    init();
+
+    working_progress();
+
+    clean();
 
     return 0;
 }

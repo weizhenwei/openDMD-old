@@ -46,17 +46,19 @@
 struct v4l2_device_info *dmd_video_create(const char *device_path)
 {
     struct v4l2_device_info *device;
-    device = (struct v4l2_device_info *)malloc(sizeof(struct v4l2_device_info));
+    device =
+        (struct v4l2_device_info *)malloc(sizeof(struct v4l2_device_info));
     if (device == NULL) {
-	dmd_log(LOG_ERR, "malloc for struct v4l2_device_info failed.\n");
-	return device;
+        dmd_log(LOG_ERR, "malloc for struct v4l2_device_info failed.\n");
+        return device;
     }
 
     bzero(device, sizeof(device));
 
     device->video_device_path = device_path;
     device->reqbuffer_count = REQ_COUNT;
-    device->buffers = malloc(device->reqbuffer_count * sizeof(struct mmap_buffer));
+    device->buffers =
+        malloc(device->reqbuffer_count * sizeof(struct mmap_buffer));
     assert(device->buffers != NULL);
 
     device->width = PICTURE_WIDTH;
@@ -71,8 +73,8 @@ int dmd_video_open(struct v4l2_device_info *v4l2_info)
     const char *devpath = v4l2_info->video_device_path;
     dmd_log(LOG_INFO, "video device:%s\n", devpath);
     if ((fd = open(devpath, O_RDWR)) == -1) {
-	dmd_log(LOG_ERR, "open video device failded.\n");
-	return -1;
+        dmd_log(LOG_ERR, "open video device failded.\n");
+        return -1;
     }
 
     v4l2_info->video_device_fd = fd;
@@ -85,31 +87,31 @@ int dmd_video_init(struct v4l2_device_info *v4l2_info)
     int ret;
     // query video device's capability
     if ((ret = video_capability(v4l2_info)) == -1) {
-	return ret;
+        return ret;
     }
 
     // query and set video input format
     if ((ret = video_input(v4l2_info)) == -1) {
-	return ret;
+        return ret;
     }
 
     // traverse video stream format
     if ((ret = video_fmtdesc(v4l2_info)) == -1) {
-	return ret;
+        return ret;
     }
 
     // set video stream data format
     if ((ret = video_setfmt(v4l2_info)) == -1) {
-	return ret;
+        return ret;
     }
     // get video stream data format
     if ((ret = video_getfmt(v4l2_info)) == -1) {
-	return ret;
+        return ret;
     }
     
     // memory map for the request buffer
     if ((ret = video_mmap(v4l2_info)) == -1) {
-	return ret;
+        return ret;
     }
 
     return ret;
@@ -144,25 +146,25 @@ int dmd_video_streamon(struct v4l2_device_info *v4l2_info)
 
     // place kernel requestbuffers to a  queue
     for (i = 0; i < n_buffer; i++) {
-	struct v4l2_buffer buf;
-	bzero(&buf, sizeof(struct v4l2_buffer));
+        struct v4l2_buffer buf;
+        bzero(&buf, sizeof(struct v4l2_buffer));
 
-	buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-	buf.memory = V4L2_MEMORY_MMAP;
-	buf.index = i;
-	
-	// requestbuffer to queue
-	if ((ret = ioctl(fd, VIDIOC_QBUF, &buf)) == -1) {
-	    dmd_log(LOG_ERR, "ioctl VIDIOC_QBUF failed.\n");
-	    return ret;
-	}
+        buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+        buf.memory = V4L2_MEMORY_MMAP;
+        buf.index = i;
+        
+        // requestbuffer to queue
+        if ((ret = ioctl(fd, VIDIOC_QBUF, &buf)) == -1) {
+            dmd_log(LOG_ERR, "ioctl VIDIOC_QBUF failed.\n");
+            return ret;
+        }
     }
     
     // start stream on, start capture data
     enum v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     if ((ret = ioctl(fd, VIDIOC_STREAMON, &type)) == -1) {
-	dmd_log(LOG_ERR, "ioctl VIDIOC_STREAMON failed.\n");
-	return ret;
+        dmd_log(LOG_ERR, "ioctl VIDIOC_STREAMON failed.\n");
+        return ret;
     }
 
 
@@ -183,18 +185,18 @@ int dmd_video_streamoff(struct v4l2_device_info *v4l2_info)
     // stop stream off, stop capture
     enum v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     if ((ret = ioctl(fd, VIDIOC_STREAMOFF, &type)) == -1) {
-	dmd_log(LOG_ERR, "ioctl VIDIOC_STREAMOFF failed.\n");
-	return ret;
+        dmd_log(LOG_ERR, "ioctl VIDIOC_STREAMOFF failed.\n");
+        return ret;
     }
 
     dmd_log(LOG_INFO, "Video stream is now off!\n");
 
     // munmap
     for (i = 0; i < n_buffer; i++) {
-	if ((ret = munmap(buffers[i].start, buffers[i].length)) == -1) {
-	    dmd_log(LOG_ERR, "munmap failed.\n");
-	    return ret;
-	}
+        if ((ret = munmap(buffers[i].start, buffers[i].length)) == -1) {
+            dmd_log(LOG_ERR, "munmap failed.\n");
+            return ret;
+        }
     }
 
     return ret;
@@ -203,8 +205,8 @@ int dmd_video_streamoff(struct v4l2_device_info *v4l2_info)
 int dmd_video_close(struct v4l2_device_info *v4l2_info)
 {
     if (close(v4l2_info->video_device_fd) == -1) {
-	dmd_log(LOG_ERR, "close video device failed");
-	return -1;
+        dmd_log(LOG_ERR, "close video device failed");
+        return -1;
     }
 
     return 1;
@@ -213,11 +215,11 @@ int dmd_video_close(struct v4l2_device_info *v4l2_info)
 void dmd_video_release(struct v4l2_device_info *v4l2_info)
 {
     if (v4l2_info != NULL) {
-	if (v4l2_info->buffers) {
-	    free(v4l2_info->buffers);
-	}
+        if (v4l2_info->buffers) {
+            free(v4l2_info->buffers);
+        }
 
-	free(v4l2_info);
+        free(v4l2_info);
     }
 }
 

@@ -50,7 +50,7 @@ void dmd_log(int priority, const char *format, ...)
 {
     va_list var_list;
     if (format == NULL) {
-	return;
+        return;
     }
 
     va_start(var_list, format);

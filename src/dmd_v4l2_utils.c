@@ -63,33 +63,34 @@ int video_capability(struct v4l2_device_info *v4l2_info)
 
     // get the device capability.
     struct v4l2_capability *capture = &v4l2_info->cap;
-    if ((ret = ioctl(v4l2_info->video_device_fd, VIDIOC_QUERYCAP, capture)) == -1) {
-	dmd_log(LOG_ERR, "query device capability failed.\n");
-	return ret;
+    if ((ret = ioctl(v4l2_info->video_device_fd, VIDIOC_QUERYCAP, capture))
+            == -1) {
+        dmd_log(LOG_ERR, "query device capability failed.\n");
+        return ret;
     }
 
-    dmd_log(LOG_INFO, "**********Device Capability informations**********\n");
+    dmd_log(LOG_INFO, "*******Device Capability informations*******\n");
     dmd_log(LOG_INFO, "driver: %s\n", capture->driver);
     dmd_log(LOG_INFO, "card: %s\n", capture->card);
     dmd_log(LOG_INFO, "bus_info: %s\n", capture->bus_info);
     dmd_log(LOG_INFO, "version: %x\n", capture->version);
     dmd_log(LOG_INFO, "capabilities: 0X%x\n", capture->capabilities);
     if (capture->capabilities & V4L2_CAP_VIDEO_CAPTURE) {
-	dmd_log(LOG_INFO, "Capture capability is supported\n");
+        dmd_log(LOG_INFO, "Capture capability is supported\n");
     } else {
-	dmd_log(LOG_INFO, "Capture capability is not supported\n");
-
+        dmd_log(LOG_INFO, "Capture capability is not supported\n");
     }
+
     if (capture->capabilities & V4L2_CAP_VIDEO_OUTPUT) {
-	dmd_log(LOG_INFO, "Output capability is supported\n");
+        dmd_log(LOG_INFO, "Output capability is supported\n");
     } else {
-	dmd_log(LOG_INFO, "Output capability is not supported\n");
-
+        dmd_log(LOG_INFO, "Output capability is not supported\n");
     }
+
     if (capture->capabilities & V4L2_CAP_STREAMING) {
-	dmd_log(LOG_INFO, "Streaming capability is supported\n");
+        dmd_log(LOG_INFO, "Streaming capability is supported\n");
     } else {
-	dmd_log(LOG_INFO, "Streaming capability is not supported\n");
+        dmd_log(LOG_INFO, "Streaming capability is not supported\n");
     }
 
     return ret;
@@ -123,15 +124,15 @@ int video_input(struct v4l2_device_info *v4l2_info)
     bzero(&input, sizeof(struct v4l2_input));
 
     if ((ret = ioctl(fd, VIDIOC_S_INPUT, &index)) == -1) {
-	perror("ioctl VIDIOC_S_INPUT");
-	dmd_log(LOG_ERR, "ioctl VIDIOC_S_INPUT failed.\n");
-	return ret;
+        perror("ioctl VIDIOC_S_INPUT");
+        dmd_log(LOG_ERR, "ioctl VIDIOC_S_INPUT failed.\n");
+        return ret;
     }
 
     input.index = index;
-    if((ret = ioctl(fd, VIDIOC_ENUMINPUT, &input)) == -1) {
-	dmd_log(LOG_ERR, "ioctl VIDIOC_ENUMINPUT failed.\n");
-	return ret;
+    if ((ret = ioctl(fd, VIDIOC_ENUMINPUT, &input)) == -1) {
+        dmd_log(LOG_ERR, "ioctl VIDIOC_ENUMINPUT failed.\n");
+        return ret;
     }
 
     dmd_log(LOG_ERR, "\n**********input informations**********\n");
@@ -168,31 +169,31 @@ int video_fmtdesc(struct v4l2_device_info *v4l2_info)
 
     dmd_log(LOG_INFO, "\n***vidioc enumeration stream format informations***\n");
     while (1) {
-	if ((ret = ioctl(fd, VIDIOC_ENUM_FMT, &fmtdesc)) == -1) {
-	    if (errno == EINVAL) { // take it as normal exit
-		ret = 0;
-		break;
-	    } else {
-		dmd_log(LOG_ERR, "ioctl VIDIOC_ENUM_FMT failed.\n");
-	    	break;
-	    }
-	}
+        if ((ret = ioctl(fd, VIDIOC_ENUM_FMT, &fmtdesc)) == -1) {
+            if (errno == EINVAL) { // take it as normal exit
+                ret = 0;
+                break;
+            } else {
+                dmd_log(LOG_ERR, "ioctl VIDIOC_ENUM_FMT failed.\n");
+                break;
+            }
+        }
 
-	dmd_log(LOG_INFO, "pixel format = %c%c%c%c, description = %s\n",
-		(fmtdesc.pixelformat & 0xFF),
-		((fmtdesc.pixelformat >> 8) & 0xFF),
-		((fmtdesc.pixelformat >> 16) & 0xFF),
-		((fmtdesc.pixelformat >> 24) & 0xFF),
-		fmtdesc.description);
+        dmd_log(LOG_INFO, "pixel format = %c%c%c%c, description = %s\n",
+                (fmtdesc.pixelformat & 0xFF),
+                ((fmtdesc.pixelformat >> 8) & 0xFF),
+                ((fmtdesc.pixelformat >> 16) & 0xFF),
+                ((fmtdesc.pixelformat >> 24) & 0xFF),
+                fmtdesc.description);
 
-	if (fmtdesc.type == V4L2_BUF_TYPE_VIDEO_CAPTURE) {
-	    dmd_log(LOG_INFO, "video capture type:");
-	}
-	if (fmtdesc.pixelformat == V4L2_PIX_FMT_YUYV) {
-	    dmd_log(LOG_INFO, "V4L2_PIX_FMT_YUYV\n");
-	}
+        if (fmtdesc.type == V4L2_BUF_TYPE_VIDEO_CAPTURE) {
+            dmd_log(LOG_INFO, "video capture type:");
+        }
+        if (fmtdesc.pixelformat == V4L2_PIX_FMT_YUYV) {
+            dmd_log(LOG_INFO, "V4L2_PIX_FMT_YUYV\n");
+        }
 
-	fmtdesc.index++;
+        fmtdesc.index++;
     }
 
     return ret;
@@ -238,10 +239,11 @@ int video_setfmt(struct v4l2_device_info *v4l2_info)
     fmt.fmt.pix.field = V4L2_FIELD_INTERLACED;
 
     if ((ret = ioctl(fd, VIDIOC_S_FMT, &fmt)) == -1) {
-	dmd_log(LOG_ERR, "ioctl VIDIOC_S_FMT failed.\n");
-	return ret;
+        dmd_log(LOG_ERR, "ioctl VIDIOC_S_FMT failed.\n");
+        return ret;
     } else {
-	dmd_log(LOG_INFO, "set video stream data format to YUYV succeed!\n");
+        dmd_log(LOG_INFO,
+                "set video stream data format to YUYV succeed!\n");
     }
 
     return ret;
@@ -255,14 +257,14 @@ int video_getfmt(struct v4l2_device_info *v4l2_info)
     bzero(&fmt, sizeof(struct v4l2_format));
     fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 
-    if((ret = ioctl(fd, VIDIOC_G_FMT, &fmt)) == -1) {
-	dmd_log(LOG_ERR, "ioctl VIDIOC_G_FMT failed.\n");
-	return ret;
+    if ((ret = ioctl(fd, VIDIOC_G_FMT, &fmt)) == -1) {
+        dmd_log(LOG_ERR, "ioctl VIDIOC_G_FMT failed.\n");
+        return ret;
     }
 
-    dmd_log(LOG_ERR, "\n**********vidioc get stream format informations***********\n");
+    dmd_log(LOG_ERR, "\n****vidioc get stream format informations****\n");
     if (fmt.fmt.pix.pixelformat == V4L2_PIX_FMT_YUYV) {
-	dmd_log(LOG_INFO, "8-bit YUYV pixel format.\n");
+        dmd_log(LOG_INFO, "8-bit YUYV pixel format.\n");
     }
     dmd_log(LOG_INFO, "Size of the buffer = %d\n", fmt.fmt.pix.sizeimage);
     dmd_log(LOG_INFO, "Line offset = %d\n", fmt.fmt.pix.bytesperline);
@@ -346,13 +348,13 @@ int video_mmap(struct v4l2_device_info *v4l2_info)
     req.memory = V4L2_MEMORY_MMAP;
 
     if ((ret = ioctl(fd, VIDIOC_REQBUFS, &req)) == -1) {
-	dmd_log(LOG_ERR, "ioctl VIDIOC_REQBUFS failed.\n");
-	return -1;
+        dmd_log(LOG_ERR, "ioctl VIDIOC_REQBUFS failed.\n");
+        return -1;
     }
 
     dmd_log(LOG_INFO, "\n**********video mmap**********\n");
     if (req.count < v4l2_info->reqbuffer_count) {
-	dmd_log(LOG_ERR, "Insufficient buffer memory\n");
+        dmd_log(LOG_ERR, "Insufficient buffer memory\n");
     }
     dmd_log(LOG_INFO, "Number of buffers allocated = %d\n", req.count);
 
@@ -361,27 +363,27 @@ int video_mmap(struct v4l2_device_info *v4l2_info)
     struct mmap_buffer *buffers = v4l2_info->buffers;
     assert(buffers != NULL);
     for (n_buffer = 0; n_buffer < req.count; n_buffer++) {
-	struct v4l2_buffer buf; // stand for a frame in driver
-	bzero(&buf, sizeof(struct v4l2_buffer));
-	buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-	buf.memory = V4L2_MEMORY_MMAP;
-	buf.index = n_buffer;
+        struct v4l2_buffer buf; // stand for a frame in driver
+        bzero(&buf, sizeof(struct v4l2_buffer));
+        buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+        buf.memory = V4L2_MEMORY_MMAP;
+        buf.index = n_buffer;
 
-	if((ret = ioctl(fd, VIDIOC_QUERYBUF, &buf)) == -1) {
-	    dmd_log(LOG_ERR, "ioctl VIDIOC_QUERYBUF failed.\n");
-	    return ret;
-	}
+        if((ret = ioctl(fd, VIDIOC_QUERYBUF, &buf)) == -1) {
+            dmd_log(LOG_ERR, "ioctl VIDIOC_QUERYBUF failed.\n");
+            return ret;
+        }
 
-	// step 3, Mapping kernel space address to user space
-	buffers[n_buffer].length = buf.length;
-	buffers[n_buffer].start = mmap(NULL, buf.length, PROT_READ | PROT_WRITE,
-					MAP_SHARED, fd, buf.m.offset);
+        // step 3, Mapping kernel space address to user space
+        buffers[n_buffer].length = buf.length;
+        buffers[n_buffer].start = mmap(NULL, buf.length,
+                PROT_READ | PROT_WRITE, MAP_SHARED, fd, buf.m.offset);
 
-	if (buffers[n_buffer].start == MAP_FAILED) {
-	    ret = -1;
-	    dmd_log(LOG_ERR, "mmap failed.\n");
-	    return ret;
-	}
+        if (buffers[n_buffer].start == MAP_FAILED) {
+            ret = -1;
+            dmd_log(LOG_ERR, "mmap failed.\n");
+            return ret;
+        }
     }
 
     return ret;

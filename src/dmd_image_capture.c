@@ -44,6 +44,42 @@
 extern unsigned char *referenceYUYV;
 int flag = -1;
 
+char *get_filepath()
+{
+    time_t now;
+    struct tm *tmptr;
+    // at linux/limits.h, #define PATH_MAX 4096
+    static char filepath[PATH_MAX];
+
+    now = time(&now);
+    assert(now != -1);
+
+    tmptr = localtime(&now);
+    assert(tmptr != NULL);
+    sprintf(filepath, "%s%04d%02d%02d%02d%02d%02d-%02d.jpg",
+            STORE_PATH,
+            tmptr->tm_year + 1900,
+            tmptr->tm_mon + 1,
+            tmptr->tm_mday,
+            tmptr->tm_hour,
+            tmptr->tm_min,
+            tmptr->tm_sec,
+            counter_in_minute);
+
+    assert(strlen(filepath) < PATH_MAX);
+
+    if (lasttime == now) {
+        counter_in_minute++;
+    } else {
+        counter_in_minute = 0;
+    }
+    lasttime = now;
+
+    dmd_log(LOG_INFO, "filename is: %s\n", filepath);
+
+    return filepath;
+}
+
 int write_jpeg(char *filename, unsigned char *buf, int quality,
     int width, int height, int gray)
 {
@@ -55,6 +91,7 @@ int write_jpeg(char *filename, unsigned char *buf, int quality,
     unsigned char *line;
     int line_length;
 
+    assert(filename != NULL);
     if ((fp = fopen(filename, "wb")) == NULL) {
         dmd_log(LOG_ERR, "fopen error.\n");
     return -1;
@@ -83,7 +120,6 @@ int write_jpeg(char *filename, unsigned char *buf, int quality,
     jpeg_finish_compress(&cinfo);
     jpeg_destroy_compress(&cinfo);
 
-
     fclose(fp);
 
     return 0;
@@ -92,10 +128,7 @@ int write_jpeg(char *filename, unsigned char *buf, int quality,
 int process_image(void *yuyv, int length, int width, int height)
 {
     int ret = -1;
-    static int num = 0;
-
-    // at linux/limits.h, #define PATH_MAX 4096
-    char image_name[PATH_MAX];
+    char *filepath = NULL;
 
     assert(length > 0);
 
@@ -112,8 +145,8 @@ int process_image(void *yuyv, int length, int width, int height)
 
     ret = YUYV422toRGB888INT((unsigned char *)yuyv, width, height, rgb, length);
     if (ret == 0) {
-        sprintf(image_name, FILE_NAME, num++);
-        ret = write_jpeg(image_name, rgb, 100, width, height, 0);
+        filepath = get_filepath();
+        ret = write_jpeg(filepath, rgb, 100, width, height, 0);
         assert( ret == 0);
     }
 

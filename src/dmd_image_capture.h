@@ -44,13 +44,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/select.h>
-#include <sys/time.h>
 #include <sys/types.h>
+#include <sys/select.h>
+#include <linux/limits.h>
 #include <unistd.h>
 #include <assert.h>
-#include <linux/limits.h>
 #include <string.h>
+#include <time.h>
 
 #include "dmd_log.h"
 #include "dmd_v4l2_utils.h"
@@ -60,9 +60,16 @@
 #include "jpeglib.h"
 #include "jerror.h"
 
-#define FILE_NAME "/home/wzw/openDMD/image%d.jpg"
+// #define FILE_NAME "/home/wzw/openDMD/image%d.jpg"
+#define STORE_PATH "/home/wzw/openDMD/"
 
 unsigned char *referenceYUYV;
+
+// last time we captured an image;
+time_t lasttime;
+unsigned short int counter_in_minute;
+
+char *get_filepath();
 
 int write_jpeg(char *filename, unsigned char *buf, int quality,
 	int width, int height, int gray);
