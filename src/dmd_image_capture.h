@@ -28,65 +28,50 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: main.c
+ * File: dmd_image_capture.h
  *
- * Brief: main entry point of the project
+ * Brief: capture image from video device. 
  *
- * Date: 2014.05.10
+ * Date: 2014.05.14
  *
  * Author: weizhenwei <weizhenwei1988@gmail.com>
  *
  * *****************************************************************************
  */
 
-#include <locale.h>
+#ifndef DMD_IMAGE_CAPTURE_H
+#define DMD_IMAGE_CAPTURE_H
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/select.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <assert.h>
+#include <linux/limits.h>
+#include <string.h>
+
 #include "dmd_log.h"
-#include "dmd_video.h"
-#include "dmd_signal.h"
 #include "dmd_v4l2_utils.h"
-#include "dmd_image_capture.h"
+#include "dmd_image_convert.h"
 
-extern struct v4l2_device_info *dmd_video;
+// from libjpeg library
+#include "jpeglib.h"
+#include "jerror.h"
 
-int main(int argc, char *argv[])
-{
+#define FILE_NAME "/home/wzw/openDMD/image%d.jpg"
 
-    int ret = -1;
-    const char *devpath = DEVICE_PATH;
+unsigned char *referenceYUYV;
 
-    // set locale according current environment
-    setlocale(LC_ALL, "");
+int write_jpeg(char *filename, unsigned char *buf, int quality,
+	int width, int height, int gray);
 
-    // signal init;
-    signal_init();
+int process_image(void *yuyv, int length, int width, int height);
 
-    dmd_openlog(DMD_IDENT, DMD_LOGOPT, DMD_FACILITY);
-    
+int read_frame(int fd, struct mmap_buffer *buffers,
+	int width, int height);
 
-    dmd_video = dmd_video_create(devpath);
-    assert(dmd_video != NULL);
+int dmd_image_capture(struct v4l2_device_info *v4l2_info);
 
-    ret = dmd_video_open(dmd_video);
-    assert(ret != -1);
-
-    ret = dmd_video_init(dmd_video);
-    assert(ret != -1);
-
-    ret = dmd_video_streamon(dmd_video);
-    assert(ret != -1);
-
-    ret = dmd_image_capture(dmd_video);
-    assert(ret != -1);
-
-    ret = dmd_video_streamoff(dmd_video);
-    assert(ret != -1);
-
-    ret = dmd_video_close(dmd_video);
-    assert(ret != -1);
-
-    dmd_video_release(dmd_video);
-
-    dmd_closelog();
-
-    return 0;
-}
+#endif

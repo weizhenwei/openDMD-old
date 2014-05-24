@@ -44,7 +44,7 @@
 
 #include <strings.h>
 #include <assert.h>
-#include "v4l2_utils.h"
+#include "dmd_v4l2_utils.h"
 
 #define DEVICE_PATH "/dev/video0"
 #define REQ_COUNT 5

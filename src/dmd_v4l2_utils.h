@@ -28,7 +28,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: v4l2_utils.h
+ * File: dmd_v4l2_utils.h
  *
  * Brief: Wrapper functions about v4l2 api originate from <linux/videodev2.h>
  *
@@ -39,8 +39,8 @@
  * *****************************************************************************
  */
 
-#ifndef V4L2_UTILS_H
-#define V4L2_UTILS_H
+#ifndef DMD_V4L2_UTILS_H
+#define DMD_V4L2_UTILS_H
 
 #include <stdio.h>
 #include <stdlib.h>

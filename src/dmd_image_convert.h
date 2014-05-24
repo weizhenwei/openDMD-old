@@ -28,65 +28,35 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: main.c
+ * File: dmd_image_convert.h
  *
- * Brief: main entry point of the project
+ * Brief: convert image between different format. 
  *
- * Date: 2014.05.10
+ * Date: 2014.05.14
  *
  * Author: weizhenwei <weizhenwei1988@gmail.com>
  *
  * *****************************************************************************
  */
 
-#include <locale.h>
+#ifndef DMD_IMAGE_CONVERT_H
+#define DMD_IMAGE_CONVERT_H
+
+#include <assert.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "dmd_log.h"
-#include "dmd_video.h"
-#include "dmd_signal.h"
-#include "dmd_v4l2_utils.h"
-#include "dmd_image_capture.h"
 
-extern struct v4l2_device_info *dmd_video;
+#define DIFF 3500
+#define ABSY 20
+#define ABSCbCr 20
 
-int main(int argc, char *argv[])
-{
+// rgb format should be the base for futher convert.
+int YUYV422toRGB888(unsigned char *yuyv, int width,
+	int height, unsigned char *rgb, int length);
 
-    int ret = -1;
-    const char *devpath = DEVICE_PATH;
+int YUYV422toRGB888INT(unsigned char *yuyv, int width,
+	int height, unsigned char *rgb, int length);
 
-    // set locale according current environment
-    setlocale(LC_ALL, "");
-
-    // signal init;
-    signal_init();
-
-    dmd_openlog(DMD_IDENT, DMD_LOGOPT, DMD_FACILITY);
-    
-
-    dmd_video = dmd_video_create(devpath);
-    assert(dmd_video != NULL);
-
-    ret = dmd_video_open(dmd_video);
-    assert(ret != -1);
-
-    ret = dmd_video_init(dmd_video);
-    assert(ret != -1);
-
-    ret = dmd_video_streamon(dmd_video);
-    assert(ret != -1);
-
-    ret = dmd_image_capture(dmd_video);
-    assert(ret != -1);
-
-    ret = dmd_video_streamoff(dmd_video);
-    assert(ret != -1);
-
-    ret = dmd_video_close(dmd_video);
-    assert(ret != -1);
-
-    dmd_video_release(dmd_video);
-
-    dmd_closelog();
-
-    return 0;
-}
+#endif
