@@ -1,5 +1,5 @@
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = libjpeg src 
+SUBDIRS = libjpeg libx264 src 
 
 prefix=/usr/local

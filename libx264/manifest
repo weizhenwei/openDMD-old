@@ -1,0 +1,34 @@
+The following is the source code file to generate obj file 
+according the Makefile:
+
+common/mc.c
+common/predict.c
+common/pixel.c
+common/macroblock.c
+common/frame.c
+common/dct.c
+common/cpu.c
+common/cabac.c
+common/common.c
+common/osdep.c
+common/rectangle.c
+common/set.c
+common/quant.c
+common/deblock.c
+common/vlc.c
+common/mvpred.c
+common/bitstream.c
+
+encoder/analyse.c
+encoder/me.c
+encoder/ratecontrol.c
+encoder/set.c
+encoder/macroblock.c
+encoder/cabac.c
+encoder/cavlc.c
+encoder/encoder.c
+encoder/lookahead.c
+
+to generate the libx264.a, the following file needed:
+encoder/rdo.c
+encoder/slicetype.c
