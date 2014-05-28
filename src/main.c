@@ -193,7 +193,7 @@ void init(void)
 
     dmd_openlog(DMD_IDENT, DMD_LOGOPT, DMD_FACILITY);
 
-    daemonize();
+    // daemonize();
 }
 
 int main(int argc, char *argv[])

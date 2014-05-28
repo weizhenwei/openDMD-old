@@ -28,58 +28,31 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: dmd_image_capture.h
+ * File: dmd_x264.h
  *
- * Brief: capture image from video device. 
+ * Brief: encode video to h264 format, using libx264.
  *
- * Date: 2014.05.14
+ * Date: 2014.05.28
  *
  * Author: weizhenwei <weizhenwei1988@gmail.com>
  *
  * *****************************************************************************
  */
 
-#ifndef DMD_IMAGE_CAPTURE_H
-#define DMD_IMAGE_CAPTURE_H
+#ifndef DMD_X264_H
+#define DMD_X264_H
 
-#include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
-#include <sys/types.h>
-#include <sys/select.h>
-#include <linux/limits.h>
-#include <unistd.h>
 #include <assert.h>
-#include <string.h>
-#include <time.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <x264.h>
 
 #include "dmd_log.h"
-#include "dmd_x264.h"
-#include "dmd_v4l2_utils.h"
-#include "dmd_image_convert.h"
 
-// from libjpeg library
-#include "jpeglib.h"
-#include "jerror.h"
-
-#define STORE_PATH "/home/wzw/openDMD/"
-#define H264_PATH "/home/wzw/openDMD/openDMD.h264"
-
-unsigned char *referenceYUYV;
-
-// last time we captured an image;
-time_t lasttime;
-unsigned short int counter_in_minute;
-
-char *get_filepath();
-
-int write_jpeg(char *filename, unsigned char *buf, int quality,
-	int width, int height, int gray);
-
-int process_image(void *yuyv, int length, int width, int height);
-
-int read_frame(int fd, struct mmap_buffer *buffers,
-	int width, int height);
-
-int dmd_image_capture(struct v4l2_device_info *v4l2_info);
+// encode Planar YUV420P to H264 foramt using libx264
+int encode_yuv420p(unsigned char *yuv420p, int height, int width, const char *h264file);
 
 #endif

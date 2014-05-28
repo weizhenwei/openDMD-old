@@ -44,7 +44,7 @@
 extern unsigned char *referenceYUYV;
 extern int flag;
 
-/*    YUYV data stream: Y0 U0 Y1 V0 Y2 U1 Y3 V1
+/*    Packed YUYV data stream: Y0 U0 Y1 V0 Y2 U1 Y3 V1
  *    first pixel:  Y0 U0 V0
  *    second pixel: Y1 U0 V0
  *    third pixel:  Y2 U1 V1
@@ -71,7 +71,7 @@ int YUYV422toRGB888(unsigned char *yuyv, int width,
     unsigned int index = 0;
 
     // assert about the length
-    // assert(length == width * height * 2);
+    assert(length == width * height * 2);
 
     py = yuyv;
     pu = yuyv + 1;
@@ -227,3 +227,125 @@ int YUYV422toRGB888INT(unsigned char *yuyv, int width,
         return -1;
     }
 }
+
+// convert packed YUYV422 to planar YUV422P
+int YUYV422toYUV422P(unsigned char *yuyv422, int width,
+	int height, unsigned char *yuv422p, int length)
+{
+    int line, column;
+    unsigned char *py, *pu, *pv;
+    unsigned char *yuyvTemp;
+
+    // assert about the length
+    assert(length == width * height * 2);
+
+    yuyvTemp = yuyv422;
+    py = yuv422p;
+    pu = yuv422p + width * height;
+    pv = yuv422p + (unsigned int)(width * height * 1.5);
+
+    for (line = 0; line < height; line++) {
+        for (column = 0; column < width * 2; column += 4) {
+            *py++ = *yuyvTemp++;
+            *pu++ = *yuyvTemp++;
+            *py++ = *yuyvTemp++;
+            *pv++ = *yuyvTemp++;
+        }
+    }
+
+    assert(pv - pu == width * height * 0.5);
+    assert(pu - yuv422p == width * height * 1.5);
+    assert(pv - yuv422p == width * height * 2);
+    assert(yuyvTemp - yuyv422 == width * height * 2);
+
+    return  0;
+}
+
+// convert planar YUV422P to planar YUV420P
+int YUV422PtoYUV420P(unsigned char *yuv422p, int width,
+	int height, unsigned char *yuv420p, int length)
+{
+    int line, column;
+    unsigned char *py, *pu, *pv;
+    unsigned char *yuyvTemp;
+
+    // assert about the length
+    assert(length == width * height * 1.5);
+
+    yuyvTemp = yuv422p;
+    py = yuv420p;
+    pu = yuv420p + width * height;
+    pv = yuv420p + (unsigned int)(width * height * 1.25);
+
+    for (line = 0; line < height; line += 2) {
+        for (column = 0; column < width; column += 2) {
+            *(py + line * width + column) =
+                *(yuyvTemp + line * width + column);
+            *(py + (line + 1) * width + column) =
+                *(yuyvTemp + (line + 1)* width + column);
+
+            *(py + line * width + column + 1) =
+                *(yuyvTemp + line * width + column + 1);
+            *(py + (line + 1) * width + column + 1) =
+                *(yuyvTemp + (line + 1)* width + column + 1);
+
+            *(pu + width * height + (line / 2) * width + column) =
+                (*(yuyvTemp + width * height + (line / 2) * width + column) +
+                *(yuyvTemp + width * height + (line / 2 + 1) * width + column))
+                / 2;
+
+            *(pv + width * height + (line / 2) * width + column) =
+                (*(yuyvTemp + (unsigned int)(width * height * 1.5) +
+                   (line / 2) * width + column) +
+                 *(yuyvTemp + (unsigned int)(width * height * 1.5) +
+                     (line / 2 + 1) * width + column)) / 2;
+        }
+    }
+
+    return  0;
+
+}
+
+// convert packed YUYV422 to planar YUV420P
+int YUYV422toYUV420P(unsigned char *yuyv422, int width,
+	int height, unsigned char *yuv420p, int length)
+{
+    int i,j;
+    unsigned char *pY = yuv420p;
+    unsigned char *pU = yuv420p + width * height;
+    unsigned char *pV = pU + (width * height) / 4;
+
+    unsigned char *pYUVTemp = yuyv422;
+    unsigned char *pYUVTempNext = yuyv422+width * 2;
+
+    for (i = 0; i < height; i += 2) {
+        for (j = 0; j < width; j += 2) {
+            pY[j] = *pYUVTemp++;
+            pY[j + width] = *pYUVTempNext++;
+
+            pU[j / 2] =(*(pYUVTemp) + *(pYUVTempNext)) / 2;
+
+            pYUVTemp++;
+            pYUVTempNext++;
+
+
+            pY[j + 1] = *pYUVTemp++;
+            pY[j + 1 + width] = *pYUVTempNext++;
+
+
+            pV[j / 2] =(*(pYUVTemp) + *(pYUVTempNext)) / 2;
+
+            pYUVTemp++;
+            pYUVTempNext++;
+        }
+
+        pYUVTemp += width * 2;
+        pYUVTempNext += width * 2;
+        pY += width * 2;
+        pU += width / 2;
+        pV += width / 2;
+    }
+    
+    return 0;
+}
+

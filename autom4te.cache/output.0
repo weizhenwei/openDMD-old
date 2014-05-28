@@ -5091,7 +5091,7 @@ done
 
 
 # set CFLAGS.
-CFLAGS="-Wall -std=gnu99 "
+CFLAGS="-Wall -ggdb3 -std=gnu99 "
 
 # add --enable-debug option.
 @%:@ Check whether --enable-debug was given.

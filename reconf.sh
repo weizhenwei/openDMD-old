@@ -9,4 +9,4 @@ autoconf
 echo "automake ..."
 automake --add-missing
 echo "configure ..."
-./configure
+./configure --enable-debug

@@ -48,7 +48,7 @@ AC_CHECK_FUNCS([atexit bzero ftime gettimeofday memmove memset munmap \
                 strdup strncasecmp strpbrk strspn strstr strtol])
 
 # set CFLAGS.
-CFLAGS="-Wall -std=gnu99 "
+CFLAGS="-Wall -ggdb3 -std=gnu99 "
 
 # add --enable-debug option.
 AC_ARG_ENABLE( [debug], 

@@ -94,7 +94,7 @@ int write_jpeg(char *filename, unsigned char *buf, int quality,
     assert(filename != NULL);
     if ((fp = fopen(filename, "wb")) == NULL) {
         dmd_log(LOG_ERR, "fopen error.\n");
-    return -1;
+        return -1;
     }
 
     cinfo.err = jpeg_std_error(&jerr);
@@ -135,6 +135,8 @@ int process_image(void *yuyv, int length, int width, int height)
     unsigned char *rgb = (unsigned char *)malloc(
         width * height * 3 * sizeof(unsigned char));
     assert(rgb);
+
+    // for diff initialization
     if (referenceYUYV == NULL) {
         dmd_log(LOG_INFO, "referenceYUYV == NULL\n");
         flag = 1;
@@ -143,14 +145,28 @@ int process_image(void *yuyv, int length, int width, int height)
         bzero(referenceYUYV, length * sizeof(unsigned char));
     }
 
+    // convert YUYV422 to RGB888
     ret = YUYV422toRGB888INT((unsigned char *)yuyv, width, height, rgb, length);
     if (ret == 0) {
         filepath = get_filepath();
         ret = write_jpeg(filepath, rgb, 100, width, height, 0);
         assert( ret == 0);
     }
-
     free(rgb);
+
+    // convert Packed YUV422 to Planar YUV420P
+    unsigned char *yuv420p = (unsigned char *)malloc(
+        width * height * 1.5 * sizeof(unsigned char));
+    assert(yuv420p);
+    bzero(yuv420p, width * height * 1.5 * sizeof(unsigned char));
+    ret = YUYV422toYUV420P((unsigned char *)yuyv, width, height, yuv420p, length);
+
+    // and encode Planar YUV420P frame to H264 format, using libx264
+    if (ret == 0) {
+        ret = encode_yuv420p(yuv420p, width, height, H264_PATH);
+        assert(ret == 0);
+    }
+    free(yuv420p);
 
     return 0;
 }
@@ -189,7 +205,7 @@ int dmd_image_capture(struct v4l2_device_info *v4l2_info)
     int width = v4l2_info->width;
     int height = v4l2_info->height;
     struct mmap_buffer *buffers = v4l2_info->buffers;
-    
+
     while (1) {
         for (;;) {
             fd_set fds;

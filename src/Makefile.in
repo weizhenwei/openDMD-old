@@ -48,10 +48,11 @@ PROGRAMS = $(bin_PROGRAMS)
 am_opendmd_OBJECTS = main.$(OBJEXT) dmd_log.$(OBJEXT) \
 	dmd_video.$(OBJEXT) dmd_signal.$(OBJEXT) \
 	dmd_v4l2_utils.$(OBJEXT) dmd_image_convert.$(OBJEXT) \
-	dmd_image_capture.$(OBJEXT)
+	dmd_image_capture.$(OBJEXT) dmd_x264.$(OBJEXT)
 opendmd_OBJECTS = $(am_opendmd_OBJECTS)
 opendmd_DEPENDENCIES = $(top_srcdir)/libjpeg/libjpeg.a \
-	$(top_srcdir)/libx264/libx264.a
+	$(top_srcdir)/libx264/libx264.a \
+	/usr/lib/x86_64-linux-gnu/libm.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -155,14 +156,18 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
 INCLUDES = -I$(top_srcdir)/libjpeg -I$(top_srcdir)/libx264
-opendmd_LDADD = $(top_srcdir)/libjpeg/libjpeg.a $(top_srcdir)/libx264/libx264.a
+opendmd_LDADD = $(top_srcdir)/libjpeg/libjpeg.a \
+				$(top_srcdir)/libx264/libx264.a \
+				/usr/lib/x86_64-linux-gnu/libm.a
+
 opendmd_SOURCES = main.c \
 	       dmd_log.h dmd_log.c \
 	       dmd_video.h dmd_video.c \
 		   dmd_signal.h dmd_signal.c \
 	       dmd_v4l2_utils.h dmd_v4l2_utils.c \
 	       dmd_image_convert.h dmd_image_convert.c \
-	       dmd_image_capture.h dmd_image_capture.c
+	       dmd_image_capture.h dmd_image_capture.c \
+	       dmd_x264.h dmd_x264.c
 
 all: all-am
 
@@ -251,6 +256,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmd_signal.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmd_v4l2_utils.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmd_video.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmd_x264.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 
 .c.o:
