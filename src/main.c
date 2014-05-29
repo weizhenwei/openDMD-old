@@ -62,6 +62,8 @@ extern struct v4l2_device_info *dmd_video;
 extern time_t lasttime;
 extern unsigned short int counter_in_minute;
 
+extern char *h264_filename;
+
 
 void clean(void)
 {
@@ -190,6 +192,9 @@ void init(void)
 
     lasttime = time(&lasttime);
     counter_in_minute = 0;
+
+    h264_filename = get_h264_filepath();
+    assert(h264_filename != NULL);
 
     dmd_openlog(DMD_IDENT, DMD_LOGOPT, DMD_FACILITY);
 

@@ -44,7 +44,7 @@
 extern unsigned char *referenceYUYV;
 int flag = -1;
 
-char *get_filepath()
+char *get_jpeg_filepath()
 {
     time_t now;
     struct tm *tmptr;
@@ -57,7 +57,7 @@ char *get_filepath()
     tmptr = localtime(&now);
     assert(tmptr != NULL);
     sprintf(filepath, "%s%04d%02d%02d%02d%02d%02d-%02d.jpg",
-            STORE_PATH,
+            JPEG_STORE_PATH,
             tmptr->tm_year + 1900,
             tmptr->tm_mon + 1,
             tmptr->tm_mday,
@@ -75,7 +75,34 @@ char *get_filepath()
     }
     lasttime = now;
 
-    dmd_log(LOG_INFO, "filename is: %s\n", filepath);
+    dmd_log(LOG_INFO, "jpeg filename is: %s\n", filepath);
+
+    return filepath;
+}
+
+char *get_h264_filepath()
+{
+    time_t now;
+    struct tm *tmptr;
+    // at linux/limits.h, #define PATH_MAX 4096
+    static char filepath[PATH_MAX];
+
+    now = time(&now);
+    assert(now != -1);
+
+    tmptr = localtime(&now);
+    assert(tmptr != NULL);
+    sprintf(filepath, "%s%04d%02d%02d%02d%02d%02d.h264",
+            H264_STORE_PATH,
+            tmptr->tm_year + 1900,
+            tmptr->tm_mon + 1,
+            tmptr->tm_mday,
+            tmptr->tm_hour,
+            tmptr->tm_min,
+            tmptr->tm_sec);
+    assert(strlen(filepath) < PATH_MAX);
+
+    dmd_log(LOG_INFO, "h264 filename is: %s\n", filepath);
 
     return filepath;
 }
@@ -128,7 +155,8 @@ int write_jpeg(char *filename, unsigned char *buf, int quality,
 int process_image(void *yuyv, int length, int width, int height)
 {
     int ret = -1;
-    char *filepath = NULL;
+    char *jpeg_filepath = NULL;
+    // char *h264_filepath = NULL;
 
     assert(length > 0);
 
@@ -148,8 +176,8 @@ int process_image(void *yuyv, int length, int width, int height)
     // convert YUYV422 to RGB888
     ret = YUYV422toRGB888INT((unsigned char *)yuyv, width, height, rgb, length);
     if (ret == 0) {
-        filepath = get_filepath();
-        ret = write_jpeg(filepath, rgb, 100, width, height, 0);
+        jpeg_filepath = get_jpeg_filepath();
+        ret = write_jpeg(jpeg_filepath, rgb, 100, width, height, 0);
         assert( ret == 0);
     }
     free(rgb);
@@ -163,7 +191,8 @@ int process_image(void *yuyv, int length, int width, int height)
 
     // and encode Planar YUV420P frame to H264 format, using libx264
     if (ret == 0) {
-        ret = encode_yuv420p(yuv420p, width, height, H264_PATH);
+        // h264_filepath = get_h264_filepath();
+        ret = encode_yuv420p(yuv420p, width, height, h264_filename);
         assert(ret == 0);
     }
     free(yuv420p);

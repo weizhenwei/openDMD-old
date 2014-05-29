@@ -61,8 +61,8 @@
 #include "jpeglib.h"
 #include "jerror.h"
 
-#define STORE_PATH "/home/wzw/openDMD/"
-#define H264_PATH "/home/wzw/openDMD/openDMD.h264"
+#define JPEG_STORE_PATH "/home/wzw/openDMD/jpeg/"
+#define H264_STORE_PATH "/home/wzw/openDMD/h264/"
 
 unsigned char *referenceYUYV;
 
@@ -70,7 +70,11 @@ unsigned char *referenceYUYV;
 time_t lasttime;
 unsigned short int counter_in_minute;
 
-char *get_filepath();
+// for x264 encode;
+char *h264_filename;
+
+char *get_jpeg_filepath();
+char *get_h264_filepath();
 
 int write_jpeg(char *filename, unsigned char *buf, int quality,
 	int width, int height, int gray);

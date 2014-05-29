@@ -48,13 +48,13 @@ int encode_yuv420p(unsigned char *yuv420p, int width, int height, const char *h2
     x264_picture_t pic_in, pic_out;
 
     x264_param_t param;
+    // initialize param;
     x264_param_default_preset(&param, "veryfast", "zerolatency");
     param.i_threads = 1;
     param.i_width = width;
     param.i_height = height;
     param.i_fps_num = fps;
     param.i_fps_den = 1;
-
     param.i_keyint_max = 25;
     param.b_intra_refresh = 1;
     param.b_annexb = 1;
@@ -67,7 +67,6 @@ int encode_yuv420p(unsigned char *yuv420p, int width, int height, const char *h2
     pic_in.img.plane[0] = yuv420p;
     pic_in.img.plane[1] = pic_in.img.plane[0] + width * height;
     pic_in.img.plane[2] = pic_in.img.plane[1] + width * height / 4;
-
 
     assert(h264file);
     static int64_t i_pts = 0;
