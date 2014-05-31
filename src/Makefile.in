@@ -45,7 +45,8 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_opendmd_OBJECTS = main.$(OBJEXT) dmd_log.$(OBJEXT) \
+am_opendmd_OBJECTS = main.$(OBJEXT) dmd_config.$(OBJEXT) \
+	dmd_global_context.$(OBJEXT) dmd_log.$(OBJEXT) \
 	dmd_video.$(OBJEXT) dmd_signal.$(OBJEXT) \
 	dmd_v4l2_utils.$(OBJEXT) dmd_image_convert.$(OBJEXT) \
 	dmd_image_capture.$(OBJEXT) dmd_x264.$(OBJEXT)
@@ -161,13 +162,15 @@ opendmd_LDADD = $(top_srcdir)/libjpeg/libjpeg.a \
 				/usr/lib/x86_64-linux-gnu/libm.a
 
 opendmd_SOURCES = main.c \
-	       dmd_log.h dmd_log.c \
-	       dmd_video.h dmd_video.c \
-		   dmd_signal.h dmd_signal.c \
-	       dmd_v4l2_utils.h dmd_v4l2_utils.c \
-	       dmd_image_convert.h dmd_image_convert.c \
-	       dmd_image_capture.h dmd_image_capture.c \
-	       dmd_x264.h dmd_x264.c
+                  dmd_config.h dmd_config.c \
+                  dmd_global_context.h dmd_global_context.c \
+                  dmd_log.h dmd_log.c \
+                  dmd_video.h dmd_video.c \
+                  dmd_signal.h dmd_signal.c \
+                  dmd_v4l2_utils.h dmd_v4l2_utils.c \
+                  dmd_image_convert.h dmd_image_convert.c \
+                  dmd_image_capture.h dmd_image_capture.c \
+                  dmd_x264.h dmd_x264.c
 
 all: all-am
 
@@ -250,6 +253,8 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmd_config.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmd_global_context.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmd_image_capture.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmd_image_convert.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmd_log.Po@am__quote@

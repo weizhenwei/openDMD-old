@@ -54,6 +54,7 @@
 #include "dmd_signal.h"
 #include "dmd_v4l2_utils.h"
 #include "dmd_image_capture.h"
+#include "dmd_global_context.h"
 
 #define PIDFILE "/home/wzw/openDMD/opendmd.pid"
 
@@ -63,6 +64,8 @@ extern time_t lasttime;
 extern unsigned short int counter_in_minute;
 
 extern char *h264_filename;
+extern struct global_context global;
+extern struct global_context default_context;
 
 
 void clean(void)
@@ -197,6 +200,8 @@ void init(void)
     assert(h264_filename != NULL);
 
     dmd_openlog(DMD_IDENT, DMD_LOGOPT, DMD_FACILITY);
+
+    global = default_context;
 
     // daemonize();
 }
