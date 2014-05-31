@@ -77,6 +77,7 @@ struct global_context {
     enum daemon_mode_type daemon_mode; // run in daemon mode;
     enum working_type  working_mode;   // working mode: picture, video or all;
     char *pid_file;                    // main process's pid file;
+    char *cfg_file;                    // config file;
 
     // video device settings;
     char *video_device;        // video device path;

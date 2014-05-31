@@ -42,8 +42,9 @@
 #ifndef DMD_CONF_H
 #define DMD_CONF_H
 
+#include "dmd_log.h"
 #include "dmd_global_context.h"
 
-void dmd_parse_conf(struct global_context global, const char *conf_file);
+void parse_config(const char *conf_file);
 
 #endif

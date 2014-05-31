@@ -42,6 +42,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <getopt.h>
 #include <locale.h>
 #include <signal.h>
 #include <sys/stat.h>
@@ -51,6 +52,7 @@
 
 #include "dmd_log.h"
 #include "dmd_video.h"
+#include "dmd_config.h"
 #include "dmd_signal.h"
 #include "dmd_v4l2_utils.h"
 #include "dmd_image_capture.h"
@@ -68,12 +70,12 @@ extern struct global_context global;
 extern struct global_context default_context;
 
 
-void clean(void)
+static void clean(void)
 {
     dmd_closelog();
 }
 
-void working_progress()
+static void working_progress()
 {
     int ret = -1;
     const char *devpath = DEVICE_PATH;
@@ -102,7 +104,8 @@ void working_progress()
     dmd_video_release(dmd_video);
 }
 
-void daemonize()
+// daemonize the main program;
+static void daemonize()
 {
     pid_t pid;
     int i, fd0, fd1, fd2;
@@ -188,10 +191,14 @@ void daemonize()
 
 }
 
-void init(void)
+static void init(void)
 {
     // signal init;
     signal_init();
+
+    // parse config file;
+    assert(global.cfg_file != NULL);
+    parse_config(global.cfg_file);
 
     lasttime = time(&lasttime);
     counter_in_minute = 0;
@@ -201,15 +208,80 @@ void init(void)
 
     dmd_openlog(DMD_IDENT, DMD_LOGOPT, DMD_FACILITY);
 
-    global = default_context;
+    if (global.daemon_mode == DAEMON_ON) {
+        daemonize();
+    }
+}
 
-    // daemonize();
+static void usage(const char *progname)
+{
+    fprintf(stdout, "Usage:%s [OPTION...]\n", progname);
+    fprintf(stdout, "   -p, --pid-file=FILE,    Use specified pid file\n");  
+    fprintf(stdout, "   -f, --cfg-file=FILE,    Use specified config file\n");  
+    fprintf(stdout, "   -v, --version,          Display the version number\n");  
+    fprintf(stdout, "   -h, --help,             Display this help message\n");  
+}
+
+static int parse_cmdline(int argc, char *argv[])
+{
+    int c;
+    struct option long_options[] = {
+        {"pid-file", required_argument, 0, 'p'},
+        {"cfg-file", required_argument, 0, 'f'},
+        {"version",  no_argument,       0, 'v'},
+        {"help",     no_argument,       0, 'h'},
+        {0, 0, 0, 0},
+    };
+
+    // man 3 getopt_long for more information about getopt_long;
+    while ((c = getopt_long(argc, argv, "p:f:vh", long_options, NULL))
+            != EOF) {
+        switch (c) {
+            case 'v':
+                fprintf(stdout, "%s\n", "opendmd 0.0.1");
+                exit(EXIT_SUCCESS);
+                break;
+            case 'h':
+                usage(argv[0]);
+                exit(EXIT_SUCCESS);
+                break;
+            case 'p':
+                global.pid_file = optarg;
+                break;
+            case 'f':
+                global.cfg_file = optarg;
+                break;
+            default:
+                exit(EXIT_SUCCESS);
+                break;
+        }
+
+    } // while
+
+    if (optind < argc) {
+        fprintf(stderr, "Illegal argument(s): ");
+        while (optind < argc) {
+            fprintf(stderr, "%s ", argv[optind++]);
+            fprintf(stderr, "\n");
+        }
+        exit(EXIT_FAILURE);
+    }
+
+    dmd_log(LOG_INFO, "pid file:%s\n", global.pid_file);
+    dmd_log(LOG_INFO, "cfg file:%s\n", global.cfg_file);
+
+    return 0;
 }
 
 int main(int argc, char *argv[])
 {
-    // set locale according current environment
+    // set locale according current environment;
     setlocale(LC_ALL, "");
+
+    global = default_context;
+
+    // parse command line parameters
+    parse_cmdline(argc, argv);
 
     init();
 

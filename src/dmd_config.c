@@ -41,8 +41,8 @@
 
 #include "dmd_config.h"
 
-void dmd_parse_conf(struct global_context global, const char *conf_file)
+void parse_config(const char *conf_file)
 {
+    dmd_log(LOG_INFO, "config file is:%s\n", conf_file);
     // TODO
-    ;
 }

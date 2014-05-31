@@ -54,6 +54,11 @@ struct global_context default_context = {
 #else
     .pid_file = "/var/run/opendmd/opendmd.pid",
 #endif
+#if defined(DEBUG)
+    .cfg_file = "/home/wzw/opendmd/config/opendmd.cfg",
+#else
+    .cfg_file = "/var/run/opendmd/opendmd.cfg",
+#endif
 
     // video device settings;
     .video_device = "/dev/video0",
