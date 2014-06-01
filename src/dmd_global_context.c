@@ -41,42 +41,61 @@
 
 #include "dmd_global_context.h"
 
-struct global_context default_context = {
+extern struct global_context global;
+
+void init_default_global()
+{
     // global running settings;
 #if defined(DEBUG)
-    .daemon_mode = DAEMON_OFF,
+    global.daemon_mode = DAEMON_OFF;
 #else
-    .daemon_mode = DAEMON_ON,
+    global.daemon_mode = DAEMON_ON;
 #endif
-    .working_mode = CAPTURE_VIDEO,
+
+    global.working_mode = CAPTURE_VIDEO;
+
 #if defined(DEBUG)
-    .pid_file = "/home/wzw/opendmd/opendmd.pid",
+    assert(strlen(DEFAULT_DEBUG_PID_FILE) < PATH_MAX);
+    strncpy(global.pid_file, DEFAULT_DEBUG_PID_FILE,
+            strlen(DEFAULT_DEBUG_PID_FILE));
+
+    assert(strlen(DEFAULT_DEBUG_CFG_FILE) < PATH_MAX);
+    strncpy(global.cfg_file, DEFAULT_DEBUG_CFG_FILE,
+            strlen(DEFAULT_DEBUG_CFG_FILE));
 #else
-    .pid_file = "/var/run/opendmd/opendmd.pid",
-#endif
-#if defined(DEBUG)
-    .cfg_file = "/home/wzw/opendmd/config/opendmd.cfg",
-#else
-    .cfg_file = "/var/run/opendmd/opendmd.cfg",
+    assert(strlen(DEFAULT_RELEASE_PID_FILE) < PATH_MAX);
+    strncpy(global.pid_file, DEFAULT_RELEASE_PID_FILE,
+            strlen(DEFAULT_RELEASE_PID_FILE));
+
+    assert(strlen(DEFAULT_RELEASE_CFG_FILE) < PATH_MAX);
+    strncpy(global.pid_file, DEFAULT_RELEASE_CFG_FILE,
+            strlen(DEFAULT_RELEASE_CFG_FILE));
 #endif
 
     // video device settings;
-    .video_device = "/dev/video0",
-    .image_width = 640,
-    .image_height = 480,
-    .req_count = 5,
+    global.video_device = DEFAULT_VIDEO_DEVICE;
+    global.image_width = DEFAULT_VIDEO_WIDTH;
+    global.image_height = DEFAULT_VIDEO_HEIGHT;
+    global.req_count = DEFAULT_REQCOUNT;
 
     // motion detection threshold settings;
-    .diff_pixels = 3000,
-    .diff_deviation = 20,
+    global.diff_pixels = DEFAULT_DIFF_PIXELS;
+    global.diff_deviation = DEFAULT_DIFF_DEVIATION;
 
     // captured pictures/video storage settings;
-    .picture_format = PICTURE_JPEG,
-    .video_format = VIDEO_H264,
+    global.picture_format = PICTURE_JPEG;
+    global.video_format = VIDEO_H264;
 #if defined(DEBUG)
-    .store_dir = "/home/wzw/opendmd/",
+    assert(strlen(DEFAULT_RELEASE_STORE_DIR) < PATH_MAX);
+    strncpy(global.store_dir, DEFAULT_RELEASE_STORE_DIR,
+            strlen(DEFAULT_RELEASE_STORE_DIR));
 #else
-    .store_dir = "/tmp/opendmd/",
+    assert(strlen(DEFAULT_DEBUG_STORE_DIR) < PATH_MAX);
+    strncpy(global.store_dir, DEFAULT_DEBUG_STORE_DIR,
+            strlen(DEFAULT_DEBUG_STORE_DIR));
 #endif
-};
 
+    dmd_log(LOG_INFO, "default pid file:%s\n", global.pid_file);
+    dmd_log(LOG_INFO, "default cfg file:%s\n", global.cfg_file);
+    dmd_log(LOG_INFO, "default store file:%s\n", global.store_dir);
+}

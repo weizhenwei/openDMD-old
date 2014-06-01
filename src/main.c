@@ -41,6 +41,7 @@
 
 #include <stdio.h>
 #include <fcntl.h>
+#include <assert.h>
 #include <unistd.h>
 #include <getopt.h>
 #include <locale.h>
@@ -49,6 +50,7 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/resource.h>
+#include <linux/limits.h>
 
 #include "dmd_log.h"
 #include "dmd_video.h"
@@ -66,8 +68,8 @@ extern time_t lasttime;
 extern unsigned short int counter_in_minute;
 
 extern char *h264_filename;
+
 extern struct global_context global;
-extern struct global_context default_context;
 
 
 static void clean(void)
@@ -218,6 +220,7 @@ static void usage(const char *progname)
     fprintf(stdout, "Usage:%s [OPTION...]\n", progname);
     fprintf(stdout, "   -p, --pid-file=FILE,    Use specified pid file\n");  
     fprintf(stdout, "   -f, --cfg-file=FILE,    Use specified config file\n");  
+    fprintf(stdout, "   -d, --daemonize,        Run opendmd in daemon mode\n");  
     fprintf(stdout, "   -v, --version,          Display the version number\n");  
     fprintf(stdout, "   -h, --help,             Display this help message\n");  
 }
@@ -228,13 +231,14 @@ static int parse_cmdline(int argc, char *argv[])
     struct option long_options[] = {
         {"pid-file", required_argument, 0, 'p'},
         {"cfg-file", required_argument, 0, 'f'},
+        {"daemonize", no_argument,      0, 'd'},
         {"version",  no_argument,       0, 'v'},
         {"help",     no_argument,       0, 'h'},
         {0, 0, 0, 0},
     };
 
     // man 3 getopt_long for more information about getopt_long;
-    while ((c = getopt_long(argc, argv, "p:f:vh", long_options, NULL))
+    while ((c = getopt_long(argc, argv, "p:f:dvh", long_options, NULL))
             != EOF) {
         switch (c) {
             case 'v':
@@ -245,11 +249,16 @@ static int parse_cmdline(int argc, char *argv[])
                 usage(argv[0]);
                 exit(EXIT_SUCCESS);
                 break;
+            case 'd':
+                global.daemon_mode = DAEMON_ON;
+                break;
             case 'p':
-                global.pid_file = optarg;
+                assert(strlen(optarg) < PATH_MAX);
+                strncpy(global.pid_file, optarg, strlen(optarg));
                 break;
             case 'f':
-                global.cfg_file = optarg;
+                assert(strlen(optarg) < PATH_MAX);
+                strncpy(global.cfg_file, optarg, strlen(optarg));
                 break;
             default:
                 exit(EXIT_SUCCESS);
@@ -278,7 +287,8 @@ int main(int argc, char *argv[])
     // set locale according current environment;
     setlocale(LC_ALL, "");
 
-    global = default_context;
+    // initialize struct global_context global to default value;
+    init_default_global();
 
     // parse command line parameters
     parse_cmdline(argc, argv);

@@ -42,8 +42,33 @@
 #ifndef DMD_GLOBAL_CONTEXT_H
 #define DMD_GLOBAL_CONTEXT_H
 
+#include <assert.h>
+#include <string.h>
+#include <linux/limits.h>
+
+#include "dmd_log.h"
+
+#define DEFAULT_RELEASE_PID_FILE "/var/run/opendmd/opendmd.pid"
+#define DEFAULT_DEBUG_PID_FILE "/home/wzw/opendmd/opendmd.pid"
+
+#define DEFAULT_RELEASE_CFG_FILE "/var/run/opendmd/opendmd.cfg"
+#define DEFAULT_DEBUG_CFG_FILE "/home/wzw/opendmd/opendmd.cfg"
+
+#define DEFAULT_VIDEO_DEVICE "/dev/video0"
+
+
+#define DEFAULT_VIDEO_WIDTH 640
+#define DEFAULT_VIDEO_HEIGHT 480
+#define DEFAULT_REQCOUNT 5
+
+
+#define DEFAULT_DIFF_PIXELS 3000
+#define DEFAULT_DIFF_DEVIATION 20
+
+#define DEFAULT_RELEASE_STORE_DIR "/tmp/opendmd/"
+#define DEFAULT_DEBUG_STORE_DIR "/home/wzw/opendmd/"
+
 struct global_context global;
-struct global_context default_context;
 
 // opendmd run in daemon mode;
 enum daemon_mode_type {
@@ -55,7 +80,7 @@ enum daemon_mode_type {
 enum working_type {
     CAPTURE_PICTURE = 1,
     CAPTURE_VIDEO = 2,
-    CPATURE_ALL = 3,
+    CAPTURE_ALL = 3,
 };
 
 // captured picture format, valid value: bmp, jpeg, png;
@@ -74,26 +99,28 @@ enum video_format_type {
 
 struct global_context {
     // global running settings
-    enum daemon_mode_type daemon_mode; // run in daemon mode;
-    enum working_type  working_mode;   // working mode: picture, video or all;
-    char *pid_file;                    // main process's pid file;
-    char *cfg_file;                    // config file;
+    enum daemon_mode_type daemon_mode;   // run in daemon mode;
+    enum working_type  working_mode;     // working mode: picture, video or all;
+    char pid_file[PATH_MAX];             // main process's pid file;
+    char cfg_file[PATH_MAX];             // config file;
 
     // video device settings;
-    char *video_device;        // video device path;
-    unsigned int image_width;  // image width in pixels; 
-    unsigned int image_height; // image height in pixels; 
-    unsigned int req_count;    // mmap req.count;
+    char *video_device;                  // video device path;
+    unsigned int image_width;            // image width in pixels; 
+    unsigned int image_height;           // image height in pixels; 
+    unsigned int req_count;              // mmap req.count;
 
     // motion detection threshold settings;
-    unsigned int diff_pixels;    // the pixels threshold motion occured.
-    unsigned int diff_deviation; // the deviation pixel allowed.
+    unsigned int diff_pixels;            // the pixels threshold motion occured.
+    unsigned int diff_deviation;         // the deviation pixel allowed.
 
     // captured pictures/video storage settings;
     enum picture_format_type picture_format; // captured picture format.
     enum video_format_type video_format;     // captured video format;
-    char *store_dir;                         // captured pictures/video
+    char store_dir[PATH_MAX];                // captured pictures/video
                                              // storage directory.
 };
+
+void init_default_global();
 
 #endif
