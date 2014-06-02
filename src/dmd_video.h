@@ -44,10 +44,10 @@
 
 #include <strings.h>
 #include <assert.h>
+#include <assert.h>
+#include <string.h>
 #include "dmd_v4l2_utils.h"
-
-#define DEVICE_PATH "/dev/video0"
-#define REQ_COUNT 5
+#include "dmd_global_context.h"
 
 // global variable
 struct v4l2_device_info *dmd_video;

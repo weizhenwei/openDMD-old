@@ -67,8 +67,8 @@
 #define DEFAULT_DIFF_PIXELS 3000
 #define DEFAULT_DIFF_DEVIATION 20
 
-#define DEFAULT_RELEASE_STORE_DIR "/tmp/opendmd/"
-#define DEFAULT_DEBUG_STORE_DIR "/home/wzw/opendmd/"
+#define DEFAULT_RELEASE_STORE_DIR "/tmp/opendmd"
+#define DEFAULT_DEBUG_STORE_DIR "/home/wzw/opendmd"
 
 struct global_context global;
 

@@ -46,6 +46,8 @@
 #include <getopt.h>
 #include <locale.h>
 #include <signal.h>
+#include <string.h>
+#include <errno.h>
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <sys/types.h>
@@ -59,8 +61,6 @@
 #include "dmd_v4l2_utils.h"
 #include "dmd_image_capture.h"
 #include "dmd_global_context.h"
-
-#define PIDFILE "/home/wzw/openDMD/opendmd.pid"
 
 extern struct v4l2_device_info *dmd_video;
 
@@ -80,7 +80,7 @@ static void clean(void)
 static void working_progress()
 {
     int ret = -1;
-    const char *devpath = DEVICE_PATH;
+    const char *devpath = global.video_device;
 
     dmd_video = dmd_video_create(devpath);
     assert(dmd_video != NULL);
@@ -120,13 +120,13 @@ static void daemonize()
 
     // get maximum numbers of file descriptors.
     if (getrlimit(RLIMIT_NOFILE, &r1) == -1) {
-        dmd_log(LOG_ERR, "getrlimit-file limit error.\n");
+        dmd_log(LOG_ERR, "getrlimit-file limit error:%s\n", strerror(errno));
         exit(EXIT_FAILURE);
     }
 
     // fork and parent exits.
     if ((pid = fork()) == -1) {
-        dmd_log(LOG_ERR, "fork error.\n");
+        dmd_log(LOG_ERR, "fork error:%s\n", strerror(errno));
         exit(EXIT_FAILURE);
     } else if (pid > 0) { // parent
         exit(EXIT_SUCCESS);
@@ -136,7 +136,7 @@ static void daemonize()
 
     // become a session leader to lose controlling  TTY.
     if ((pid = setsid()) == -1) {
-        dmd_log(LOG_ERR, "setsid error.\n");
+        dmd_log(LOG_ERR, "setsid error:%s\n", strerror(errno));
         exit(EXIT_FAILURE);
     }
 
@@ -151,7 +151,7 @@ static void daemonize()
 
     // fork again, the grandchild alive since then.
     if ((pid = fork()) == -1) {
-        dmd_log(LOG_ERR, "fork 2 error.\n");
+        dmd_log(LOG_ERR, "fork 2 error:%s\n", strerror(errno));
         exit(EXIT_FAILURE);
     } else if (pid > 0) { // parent
         exit(EXIT_SUCCESS);
@@ -160,7 +160,7 @@ static void daemonize()
     // change the current working directory to the root
     // so we won't prevent file systems from being unmounted.
     if (chdir("/") == -1) {
-        dmd_log(LOG_ERR, "chdir to root error.\n");
+        dmd_log(LOG_ERR, "chdir to / error:%s\n", strerror(errno));
         exit(EXIT_FAILURE);
     }
 
@@ -184,8 +184,8 @@ static void daemonize()
 
     // write pid to file
     pid = getpid();
-    if ((fp = fopen(PIDFILE, "w")) == NULL) {
-        dmd_log(LOG_ERR, "fopen PIDFILE error.\n");
+    if ((fp = fopen(global.pid_file, "w")) == NULL) {
+        dmd_log(LOG_ERR, "fopen pid file error:%s\n", strerror(errno));
         exit(EXIT_FAILURE);
     }
     fprintf(fp, "%d", pid);
@@ -201,7 +201,9 @@ static void init(void)
     // parse config file;
     assert(global.cfg_file != NULL);
     parse_config(global.cfg_file);
+#if defined(DEBUG)
     dump_global_config();
+#endif
 
     lasttime = time(&lasttime);
     counter_in_minute = 0;
@@ -211,6 +213,7 @@ static void init(void)
 
     dmd_openlog(DMD_IDENT, DMD_LOGOPT, DMD_FACILITY);
 
+    // daemonize;
     if (global.daemon_mode == DAEMON_ON) {
         daemonize();
     }
@@ -286,9 +289,6 @@ static int parse_cmdline(int argc, char *argv[])
         }
         exit(EXIT_FAILURE);
     }
-
-    dmd_log(LOG_INFO, "pid file:%s\n", global.pid_file);
-    dmd_log(LOG_INFO, "cfg file:%s\n", global.cfg_file);
 
     return 0;
 }

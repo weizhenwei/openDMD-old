@@ -42,6 +42,8 @@
 #include "dmd_video.h"
 #include "dmd_log.h"
 
+extern struct global_context global;
+
 
 struct v4l2_device_info *dmd_video_create(const char *device_path)
 {
@@ -56,13 +58,13 @@ struct v4l2_device_info *dmd_video_create(const char *device_path)
     bzero(device, sizeof(device));
 
     device->video_device_path = device_path;
-    device->reqbuffer_count = REQ_COUNT;
+    device->reqbuffer_count = global.req_count;
     device->buffers =
         malloc(device->reqbuffer_count * sizeof(struct mmap_buffer));
     assert(device->buffers != NULL);
 
-    device->width = PICTURE_WIDTH;
-    device->height = PICTURE_HEIGHT;
+    device->width = global.image_width;
+    device->height = global.image_height;
 
     return device;
 }
@@ -73,7 +75,7 @@ int dmd_video_open(struct v4l2_device_info *v4l2_info)
     const char *devpath = v4l2_info->video_device_path;
     dmd_log(LOG_INFO, "video device:%s\n", devpath);
     if ((fd = open(devpath, O_RDWR)) == -1) {
-        dmd_log(LOG_ERR, "open video device failded.\n");
+        dmd_log(LOG_ERR, "open video device error:%s\n", strerror(errno));
         return -1;
     }
 
@@ -155,7 +157,7 @@ int dmd_video_streamon(struct v4l2_device_info *v4l2_info)
         
         // requestbuffer to queue
         if ((ret = ioctl(fd, VIDIOC_QBUF, &buf)) == -1) {
-            dmd_log(LOG_ERR, "ioctl VIDIOC_QBUF failed.\n");
+            dmd_log(LOG_ERR, "ioctl VIDIOC_QBUF error:%s\n", strerror(errno));
             return ret;
         }
     }
@@ -163,7 +165,7 @@ int dmd_video_streamon(struct v4l2_device_info *v4l2_info)
     // start stream on, start capture data
     enum v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     if ((ret = ioctl(fd, VIDIOC_STREAMON, &type)) == -1) {
-        dmd_log(LOG_ERR, "ioctl VIDIOC_STREAMON failed.\n");
+        dmd_log(LOG_ERR, "ioctl VIDIOC_STREAMON error:%s\n", strerror(errno));
         return ret;
     }
 
@@ -185,7 +187,7 @@ int dmd_video_streamoff(struct v4l2_device_info *v4l2_info)
     // stop stream off, stop capture
     enum v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     if ((ret = ioctl(fd, VIDIOC_STREAMOFF, &type)) == -1) {
-        dmd_log(LOG_ERR, "ioctl VIDIOC_STREAMOFF failed.\n");
+        dmd_log(LOG_ERR, "ioctl VIDIOC_STREAMOFF error:%s\n", strerror(errno));
         return ret;
     }
 
@@ -194,7 +196,7 @@ int dmd_video_streamoff(struct v4l2_device_info *v4l2_info)
     // munmap
     for (i = 0; i < n_buffer; i++) {
         if ((ret = munmap(buffers[i].start, buffers[i].length)) == -1) {
-            dmd_log(LOG_ERR, "munmap failed.\n");
+            dmd_log(LOG_ERR, "munmap failed:%s\n", strerror(errno));
             return ret;
         }
     }
@@ -205,7 +207,7 @@ int dmd_video_streamoff(struct v4l2_device_info *v4l2_info)
 int dmd_video_close(struct v4l2_device_info *v4l2_info)
 {
     if (close(v4l2_info->video_device_fd) == -1) {
-        dmd_log(LOG_ERR, "close video device failed");
+        dmd_log(LOG_ERR, "close video device error:%s\n", strerror(errno));
         return -1;
     }
 

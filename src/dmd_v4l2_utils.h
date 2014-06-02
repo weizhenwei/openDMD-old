@@ -56,15 +56,13 @@
 #include <malloc.h>
 #include <assert.h>
 #include <errno.h>
+#include <string.h>
 
 #include <sys/select.h>
 #include <time.h>
 
 #include <string.h>
 #include <sys/time.h>
-
-#define PICTURE_WIDTH 640
-#define PICTURE_HEIGHT 480
 
 struct mmap_buffer {
     void *start;

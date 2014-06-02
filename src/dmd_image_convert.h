@@ -47,10 +47,7 @@
 #include <string.h>
 
 #include "dmd_log.h"
-
-#define DIFF 3500
-#define ABSY 20
-#define ABSCbCr 20
+#include "dmd_global_context.h"
 
 // rgb format should be the base for futher convert.
 int YUYV422toRGB888(unsigned char *yuyv, int width,

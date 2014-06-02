@@ -41,6 +41,7 @@
 
 #include "dmd_image_convert.h"
 
+extern struct global_context global;
 extern unsigned char *referenceYUYV;
 extern int flag;
 
@@ -69,6 +70,9 @@ int YUYV422toRGB888(unsigned char *yuyv, int width,
     unsigned int counter = 0;
     unsigned char *ref = referenceYUYV;
     unsigned int index = 0;
+    int DIFF = global.diff_pixels;
+    int ABSY = global.diff_deviation;
+    int ABSCbCr = global.diff_deviation;
 
     // assert about the length
     assert(length == width * height * 2);
@@ -161,6 +165,9 @@ int YUYV422toRGB888INT(unsigned char *yuyv, int width,
     unsigned int counter = 0;
     unsigned char *ref = referenceYUYV;
     unsigned int index = 0;
+    int DIFF = global.diff_pixels;
+    int ABSY = global.diff_deviation;
+    int ABSCbCr = global.diff_deviation;
 
     // assert about the length
     assert(length == width * height * 2);

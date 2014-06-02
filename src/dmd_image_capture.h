@@ -44,25 +44,25 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/select.h>
 #include <linux/limits.h>
 #include <unistd.h>
 #include <assert.h>
 #include <string.h>
+#include <errno.h>
 #include <time.h>
 
 #include "dmd_log.h"
 #include "dmd_x264.h"
 #include "dmd_v4l2_utils.h"
 #include "dmd_image_convert.h"
+#include "dmd_global_context.h"
 
 // from libjpeg library
 #include "jpeglib.h"
 #include "jerror.h"
-
-#define JPEG_STORE_PATH "/home/wzw/openDMD/jpeg/"
-#define H264_STORE_PATH "/home/wzw/openDMD/h264/"
 
 unsigned char *referenceYUYV;
 

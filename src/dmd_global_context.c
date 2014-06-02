@@ -107,16 +107,12 @@ void init_default_global()
             strlen(DEFAULT_RELEASE_STORE_DIR));
     global.store_dir[strlen(DEFAULT_RELEASE_STORE_DIR)] = '\0';
 #endif
-
-    dmd_log(LOG_INFO, "default pid file:%s\n", global.pid_file);
-    dmd_log(LOG_INFO, "default cfg file:%s\n", global.cfg_file);
-    dmd_log(LOG_INFO, "default store file:%s\n", global.store_dir);
 }
 
 void dump_global_config()
 {
     // only dump, no error detect.
-    dmd_log(LOG_INFO, "in %s:\n", __func__);
+    dmd_log(LOG_INFO, "in function %s:\n", __func__);
 
     // basic settings;
     if (global.daemon_mode == DAEMON_ON) {
@@ -126,11 +122,11 @@ void dump_global_config()
     }
 
     if (global.working_mode == CAPTURE_VIDEO) {
-        dmd_log(LOG_INFO, "working_mode: cpature video\n");
+        dmd_log(LOG_INFO, "working_mode: capture video\n");
     } else if (global.working_mode == CAPTURE_PICTURE) {
-        dmd_log(LOG_INFO, "working_mode: cpature picture\n");
+        dmd_log(LOG_INFO, "working_mode: capture picture\n");
     } else if (global.working_mode == CAPTURE_ALL) {
-        dmd_log(LOG_INFO, "working_mode: cpature video and picture\n");
+        dmd_log(LOG_INFO, "working_mode: capture video and picture\n");
     }
 
     dmd_log(LOG_INFO, "pid file:%s\n", global.pid_file);

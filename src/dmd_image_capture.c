@@ -41,8 +41,38 @@
 
 #include "dmd_image_capture.h"
 
+extern struct global_context global;
+
 extern unsigned char *referenceYUYV;
 int flag = -1;
+
+static int test_and_create(const char *path)
+{
+    if (access(path, F_OK) == -1) { // if path didn't exist, mkdir it;
+        if (mkdir(path, 0755) == -1) {
+            dmd_log(LOG_ERR, "mkdir %s error:%s\n", path, strerror(errno));
+            return -1;
+        }
+    } else { // path exists, be sure it is directory;
+        struct stat path_stat;
+        if (stat(path, &path_stat) == -1) {
+            dmd_log(LOG_ERR, "stat error:%s\n", path, strerror(errno));
+            return -1;
+        }
+        if (!S_ISDIR(path_stat.st_mode)) { // first delete, then mkdir;
+            if (unlink(path) == -1) {
+                dmd_log(LOG_ERR, "unlink error:%s", strerror(errno));
+                return -1;
+            }
+            if (mkdir(path, 0755) == -1) {
+                dmd_log(LOG_ERR, "mkdir %s error:%s\n", path, strerror(errno));
+                return -1;
+            }
+        }
+    } // else
+
+    return 0;
+}
 
 char *get_jpeg_filepath()
 {
@@ -50,14 +80,19 @@ char *get_jpeg_filepath()
     struct tm *tmptr;
     // at linux/limits.h, #define PATH_MAX 4096
     static char filepath[PATH_MAX];
+    char storepath[PATH_MAX];
+    strncpy(storepath, global.store_dir, strlen(global.store_dir));
+    storepath[strlen(global.store_dir)] = '\0';
+    strcat(storepath, "/jpeg");
+    assert(test_and_create(storepath) == 0);
 
     now = time(&now);
     assert(now != -1);
 
     tmptr = localtime(&now);
     assert(tmptr != NULL);
-    sprintf(filepath, "%s%04d%02d%02d%02d%02d%02d-%02d.jpg",
-            JPEG_STORE_PATH,
+    sprintf(filepath, "%s/%04d%02d%02d%02d%02d%02d-%02d.jpg",
+            storepath, 
             tmptr->tm_year + 1900,
             tmptr->tm_mon + 1,
             tmptr->tm_mday,
@@ -75,7 +110,8 @@ char *get_jpeg_filepath()
     }
     lasttime = now;
 
-    dmd_log(LOG_INFO, "jpeg filename is: %s\n", filepath);
+    dmd_log(LOG_INFO, "in function %s, jpeg filename is: %s\n",
+            __func__, filepath);
 
     return filepath;
 }
@@ -86,14 +122,19 @@ char *get_h264_filepath()
     struct tm *tmptr;
     // at linux/limits.h, #define PATH_MAX 4096
     static char filepath[PATH_MAX];
+    char storepath[PATH_MAX];
+    strncpy(storepath, global.store_dir, strlen(global.store_dir));
+    storepath[strlen(global.store_dir)] = '\0';
+    strcat(storepath, "/h264");
+    assert(test_and_create(storepath) == 0);
 
     now = time(&now);
     assert(now != -1);
 
     tmptr = localtime(&now);
     assert(tmptr != NULL);
-    sprintf(filepath, "%s%04d%02d%02d%02d%02d%02d.h264",
-            H264_STORE_PATH,
+    sprintf(filepath, "%s/%04d%02d%02d%02d%02d%02d.h264",
+            storepath,
             tmptr->tm_year + 1900,
             tmptr->tm_mon + 1,
             tmptr->tm_mday,
@@ -102,7 +143,8 @@ char *get_h264_filepath()
             tmptr->tm_sec);
     assert(strlen(filepath) < PATH_MAX);
 
-    dmd_log(LOG_INFO, "h264 filename is: %s\n", filepath);
+    dmd_log(LOG_INFO, "in function %s, h264 filename is: %s\n",
+            __func__, filepath);
 
     return filepath;
 }
@@ -119,8 +161,10 @@ int write_jpeg(char *filename, unsigned char *buf, int quality,
     int line_length;
 
     assert(filename != NULL);
+    dmd_log(LOG_INFO, "in function %s, jpeg filename is: %s\n",
+            __func__, filename);
     if ((fp = fopen(filename, "wb")) == NULL) {
-        dmd_log(LOG_ERR, "fopen error.\n");
+        dmd_log(LOG_ERR, "fopen error:%s\n", strerror(errno));
         return -1;
     }
 
@@ -162,40 +206,48 @@ int process_image(void *yuyv, int length, int width, int height)
 
     unsigned char *rgb = (unsigned char *)malloc(
         width * height * 3 * sizeof(unsigned char));
-    assert(rgb);
+    assert(rgb != NULL);
 
     // for diff initialization
     if (referenceYUYV == NULL) {
-        dmd_log(LOG_INFO, "referenceYUYV == NULL\n");
+        dmd_log(LOG_INFO, "in function %s, referenceYUYV == NULL\n", __func__);
         flag = 1;
         referenceYUYV = (unsigned char *)malloc(length * sizeof(unsigned char));
-        assert(referenceYUYV);
+        assert(referenceYUYV != NULL);
         bzero(referenceYUYV, length * sizeof(unsigned char));
     }
 
-    // convert YUYV422 to RGB888
-    ret = YUYV422toRGB888INT((unsigned char *)yuyv, width, height, rgb, length);
-    if (ret == 0) {
-        jpeg_filepath = get_jpeg_filepath();
-        ret = write_jpeg(jpeg_filepath, rgb, 100, width, height, 0);
-        assert( ret == 0);
+    if (global.working_mode == CAPTURE_PICTURE
+            || global.working_mode == CAPTURE_ALL) {
+        // convert YUYV422 to RGB888
+        ret = YUYV422toRGB888INT((unsigned char *)yuyv, width, height,
+                rgb, length);
+        if (ret == 0) {
+            jpeg_filepath = get_jpeg_filepath();
+            ret = write_jpeg(jpeg_filepath, rgb, 100, width, height, 0);
+            assert(ret == 0);
+        }
+        free(rgb);
     }
-    free(rgb);
 
-    // convert Packed YUV422 to Planar YUV420P
-    unsigned char *yuv420p = (unsigned char *)malloc(
-        width * height * 1.5 * sizeof(unsigned char));
-    assert(yuv420p);
-    bzero(yuv420p, width * height * 1.5 * sizeof(unsigned char));
-    ret = YUYV422toYUV420P((unsigned char *)yuyv, width, height, yuv420p, length);
+    if (global.working_mode == CAPTURE_VIDEO
+            || global.working_mode == CAPTURE_ALL) {
+        // convert Packed YUV422 to Planar YUV420P
+        unsigned char *yuv420p = (unsigned char *)malloc(
+            width * height * 1.5 * sizeof(unsigned char));
+        assert(yuv420p != NULL);
+        bzero(yuv420p, width * height * 1.5 * sizeof(unsigned char));
+        ret = YUYV422toYUV420P((unsigned char *)yuyv, width, height,
+                yuv420p, length);
 
-    // and encode Planar YUV420P frame to H264 format, using libx264
-    if (ret == 0) {
-        // h264_filepath = get_h264_filepath();
-        ret = encode_yuv420p(yuv420p, width, height, h264_filename);
-        assert(ret == 0);
+        // and encode Planar YUV420P frame to H264 format, using libx264
+        if (ret == 0) {
+            // h264_filepath = get_h264_filepath();
+            ret = encode_yuv420p(yuv420p, width, height, h264_filename);
+            assert(ret == 0);
+        }
+        free(yuv420p);
     }
-    free(yuv420p);
 
     return 0;
 }
@@ -210,7 +262,7 @@ int read_frame(int fd, struct mmap_buffer *buffers, int width, int height)
     buf.memory = V4L2_MEMORY_MMAP;
 
     if ((ret = ioctl(fd, VIDIOC_DQBUF, &buf)) == -1) {
-        dmd_log(LOG_ERR, "ioctl VIDIOC_DQBUF failed.\n");
+        dmd_log(LOG_ERR, "ioctl VIDIOC_DQBUF error:%s\n", strerror(errno));
         return ret;
     }
 
@@ -220,7 +272,7 @@ int read_frame(int fd, struct mmap_buffer *buffers, int width, int height)
 
     // put buf back to queue
     if ((ret = ioctl(fd, VIDIOC_QBUF, &buf)) == -1) {
-        dmd_log(LOG_ERR, "ioctl VIDIOC_QBUF failed.\n");
+        dmd_log(LOG_ERR, "ioctl VIDIOC_QBUF error:%s\n", strerror(errno));
         return ret;
     }
 

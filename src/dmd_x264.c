@@ -77,7 +77,7 @@ int encode_yuv420p(unsigned char *yuv420p, int width, int height, const char *h2
     x264_nal_t *nal;
     FILE *h264fp = NULL;
     if ((h264fp = fopen(h264file, "ab+")) == NULL) {
-        dmd_log(LOG_ERR, "fopen h264 path error.\n");
+        dmd_log(LOG_ERR, "fopen h264 path error:%s\n", strerror(errno));
         return -1;
     }
     for (nal = nals; nal < nals + nnal; nal++) {
@@ -85,7 +85,7 @@ int encode_yuv420p(unsigned char *yuv420p, int width, int height, const char *h2
                 nal->i_payload, h264fp);
         dmd_log(LOG_INFO, "write to h264 length:%d\n", len);
         if ( len != nal->i_payload) {
-            dmd_log(LOG_ERR, "write to h264 error.\n");
+            dmd_log(LOG_ERR, "write to h264 error:%s\n", strerror(errno));
             return -1;
         }
     }
