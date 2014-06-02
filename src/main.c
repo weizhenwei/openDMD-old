@@ -201,6 +201,7 @@ static void init(void)
     // parse config file;
     assert(global.cfg_file != NULL);
     parse_config(global.cfg_file);
+    dump_global_config();
 
     lasttime = time(&lasttime);
     counter_in_minute = 0;
@@ -255,10 +256,20 @@ static int parse_cmdline(int argc, char *argv[])
             case 'p':
                 assert(strlen(optarg) < PATH_MAX);
                 strncpy(global.pid_file, optarg, strlen(optarg));
+                /* Warning:If there is no null byte among the first n bytes of
+                 * src, the string placed in dest will not be null-terminated,
+                 * remember add null-terminated manually.
+                 */
+                global.pid_file[strlen(optarg)] = '\0';
                 break;
             case 'f':
                 assert(strlen(optarg) < PATH_MAX);
                 strncpy(global.cfg_file, optarg, strlen(optarg));
+                /* Warning:If there is no null byte among the first n bytes of
+                 * src, the string placed in dest will not be null-terminated,
+                 * remember add null-terminated manually.
+                 */
+                global.cfg_file[strlen(optarg)] = '\0';
                 break;
             default:
                 exit(EXIT_SUCCESS);

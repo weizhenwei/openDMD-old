@@ -42,6 +42,13 @@
 #ifndef DMD_CONF_H
 #define DMD_CONF_H
 
+#include <stdlib.h>
+#include <assert.h>
+#include <string.h>
+
+// use libccl to parse config file;
+#include <ccl.h>
+
 #include "dmd_log.h"
 #include "dmd_global_context.h"
 

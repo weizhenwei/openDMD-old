@@ -49,10 +49,12 @@
 #include "dmd_log.h"
 
 #define DEFAULT_RELEASE_PID_FILE "/var/run/opendmd/opendmd.pid"
-#define DEFAULT_DEBUG_PID_FILE "/home/wzw/opendmd/opendmd.pid"
+// #define DEFAULT_DEBUG_PID_FILE "/home/wzw/opendmd/opendmd.pid"
+#define DEFAULT_DEBUG_PID_FILE "opendmd.pid"
 
 #define DEFAULT_RELEASE_CFG_FILE "/var/run/opendmd/opendmd.cfg"
-#define DEFAULT_DEBUG_CFG_FILE "/home/wzw/opendmd/opendmd.cfg"
+// #define DEFAULT_DEBUG_CFG_FILE "/home/wzw/opendmd/opendmd.cfg"
+#define DEFAULT_DEBUG_CFG_FILE "config/opendmd.cfg"
 
 #define DEFAULT_VIDEO_DEVICE "/dev/video0"
 
@@ -105,7 +107,7 @@ struct global_context {
     char cfg_file[PATH_MAX];             // config file;
 
     // video device settings;
-    char *video_device;                  // video device path;
+    char video_device[PATH_MAX];         // video device path;
     unsigned int image_width;            // image width in pixels; 
     unsigned int image_height;           // image height in pixels; 
     unsigned int req_count;              // mmap req.count;
@@ -122,5 +124,7 @@ struct global_context {
 };
 
 void init_default_global();
+
+void dump_global_config();
 
 #endif

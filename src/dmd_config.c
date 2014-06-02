@@ -43,6 +43,100 @@
 
 void parse_config(const char *conf_file)
 {
-    dmd_log(LOG_INFO, "config file is:%s\n", conf_file);
-    // TODO
+    struct ccl_t config;
+    const struct ccl_pair_t *iter;
+
+    // set config parsing control character;
+    config.comment_char = '#';
+    config.sep_char = ' ';
+    config.str_char = '"';
+
+    dmd_log(LOG_INFO, "in %s: config file is %s\n", __func__, conf_file);
+
+    // parse the config file;
+    ccl_parse(&config, conf_file);
+
+    // key/value pairs is sorted in ascending order according to key.
+    while ((iter = ccl_iterate(&config)) != 0) {
+        dmd_log(LOG_INFO, "key: %s, value: %s\n", iter->key, iter->value);
+
+        if (strcmp(iter->key, "daemon_mode") == 0) {
+            if (strcmp(iter->value, "on") == 0) {
+                global.daemon_mode = DAEMON_ON;
+            } else if (strcmp(iter->value, "off") == 0) {
+                global.daemon_mode = DAEMON_OFF;
+            } else {
+                dmd_log(LOG_ERR, "invalid value of daemon_mode\n");
+            }
+        } else if (strcmp(iter->key, "pid_file") == 0) {
+            assert(strlen(iter->value) < PATH_MAX);
+            strncpy(global.pid_file, iter->value, strlen(iter->value));
+            /* Warning:If there is no null byte among the first n bytes of
+             * src, the string placed in dest will not be null-terminated,
+             * remember add null-terminated manually.
+             */
+            global.pid_file[strlen(iter->value)] = '\0';
+        } else if (strcmp(iter->key, "working_mode") == 0) {
+            if (strcmp(iter->value, "picture") == 0) {
+                global.working_mode = CAPTURE_PICTURE;
+            } else if (strcmp(iter->value, "video") == 0) {
+                global.working_mode = CAPTURE_VIDEO;
+            } else if (strcmp(iter->value, "all") == 0) {
+                global.working_mode = CAPTURE_ALL;
+            } else {
+                dmd_log(LOG_ERR, "invalid value of working_mode\n");
+            }
+        } else if (strcmp(iter->key, "video_device") == 0) {
+            assert(strlen(iter->value) < PATH_MAX);
+            strncpy(global.video_device, iter->value, strlen(iter->value));
+            /* Warning:If there is no null byte among the first n bytes of
+             * src, the string placed in dest will not be null-terminated,
+             * remember add null-terminated manually.
+             */
+            global.video_device[strlen(iter->value)] = '\0';
+        } else if (strcmp(iter->key, "image_width") == 0) {
+            // Waring: there is no error detection in atoi();
+            global.image_width = atoi(iter->value);
+        } else if (strcmp(iter->key, "image_height") == 0) {
+            // Waring: there is no error detection in atoi();
+            global.image_height = atoi(iter->value);
+        } else if (strcmp(iter->key, "req_count") == 0) {
+            // Waring: there is no error detection in atoi();
+            global.req_count = atoi(iter->value);
+        } else if (strcmp(iter->key, "diff_pixels") == 0) {
+            // Waring: there is no error detection in atoi();
+            global.diff_pixels = atoi(iter->value);
+        } else if (strcmp(iter->key, "diff_deviation") == 0) {
+            // Waring: there is no error detection in atoi();
+            global.diff_deviation = atoi(iter->value);
+        } else if (strcmp(iter->key, "picture_format") == 0) {
+            if (strcmp(iter->value, "bmp") == 0) {
+                global.picture_format = PICTURE_BMP;
+            } else if (strcmp(iter->value, "png") == 0) {
+                global.picture_format = PICTURE_PNG;
+            } else if (strcmp(iter->value, "jpeg") == 0) {
+                global.picture_format = PICTURE_JPEG;
+            } else {
+                dmd_log(LOG_ERR, "invalid value of picture_format\n");
+            }
+        } else if (strcmp(iter->key, "video_format") == 0) {
+            if (strcmp(iter->value, "h264") == 0) {
+                global.video_format = VIDEO_H264;
+            } else {
+                dmd_log(LOG_ERR, "invalid value of video_format\n");
+            }
+        } else if (strcmp(iter->key, "store_dir") == 0) {
+            assert(strlen(iter->value) < PATH_MAX);
+            strncpy(global.store_dir, iter->value, strlen(iter->value));
+            /* Warning:If there is no null byte among the first n bytes of
+             * src, the string placed in dest will not be null-terminated,
+             * remember add null-terminated manually.
+             */
+            global.store_dir[strlen(iter->value)] = '\0';
+        } else {
+            dmd_log(LOG_ERR, "unsupported parameter:%s \n", iter->key);
+        }
+    } // while
+
+    ccl_release(&config);
 }
