@@ -36,3 +36,4 @@ libx264_a_LIBADD = common/mc.o \
 				   encoder/encoder.o \
 				   encoder/lookahead.o
 
+include_HEADERS = x264.h

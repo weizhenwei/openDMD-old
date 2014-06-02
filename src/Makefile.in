@@ -51,7 +51,8 @@ am_opendmd_OBJECTS = main.$(OBJEXT) dmd_config.$(OBJEXT) \
 	dmd_v4l2_utils.$(OBJEXT) dmd_image_convert.$(OBJEXT) \
 	dmd_image_capture.$(OBJEXT) dmd_x264.$(OBJEXT)
 opendmd_OBJECTS = $(am_opendmd_OBJECTS)
-opendmd_DEPENDENCIES = $(top_srcdir)/libjpeg/libjpeg.a \
+opendmd_DEPENDENCIES = $(top_srcdir)/libccl/libccl.a \
+	$(top_srcdir)/libjpeg/libjpeg.a \
 	$(top_srcdir)/libx264/libx264.a \
 	/usr/lib/x86_64-linux-gnu/libm.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -156,8 +157,9 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
-INCLUDES = -I$(top_srcdir)/libjpeg -I$(top_srcdir)/libx264
-opendmd_LDADD = $(top_srcdir)/libjpeg/libjpeg.a \
+INCLUDES = -I$(top_srcdir)/libccl -I$(top_srcdir)/libjpeg -I$(top_srcdir)/libx264 
+opendmd_LDADD = $(top_srcdir)/libccl/libccl.a \
+				$(top_srcdir)/libjpeg/libjpeg.a \
 				$(top_srcdir)/libx264/libx264.a \
 				/usr/lib/x86_64-linux-gnu/libm.a
 

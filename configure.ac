@@ -22,8 +22,9 @@ AC_DEFINE(HAVE_INTERLACED, 0, [interlaced scan(no)])
 
 # Checks for header files.
 AC_CHECK_HEADERS([fcntl.h inttypes.h limits.h locale.h malloc.h \
-                  stddef.h stdlib.h string.h strings.h sys/ioctl.h \
-                  sys/param.h sys/time.h sys/timeb.h syslog.h unistd.h])
+                  stddef.h stdint.h stdlib.h string.h strings.h \
+                  sys/ioctl.h sys/param.h sys/time.h sys/timeb.h \
+                  syslog.h unistd.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_INLINE
@@ -39,9 +40,10 @@ AC_TYPE_UINT64_T
 AC_TYPE_UINT8_T
 
 # Checks for library functions.
-AC_FUNC_MMAP
 AC_FUNC_FORK
 AC_FUNC_MALLOC
+AC_FUNC_MMAP
+AC_FUNC_REALLOC
 AC_FUNC_STRTOD
 AC_CHECK_FUNCS([atexit bzero ftime gettimeofday memmove memset munmap \
                 pow select setlocale sqrt strcasecmp strchr strcspn \
@@ -64,6 +66,7 @@ AS_IF([test "x$enable_debug" = "xyes"], [CFLAGS+="-DDEBUG "],
 
 #Attention: this is import, list the Makefile need to generate
 AC_CONFIG_FILES([Makefile
+                 libccl/Makefile
                  libjpeg/Makefile
                  libx264/Makefile
                  libx264/common/Makefile
