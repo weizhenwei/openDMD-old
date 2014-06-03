@@ -42,6 +42,7 @@
 #ifndef DMD_GLOBAL_CONTEXT_H
 #define DMD_GLOBAL_CONTEXT_H
 
+#include <time.h>
 #include <assert.h>
 #include <string.h>
 #include <linux/limits.h>
@@ -113,8 +114,11 @@ struct global_context {
     unsigned int req_count;              // mmap req.count;
 
     // motion detection threshold settings;
-    unsigned int diff_pixels;            // the pixels threshold motion occured.
-    unsigned int diff_deviation;         // the deviation pixel allowed.
+    unsigned int diff_pixels;            // the pixels threshold motion occured;
+    unsigned int diff_deviation;         // the deviation pixel allowed;
+    time_t lasttime;                     // last time the motion detected;
+    unsigned int counter_in_second;      // the movments detected in a second,
+                                         // used for picture capturing;
 
     // captured pictures/video storage settings;
     enum picture_format_type picture_format; // captured picture format.

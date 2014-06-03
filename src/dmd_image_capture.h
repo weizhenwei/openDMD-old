@@ -66,10 +66,6 @@
 
 unsigned char *referenceYUYV;
 
-// last time we captured an image;
-time_t lasttime;
-unsigned short int counter_in_minute;
-
 // for x264 encode;
 char *h264_filename;
 

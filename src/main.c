@@ -64,9 +64,6 @@
 
 extern struct v4l2_device_info *dmd_video;
 
-extern time_t lasttime;
-extern unsigned short int counter_in_minute;
-
 extern char *h264_filename;
 
 extern struct global_context global;
@@ -204,9 +201,6 @@ static void init(void)
 #if defined(DEBUG)
     dump_global_config();
 #endif
-
-    lasttime = time(&lasttime);
-    counter_in_minute = 0;
 
     h264_filename = get_h264_filepath();
     assert(h264_filename != NULL);

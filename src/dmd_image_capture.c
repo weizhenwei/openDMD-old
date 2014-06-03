@@ -99,16 +99,16 @@ char *get_jpeg_filepath()
             tmptr->tm_hour,
             tmptr->tm_min,
             tmptr->tm_sec,
-            counter_in_minute);
+            global.counter_in_second);
 
     assert(strlen(filepath) < PATH_MAX);
 
-    if (lasttime == now) {
-        counter_in_minute++;
+    if (global.lasttime == now) {
+        global.counter_in_second++;
     } else {
-        counter_in_minute = 0;
+        global.counter_in_second = 0;
     }
-    lasttime = now;
+    global.lasttime = now;
 
     dmd_log(LOG_INFO, "in function %s, jpeg filename is: %s\n",
             __func__, filepath);

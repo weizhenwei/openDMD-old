@@ -92,6 +92,9 @@ void init_default_global()
     // motion detection threshold settings;
     global.diff_pixels = DEFAULT_DIFF_PIXELS;
     global.diff_deviation = DEFAULT_DIFF_DEVIATION;
+    global.lasttime = time(&global.lasttime);
+    assert(global.lasttime != -1);
+    global.counter_in_second = 0;
 
     // captured picture/video storage settings;
     global.picture_format = PICTURE_JPEG;
