@@ -45,6 +45,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
+#include <strings.h>
 
 // use libccl to parse config file;
 #include <ccl.h>

@@ -109,6 +109,9 @@ void parse_config(const char *conf_file)
         } else if (strcmp(iter->key, "diff_deviation") == 0) {
             // Waring: there is no error detection in atoi();
             global.diff_deviation = atoi(iter->value);
+        } else if (strcmp(iter->key, "video_duration") == 0) {
+            // Waring: there is no error detection in atoi();
+            global.video_duration = atoi(iter->value);
         } else if (strcmp(iter->key, "picture_format") == 0) {
             if (strcmp(iter->value, "bmp") == 0) {
                 global.picture_format = PICTURE_BMP;
@@ -137,6 +140,17 @@ void parse_config(const char *conf_file)
             dmd_log(LOG_ERR, "unsupported parameter:%s \n", iter->key);
         }
     } // while
+
+    // after image_width and image_height set again,
+    // referenceYUYV422 is reset;
+    if (global.referenceYUYV422 != NULL) {
+        free(global.referenceYUYV422);
+    }
+    int length = global.image_width * global.image_height * 2;
+    global.referenceYUYV422 = (unsigned char *)malloc(
+            length * sizeof(unsigned char));
+    assert(global.referenceYUYV422 != NULL);
+    bzero(global.referenceYUYV422, length * sizeof(unsigned char));
 
     ccl_release(&config);
 }

@@ -41,10 +41,13 @@
 
 #include "dmd_image_capture.h"
 
-// declare global variable referenceYUYV and flag;
-unsigned char *referenceYUYV = NULL;
-int flag = -1;
-char *h264_filename = NULL;
+// switch on-off for controlling video capturing status;
+enum video_capturing_type {
+    VIDEO_CAPTURING_ON = 1,
+    VIDEO_CAPTURING_OFF = 2,
+};
+
+static enum video_capturing_type video_capturing_switch = VIDEO_CAPTURING_OFF;
 
 static int test_and_create(const char *path)
 {
@@ -108,7 +111,6 @@ char *get_jpeg_filepath()
     } else {
         global.counter_in_second = 0;
     }
-    global.lasttime = now;
 
     dmd_log(LOG_INFO, "in function %s, jpeg filename is: %s\n",
             __func__, filepath);
@@ -200,53 +202,75 @@ int process_image(void *yuyv, int length, int width, int height)
 {
     int ret = -1;
     char *jpeg_filepath = NULL;
-    // char *h264_filepath = NULL;
 
-    assert(length > 0);
+    // may use more than once before refreshed, so make it static;
+    static char *h264_filepath = NULL;
+    time_t now;
+
+    assert(length == width * height * 2);
 
     unsigned char *rgb = (unsigned char *)malloc(
         width * height * 3 * sizeof(unsigned char));
     assert(rgb != NULL);
 
-    // for diff initialization
-    if (referenceYUYV == NULL) {
-        dmd_log(LOG_INFO, "in function %s, referenceYUYV == NULL\n", __func__);
-        flag = 1;
-        referenceYUYV = (unsigned char *)malloc(length * sizeof(unsigned char));
-        assert(referenceYUYV != NULL);
-        bzero(referenceYUYV, length * sizeof(unsigned char));
-    }
+    // convert YUYV422 to RGB888
+    ret = YUYV422toRGB888INT((unsigned char *)yuyv, width, height,
+            rgb, length);
 
-    if (global.working_mode == CAPTURE_PICTURE
-            || global.working_mode == CAPTURE_ALL) {
-        // convert YUYV422 to RGB888
-        ret = YUYV422toRGB888INT((unsigned char *)yuyv, width, height,
-                rgb, length);
-        if (ret == 0) {
+    if (ret == 0) { // a motion detected!
+        // refresh the time last motion detected;
+        global.lasttime = now;
+
+        // optional capture picture;
+        if (global.working_mode == CAPTURE_PICTURE
+                || global.working_mode == CAPTURE_ALL) {
             jpeg_filepath = get_jpeg_filepath();
             ret = write_jpeg(jpeg_filepath, rgb, 100, width, height, 0);
             assert(ret == 0);
+            free(rgb);
+            // Warning: rgb = NULL is necessary.
+            rgb = NULL;
         }
-        free(rgb);
+
+        // optional capture video;
+        if (global.working_mode == CAPTURE_VIDEO
+                || global.working_mode == CAPTURE_ALL) {
+            if (video_capturing_switch == VIDEO_CAPTURING_OFF) {
+                // switch on video capturing state and refresh h264 filename;
+                video_capturing_switch = VIDEO_CAPTURING_ON;
+                h264_filepath = get_h264_filepath();
+                assert(h264_filepath != NULL);
+            }
+
+            // convert Packed YUV422 to Planar YUV420P
+            unsigned char *yuv420p = (unsigned char *)malloc(
+                width * height * 1.5 * sizeof(unsigned char));
+            assert(yuv420p != NULL);
+            bzero(yuv420p, width * height * 1.5 * sizeof(unsigned char));
+            ret = YUYV422toYUV420P((unsigned char *)yuyv, width, height,
+                    yuv420p, length);
+
+            // and encode Planar YUV420P frame to H264 format, using libx264
+            ret = encode_yuv420p(yuv420p, width, height, h264_filepath);
+            assert(ret == 0);
+            free(yuv420p);
+        }
+
+    } else { // check time elapsed exceeds global.video_duration;
+        now = time(&now);
+        assert(now != -1);
+
+        // switch off when time elasped exceeds global.video_duration;
+        if (now - global.lasttime >= global.video_duration) {
+            video_capturing_switch = VIDEO_CAPTURING_OFF;
+        }
     }
 
-    if (global.working_mode == CAPTURE_VIDEO
-            || global.working_mode == CAPTURE_ALL) {
-        // convert Packed YUV422 to Planar YUV420P
-        unsigned char *yuv420p = (unsigned char *)malloc(
-            width * height * 1.5 * sizeof(unsigned char));
-        assert(yuv420p != NULL);
-        bzero(yuv420p, width * height * 1.5 * sizeof(unsigned char));
-        ret = YUYV422toYUV420P((unsigned char *)yuyv, width, height,
-                yuv420p, length);
-
-        // and encode Planar YUV420P frame to H264 format, using libx264
-        if (ret == 0) {
-            // h264_filepath = get_h264_filepath();
-            ret = encode_yuv420p(yuv420p, width, height, h264_filename);
-            assert(ret == 0);
-        }
-        free(yuv420p);
+    // if no motion occured, or capture video only,
+    // rgb is not released at this moment, so free it;
+    // TODO: after free a pointer, why it is till NON-NULL?
+    if (rgb != NULL) {
+        free(rgb);
     }
 
     return 0;
@@ -267,6 +291,7 @@ int read_frame(int fd, struct mmap_buffer *buffers, int width, int height)
     }
 
     // read process space's data to a file
+    assert(buffers[buf.index].length == width * height * 2);
     process_image(buffers[buf.index].start,
         buffers[buf.index].length, width, height);
 

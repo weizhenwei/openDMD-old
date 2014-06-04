@@ -45,9 +45,9 @@ AC_FUNC_MALLOC
 AC_FUNC_MMAP
 AC_FUNC_REALLOC
 AC_FUNC_STRTOD
-AC_CHECK_FUNCS([atexit bzero ftime gettimeofday memmove memset munmap \
-                pow select setlocale sqrt strcasecmp strchr strcspn \
-                strdup strncasecmp strpbrk strspn strstr strtol])
+AC_CHECK_FUNCS([atexit bzero ftime gettimeofday memmove memset mkdir munmap \
+                pow select setlocale sqrt strcasecmp strchr strcspn strdup \
+                strerror strncasecmp strpbrk strspn strstr strtol])
 
 # set CFLAGS.
 CFLAGS="-Wall -ggdb3 -std=gnu99 "

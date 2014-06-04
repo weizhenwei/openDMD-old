@@ -1,5 +1,15 @@
 2014.06.03 weizhenwei <weizhenwei1988@gmail.com>
     Urgent:
+        set appropriate parameter on libx264 to encode h264 file perfect,
+    At present, the fps seems to be too fast.
+    Second:
+        investigate RTP protocol and usable open source library.
+    Thrid:
+        The first captured image seems have some problem, solve it;
+
+
+2014.06.03 weizhenwei <weizhenwei1988@gmail.com>
+    Urgent:
         find a good mechanism on how to name a h264 file,
     and when to start and stop capturing video;
     Second:

@@ -44,7 +44,9 @@
 
 #include <time.h>
 #include <assert.h>
+#include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include <linux/limits.h>
 
 #include "dmd_log.h"
@@ -120,6 +122,10 @@ struct global_context {
     time_t lasttime;                     // last time the motion detected;
     unsigned int counter_in_second;      // the movments detected in a second,
                                          // used for picture capturing;
+    unsigned int video_duration;         // time elapsed when last motion detected
+                                         // before video capturing stoped;
+                                         // (in seconds);
+    unsigned char *referenceYUYV422;     // reference picture when detect motion;
 
     // captured pictures/video storage settings;
     enum picture_format_type picture_format; // captured picture format.

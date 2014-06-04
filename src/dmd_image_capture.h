@@ -64,11 +64,6 @@
 #include "jpeglib.h"
 #include "jerror.h"
 
-// define global referenceYUYV;
-extern unsigned char *referenceYUYV;
-extern int flag;
-// for x264 encode;
-extern char *h264_filename;
 
 extern char *get_jpeg_filepath();
 extern char *get_h264_filepath();

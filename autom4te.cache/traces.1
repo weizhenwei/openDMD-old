@@ -572,9 +572,9 @@ m4trace:configure.ac:47: -1- AC_SUBST([LIB@&t@OBJS], ["$LIB@&t@OBJS strtod.$ac_o
 m4trace:configure.ac:47: -1- AC_SUBST_TRACE([LIB@&t@OBJS])
 m4trace:configure.ac:47: -1- m4_pattern_allow([^LIB@&t@OBJS$])
 m4trace:configure.ac:47: -1- AC_LIBSOURCE([strtod.c])
-m4trace:configure.ac:48: -1- AC_CHECK_FUNCS([atexit bzero ftime gettimeofday memmove memset munmap \
-                pow select setlocale sqrt strcasecmp strchr strcspn \
-                strdup strncasecmp strpbrk strspn strstr strtol])
+m4trace:configure.ac:48: -1- AC_CHECK_FUNCS([atexit bzero ftime gettimeofday memmove memset mkdir munmap \
+                pow select setlocale sqrt strcasecmp strchr strcspn strdup \
+                strerror strncasecmp strpbrk strspn strstr strtol])
 m4trace:configure.ac:48: -1- AH_OUTPUT([HAVE_ATEXIT], [/* Define to 1 if you have the `atexit\' function. */
 @%:@undef HAVE_ATEXIT])
 m4trace:configure.ac:48: -1- AH_OUTPUT([HAVE_BZERO], [/* Define to 1 if you have the `bzero\' function. */
@@ -587,6 +587,8 @@ m4trace:configure.ac:48: -1- AH_OUTPUT([HAVE_MEMMOVE], [/* Define to 1 if you ha
 @%:@undef HAVE_MEMMOVE])
 m4trace:configure.ac:48: -1- AH_OUTPUT([HAVE_MEMSET], [/* Define to 1 if you have the `memset\' function. */
 @%:@undef HAVE_MEMSET])
+m4trace:configure.ac:48: -1- AH_OUTPUT([HAVE_MKDIR], [/* Define to 1 if you have the `mkdir\' function. */
+@%:@undef HAVE_MKDIR])
 m4trace:configure.ac:48: -1- AH_OUTPUT([HAVE_MUNMAP], [/* Define to 1 if you have the `munmap\' function. */
 @%:@undef HAVE_MUNMAP])
 m4trace:configure.ac:48: -1- AH_OUTPUT([HAVE_POW], [/* Define to 1 if you have the `pow\' function. */
@@ -605,6 +607,8 @@ m4trace:configure.ac:48: -1- AH_OUTPUT([HAVE_STRCSPN], [/* Define to 1 if you ha
 @%:@undef HAVE_STRCSPN])
 m4trace:configure.ac:48: -1- AH_OUTPUT([HAVE_STRDUP], [/* Define to 1 if you have the `strdup\' function. */
 @%:@undef HAVE_STRDUP])
+m4trace:configure.ac:48: -1- AH_OUTPUT([HAVE_STRERROR], [/* Define to 1 if you have the `strerror\' function. */
+@%:@undef HAVE_STRERROR])
 m4trace:configure.ac:48: -1- AH_OUTPUT([HAVE_STRNCASECMP], [/* Define to 1 if you have the `strncasecmp\' function. */
 @%:@undef HAVE_STRNCASECMP])
 m4trace:configure.ac:48: -1- AH_OUTPUT([HAVE_STRPBRK], [/* Define to 1 if you have the `strpbrk\' function. */

@@ -196,9 +196,6 @@ static void init(void)
     dump_global_config();
 #endif
 
-    h264_filename = get_h264_filepath();
-    assert(h264_filename != NULL);
-
     dmd_openlog(DMD_IDENT, DMD_LOGOPT, DMD_FACILITY);
 
     // daemonize;

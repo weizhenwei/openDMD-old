@@ -69,7 +69,7 @@ int encode_yuv420p(unsigned char *yuv420p, int width, int height,
     pic_in.img.plane[1] = pic_in.img.plane[0] + width * height;
     pic_in.img.plane[2] = pic_in.img.plane[1] + width * height / 4;
 
-    assert(h264file);
+    assert(h264file != NULL);
     static int64_t i_pts = 0;
     x264_nal_t *nals;
     int nnal;
@@ -90,9 +90,9 @@ int encode_yuv420p(unsigned char *yuv420p, int width, int height,
             return -1;
         }
     }
+    fclose(h264fp);
 
     x264_encoder_close(encoder);
-    fclose(h264fp);
 
     return 0;
 }

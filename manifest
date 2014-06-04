@@ -1,0 +1,30 @@
+manifest of src directory:
+
+src/dmd_config.c
+src/dmd_config.h: parse config file;
+
+src/dmd_global_context.c
+src/dmd_global_context.h: define global controlling variable;
+
+src/dmd_image_capture.c
+src/dmd_image_capture.h: capture image from v4l2, and convert to jpeg or h264;
+
+src/dmd_image_convert.c
+src/dmd_image_convert.h: convert image to RGB888 or YUV420P;
+
+src/dmd_log.c
+src/dmd_log.h: log utils of the project;
+
+src/dmd_signal.c
+src/dmd_signal.h: signal handling of the project;
+
+src/dmd_v4l2_utils.c
+src/dmd_v4l2_utils.h: linux v4l2 manipulation of the project;
+
+src/dmd_video.c
+src/dmd_video.h: video capture using linux v4l2;
+
+src/dmd_x264.c
+src/dmd_x264.h: encode image (in YUV420P format) to h264 format;
+
+src/main.c: main entry of the project;

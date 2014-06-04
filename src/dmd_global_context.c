@@ -96,6 +96,14 @@ void init_default_global()
     global.lasttime = time(&global.lasttime);
     assert(global.lasttime != -1);
     global.counter_in_second = 0;
+    global.video_duration = 5;
+
+    // referenceYUYV422(in packed mode) initializaton
+    int length = global.image_width * global.image_height * 2;
+    global.referenceYUYV422 = (unsigned char *)malloc(
+            length * sizeof(unsigned char));
+    assert(global.referenceYUYV422 != NULL);
+    bzero(global.referenceYUYV422, length * sizeof(unsigned char));
 
     // captured picture/video storage settings;
     global.picture_format = PICTURE_JPEG;
@@ -143,6 +151,7 @@ void dump_global_config()
 
     dmd_log(LOG_INFO, "diff pixels:%d\n", global.diff_pixels);
     dmd_log(LOG_INFO, "diff deviation:%d\n", global.diff_deviation);
+    dmd_log(LOG_INFO, "video duration:%d\n", global.video_duration);
 
     if (global.picture_format == PICTURE_BMP) {
         dmd_log(LOG_INFO, "picture_format: bmp\n");

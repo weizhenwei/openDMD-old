@@ -65,7 +65,7 @@ int YUYV422toRGB888(unsigned char *yuyv, int width,
     unsigned char *py, *pu, *pv;
     unsigned char *tmp = rgb;
     unsigned int counter = 0;
-    unsigned char *ref = referenceYUYV;
+    unsigned char *ref = global.referenceYUYV422;
     unsigned int index = 0;
     int DIFF = global.diff_pixels;
     int ABSY = global.diff_deviation;
@@ -89,16 +89,6 @@ int YUYV422toRGB888(unsigned char *yuyv, int width,
 
             // whether pixel changed
             if (column % 2 == 0) {
-                if (flag == 2) {
-                    dmd_log(LOG_INFO, "00000 py = %d, pu = %d, pv = %d\n",
-                            *py, *pu, *pv);
-                    dmd_log(LOG_INFO,
-                            "00000 refpy = %d, refpu = %d, refpv = %d\n",
-                            *(ref + index + 0),
-                            *(ref + index + 1),
-                            *(ref + index + 3));
-                }
-
                 int absy = abs(*(ref + index + 0) - *py);
                 int absu = abs(*(ref + index + 1) - *pu);
                 int absv = abs(*(ref + index + 3) - *pv);
@@ -107,16 +97,6 @@ int YUYV422toRGB888(unsigned char *yuyv, int width,
 
                 *(ref + index + 0) = *py;
             } else {
-                if (flag == 2) {
-                    dmd_log(LOG_INFO, "11111 py = %d, pu = %d, pv = %d\n",
-                            *py, *pu, *pv);
-                    dmd_log(LOG_INFO,
-                            "11111 refpy = %d, refpu = %d, refpv = %d\n",
-                            *(ref + index + 2),
-                            *(ref + index + 1),
-                            *(ref + index + 3));
-                }
-
                 int absy = abs(*(ref + index + 2) - *py);
                 int absu = abs(*(ref + index + 1) - *pu);
                 int absv = abs(*(ref + index + 3) - *pv);
@@ -139,8 +119,7 @@ int YUYV422toRGB888(unsigned char *yuyv, int width,
         } // for inner
     } // for outer
 
-    memcpy(referenceYUYV, yuyv, length);
-    flag = 1;
+    memcpy(global.referenceYUYV422, yuyv, length);
     if (counter >= DIFF) {
         dmd_log(LOG_INFO, "diff counter = %d, captured a picture.\n", counter);
         return 0;
@@ -160,7 +139,7 @@ int YUYV422toRGB888INT(unsigned char *yuyv, int width,
     unsigned char *py, *pu, *pv;
     unsigned char *tmp = rgb;
     unsigned int counter = 0;
-    unsigned char *ref = referenceYUYV;
+    unsigned char *ref = global.referenceYUYV422;
     unsigned int index = 0;
     int DIFF = global.diff_pixels;
     int ABSY = global.diff_deviation;
@@ -222,8 +201,7 @@ int YUYV422toRGB888INT(unsigned char *yuyv, int width,
         } // for inner
     } // for outer
 
-    memcpy(referenceYUYV, yuyv, length);
-    flag = 1;
+    memcpy(global.referenceYUYV422, yuyv, length);
     if (counter >= DIFF) {
         dmd_log(LOG_INFO, "diff counter = %d, captured a picture.\n", counter);
         return 0;
