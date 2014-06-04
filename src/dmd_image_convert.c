@@ -41,9 +41,6 @@
 
 #include "dmd_image_convert.h"
 
-extern struct global_context global;
-extern unsigned char *referenceYUYV;
-extern int flag;
 
 /*    Packed YUYV data stream: Y0 U0 Y1 V0 Y2 U1 Y3 V1
  *    first pixel:  Y0 U0 V0

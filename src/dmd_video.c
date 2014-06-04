@@ -40,10 +40,9 @@
  */
 
 #include "dmd_video.h"
-#include "dmd_log.h"
 
-extern struct global_context global;
-
+// define global variable dmd_video;
+struct v4l2_device_info *dmd_video = NULL;
 
 struct v4l2_device_info *dmd_video_create(const char *device_path)
 {

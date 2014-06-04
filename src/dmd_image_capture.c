@@ -41,10 +41,10 @@
 
 #include "dmd_image_capture.h"
 
-extern struct global_context global;
-
-extern unsigned char *referenceYUYV;
+// declare global variable referenceYUYV and flag;
+unsigned char *referenceYUYV = NULL;
 int flag = -1;
+char *h264_filename = NULL;
 
 static int test_and_create(const char *path)
 {

@@ -41,7 +41,8 @@
 
 #include "dmd_global_context.h"
 
-extern struct global_context global;
+// define the global variable global to control opendmd running;
+struct global_context global;
 
 void init_default_global()
 {

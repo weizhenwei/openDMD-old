@@ -46,24 +46,26 @@
 #include <assert.h>
 #include <assert.h>
 #include <string.h>
+
+#include "dmd_log.h"
 #include "dmd_v4l2_utils.h"
 #include "dmd_global_context.h"
 
-// global variable
-struct v4l2_device_info *dmd_video;
+// declare global variable
+extern struct v4l2_device_info *dmd_video;
 
-struct v4l2_device_info *dmd_video_create(const char *device_path);
+extern struct v4l2_device_info *dmd_video_create(const char *device_path);
 
-int dmd_video_open(struct v4l2_device_info *v4l2_info);
+extern int dmd_video_open(struct v4l2_device_info *v4l2_info);
 
-int dmd_video_init(struct v4l2_device_info *v4l2_info);
+extern int dmd_video_init(struct v4l2_device_info *v4l2_info);
 
-int dmd_video_streamon(struct v4l2_device_info *v4l2_info);
+extern int dmd_video_streamon(struct v4l2_device_info *v4l2_info);
 
-int dmd_video_streamoff(struct v4l2_device_info *v4l2_info);
+extern int dmd_video_streamoff(struct v4l2_device_info *v4l2_info);
 
-int dmd_video_close(struct v4l2_device_info *v4l2_info);
+extern int dmd_video_close(struct v4l2_device_info *v4l2_info);
 
-void dmd_video_release(struct v4l2_device_info *v4l2_info);
+extern void dmd_video_release(struct v4l2_device_info *v4l2_info);
 
 #endif

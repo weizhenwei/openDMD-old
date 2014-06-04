@@ -41,8 +41,6 @@
 
 #include "dmd_config.h"
 
-extern struct global_context global;
-
 void parse_config(const char *conf_file)
 {
     struct ccl_t config;

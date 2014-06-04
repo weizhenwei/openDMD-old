@@ -60,14 +60,8 @@
 #include "dmd_signal.h"
 #include "dmd_v4l2_utils.h"
 #include "dmd_image_capture.h"
+#include "dmd_image_convert.h"
 #include "dmd_global_context.h"
-
-extern struct v4l2_device_info *dmd_video;
-
-extern char *h264_filename;
-
-extern struct global_context global;
-
 
 static void clean(void)
 {

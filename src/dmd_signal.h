@@ -45,9 +45,9 @@
 #include <signal.h>
 #include <bits/signum.h>
 
-void signal_init();
+extern void signal_init();
 
-void signal_register(int sig, void (*sighandler)(int));
+extern void signal_register(int sig, void (*sighandler)(int));
 
 
 

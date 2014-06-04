@@ -41,7 +41,8 @@
 #include "dmd_x264.h"
 
 // encode Planar YUV420P to H264 foramt using libx264
-int encode_yuv420p(unsigned char *yuv420p, int width, int height, const char *h264file)
+int encode_yuv420p(unsigned char *yuv420p, int width, int height,
+        const char *h264file)
 {
     int fps = 25;
     x264_t *encoder;

@@ -48,10 +48,9 @@
 
 // use libccl to parse config file;
 #include <ccl.h>
-
 #include "dmd_log.h"
 #include "dmd_global_context.h"
 
-void parse_config(const char *conf_file);
+extern void parse_config(const char *conf_file);
 
 #endif

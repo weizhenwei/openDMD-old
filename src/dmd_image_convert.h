@@ -47,25 +47,26 @@
 #include <string.h>
 
 #include "dmd_log.h"
+#include "dmd_image_capture.h"
 #include "dmd_global_context.h"
 
 // rgb format should be the base for futher convert.
-int YUYV422toRGB888(unsigned char *yuyv, int width,
-	int height, unsigned char *rgb, int length);
+extern int YUYV422toRGB888(unsigned char *yuyv, int width,
+        int height, unsigned char *rgb, int length);
 
-int YUYV422toRGB888INT(unsigned char *yuyv, int width,
-	int height, unsigned char *rgb, int length);
+extern int YUYV422toRGB888INT(unsigned char *yuyv, int width,
+        int height, unsigned char *rgb, int length);
 
 // convert packed YUYV422 to planar YUV422P
-int YUYV422toYUV422P(unsigned char *yuyv422, int width,
-	int height, unsigned char *yuv422p, int length);
+extern int YUYV422toYUV422P(unsigned char *yuyv422, int width,
+        int height, unsigned char *yuv422p, int length);
 
 // convert planar YUV422P to planar YUV420P
-int YUV422PtoYUV420P(unsigned char *yuv422p, int width,
-	int height, unsigned char *yuv420p, int length);
+extern int YUV422PtoYUV420P(unsigned char *yuv422p, int width,
+        int height, unsigned char *yuv420p, int length);
 
 // convert packed YUYV422 to planar YUV420P
-int YUYV422toYUV420P(unsigned char *yuyv422, int width,
-	int height, unsigned char *yuv420p, int length);
+extern int YUYV422toYUV420P(unsigned char *yuyv422, int width,
+        int height, unsigned char *yuv420p, int length);
 
 #endif

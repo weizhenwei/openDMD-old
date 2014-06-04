@@ -71,7 +71,8 @@
 #define DEFAULT_RELEASE_STORE_DIR "/tmp/opendmd"
 #define DEFAULT_DEBUG_STORE_DIR "/home/wzw/opendmd"
 
-struct global_context global;
+// declare the global variable global to control opendmd running.
+extern struct global_context global;
 
 // opendmd run in daemon mode;
 enum daemon_mode_type {
@@ -127,8 +128,8 @@ struct global_context {
                                              // storage directory.
 };
 
-void init_default_global();
+extern void init_default_global();
 
-void dump_global_config();
+extern void dump_global_config();
 
 #endif

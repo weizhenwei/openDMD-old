@@ -64,22 +64,23 @@
 #include "jpeglib.h"
 #include "jerror.h"
 
-unsigned char *referenceYUYV;
-
+// define global referenceYUYV;
+extern unsigned char *referenceYUYV;
+extern int flag;
 // for x264 encode;
-char *h264_filename;
+extern char *h264_filename;
 
-char *get_jpeg_filepath();
-char *get_h264_filepath();
+extern char *get_jpeg_filepath();
+extern char *get_h264_filepath();
 
-int write_jpeg(char *filename, unsigned char *buf, int quality,
-	int width, int height, int gray);
+extern int write_jpeg(char *filename, unsigned char *buf, int quality,
+        int width, int height, int gray);
 
-int process_image(void *yuyv, int length, int width, int height);
+extern int process_image(void *yuyv, int length, int width, int height);
 
-int read_frame(int fd, struct mmap_buffer *buffers,
-	int width, int height);
+extern int read_frame(int fd, struct mmap_buffer *buffers,
+        int width, int height);
 
-int dmd_image_capture(struct v4l2_device_info *v4l2_info);
+extern int dmd_image_capture(struct v4l2_device_info *v4l2_info);
 
 #endif

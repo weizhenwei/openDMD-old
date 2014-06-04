@@ -89,24 +89,24 @@ struct v4l2_device_info {
 
 
 // query video device's capability
-int video_capability(struct v4l2_device_info *v4l2_info);
+extern int video_capability(struct v4l2_device_info *v4l2_info);
 
 // set and query video device's input 
-int video_input(struct v4l2_device_info *v4l2_info);
+extern int video_input(struct v4l2_device_info *v4l2_info);
 
 // query video format this video device support
-int video_fmtdesc(struct v4l2_device_info *v4l2_info);
+extern int video_fmtdesc(struct v4l2_device_info *v4l2_info);
 
 // set video stream data format
-int video_setfmt(struct v4l2_device_info *v4l2_info);
+extern int video_setfmt(struct v4l2_device_info *v4l2_info);
 
 // query video stream data format
-int video_getfmt(struct v4l2_device_info *v4l2_info);
+extern int video_getfmt(struct v4l2_device_info *v4l2_info);
 
 // query video stream data format
-int video_getfmt(struct v4l2_device_info *v4l2_info);
+extern int video_getfmt(struct v4l2_device_info *v4l2_info);
 
 // malloc request buffer and mmap it
-int video_mmap(struct v4l2_device_info *v4l2_info);
+extern int video_mmap(struct v4l2_device_info *v4l2_info);
 
 #endif

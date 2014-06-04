@@ -50,10 +50,10 @@
 #define DMD_LOGOPT LOG_PID
 #define DMD_FACILITY LOG_USER
 
-void dmd_openlog(const char *ident, int logopt, int facility);
+extern void dmd_openlog(const char *ident, int logopt, int facility);
 
-void dmd_log(int priority, const char *format, ...);
+extern void dmd_log(int priority, const char *format, ...);
 
-void dmd_closelog();
+extern void dmd_closelog();
 
 #endif
