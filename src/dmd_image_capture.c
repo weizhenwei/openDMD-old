@@ -106,12 +106,6 @@ char *get_jpeg_filepath()
 
     assert(strlen(filepath) < PATH_MAX);
 
-    if (global.lasttime == now) {
-        global.counter_in_second++;
-    } else {
-        global.counter_in_second = 0;
-    }
-
     dmd_log(LOG_INFO, "in function %s, jpeg filename is: %s\n",
             __func__, filepath);
 
@@ -207,6 +201,9 @@ int process_image(void *yuyv, int length, int width, int height)
     static char *h264_filepath = NULL;
     time_t now;
 
+    now = time(&now);
+    assert(now != -1);
+
     assert(length == width * height * 2);
 
     unsigned char *rgb = (unsigned char *)malloc(
@@ -218,7 +215,13 @@ int process_image(void *yuyv, int length, int width, int height)
             rgb, length);
 
     if (ret == 0) { // a motion detected!
+
         // refresh the time last motion detected;
+        if (global.lasttime == now) {
+            global.counter_in_second++;
+        } else {
+            global.counter_in_second = 0;
+        }
         global.lasttime = now;
 
         // optional capture picture;
@@ -257,13 +260,32 @@ int process_image(void *yuyv, int length, int width, int height)
         }
 
     } else { // check time elapsed exceeds global.video_duration;
-        now = time(&now);
-        assert(now != -1);
 
-        // switch off when time elasped exceeds global.video_duration;
-        if (now - global.lasttime >= global.video_duration) {
-            video_capturing_switch = VIDEO_CAPTURING_OFF;
+        if (global.working_mode == CAPTURE_VIDEO
+                || global.working_mode == CAPTURE_ALL) {
+
+            // if video capturing is on, continue encode video;
+            if (video_capturing_switch == VIDEO_CAPTURING_ON) {
+                // convert Packed YUV422 to Planar YUV420P
+                unsigned char *yuv420p = (unsigned char *)malloc(
+                    width * height * 1.5 * sizeof(unsigned char));
+                assert(yuv420p != NULL);
+                bzero(yuv420p, width * height * 1.5 * sizeof(unsigned char));
+                ret = YUYV422toYUV420P((unsigned char *)yuyv, width, height,
+                        yuv420p, length);
+
+                // encode Planar YUV420P frame to H264 format using libx264
+                ret = encode_yuv420p(yuv420p, width, height, h264_filepath);
+                assert(ret == 0);
+                free(yuv420p);
+            }
+
+            // switch off when time elasped exceeds global.video_duration;
+            if (now - global.lasttime >= global.video_duration) {
+                video_capturing_switch = VIDEO_CAPTURING_OFF;
+            }
         }
+
     }
 
     // if no motion occured, or capture video only,
