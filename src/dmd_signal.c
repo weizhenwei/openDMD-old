@@ -41,12 +41,22 @@
 
 #include "dmd_signal.h"
 
+static void sigint_handler(int signal)
+{
+    assert(signal == SIGINT);
+
+    dmd_log(LOG_INFO, "captured SIGINT (Ctrl + C), program exit\n");
+    exit(EXIT_FAILURE);
+}
+
 void signal_init()
 {
     signal(SIGPIPE, SIG_IGN);
     signal(SIGHUP, SIG_DFL);
     signal(SIGTERM, SIG_DFL);
-    signal(SIGINT, SIG_DFL);
+
+    // signal Ctrl+C, capture it manually;
+    signal(SIGINT, sigint_handler);
 }
 
 void signal_register(int sig, void (*sighandler)(int))

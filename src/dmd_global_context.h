@@ -138,4 +138,8 @@ extern void init_default_global();
 
 extern void dump_global_config();
 
+
+// called at atexit() to free malloced memory in variable global;
+extern void release_default_global();
+
 #endif

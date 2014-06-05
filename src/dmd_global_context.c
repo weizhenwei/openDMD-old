@@ -167,3 +167,14 @@ void dump_global_config()
 
     dmd_log(LOG_INFO, "store dir:%s\n", global.store_dir);
 }
+
+// called at atexit() to free malloced memory in variable global;
+void release_default_global()
+{
+    dmd_log(LOG_INFO, "at function %s, free malloced memory\n", __func__);
+
+    if (global.referenceYUYV422 != NULL) {
+        free(global.referenceYUYV422);
+        global.referenceYUYV422 = NULL;
+    }
+}

@@ -42,8 +42,12 @@
 #ifndef DMD_SIGNAL_H
 #define DMD_SIGNAL_H
 
+#include <assert.h>
+#include <stdlib.h>
 #include <signal.h>
 #include <bits/signum.h>
+
+#include "dmd_log.h"
 
 extern void signal_init();
 

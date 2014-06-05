@@ -65,7 +65,10 @@ int encode_yuv420p(unsigned char *yuv420p, int width, int height,
 
     x264_picture_alloc(&pic_in, X264_CSP_I420, width, height);
 
-    pic_in.img.plane[0] = yuv420p;
+    // WARNING: this caused a memory leak!
+    // pic_in.img.plane[0] = yuv420p;
+
+    memcpy(pic_in.img.plane[0], yuv420p, width * height * 1.5);
     pic_in.img.plane[1] = pic_in.img.plane[0] + width * height;
     pic_in.img.plane[2] = pic_in.img.plane[1] + width * height / 4;
 
@@ -92,6 +95,8 @@ int encode_yuv420p(unsigned char *yuv420p, int width, int height,
     }
     fclose(h264fp);
 
+    // WARNING: remember to free pic_in;
+    x264_picture_clean(&pic_in);
     x264_encoder_close(encoder);
 
     return 0;

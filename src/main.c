@@ -184,6 +184,14 @@ static void daemonize()
 
 }
 
+static void register_clean_memory()
+{
+    if (atexit(release_default_global) != 0) {
+        dmd_log(LOG_ERR, "%s\n",
+                "register function release_default_global at atexit error");
+    }
+}
+
 static void init(void)
 {
     // signal init;
@@ -197,6 +205,9 @@ static void init(void)
 #endif
 
     dmd_openlog(DMD_IDENT, DMD_LOGOPT, DMD_FACILITY);
+
+    // reigister clean memory function;
+    register_clean_memory();
 
     // daemonize;
     if (global.daemon_mode == DAEMON_ON) {
