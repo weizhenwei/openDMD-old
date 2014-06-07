@@ -28,7 +28,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: dmd_image_capture.c
+ * File: image_capture.c
  *
  * Brief: capture image from video device. 
  *
@@ -39,7 +39,7 @@
  * *****************************************************************************
  */
 
-#include "dmd_image_capture.h"
+#include "image_capture.h"
 
 
 int process_image(void *yuyv, int length, int width, int height)

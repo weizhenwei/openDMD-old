@@ -1,4 +1,7 @@
 2014.06.07
+    remove uncessary malloc in dmd_picture_thread.c and dmd_video_thread.c,
+    remove dmd prefix in source files;
+
     Urgent:
         set appropriate parameter on libx264 to encode h264 file perfect,
     At present, the fps seems to be too fast.

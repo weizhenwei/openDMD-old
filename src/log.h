@@ -28,49 +28,32 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: dmd_image_convert.h
+ * File: log.h
  *
- * Brief: convert image between different format. 
+ * Brief: log utility of the project
  *
- * Date: 2014.05.14
+ * Date: 2014.05.10
  *
  * Author: weizhenwei <weizhenwei1988@gmail.com>
  *
  * *****************************************************************************
  */
 
-#ifndef DMD_IMAGE_CONVERT_H
-#define DMD_IMAGE_CONVERT_H
+#ifndef LOG_H
+#define LOG_H
 
-#include <assert.h>
-#include <stdlib.h>
-#include <string.h>
+#include <stdio.h>
+#include <syslog.h>
+#include <stdarg.h>
 
-#include "dmd_log.h"
-#include "dmd_image_capture.h"
-#include "dmd_global_context.h"
+#define DMD_IDENT "opendmd"
+#define DMD_LOGOPT LOG_PID
+#define DMD_FACILITY LOG_USER
 
-// diff with referenceYUYV422 to detect whether motion occured;
-extern int YUYV422_motion_detect(unsigned char *yuyv, int width,
-        int height, int length);
+extern void dmd_openlog(const char *ident, int logopt, int facility);
 
-// rgb format should be the base for futher convert.
-extern void YUYV422toRGB888(unsigned char *yuyv, int width,
-        int height, unsigned char *rgb, int length);
+extern void dmd_log(int priority, const char *format, ...);
 
-extern void YUYV422toRGB888INT(unsigned char *yuyv, int width,
-        int height, unsigned char *rgb, int length);
-
-// convert packed YUYV422 to planar YUV422P
-extern void YUYV422toYUV422P(unsigned char *yuyv422, int width,
-        int height, unsigned char *yuv422p, int length);
-
-// convert planar YUV422P to planar YUV420P
-extern void YUV422PtoYUV420P(unsigned char *yuv422p, int width,
-        int height, unsigned char *yuv420p, int length);
-
-// convert packed YUYV422 to planar YUV420P
-extern void YUYV422toYUV420P(unsigned char *yuyv422, int width,
-        int height, unsigned char *yuv420p, int length);
+extern void dmd_closelog();
 
 #endif

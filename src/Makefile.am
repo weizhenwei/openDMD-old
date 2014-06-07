@@ -2,7 +2,8 @@ AUTOMAKE_OPTIONS = foreign
 
 bin_PROGRAMS = opendmd
 
-INCLUDES = -I$(top_srcdir)/libccl -I$(top_srcdir)/libjpeg -I$(top_srcdir)/libx264 
+INCLUDES = -I$(top_srcdir)/libccl -I$(top_srcdir)/libjpeg \
+		   -I$(top_srcdir)/libx264 
 
 opendmd_LDADD = $(top_srcdir)/libccl/libccl.a \
 				$(top_srcdir)/libjpeg/libjpeg.a \
@@ -14,15 +15,12 @@ opendmd_LDADD = $(top_srcdir)/libccl/libccl.a \
 LIBS=-lm -lpthread
 
 opendmd_SOURCES = main.c \
-                  dmd_config.h dmd_config.c \
-                  dmd_global_context.h dmd_global_context.c \
-                  dmd_log.h dmd_log.c dmd_path.h dmd_path.c \
-                  dmd_video.h dmd_video.c \
-                  dmd_signal.h dmd_signal.c \
-                  dmd_v4l2_utils.h dmd_v4l2_utils.c \
-                  dmd_image_convert.h dmd_image_convert.c \
-                  dmd_image_capture.h dmd_image_capture.c \
-                  dmd_x264.h dmd_x264.c \
-				  dmd_picture_thread.h dmd_picture_thread.c \
-				  dmd_video_thread.h dmd_video_thread.c
+                  config.h config.c log.h log.c path.h path.c \
+                  global_context.h global_context.c \
+                  video.h video.c v4l2_utils.h v4l2_utils.c \
+                  signal_handler.h signal_handler.c \
+                  image_convert.h image_convert.c \
+                  image_capture.h image_capture.c \
+				  picture_thread.h picture_thread.c \
+                  libx264.h libx264.c video_thread.h video_thread.c
 

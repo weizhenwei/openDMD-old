@@ -28,7 +28,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: dmd_image_convert.h
+ * File: image_convert.c
  *
  * Brief: convert image between different format. 
  *
@@ -39,7 +39,7 @@
  * *****************************************************************************
  */
 
-#include "dmd_image_convert.h"
+#include "image_convert.h"
 
 
 // diff with referenceYUYV422 to detect whether motion occured;

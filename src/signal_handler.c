@@ -28,44 +28,39 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: dmd_log.c
+ * File: signal_handler.c
  *
- * Brief: log utility of the project
+ * Brief: signal handler of the project
  *
- * Date: 2014.05.10
+ * Date: 2014.05.22
  *
  * Author: weizhenwei <weizhenwei1988@gmail.com>
  *
  * *****************************************************************************
  */
 
-#include "dmd_log.h"
+#include "signal_handler.h"
 
-void dmd_openlog(const char *ident, int logopt, int facility)
+static void sigint_handler(int signal)
 {
-    openlog(ident, logopt, facility);
+    assert(signal == SIGINT);
+
+    dmd_log(LOG_INFO, "captured SIGINT (Ctrl + C), program exit\n");
+    exit(EXIT_FAILURE);
 }
 
-void dmd_log(int priority, const char *format, ...)
+void signal_init()
 {
-    va_list var_list;
-    if (format == NULL) {
-        return;
-    }
+    signal(SIGPIPE, SIG_IGN);
+    signal(SIGHUP, SIG_DFL);
+    signal(SIGTERM, SIG_DFL);
 
-    va_start(var_list, format);
-    va_end(var_list);
-    vsyslog(priority, format, var_list);
-
-#if defined(DEBUG)
-    // TODO: why va_start and va_end again ?
-    va_start(var_list, format);
-    va_end(var_list);
-    vfprintf(stdout, format, var_list);
-#endif
+    // signal Ctrl+C, capture it manually;
+    signal(SIGINT, sigint_handler);
 }
 
-void dmd_closelog()
+void signal_register(int sig, void (*sighandler)(int))
 {
-    closelog();
+    //TODO
+    signal(sig, sighandler);
 }

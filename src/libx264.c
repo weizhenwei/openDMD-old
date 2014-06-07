@@ -28,7 +28,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: dmd_x264.c
+ * File: libx264.c
  *
  * Brief: encode video to h264 format, using libx264.
  *
@@ -38,7 +38,7 @@
  *
  * *****************************************************************************
  */
-#include "dmd_x264.h"
+#include "libx264.h"
 
 // encode Planar YUV420P to H264 foramt using libx264
 int encode_yuv420p(unsigned char *yuv420p, int width, int height,

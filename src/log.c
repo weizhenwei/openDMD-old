@@ -28,9 +28,9 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: dmd_video.h
+ * File: log.c
  *
- * Brief: video manipulation interface of the project 
+ * Brief: log utility of the project
  *
  * Date: 2014.05.10
  *
@@ -39,33 +39,33 @@
  * *****************************************************************************
  */
 
-#ifndef DMD_VIDEO_H
-#define DMD_VIDEO_H
+#include "log.h"
 
-#include <strings.h>
-#include <assert.h>
-#include <assert.h>
-#include <string.h>
+void dmd_openlog(const char *ident, int logopt, int facility)
+{
+    openlog(ident, logopt, facility);
+}
 
-#include "dmd_log.h"
-#include "dmd_v4l2_utils.h"
-#include "dmd_global_context.h"
+void dmd_log(int priority, const char *format, ...)
+{
+    va_list var_list;
+    if (format == NULL) {
+        return;
+    }
 
-// declare global variable
-extern struct v4l2_device_info *dmd_video;
+    va_start(var_list, format);
+    va_end(var_list);
+    vsyslog(priority, format, var_list);
 
-extern struct v4l2_device_info *dmd_video_create(const char *device_path);
-
-extern int dmd_video_open(struct v4l2_device_info *v4l2_info);
-
-extern int dmd_video_init(struct v4l2_device_info *v4l2_info);
-
-extern int dmd_video_streamon(struct v4l2_device_info *v4l2_info);
-
-extern int dmd_video_streamoff(struct v4l2_device_info *v4l2_info);
-
-extern int dmd_video_close(struct v4l2_device_info *v4l2_info);
-
-extern void dmd_video_release(struct v4l2_device_info *v4l2_info);
-
+#if defined(DEBUG)
+    // TODO: why va_start and va_end again ?
+    va_start(var_list, format);
+    va_end(var_list);
+    vfprintf(stdout, format, var_list);
 #endif
+}
+
+void dmd_closelog()
+{
+    closelog();
+}

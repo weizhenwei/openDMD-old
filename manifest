@@ -1,30 +1,40 @@
 manifest of src directory:
 
-src/dmd_config.c
-src/dmd_config.h: parse config file;
+src/config.c
+src/config.h: parse config file;
 
-src/dmd_global_context.c
-src/dmd_global_context.h: define global controlling variable;
+src/global_context.c
+src/global_context.h: define global controlling variable;
 
-src/dmd_image_capture.c
-src/dmd_image_capture.h: capture image from v4l2, and convert to jpeg or h264;
+src/image_capture.c
+src/image_capture.h: capture image from v4l2, and convert to jpeg or h264;
 
-src/dmd_image_convert.c
-src/dmd_image_convert.h: convert image to RGB888 or YUV420P;
+src/image_convert.c
+src/image_convert.h: convert image to RGB888 or YUV420P;
 
-src/dmd_log.c
-src/dmd_log.h: log utils of the project;
+src/libx264.c
+src/libx264.h: encode image (in YUV420P format) to h264 format;
 
-src/dmd_signal.c
-src/dmd_signal.h: signal handling of the project;
+src/log.c
+src/log.h: log utils of the project;
 
-src/dmd_v4l2_utils.c
-src/dmd_v4l2_utils.h: linux v4l2 manipulation of the project;
+src/path.c
+src/path.h: filepath generation;
 
-src/dmd_video.c
-src/dmd_video.h: video capture using linux v4l2;
+src/picture_thread.c
+src/picture_thread.h: picture manipulation thread;
 
-src/dmd_x264.c
-src/dmd_x264.h: encode image (in YUV420P format) to h264 format;
+src/signal.c
+src/signal.h: signal handling of the project;
+
+src/v4l2_utils.c
+src/v4l2_utils.h: linux v4l2 manipulation of the project;
+
+src/video.c
+src/video.h: video capture using linux v4l2;
+
+src/video_thread.c
+src/video_thread.h: video encode thread;
+
 
 src/main.c: main entry of the project;

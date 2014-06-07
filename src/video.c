@@ -28,7 +28,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: dmd_video.c
+ * File: video.c
  *
  * Brief: video manipulation interface of the project 
  *
@@ -39,7 +39,7 @@
  * *****************************************************************************
  */
 
-#include "dmd_video.h"
+#include "video.h"
 
 // define global variable dmd_video;
 struct v4l2_device_info *dmd_video = NULL;

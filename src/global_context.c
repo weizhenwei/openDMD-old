@@ -28,7 +28,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: dmd_global_context.c
+ * File: global_context.c
  *
  * Brief: struct global_context is used to control opendmd running.
  *
@@ -39,7 +39,7 @@
  * *****************************************************************************
  */
 
-#include "dmd_global_context.h"
+#include "global_context.h"
 
 // define the global variable global to control opendmd running;
 struct global_context global;

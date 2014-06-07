@@ -28,32 +28,45 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: dmd_log.h
+ * File: image_capture.h
  *
- * Brief: log utility of the project
+ * Brief: capture image from video device. 
  *
- * Date: 2014.05.10
+ * Date: 2014.05.14
  *
  * Author: weizhenwei <weizhenwei1988@gmail.com>
  *
  * *****************************************************************************
  */
 
-#ifndef DMD_LOG_H
-#define DMD_LOG_H
+#ifndef IMAGE_CAPTURE_H
+#define IMAGE_CAPTURE_H
 
 #include <stdio.h>
-#include <syslog.h>
-#include <stdarg.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <signal.h>
+#include <sys/select.h>
+#include <linux/limits.h>
+#include <pthread.h>
+#include <unistd.h>
+#include <assert.h>
+#include <string.h>
+#include <errno.h>
+#include <time.h>
 
-#define DMD_IDENT "opendmd"
-#define DMD_LOGOPT LOG_PID
-#define DMD_FACILITY LOG_USER
+#include "log.h"
+#include "v4l2_utils.h"
+#include "global_context.h"
+#include "picture_thread.h"
+#include "video_thread.h"
 
-extern void dmd_openlog(const char *ident, int logopt, int facility);
+extern int process_image(void *yuyv, int length, int width, int height);
 
-extern void dmd_log(int priority, const char *format, ...);
+extern int read_frame(int fd, struct mmap_buffer *buffers,
+        int width, int height);
 
-extern void dmd_closelog();
+extern int dmd_image_capture(struct v4l2_device_info *v4l2_info);
 
 #endif

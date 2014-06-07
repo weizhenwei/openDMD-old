@@ -28,34 +28,35 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: dmd_x264.h
+ * File: path.h
  *
- * Brief: encode video to h264 format, using libx264.
+ * Brief: file path operation for storing picture and video. 
  *
- * Date: 2014.05.28
+ * Date: 2014.06.07
  *
  * Author: weizhenwei <weizhenwei1988@gmail.com>
  *
  * *****************************************************************************
  */
 
-#ifndef DMD_X264_H
-#define DMD_X264_H
+#ifndef PATH_H
+#define PATH_H
 
-#include <stdint.h>
-#include <stdlib.h>
+#include <time.h>
+#include <stdio.h>
 #include <assert.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <linux/limits.h>
+#include <sys/stat.h>
 #include <string.h>
 #include <errno.h>
-#include <stdio.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <x264.h>
 
-#include "dmd_log.h"
+#include "log.h"
+#include "global_context.h"
 
-// encode Planar YUV420P to H264 foramt using libx264
-extern int encode_yuv420p(unsigned char *yuv420p,
-        int height, int width, const char *h264file);
+extern char *get_jpeg_filepath();
+extern char *get_h264_filepath();
+
 
 #endif

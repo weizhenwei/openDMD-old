@@ -55,16 +55,16 @@
 #include <linux/limits.h>
 #include <pthread.h>
 
-#include "dmd_log.h"
-#include "dmd_video.h"
-#include "dmd_config.h"
-#include "dmd_signal.h"
-#include "dmd_v4l2_utils.h"
-#include "dmd_image_capture.h"
-#include "dmd_image_convert.h"
-#include "dmd_global_context.h"
-#include "dmd_picture_thread.h"
-#include "dmd_video_thread.h"
+#include "log.h"
+#include "video.h"
+#include "config.h"
+#include "v4l2_utils.h"
+#include "video_thread.h"
+#include "image_capture.h"
+#include "image_convert.h"
+#include "global_context.h"
+#include "picture_thread.h"
+#include "signal_handler.h"
 
 static void clean(void)
 {

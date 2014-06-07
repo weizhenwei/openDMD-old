@@ -45,12 +45,12 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_opendmd_OBJECTS = main.$(OBJEXT) dmd_config.$(OBJEXT) \
-	dmd_global_context.$(OBJEXT) dmd_log.$(OBJEXT) \
-	dmd_path.$(OBJEXT) dmd_video.$(OBJEXT) dmd_signal.$(OBJEXT) \
-	dmd_v4l2_utils.$(OBJEXT) dmd_image_convert.$(OBJEXT) \
-	dmd_image_capture.$(OBJEXT) dmd_x264.$(OBJEXT) \
-	dmd_picture_thread.$(OBJEXT) dmd_video_thread.$(OBJEXT)
+am_opendmd_OBJECTS = main.$(OBJEXT) config.$(OBJEXT) log.$(OBJEXT) \
+	path.$(OBJEXT) global_context.$(OBJEXT) video.$(OBJEXT) \
+	v4l2_utils.$(OBJEXT) signal_handler.$(OBJEXT) \
+	image_convert.$(OBJEXT) image_capture.$(OBJEXT) \
+	picture_thread.$(OBJEXT) libx264.$(OBJEXT) \
+	video_thread.$(OBJEXT)
 opendmd_OBJECTS = $(am_opendmd_OBJECTS)
 opendmd_DEPENDENCIES = $(top_srcdir)/libccl/libccl.a \
 	$(top_srcdir)/libjpeg/libjpeg.a \
@@ -161,23 +161,22 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
-INCLUDES = -I$(top_srcdir)/libccl -I$(top_srcdir)/libjpeg -I$(top_srcdir)/libx264 
+INCLUDES = -I$(top_srcdir)/libccl -I$(top_srcdir)/libjpeg \
+		   -I$(top_srcdir)/libx264 
+
 opendmd_LDADD = $(top_srcdir)/libccl/libccl.a \
 				$(top_srcdir)/libjpeg/libjpeg.a \
 				$(top_srcdir)/libx264/libx264.a
 
 opendmd_SOURCES = main.c \
-                  dmd_config.h dmd_config.c \
-                  dmd_global_context.h dmd_global_context.c \
-                  dmd_log.h dmd_log.c dmd_path.h dmd_path.c \
-                  dmd_video.h dmd_video.c \
-                  dmd_signal.h dmd_signal.c \
-                  dmd_v4l2_utils.h dmd_v4l2_utils.c \
-                  dmd_image_convert.h dmd_image_convert.c \
-                  dmd_image_capture.h dmd_image_capture.c \
-                  dmd_x264.h dmd_x264.c \
-				  dmd_picture_thread.h dmd_picture_thread.c \
-				  dmd_video_thread.h dmd_video_thread.c
+                  config.h config.c log.h log.c path.h path.c \
+                  global_context.h global_context.c \
+                  video.h video.c v4l2_utils.h v4l2_utils.c \
+                  signal_handler.h signal_handler.c \
+                  image_convert.h image_convert.c \
+                  image_capture.h image_capture.c \
+				  picture_thread.h picture_thread.c \
+                  libx264.h libx264.c video_thread.h video_thread.c
 
 all: all-am
 
@@ -260,19 +259,19 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmd_config.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmd_global_context.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmd_image_capture.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmd_image_convert.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmd_log.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmd_path.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmd_picture_thread.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmd_signal.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmd_v4l2_utils.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmd_video.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmd_video_thread.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmd_x264.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/config.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/global_context.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/image_capture.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/image_convert.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libx264.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/log.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/path.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/picture_thread.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/signal_handler.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/v4l2_utils.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/video.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/video_thread.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

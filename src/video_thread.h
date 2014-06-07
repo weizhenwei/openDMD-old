@@ -28,39 +28,43 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: dmd_signal.c
+ * File: video_thread.h
  *
- * Brief: signal handler of the project
+ * Brief: video capture and save thread;
  *
- * Date: 2014.05.22
+ * Date: 2014.06.06
  *
  * Author: weizhenwei <weizhenwei1988@gmail.com>
  *
  * *****************************************************************************
  */
 
-#include "dmd_signal.h"
+#ifndef VIDEO_THREAD_H
+#define VIDEO_THREAD_H
 
-static void sigint_handler(int signal)
-{
-    assert(signal == SIGINT);
+#include <pthread.h>
+#include <assert.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
 
-    dmd_log(LOG_INFO, "captured SIGINT (Ctrl + C), program exit\n");
-    exit(EXIT_FAILURE);
-}
+#include "log.h"
+#include "path.h"
+#include "libx264.h"
+#include "image_convert.h"
+#include "global_context.h"
 
-void signal_init()
-{
-    signal(SIGPIPE, SIG_IGN);
-    signal(SIGHUP, SIG_DFL);
-    signal(SIGTERM, SIG_DFL);
+// switch on-off for controlling video capturing status;
+enum video_capturing_type {
+    VIDEO_CAPTURING_ON = 1,
+    VIDEO_CAPTURING_OFF = 2,
+};
 
-    // signal Ctrl+C, capture it manually;
-    signal(SIGINT, sigint_handler);
-}
+extern int video_flag;
+extern enum video_capturing_type video_capturing_switch;
 
-void signal_register(int sig, void (*sighandler)(int))
-{
-    //TODO
-    signal(sig, sighandler);
-}
+
+extern void *video_thread(void *arg);
+
+#endif

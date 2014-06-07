@@ -28,7 +28,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: dmd_config.c
+ * File: config.c
  *
  * Brief: config file parsing;
  *
@@ -39,7 +39,7 @@
  * *****************************************************************************
  */
 
-#include "dmd_config.h"
+#include "config.h"
 
 void parse_config(const char *conf_file)
 {

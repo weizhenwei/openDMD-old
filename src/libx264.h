@@ -28,30 +28,34 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: dmd_config.h
+ * File: libx264.h
  *
- * Brief: config file parsing;
+ * Brief: encode video to h264 format, using libx264.
  *
- * Date: 2014.05.31
+ * Date: 2014.05.28
  *
  * Author: weizhenwei <weizhenwei1988@gmail.com>
  *
  * *****************************************************************************
  */
 
-#ifndef DMD_CONF_H
-#define DMD_CONF_H
+#ifndef LIBX264_H
+#define LIBX264_H
 
+#include <stdint.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
-#include <strings.h>
+#include <errno.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <x264.h>
 
-// use libccl to parse config file;
-#include <ccl.h>
-#include "dmd_log.h"
-#include "dmd_global_context.h"
+#include "log.h"
 
-extern void parse_config(const char *conf_file);
+// encode Planar YUV420P to H264 foramt using libx264
+extern int encode_yuv420p(unsigned char *yuv420p,
+        int height, int width, const char *h264file);
 
 #endif

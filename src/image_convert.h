@@ -28,9 +28,9 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: dmd_image_capture.h
+ * File: image_convert.h
  *
- * Brief: capture image from video device. 
+ * Brief: convert image between different format. 
  *
  * Date: 2014.05.14
  *
@@ -39,34 +39,38 @@
  * *****************************************************************************
  */
 
-#ifndef DMD_IMAGE_CAPTURE_H
-#define DMD_IMAGE_CAPTURE_H
+#ifndef IMAGE_CONVERT_H
+#define IMAGE_CONVERT_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <signal.h>
-#include <sys/select.h>
-#include <linux/limits.h>
-#include <pthread.h>
-#include <unistd.h>
 #include <assert.h>
+#include <stdlib.h>
 #include <string.h>
-#include <errno.h>
-#include <time.h>
 
-#include "dmd_log.h"
-#include "dmd_v4l2_utils.h"
-#include "dmd_global_context.h"
-#include "dmd_picture_thread.h"
-#include "dmd_video_thread.h"
+#include "log.h"
+#include "image_capture.h"
+#include "global_context.h"
 
-extern int process_image(void *yuyv, int length, int width, int height);
+// diff with referenceYUYV422 to detect whether motion occured;
+extern int YUYV422_motion_detect(unsigned char *yuyv, int width,
+        int height, int length);
 
-extern int read_frame(int fd, struct mmap_buffer *buffers,
-        int width, int height);
+// rgb format should be the base for futher convert.
+extern void YUYV422toRGB888(unsigned char *yuyv, int width,
+        int height, unsigned char *rgb, int length);
 
-extern int dmd_image_capture(struct v4l2_device_info *v4l2_info);
+extern void YUYV422toRGB888INT(unsigned char *yuyv, int width,
+        int height, unsigned char *rgb, int length);
+
+// convert packed YUYV422 to planar YUV422P
+extern void YUYV422toYUV422P(unsigned char *yuyv422, int width,
+        int height, unsigned char *yuv422p, int length);
+
+// convert planar YUV422P to planar YUV420P
+extern void YUV422PtoYUV420P(unsigned char *yuv422p, int width,
+        int height, unsigned char *yuv420p, int length);
+
+// convert packed YUYV422 to planar YUV420P
+extern void YUYV422toYUV420P(unsigned char *yuyv422, int width,
+        int height, unsigned char *yuv420p, int length);
 
 #endif

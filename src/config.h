@@ -28,32 +28,30 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: dmd_signal.h
+ * File: config.h
  *
- * Brief: include file of dmd_signal.c, signal handler of the project
+ * Brief: config file parsing;
  *
- * Date: 2014.05.22
+ * Date: 2014.05.31
  *
  * Author: weizhenwei <weizhenwei1988@gmail.com>
  *
  * *****************************************************************************
  */
 
-#ifndef DMD_SIGNAL_H
-#define DMD_SIGNAL_H
+#ifndef DMD_CONFIG_H
+#define DMD_CONFIG_H
 
-#include <assert.h>
 #include <stdlib.h>
-#include <signal.h>
-#include <bits/signum.h>
+#include <assert.h>
+#include <string.h>
+#include <strings.h>
 
-#include "dmd_log.h"
+// use libccl to parse config file;
+#include <ccl.h>
+#include "log.h"
+#include "global_context.h"
 
-extern void signal_init();
-
-extern void signal_register(int sig, void (*sighandler)(int));
-
-
-
+extern void parse_config(const char *conf_file);
 
 #endif

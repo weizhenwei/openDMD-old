@@ -28,7 +28,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: dmd_global_context.h
+ * File: global_context.h
  *
  * Brief: struct global_context is used to control opendmd running.
  *
@@ -39,8 +39,8 @@
  * *****************************************************************************
  */
 
-#ifndef DMD_GLOBAL_CONTEXT_H
-#define DMD_GLOBAL_CONTEXT_H
+#ifndef GLOBAL_CONTEXT_H
+#define GLOBAL_CONTEXT_H
 
 #include <time.h>
 #include <assert.h>
@@ -51,7 +51,7 @@
 #include <pthread.h>
 #include <unistd.h>
 
-#include "dmd_log.h"
+#include "log.h"
 
 #define DEFAULT_RELEASE_PID_FILE "/var/run/opendmd/opendmd.pid"
 // #define DEFAULT_DEBUG_PID_FILE "/home/wzw/opendmd/opendmd.pid"

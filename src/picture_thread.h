@@ -28,9 +28,9 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: dmd_video_thread.h
+ * File: picture_thread.h
  *
- * Brief: video capture and save thread;
+ * Brief: picture capture and save thread;
  *
  * Date: 2014.06.06
  *
@@ -39,32 +39,30 @@
  * *****************************************************************************
  */
 
-#ifndef DMD_VIDEO_THREAD_H
-#define DMD_VIDEO_THREAD_H
+#ifndef PICTURE_THREAD_H
+#define PICTURE_THREAD_H
 
 #include <pthread.h>
+#include <stdlib.h>
 #include <assert.h>
 #include <signal.h>
-#include <stdlib.h>
 #include <string.h>
 #include <strings.h>
 
-#include "dmd_log.h"
-#include "dmd_path.h"
-#include "dmd_x264.h"
-#include "dmd_image_convert.h"
-#include "dmd_global_context.h"
+#include "log.h"
+#include "path.h"
+#include "image_convert.h"
+#include "global_context.h"
 
-// switch on-off for controlling video capturing status;
-enum video_capturing_type {
-    VIDEO_CAPTURING_ON = 1,
-    VIDEO_CAPTURING_OFF = 2,
-};
+// from libjpeg library
+#include "jpeglib.h"
+#include "jerror.h"
 
-extern int video_flag;
-extern enum video_capturing_type video_capturing_switch;
+extern int picture_flag;
 
+extern void *picture_thread(void *arg);
 
-extern void *video_thread(void *arg);
+extern int write_jpeg(char *filename, unsigned char *buf, int quality,
+        int width, int height, int gray);
 
 #endif

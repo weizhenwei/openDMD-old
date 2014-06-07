@@ -28,41 +28,44 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: dmd_picture_thread.h
+ * File: video.h
  *
- * Brief: picture capture and save thread;
+ * Brief: video manipulation interface of the project 
  *
- * Date: 2014.06.06
+ * Date: 2014.05.10
  *
  * Author: weizhenwei <weizhenwei1988@gmail.com>
  *
  * *****************************************************************************
  */
 
-#ifndef DMD_PICTURE_THREAD_H
-#define DMD_PICTURE_THREAD_H
+#ifndef VIDEO_H
+#define VIDEO_H
 
-#include <pthread.h>
-#include <stdlib.h>
-#include <assert.h>
-#include <signal.h>
-#include <string.h>
 #include <strings.h>
+#include <assert.h>
+#include <assert.h>
+#include <string.h>
 
-#include "dmd_log.h"
-#include "dmd_path.h"
-#include "dmd_image_convert.h"
-#include "dmd_global_context.h"
+#include "log.h"
+#include "v4l2_utils.h"
+#include "global_context.h"
 
-// from libjpeg library
-#include "jpeglib.h"
-#include "jerror.h"
+// declare global variable
+extern struct v4l2_device_info *dmd_video;
 
-extern int picture_flag;
+extern struct v4l2_device_info *dmd_video_create(const char *device_path);
 
-extern void *picture_thread(void *arg);
+extern int dmd_video_open(struct v4l2_device_info *v4l2_info);
 
-extern int write_jpeg(char *filename, unsigned char *buf, int quality,
-        int width, int height, int gray);
+extern int dmd_video_init(struct v4l2_device_info *v4l2_info);
+
+extern int dmd_video_streamon(struct v4l2_device_info *v4l2_info);
+
+extern int dmd_video_streamoff(struct v4l2_device_info *v4l2_info);
+
+extern int dmd_video_close(struct v4l2_device_info *v4l2_info);
+
+extern void dmd_video_release(struct v4l2_device_info *v4l2_info);
 
 #endif

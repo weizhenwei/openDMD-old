@@ -28,35 +28,32 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: dmd_path.h
+ * File: signal_handler.h
  *
- * Brief: file path operation for storing picture and video. 
+ * Brief: include file of dmd_signal.c, signal handler of the project
  *
- * Date: 2014.06.07
+ * Date: 2014.05.22
  *
  * Author: weizhenwei <weizhenwei1988@gmail.com>
  *
  * *****************************************************************************
  */
 
-#ifndef DMD_PATH_H
-#define DMD_PATH_H
+#ifndef SIGNAL_HANDLER_H
+#define SIGNAL_HANDLER_H
 
-#include <time.h>
-#include <stdio.h>
 #include <assert.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <linux/limits.h>
-#include <sys/stat.h>
-#include <string.h>
-#include <errno.h>
+#include <stdlib.h>
+#include <signal.h>
+#include <bits/signum.h>
 
-#include "dmd_log.h"
-#include "dmd_global_context.h"
+#include "log.h"
 
-extern char *get_jpeg_filepath();
-extern char *get_h264_filepath();
+extern void signal_init();
+
+extern void signal_register(int sig, void (*sighandler)(int));
+
+
 
 
 #endif

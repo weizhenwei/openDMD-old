@@ -28,7 +28,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: dmd_path.h
+ * File: path.c
  *
  * Brief: file path operation for storing picture and video. 
  *
@@ -39,7 +39,7 @@
  * *****************************************************************************
  */
 
-#include "dmd_path.h"
+#include "path.h"
 
 static int test_and_create(const char *path)
 {
