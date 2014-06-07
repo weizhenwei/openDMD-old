@@ -46,6 +46,9 @@ struct global_context global;
 
 void init_default_global()
 {
+    // basic global information
+    global.pid = getpid();
+
     // global running settings;
 #if defined(DEBUG)
     global.daemon_mode = DAEMON_OFF;
@@ -76,9 +79,9 @@ void init_default_global()
     global.pid_file[strlen(DEFAULT_RELEASE_PID_FILE)] = '\0';
 
     assert(strlen(DEFAULT_RELEASE_CFG_FILE) < PATH_MAX);
-    strncpy(global.pid_file, DEFAULT_RELEASE_CFG_FILE,
+    strncpy(global.cfg_file, DEFAULT_RELEASE_CFG_FILE,
             strlen(DEFAULT_RELEASE_CFG_FILE));
-    global.pid_file[strlen(DEFAULT_RELEASE_CFG_FILE)] = '\0';
+    global.cfg_file[strlen(DEFAULT_RELEASE_CFG_FILE)] = '\0';
 #endif
 
     // video device settings;
@@ -104,6 +107,17 @@ void init_default_global()
             length * sizeof(unsigned char));
     assert(global.referenceYUYV422 != NULL);
     bzero(global.referenceYUYV422, length * sizeof(unsigned char));
+
+    pthread_mutex_init(&global.yuyv422_lock, NULL);
+    pthread_attr_init(&global.thread_attr);
+    struct sched_param param;
+    param.sched_priority = SCHED_RR;
+    pthread_attr_setschedparam(&global.thread_attr, &param);
+    pthread_attr_setdetachstate(&global.thread_attr, PTHREAD_CREATE_DETACHED);
+    global.bufferingYUYV422 = (unsigned char *)malloc(
+            length * sizeof(unsigned char));
+    assert(global.bufferingYUYV422 != NULL);
+    bzero(global.bufferingYUYV422, length * sizeof(unsigned char));
 
     // captured picture/video storage settings;
     global.picture_format = PICTURE_JPEG;
@@ -176,5 +190,12 @@ void release_default_global()
     if (global.referenceYUYV422 != NULL) {
         free(global.referenceYUYV422);
         global.referenceYUYV422 = NULL;
+    }
+
+    pthread_mutex_destroy(&global.yuyv422_lock);
+    pthread_attr_destroy(&global.thread_attr);
+    if (global.bufferingYUYV422 != NULL) {
+        free(global.bufferingYUYV422);
+        global.bufferingYUYV422 = NULL;
     }
 }

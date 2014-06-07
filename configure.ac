@@ -19,6 +19,10 @@ AC_DEFINE(HAVE_GPL, 0, [have GPL(no)])
 AC_DEFINE(HAVE_INTERLACED, 0, [interlaced scan(no)])
 
 # Checks for libraries.
+# FIXME: Replace `main' with a function in `-lm':
+AC_CHECK_LIB([m], [log10])
+# FIXME: Replace `main' with a function in `-lpthread':
+AC_CHECK_LIB([pthread], [pthread_create])
 
 # Checks for header files.
 AC_CHECK_HEADERS([fcntl.h inttypes.h limits.h locale.h malloc.h \

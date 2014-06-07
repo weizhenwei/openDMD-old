@@ -48,6 +48,8 @@
 #include <string.h>
 #include <strings.h>
 #include <linux/limits.h>
+#include <pthread.h>
+#include <unistd.h>
 
 #include "dmd_log.h"
 
@@ -104,6 +106,9 @@ enum video_format_type {
 };
 
 struct global_context {
+    // basic global information
+    pid_t pid;
+
     // global running settings
     enum daemon_mode_type daemon_mode;   // run in daemon mode;
     enum working_type  working_mode;     // working mode: picture, video or all;
@@ -117,15 +122,20 @@ struct global_context {
     unsigned int req_count;              // mmap req.count;
 
     // motion detection threshold settings;
-    unsigned int diff_pixels;            // the pixels threshold motion occured;
-    unsigned int diff_deviation;         // the deviation pixel allowed;
-    time_t lasttime;                     // last time the motion detected;
-    unsigned int counter_in_second;      // the movments detected in a second,
-                                         // used for picture capturing;
-    unsigned int video_duration;         // time elapsed when last motion detected
-                                         // before video capturing stoped;
-                                         // (in seconds);
-    unsigned char *referenceYUYV422;     // reference picture when detect motion;
+    unsigned int diff_pixels;         // the pixels threshold motion occured;
+    unsigned int diff_deviation;      // the deviation pixel allowed;
+    time_t lasttime;                  // last time the motion detected;
+    unsigned int counter_in_second;   // the movments detected in a second,
+                                      // used for picture capturing;
+    unsigned int video_duration;      // time elapsed when last motion detected
+                                      // before video capturing stoped;
+                                      // (in seconds);
+    unsigned char *referenceYUYV422;  // reference image when detect motion;
+
+    // bufferingYUYV422 is used in multi-thread
+    pthread_mutex_t yuyv422_lock;     // mutex for bufferingYUYV422;
+    pthread_attr_t  thread_attr;      // thread attribute;
+    unsigned char *bufferingYUYV422;  // buffered place when captured new image
 
     // captured pictures/video storage settings;
     enum picture_format_type picture_format; // captured picture format.

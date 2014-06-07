@@ -59,6 +59,7 @@ int encode_yuv420p(unsigned char *yuv420p, int width, int height,
     param.i_keyint_max = 25;
     param.b_intra_refresh = 1;
     param.b_annexb = 1;
+    param.i_log_level = X264_LOG_WARNING;
 
     x264_param_apply_profile(&param, "baseline");
     encoder = x264_encoder_open(&param);
@@ -87,7 +88,7 @@ int encode_yuv420p(unsigned char *yuv420p, int width, int height,
     for (nal = nals; nal < nals + nnal; nal++) {
         int len = fwrite(nal->p_payload, sizeof(unsigned char),
                 nal->i_payload, h264fp);
-        dmd_log(LOG_INFO, "write to h264 length:%d\n", len);
+        // dmd_log(LOG_INFO, "write to h264 length:%d\n", len);
         if ( len != nal->i_payload) {
             dmd_log(LOG_ERR, "write to h264 error:%s\n", strerror(errno));
             return -1;

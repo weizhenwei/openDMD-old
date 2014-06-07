@@ -46,8 +46,10 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <signal.h>
 #include <sys/select.h>
 #include <linux/limits.h>
+#include <pthread.h>
 #include <unistd.h>
 #include <assert.h>
 #include <string.h>
@@ -55,21 +57,10 @@
 #include <time.h>
 
 #include "dmd_log.h"
-#include "dmd_x264.h"
 #include "dmd_v4l2_utils.h"
-#include "dmd_image_convert.h"
 #include "dmd_global_context.h"
-
-// from libjpeg library
-#include "jpeglib.h"
-#include "jerror.h"
-
-
-extern char *get_jpeg_filepath();
-extern char *get_h264_filepath();
-
-extern int write_jpeg(char *filename, unsigned char *buf, int quality,
-        int width, int height, int gray);
+#include "dmd_picture_thread.h"
+#include "dmd_video_thread.h"
 
 extern int process_image(void *yuyv, int length, int width, int height);
 

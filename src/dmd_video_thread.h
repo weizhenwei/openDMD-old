@@ -28,49 +28,43 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: dmd_image_convert.h
+ * File: dmd_video_thread.h
  *
- * Brief: convert image between different format. 
+ * Brief: video capture and save thread;
  *
- * Date: 2014.05.14
+ * Date: 2014.06.06
  *
  * Author: weizhenwei <weizhenwei1988@gmail.com>
  *
  * *****************************************************************************
  */
 
-#ifndef DMD_IMAGE_CONVERT_H
-#define DMD_IMAGE_CONVERT_H
+#ifndef DMD_VIDEO_THREAD_H
+#define DMD_VIDEO_THREAD_H
 
+#include <pthread.h>
 #include <assert.h>
+#include <signal.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 
 #include "dmd_log.h"
-#include "dmd_image_capture.h"
+#include "dmd_path.h"
+#include "dmd_x264.h"
+#include "dmd_image_convert.h"
 #include "dmd_global_context.h"
 
-// diff with referenceYUYV422 to detect whether motion occured;
-extern int YUYV422_motion_detect(unsigned char *yuyv, int width,
-        int height, int length);
+// switch on-off for controlling video capturing status;
+enum video_capturing_type {
+    VIDEO_CAPTURING_ON = 1,
+    VIDEO_CAPTURING_OFF = 2,
+};
 
-// rgb format should be the base for futher convert.
-extern void YUYV422toRGB888(unsigned char *yuyv, int width,
-        int height, unsigned char *rgb, int length);
+extern int video_flag;
+extern enum video_capturing_type video_capturing_switch;
 
-extern void YUYV422toRGB888INT(unsigned char *yuyv, int width,
-        int height, unsigned char *rgb, int length);
 
-// convert packed YUYV422 to planar YUV422P
-extern void YUYV422toYUV422P(unsigned char *yuyv422, int width,
-        int height, unsigned char *yuv422p, int length);
-
-// convert planar YUV422P to planar YUV420P
-extern void YUV422PtoYUV420P(unsigned char *yuv422p, int width,
-        int height, unsigned char *yuv420p, int length);
-
-// convert packed YUYV422 to planar YUV420P
-extern void YUYV422toYUV420P(unsigned char *yuyv422, int width,
-        int height, unsigned char *yuv420p, int length);
+extern void *video_thread(void *arg);
 
 #endif

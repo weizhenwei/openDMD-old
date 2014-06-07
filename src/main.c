@@ -53,6 +53,7 @@
 #include <sys/types.h>
 #include <sys/resource.h>
 #include <linux/limits.h>
+#include <pthread.h>
 
 #include "dmd_log.h"
 #include "dmd_video.h"
@@ -62,6 +63,8 @@
 #include "dmd_image_capture.h"
 #include "dmd_image_convert.h"
 #include "dmd_global_context.h"
+#include "dmd_picture_thread.h"
+#include "dmd_video_thread.h"
 
 static void clean(void)
 {
@@ -175,6 +178,7 @@ static void daemonize()
 
     // write pid to file
     pid = getpid();
+    global.pid = pid; // refresh global's pid member;
     if ((fp = fopen(global.pid_file, "w")) == NULL) {
         dmd_log(LOG_ERR, "fopen pid file error:%s\n", strerror(errno));
         exit(EXIT_FAILURE);
@@ -204,8 +208,6 @@ static void init(void)
     dump_global_config();
 #endif
 
-    dmd_openlog(DMD_IDENT, DMD_LOGOPT, DMD_FACILITY);
-
     // reigister clean memory function;
     register_clean_memory();
 
@@ -213,6 +215,42 @@ static void init(void)
     if (global.daemon_mode == DAEMON_ON) {
         daemonize();
     }
+}
+
+static void create_thread()
+{
+    pthread_t picture_thread_id, video_thread_id;
+    int dummy = 0;
+    int ret;
+    if (global.working_mode == CAPTURE_ALL) {
+
+        // create picture thread;
+        ret = pthread_create(&picture_thread_id, &global.thread_attr,
+                picture_thread, &dummy);
+        assert( ret == 0);
+
+        // and create video thread;
+        ret = pthread_create(&video_thread_id, &global.thread_attr,
+                video_thread, &dummy);
+        assert( ret == 0);
+
+    } else if (global.working_mode == CAPTURE_PICTURE) {
+        // only create picture thread;
+        ret = pthread_create(&picture_thread_id, &global.thread_attr,
+                picture_thread, &dummy);
+        assert( ret == 0);
+
+    } else if (global.working_mode == CAPTURE_VIDEO) {
+        // only create video thread;
+        ret = pthread_create(&video_thread_id, &global.thread_attr,
+                video_thread, &dummy);
+        assert( ret == 0);
+
+    } else {
+        dmd_log(LOG_ERR, "impossible reach here!\n");
+        assert(0);
+    }
+
 }
 
 static void usage(const char *progname)
@@ -294,6 +332,10 @@ int main(int argc, char *argv[])
     // set locale according current environment;
     setlocale(LC_ALL, "");
 
+    // open log first;
+    dmd_openlog(DMD_IDENT, DMD_LOGOPT, DMD_FACILITY);
+
+
     // initialize struct global_context global to default value;
     init_default_global();
 
@@ -301,6 +343,9 @@ int main(int argc, char *argv[])
     parse_cmdline(argc, argv);
 
     init();
+
+    // create picture thread and/or video thread;
+    create_thread();
 
     working_progress();
 

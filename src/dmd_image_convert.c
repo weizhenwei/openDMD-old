@@ -42,6 +42,64 @@
 #include "dmd_image_convert.h"
 
 
+// diff with referenceYUYV422 to detect whether motion occured;
+int YUYV422_motion_detect(unsigned char *yuyv, int width,
+        int height, int length)
+{
+    int line, column;
+    unsigned char *py, *pu, *pv;
+    unsigned int counter = 0;
+    unsigned char *ref = global.referenceYUYV422;
+    unsigned int index = 0;
+    int DIFF = global.diff_pixels;
+    int ABSY = global.diff_deviation;
+    int ABSCbCr = global.diff_deviation;
+
+    // assert about the length
+    assert(length == width * height * 2);
+
+    py = yuyv;
+    pu = yuyv + 1;
+    pv = yuyv + 3;
+
+    for (line = 0; line < height; line++) {
+        for (column = 0; column < width; column++) {
+
+            // whether pixel changed
+            if (column % 2 == 0) {
+                int absy = abs(*(ref + index + 0) - *py);
+                int absu = abs(*(ref + index + 1) - *pu);
+                int absv = abs(*(ref + index + 3) - *pv);
+                if (absy >= ABSY || absu >= ABSCbCr || absv >= ABSCbCr)
+                    counter++;
+            } else {
+                int absy = abs(*(ref + index + 2) - *py);
+                int absu = abs(*(ref + index + 1) - *pu);
+                int absv = abs(*(ref + index + 3) - *pv);
+                if (absy >= ABSY || absu >= ABSCbCr || absv >= ABSCbCr)
+                    counter++;
+            }
+
+            py += 2; // jump to the adjcent pixel, or
+
+            if (column % 2 == 1) { // jump to next u and v macro
+                pu += 4;
+                pv += 4;
+                index += 4;
+            } // if
+        } // for inner
+    } // for outer
+
+    // refresh referenceYUYV422 to new captured image;
+    memcpy(global.referenceYUYV422, yuyv, length);
+    if (counter >= DIFF) {
+        dmd_log(LOG_INFO, "diff counter = %d, captured a picture.\n", counter);
+        return 0;
+    } else {
+        return -1;
+    }
+}
+
 /*    Packed YUYV data stream: Y0 U0 Y1 V0 Y2 U1 Y3 V1
  *    first pixel:  Y0 U0 V0
  *    second pixel: Y1 U0 V0
@@ -58,18 +116,13 @@
  *  0 <= R <= 255, 0 <= G <= 255, 0 <= B <= 255;
  *
  */
-int YUYV422toRGB888(unsigned char *yuyv, int width,
+void YUYV422toRGB888(unsigned char *yuyv, int width,
     int height, unsigned char *rgb, int length)
 {
     int line, column;
     unsigned char *py, *pu, *pv;
     unsigned char *tmp = rgb;
-    unsigned int counter = 0;
-    unsigned char *ref = global.referenceYUYV422;
     unsigned int index = 0;
-    int DIFF = global.diff_pixels;
-    int ABSY = global.diff_deviation;
-    int ABSCbCr = global.diff_deviation;
 
     // assert about the length
     assert(length == width * height * 2);
@@ -87,31 +140,9 @@ int YUYV422toRGB888(unsigned char *yuyv, int width,
                 - 0.71414 * ((double) *pv - 128.0));
             *tmp++ = CLIP((double)*py + 1.772 * ((double) * pu - 128.0));
 
-            // whether pixel changed
-            if (column % 2 == 0) {
-                int absy = abs(*(ref + index + 0) - *py);
-                int absu = abs(*(ref + index + 1) - *pu);
-                int absv = abs(*(ref + index + 3) - *pv);
-                if (absy >= ABSY || absu >= ABSCbCr || absv >= ABSCbCr)
-                    counter++;
-
-                *(ref + index + 0) = *py;
-            } else {
-                int absy = abs(*(ref + index + 2) - *py);
-                int absu = abs(*(ref + index + 1) - *pu);
-                int absv = abs(*(ref + index + 3) - *pv);
-                if (absy >= ABSY || absu >= ABSCbCr || absv >= ABSCbCr)
-                    counter++;
-
-                *(ref + index + 2) = *py;
-            }
-
             py += 2; // jump to the adjcent pixel, or
 
             if (column % 2 == 1) { // jump to next u and v macro
-                *(ref + index + 1) = *pu;
-                *(ref + index + 3) = *pv;
-
                 pu += 4;
                 pv += 4;
                 index += 4;
@@ -119,31 +150,19 @@ int YUYV422toRGB888(unsigned char *yuyv, int width,
         } // for inner
     } // for outer
 
-    memcpy(global.referenceYUYV422, yuyv, length);
-    if (counter >= DIFF) {
-        dmd_log(LOG_INFO, "diff counter = %d, captured a picture.\n", counter);
-        return 0;
-    } else {
-        return -1;
-    }
 }
 
 /*
  * convert YUYV422 to RGB88 using integer operation, 
  * it's said this method is more efficient than float operation;
  */
-int YUYV422toRGB888INT(unsigned char *yuyv, int width,
+void YUYV422toRGB888INT(unsigned char *yuyv, int width,
     int height, unsigned char *rgb, int length)
 {
     int line, column;
     unsigned char *py, *pu, *pv;
     unsigned char *tmp = rgb;
-    unsigned int counter = 0;
-    unsigned char *ref = global.referenceYUYV422;
     unsigned int index = 0;
-    int DIFF = global.diff_pixels;
-    int ABSY = global.diff_deviation;
-    int ABSCbCr = global.diff_deviation;
 
     // assert about the length
     assert(length == width * height * 2);
@@ -166,52 +185,20 @@ int YUYV422toRGB888INT(unsigned char *yuyv, int width,
             *tmp++ = CLIP(*py - gdiff);
             *tmp++ = CLIP(*py + bdiff);
 
-            // whether pixel changed
-            if (column % 2 == 0) {
-                int absy = abs(*(ref + index + 0) - *py);
-                int absu = abs(*(ref + index + 1) - *pu);
-                int absv = abs(*(ref + index + 3) - *pv);
-                if (absy >= ABSY || absu >= ABSCbCr || absv >= ABSCbCr)
-                    counter++;
-
-                *(ref + index + 0) = *py;
-            } else {
-
-                int absy = abs(*(ref + index + 2) - *py);
-                int absu = abs(*(ref + index + 1) - *pu);
-                int absv = abs(*(ref + index + 3) - *pv);
-                if (absy >= ABSY || absu >= ABSCbCr || absv >= ABSCbCr)
-                    counter++;
-
-                *(ref + index + 2) = *py;
-            }
-
             py += 2; // jump to the adjcent pixel, or
 
             if (column % 2 == 1) { // jump to next u and v macro
-                *(ref + index + 1) = *pu;
-                *(ref + index + 3) = *pv;
-
                 pu += 4;
                 pv += 4;
                 index += 4;
             } // if
-
-
         } // for inner
     } // for outer
 
-    memcpy(global.referenceYUYV422, yuyv, length);
-    if (counter >= DIFF) {
-        dmd_log(LOG_INFO, "diff counter = %d, captured a picture.\n", counter);
-        return 0;
-    } else {
-        return -1;
-    }
 }
 
 // convert packed YUYV422 to planar YUV422P
-int YUYV422toYUV422P(unsigned char *yuyv422, int width,
+void YUYV422toYUV422P(unsigned char *yuyv422, int width,
 	int height, unsigned char *yuv422p, int length)
 {
     int line, column;
@@ -239,12 +226,10 @@ int YUYV422toYUV422P(unsigned char *yuyv422, int width,
     assert(pu - yuv422p == width * height * 1.5);
     assert(pv - yuv422p == width * height * 2);
     assert(yuyvTemp - yuyv422 == width * height * 2);
-
-    return  0;
 }
 
 // convert planar YUV422P to planar YUV420P
-int YUV422PtoYUV420P(unsigned char *yuv422p, int width,
+void YUV422PtoYUV420P(unsigned char *yuv422p, int width,
 	int height, unsigned char *yuv420p, int length)
 {
     int line, column;
@@ -284,12 +269,10 @@ int YUV422PtoYUV420P(unsigned char *yuv422p, int width,
         }
     }
 
-    return  0;
-
 }
 
 // convert packed YUYV422 to planar YUV420P
-int YUYV422toYUV420P(unsigned char *yuyv422, int width,
+void YUYV422toYUV420P(unsigned char *yuyv422, int width,
 	int height, unsigned char *yuv420p, int length)
 {
     int i,j;
@@ -328,6 +311,5 @@ int YUYV422toYUV420P(unsigned char *yuyv422, int width,
         pV += width / 2;
     }
     
-    return 0;
 }
 
