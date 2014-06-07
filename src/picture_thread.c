@@ -58,38 +58,25 @@ void *picture_thread(void *arg)
     signal(SIGUSR1, siguser1_handler);
     for (;;) {
         if (picture_flag == 1) {
-            
+
             int width = global.image_width;
             int height = global.image_height;
             int length = width * height * 2;
 
-            unsigned char *rgb = (unsigned char *)malloc(
-                width * height * 3 * sizeof(unsigned char));
-            assert(rgb != NULL);
-            bzero(rgb, width * height * 3 * sizeof(unsigned char));
-
-            unsigned char *yuyv422 = (unsigned char *)malloc(
-                width * height * 2 * sizeof(unsigned char));
-            assert(yuyv422 != NULL);
-
             pthread_mutex_lock(&global.yuyv422_lock);
-            memcpy(yuyv422, global.bufferingYUYV422, width * height * 2);
+            memcpy(global.pyuyv422buffer, global.bufferingYUYV422, length);
             pthread_mutex_unlock(&global.yuyv422_lock);
 
             // convert YUYV422 to RGB888
-            YUYV422toRGB888INT((unsigned char *)yuyv422, width, height,
-                    rgb, length);
+            YUYV422toRGB888INT(global.pyuyv422buffer, width, height,
+                    global.rgbbuffer, length);
 
             // write to jpeg file;
             jpeg_filepath = get_jpeg_filepath();
-            ret = write_jpeg(jpeg_filepath, rgb, 100, width, height, 0);
+            ret = write_jpeg(jpeg_filepath, global.rgbbuffer, 100,
+                    width, height, 0);
             assert(ret == 0);
 
-            free(rgb);
-            rgb = NULL;
-            free(yuyv422);
-            yuyv422 = NULL;
-            
             // remember to reset flag!
             picture_flag = 0;
         }

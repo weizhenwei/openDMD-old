@@ -41,6 +41,55 @@
 
 #include "config.h"
 
+static void set_buffering()
+{
+    int width = global.image_width;
+    int height = global.image_height;
+
+    // rgb buffer;
+    unsigned int rgblength = width * height * 3;
+    global.rgbbuffer = (unsigned char *)malloc(
+        rgblength * sizeof(unsigned char));
+    assert(global.rgbbuffer != NULL);
+    bzero(global.rgbbuffer, rgblength * sizeof(unsigned char));
+
+    // referenceYUYV422 buffer;
+    unsigned int referencelength = width * height * 2;
+    global.referenceYUYV422 = (unsigned char *)malloc(
+            referencelength * sizeof(unsigned char));
+    assert(global.referenceYUYV422 != NULL);
+    bzero(global.referenceYUYV422, referencelength * sizeof(unsigned char));
+
+    // pyuyv422buffer;
+    unsigned int pyuyv422length = width * height * 2;
+    global.pyuyv422buffer = (unsigned char *)malloc(
+            pyuyv422length * sizeof(unsigned char));
+    assert(global.pyuyv422buffer != NULL);
+    bzero(global.pyuyv422buffer, pyuyv422length * sizeof(unsigned char));
+
+    // vyuyv422buffer;
+    unsigned int vyuyv422length = width * height * 2;
+    global.vyuyv422buffer = (unsigned char *)malloc(
+            vyuyv422length * sizeof(unsigned char));
+    assert(global.vyuyv422buffer != NULL);
+    bzero(global.vyuyv422buffer, vyuyv422length * sizeof(unsigned char));
+
+    // yuv420pbuffer;
+    unsigned int yuv420plength = width * height * 1.5;
+    global.yuv420pbuffer = (unsigned char *)malloc(
+            yuv420plength * sizeof(unsigned char));
+    assert(global.yuv420pbuffer != NULL);
+    bzero(global.yuv420pbuffer, yuv420plength * sizeof(unsigned char));
+
+    // bufferingYUYV422;
+    unsigned int bufferyuyvlength = width * height * 2;
+    global.bufferingYUYV422 = (unsigned char *)malloc(
+            bufferyuyvlength * sizeof(unsigned char));
+    assert(global.bufferingYUYV422 != NULL);
+    bzero(global.bufferingYUYV422, bufferyuyvlength * sizeof(unsigned char));
+
+}
+
 void parse_config(const char *conf_file)
 {
     struct ccl_t config;
@@ -141,16 +190,9 @@ void parse_config(const char *conf_file)
         }
     } // while
 
-    // after image_width and image_height set again,
-    // referenceYUYV422 is reset;
-    if (global.referenceYUYV422 != NULL) {
-        free(global.referenceYUYV422);
-    }
-    int length = global.image_width * global.image_height * 2;
-    global.referenceYUYV422 = (unsigned char *)malloc(
-            length * sizeof(unsigned char));
-    assert(global.referenceYUYV422 != NULL);
-    bzero(global.referenceYUYV422, length * sizeof(unsigned char));
+    // after image_width and image_height are finally determined,
+    // set reusable image buffers;
+    set_buffering();
 
     ccl_release(&config);
 }

@@ -101,12 +101,14 @@ void init_default_global()
     global.counter_in_second = 0;
     global.video_duration = 5;
 
-    // referenceYUYV422(in packed mode) initializaton
-    int length = global.image_width * global.image_height * 2;
-    global.referenceYUYV422 = (unsigned char *)malloc(
-            length * sizeof(unsigned char));
-    assert(global.referenceYUYV422 != NULL);
-    bzero(global.referenceYUYV422, length * sizeof(unsigned char));
+    // reusable image buffer is initialized in parse_config(),
+    // where after config file parsing, image_width and image_height
+    // are finally determined;
+    global.referenceYUYV422 = NULL;
+    global.rgbbuffer = NULL;
+    global.pyuyv422buffer = NULL;
+    global.vyuyv422buffer = NULL;
+    global.yuv420pbuffer = NULL;
 
     pthread_mutex_init(&global.yuyv422_lock, NULL);
     pthread_attr_init(&global.thread_attr);
@@ -114,10 +116,7 @@ void init_default_global()
     param.sched_priority = SCHED_RR;
     pthread_attr_setschedparam(&global.thread_attr, &param);
     pthread_attr_setdetachstate(&global.thread_attr, PTHREAD_CREATE_DETACHED);
-    global.bufferingYUYV422 = (unsigned char *)malloc(
-            length * sizeof(unsigned char));
-    assert(global.bufferingYUYV422 != NULL);
-    bzero(global.bufferingYUYV422, length * sizeof(unsigned char));
+    global.bufferingYUYV422 = NULL;
 
     // captured picture/video storage settings;
     global.picture_format = PICTURE_JPEG;
@@ -187,15 +186,24 @@ void release_default_global()
 {
     dmd_log(LOG_INFO, "at function %s, free malloced memory\n", __func__);
 
-    if (global.referenceYUYV422 != NULL) {
-        free(global.referenceYUYV422);
-        global.referenceYUYV422 = NULL;
-    }
+    // free reusable buffers;
+    free(global.referenceYUYV422);
+    global.referenceYUYV422 = NULL;
+
+    free(global.rgbbuffer);
+    global.rgbbuffer = NULL;
+
+    free(global.pyuyv422buffer);
+    global.pyuyv422buffer = NULL;
+
+    free(global.vyuyv422buffer);
+    global.vyuyv422buffer = NULL;
+
+    free(global.yuv420pbuffer);
+    global.yuv420pbuffer = NULL;
 
     pthread_mutex_destroy(&global.yuyv422_lock);
     pthread_attr_destroy(&global.thread_attr);
-    if (global.bufferingYUYV422 != NULL) {
-        free(global.bufferingYUYV422);
-        global.bufferingYUYV422 = NULL;
-    }
+    free(global.bufferingYUYV422);
+    global.bufferingYUYV422 = NULL;
 }

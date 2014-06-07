@@ -130,12 +130,24 @@ struct global_context {
     unsigned int video_duration;      // time elapsed when last motion detected
                                       // before video capturing stoped;
                                       // (in seconds);
+
+    // reusable image buffer;
     unsigned char *referenceYUYV422;  // reference image when detect motion;
+                                      // length = image_width*image_height*2
+    unsigned char *rgbbuffer;         // rgb buffer used in picture capturing;
+                                      // length = image_width*image_height*3;
+    unsigned char *pyuyv422buffer;    // yuyv422buffer used in picture capture;
+                                      // length = image_width*image_height*2;
+    unsigned char *vyuyv422buffer;    // yuyv422buffer used in video capture;
+                                      // length = image_width*image_height*2;
+    unsigned char *yuv420pbuffer;     // yuyv420pbuffer used in video capture;
+                                      // length = image_width*image_height*1.5;
 
     // bufferingYUYV422 is used in multi-thread
     pthread_mutex_t yuyv422_lock;     // mutex for bufferingYUYV422;
     pthread_attr_t  thread_attr;      // thread attribute;
     unsigned char *bufferingYUYV422;  // buffered place when captured new image
+                                      // length = image_width*image_height*2;
 
     // captured pictures/video storage settings;
     enum picture_format_type picture_format; // captured picture format.

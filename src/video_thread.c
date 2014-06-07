@@ -72,33 +72,20 @@ void *video_thread(void *arg)
             int height = global.image_height;
             int length = width * height * 2;
 
-            unsigned char *yuv420p = (unsigned char *)malloc(
-                width * height * 1.5 * sizeof(unsigned char));
-            assert(yuv420p != NULL);
-            bzero(yuv420p, width * height * 1.5 * sizeof(unsigned char));
-
-            unsigned char *yuyv422 = (unsigned char *)malloc(
-                width * height * 2 * sizeof(unsigned char));
-            assert(yuyv422 != NULL);
-
             pthread_mutex_lock(&global.yuyv422_lock);
-            memcpy(yuyv422, global.bufferingYUYV422, width * height * 2);
+            memcpy(global.vyuyv422buffer, global.bufferingYUYV422, length);
             pthread_mutex_unlock(&global.yuyv422_lock);
 
             // convert Packed YUV422 to Planar YUV420P
-            YUYV422toYUV420P((unsigned char *)yuyv422, width, height,
-                     yuv420p, length);
+            YUYV422toYUV420P(global.vyuyv422buffer, width, height,
+                    global.yuv420pbuffer, length);
 
             // and encode Planar YUV420P frame to H264 format, using libx264
             dmd_log(LOG_INFO, "encode a frame to %s\n", h264_filepath);
-            ret = encode_yuv420p(yuv420p, width, height, h264_filepath);
+            ret = encode_yuv420p(global.yuv420pbuffer, width, height,
+                    h264_filepath);
             assert(ret == 0);
 
-            free(yuv420p);
-            yuv420p = NULL;
-            free(yuyv422);
-            yuyv422 = NULL;
-            
             // remember to reset flag;
             video_flag = 0;
         }

@@ -1,6 +1,9 @@
 2014.06.07
-    remove uncessary malloc in dmd_picture_thread.c and dmd_video_thread.c,
+    remove uncessary malloc in dmd_picture_thread.c and dmd_video_thread.c, 
     remove dmd prefix in source files;
+    all is DONE!
+
+    TODO: pthread caused memory leak!
 
     Urgent:
         set appropriate parameter on libx264 to encode h264 file perfect,

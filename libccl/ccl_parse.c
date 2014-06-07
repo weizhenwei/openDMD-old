@@ -174,7 +174,7 @@ ccl_parse(struct ccl_t *data,
 	}
 	else if(*p == '\n') {
 	  fprintf(stderr, PACKAGE": Unterminated string (%s:%i)\n",
-		  path, line);
+		  path, (int) line);
 	  
 	  state = CCL_HANDLE_NEWLINE;
 	}
@@ -254,12 +254,12 @@ ccl_parse(struct ccl_t *data,
       case CCL_HANDLE_SEP:
 	if(got_tok == 0) {
 	  pair = 0;
-	  fprintf(stderr, PACKAGE": Missing key (%s:%i)\n", path, line);
+	  fprintf(stderr, PACKAGE": Missing key (%s:%i)\n", path, (int) line);
 	}
 	else if(ccl_get(data, token) != 0) {
 	  pair = 0;
 	  fprintf(stderr, PACKAGE": Ignoring duplicate key '%s' (%s:%i)\n", 
-		  token, path, line);
+		  token, path, (int) line);
 	}
 	else {
 	  pair = (struct ccl_pair_t*) malloc(sizeof(struct ccl_pair_t));
