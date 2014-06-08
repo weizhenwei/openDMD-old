@@ -48,6 +48,7 @@
 #include <bits/signum.h>
 
 #include "log.h"
+#include "global_context.h"
 
 extern void signal_init();
 

@@ -41,31 +41,33 @@
 
 #include "picture_thread.h"
 
-int picture_flag = 0;
-
-static void siguser1_handler(int sig)
-{
-    assert(sig == SIGUSR1);
-    // dmd_log(LOG_INFO, "catched SIGUSR1!\n");
-    picture_flag = 1;
-}
-
 void *picture_thread(void *arg)
 {
     int ret = -1;
     char *jpeg_filepath = NULL;
+    enum main_notify_target notify = NOTIFY_NONE;
 
-    signal(SIGUSR1, siguser1_handler);
     for (;;) {
-        if (picture_flag == 1) {
 
+        pthread_mutex_lock(&global.thread_attr.picture_mutex);
+
+        while (global.picture_target == NOTIFY_NONE) {
+            pthread_cond_wait(&global.thread_attr.picture_cond,
+                    &global.thread_attr.picture_mutex);
+        }
+
+        notify = global.picture_target;
+        global.picture_target = NOTIFY_NONE;
+
+        if (notify == NOTIFY_PICTURE) {
+            
             int width = global.image_width;
             int height = global.image_height;
             int length = width * height * 2;
 
-            pthread_mutex_lock(&global.yuyv422_lock);
+            pthread_rwlock_rdlock(&global.thread_attr.bufferYUYV_rwlock);
             memcpy(global.pyuyv422buffer, global.bufferingYUYV422, length);
-            pthread_mutex_unlock(&global.yuyv422_lock);
+            pthread_rwlock_unlock(&global.thread_attr.bufferYUYV_rwlock);
 
             // convert YUYV422 to RGB888
             YUYV422toRGB888INT(global.pyuyv422buffer, width, height,
@@ -73,14 +75,21 @@ void *picture_thread(void *arg)
 
             // write to jpeg file;
             jpeg_filepath = get_jpeg_filepath();
+            dmd_log(LOG_INFO, "in %s, write a jpegfile to %s\n",
+                    __func__, jpeg_filepath);
             ret = write_jpeg(jpeg_filepath, global.rgbbuffer, 100,
                     width, height, 0);
             assert(ret == 0);
 
-            // remember to reset flag!
-            picture_flag = 0;
+        } else if (notify == NOTIFY_EXIT) {
+            // signal or main thread told us exit;
+            dmd_log(LOG_INFO, "in %s, thread to exit\n", __func__);
+            break;
         }
 
+        notify = NOTIFY_NONE;
+
+        pthread_mutex_unlock(&global.thread_attr.picture_mutex);
     }
 
     pthread_exit(NULL);
@@ -98,8 +107,8 @@ int write_jpeg(char *filename, unsigned char *buf, int quality,
     int line_length;
 
     assert(filename != NULL);
-    dmd_log(LOG_INFO, "in function %s, jpeg filename is: %s\n",
-            __func__, filename);
+    // dmd_log(LOG_INFO, "in function %s, jpeg filename is: %s\n",
+    //         __func__, filename);
     if ((fp = fopen(filename, "wb+")) == NULL) {
         dmd_log(LOG_ERR, "fopen error:%s\n", strerror(errno));
         return -1;

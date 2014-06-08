@@ -109,14 +109,28 @@ void init_default_global()
     global.pyuyv422buffer = NULL;
     global.vyuyv422buffer = NULL;
     global.yuv420pbuffer = NULL;
+    global.bufferingYUYV422 = NULL;
 
-    pthread_mutex_init(&global.yuyv422_lock, NULL);
-    pthread_attr_init(&global.thread_attr);
+
+    // set thread attribute;
+    pthread_attr_init(&global.thread_attr.global_attr);
     struct sched_param param;
     param.sched_priority = SCHED_RR;
-    pthread_attr_setschedparam(&global.thread_attr, &param);
-    pthread_attr_setdetachstate(&global.thread_attr, PTHREAD_CREATE_DETACHED);
-    global.bufferingYUYV422 = NULL;
+    pthread_attr_setschedparam(&global.thread_attr.global_attr, &param);
+    pthread_attr_setdetachstate(&global.thread_attr.global_attr,
+            PTHREAD_CREATE_JOINABLE);
+
+    pthread_rwlock_init(&global.thread_attr.bufferYUYV_rwlock, NULL);
+    pthread_mutex_init(&global.thread_attr.picture_mutex, NULL);
+    pthread_cond_init(&global.thread_attr.picture_cond, NULL);
+    pthread_mutex_init(&global.thread_attr.video_mutex, NULL);
+    pthread_cond_init(&global.thread_attr.video_cond, NULL);
+    global.thread_attr.picture_thread_id = 0;
+    global.thread_attr.video_thread_id = 0;
+
+    global.picture_target = NOTIFY_NONE;
+    global.video_target = NOTIFY_NONE;
+
 
     // captured picture/video storage settings;
     global.picture_format = PICTURE_JPEG;
@@ -202,8 +216,18 @@ void release_default_global()
     free(global.yuv420pbuffer);
     global.yuv420pbuffer = NULL;
 
-    pthread_mutex_destroy(&global.yuyv422_lock);
-    pthread_attr_destroy(&global.thread_attr);
     free(global.bufferingYUYV422);
     global.bufferingYUYV422 = NULL;
+
+    // clean threads;
+
+    pthread_join(global.thread_attr.picture_thread_id, NULL);
+    pthread_join(global.thread_attr.video_thread_id, NULL);
+
+    pthread_attr_destroy(&global.thread_attr.global_attr);
+    pthread_rwlock_destroy(&global.thread_attr.bufferYUYV_rwlock);
+    pthread_mutex_destroy(&global.thread_attr.picture_mutex);
+    pthread_cond_destroy(&global.thread_attr.picture_cond);
+    pthread_mutex_destroy(&global.thread_attr.video_mutex);
+    pthread_cond_destroy(&global.thread_attr.video_cond);
 }

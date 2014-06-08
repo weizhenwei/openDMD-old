@@ -105,6 +105,34 @@ enum video_format_type {
     VIDEO_H264 = 1,
 };
 
+struct thread_attribute {
+    pthread_attr_t global_attr;          // global shared thread attribute;
+
+    pthread_rwlock_t bufferYUYV_rwlock;  // rwlock for r/w bufferingYUYV422;
+
+    pthread_mutex_t picture_mutex;       // mutex for picture thread waiting
+                                         // condtion from main thread;
+    pthread_cond_t picture_cond;         // cond for main thread notifying
+                                         // picture thread;
+    pthread_mutex_t video_mutex;         // mutex for video thread waiting
+                                         // condtion from main thread;
+    pthread_cond_t video_cond;           // cond for main thread notifying
+                                         // video thread;
+    pthread_t picture_thread_id;         // picture thread id;
+    pthread_t video_thread_id;           // video thread id;
+};
+
+// notify target: main thread chose to notify picture thread or video thread,
+// or notify both;
+enum main_notify_target {
+    NOTIFY_NONE = 0, /* initial value */
+    NOTIFY_PICTURE = 1,
+    NOTIFY_VIDEO = 2,
+    NOTIFY_ALL = 3,
+    NOTIFY_EXIT = 4,
+};
+
+
 struct global_context {
     // basic global information
     pid_t pid;
@@ -142,12 +170,12 @@ struct global_context {
                                       // length = image_width*image_height*2;
     unsigned char *yuv420pbuffer;     // yuyv420pbuffer used in video capture;
                                       // length = image_width*image_height*1.5;
-
-    // bufferingYUYV422 is used in multi-thread
-    pthread_mutex_t yuyv422_lock;     // mutex for bufferingYUYV422;
-    pthread_attr_t  thread_attr;      // thread attribute;
     unsigned char *bufferingYUYV422;  // buffered place when captured new image
                                       // length = image_width*image_height*2;
+
+    struct thread_attribute thread_attr;    // thread attribute;
+    enum main_notify_target picture_target; // picture thread notify target;
+    enum main_notify_target video_target;   // picture thread notify target;
 
     // captured pictures/video storage settings;
     enum picture_format_type picture_format; // captured picture format.

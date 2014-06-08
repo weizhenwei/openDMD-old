@@ -41,6 +41,25 @@
 
 #include "image_capture.h"
 
+static void notify_picture()
+{
+    // dmd_log(LOG_INFO, "in %s, notify to picture thread\n",
+    //         __func__);
+    pthread_mutex_lock(&global.thread_attr.picture_mutex);
+    global.picture_target = NOTIFY_PICTURE;
+    pthread_cond_signal(&global.thread_attr.picture_cond);
+    pthread_mutex_unlock(&global.thread_attr.picture_mutex);
+}
+
+static void notify_video()
+{
+    // dmd_log(LOG_INFO, "in %s, notify to video thread\n",
+    //         __func__);
+    pthread_mutex_lock(&global.thread_attr.video_mutex);
+    global.video_target = NOTIFY_VIDEO;
+    pthread_cond_signal(&global.thread_attr.video_cond);
+    pthread_mutex_unlock(&global.thread_attr.video_mutex);
+}
 
 int process_image(void *yuyv, int length, int width, int height)
 {
@@ -70,40 +89,25 @@ int process_image(void *yuyv, int length, int width, int height)
         }
         global.lasttime = now;
 
-        // then copy image to buffer;
+        // then copy image to buffer, remember to lock it first;
+        pthread_rwlock_wrlock(&global.thread_attr.bufferYUYV_rwlock);
         memcpy(global.bufferingYUYV422, yuyv, length);
+        pthread_rwlock_unlock(&global.thread_attr.bufferYUYV_rwlock);
 
-        // finally, signal to notify picture thread and/or video thread;
+        // notify picture thread and/or video thread;
         if (global.working_mode == CAPTURE_ALL) {
-            // nofify picture thread and video thread;
-            if (kill(global.pid, SIGUSR1) == -1) {
-                dmd_log(LOG_ERR, "kill SIGUSR1 to picture thread failed:%s\n",
-                        strerror(errno));
-                exit(EXIT_FAILURE);
-            }
-
-            if (kill(global.pid, SIGUSR2) == -1) {
-                dmd_log(LOG_ERR, "kill SIGUSR2 to video thread failed:%s\n",
-                        strerror(errno));
-                exit(EXIT_FAILURE);
-            }
+            // notify all;
+            notify_picture();
+            notify_video();
         } else if (global.working_mode == CAPTURE_PICTURE) {
-            // only nofify picture thread;
-            if (kill(global.pid, SIGUSR1) == -1) {
-                dmd_log(LOG_ERR, "kill SIGUSR1 to picture thread failed:%s\n",
-                        strerror(errno));
-                exit(EXIT_FAILURE);
-            }
+            // only notify picture thread;
+            notify_picture();
         } else if (global.working_mode == CAPTURE_PICTURE) {
-            // only nofify video thread;
-            if (kill(global.pid, SIGUSR2) == -1) {
-                dmd_log(LOG_ERR, "kill SIGUSR2 to video thread failed:%s\n",
-                        strerror(errno));
-                exit(EXIT_FAILURE);
-            }
+            // only notify video thread;
+            notify_video();
         } else {
             // impossible !
-            dmd_log(LOG_INFO, "impossible to reach here!\n");
+            dmd_log(LOG_INFO, "in %s, impossible to reach here!\n", __func__);
         }
 
     } else { // check time elapsed exceeds global.video_duration;
@@ -113,20 +117,23 @@ int process_image(void *yuyv, int length, int width, int height)
 
             // if video capturing is on, continue encode video;
             if (video_capturing_switch == VIDEO_CAPTURING_ON) {
-                // kill to notify video thread;
-                if (kill(global.pid, SIGUSR2) == -1) {
-                    dmd_log(LOG_ERR, "kill SIGUSR2 to video thread failed:%s\n",
-                            strerror(errno));
-                    exit(EXIT_FAILURE);
-                }
+
+                // then copy image to buffer, remember to lock it first;
+                pthread_rwlock_wrlock(&global.thread_attr.bufferYUYV_rwlock);
+                memcpy(global.bufferingYUYV422, yuyv, length);
+                pthread_rwlock_unlock(&global.thread_attr.bufferYUYV_rwlock);
+
+                // only notify video thread;
+                notify_video();
             }
 
             // switch off when time elasped exceeds global.video_duration;
-            if (now - global.lasttime >= global.video_duration) {
+            if ((now - global.lasttime >= global.video_duration)
+                    && (video_capturing_switch == VIDEO_CAPTURING_ON)) {
+                dmd_log(LOG_INFO, "switch video capture off\n");
                 video_capturing_switch = VIDEO_CAPTURING_OFF;
             }
         }
-
     }
 
     return 0;

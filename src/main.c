@@ -219,32 +219,31 @@ static void init(void)
 
 static void create_thread()
 {
-    pthread_t picture_thread_id, video_thread_id;
     int dummy = 0;
     int ret;
     if (global.working_mode == CAPTURE_ALL) {
 
         // create picture thread;
-        ret = pthread_create(&picture_thread_id, &global.thread_attr,
-                picture_thread, &dummy);
-        assert( ret == 0);
+        ret = pthread_create(&global.thread_attr.picture_thread_id,
+                &global.thread_attr.global_attr, picture_thread, &dummy);
+        assert(ret == 0);
 
         // and create video thread;
-        ret = pthread_create(&video_thread_id, &global.thread_attr,
-                video_thread, &dummy);
-        assert( ret == 0);
+        ret = pthread_create(&global.thread_attr.video_thread_id,
+                &global.thread_attr.global_attr, video_thread, &dummy);
+        assert(ret == 0);
 
     } else if (global.working_mode == CAPTURE_PICTURE) {
         // only create picture thread;
-        ret = pthread_create(&picture_thread_id, &global.thread_attr,
-                picture_thread, &dummy);
-        assert( ret == 0);
+        ret = pthread_create(&global.thread_attr.picture_thread_id,
+                &global.thread_attr.global_attr, picture_thread, &dummy);
+        assert(ret == 0);
 
     } else if (global.working_mode == CAPTURE_VIDEO) {
         // only create video thread;
-        ret = pthread_create(&video_thread_id, &global.thread_attr,
-                video_thread, &dummy);
-        assert( ret == 0);
+        ret = pthread_create(&global.thread_attr.video_thread_id,
+                &global.thread_attr.global_attr, video_thread, &dummy);
+        assert(ret == 0);
 
     } else {
         dmd_log(LOG_ERR, "impossible reach here!\n");

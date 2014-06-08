@@ -98,8 +98,8 @@ char *get_jpeg_filepath()
 
     assert(strlen(filepath) < PATH_MAX);
 
-    dmd_log(LOG_INFO, "in function %s, jpeg filename is: %s\n",
-            __func__, filepath);
+    // dmd_log(LOG_INFO, "in function %s, jpeg filename is: %s\n",
+    //         __func__, filepath);
 
     return filepath;
 }
@@ -131,8 +131,8 @@ char *get_h264_filepath()
             tmptr->tm_sec);
     assert(strlen(filepath) < PATH_MAX);
 
-    dmd_log(LOG_INFO, "in function %s, h264 filename is: %s\n",
-            __func__, filepath);
+    // dmd_log(LOG_INFO, "in function %s, h264 filename is: %s\n",
+    //        __func__, filepath);
 
     return filepath;
 }
