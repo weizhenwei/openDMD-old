@@ -29,3 +29,6 @@ tags
 
 # a reference conf file
 conf/reference.conf
+
+#autom4te.cache
+#autom4te.cache
