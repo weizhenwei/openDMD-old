@@ -48,6 +48,29 @@ void dmd_openlog(const char *ident, int logopt, int facility)
 
 void dmd_log(int priority, const char *format, ...)
 {
+    char *log_level = NULL;
+
+    if (priority > global.log_level)
+        return;
+
+    if (priority == LOG_INFO) {
+        log_level = "info";
+    } else if (priority == LOG_ERR) {
+        log_level = "error";
+    } else if (priority == LOG_DEBUG) {
+        log_level = "debug";
+    } else if (priority == LOG_EMERG) {
+        log_level = "emergent";
+    } else if (priority == LOG_ALERT) {
+        log_level = "alert";
+    } else if (priority == LOG_CRIT) {
+        log_level = "critical";
+    } else if (priority == LOG_WARNING) {
+        log_level = "warning";
+    } else if (priority == LOG_NOTICE) {
+        log_level = "notice";
+    }
+
     va_list var_list;
     if (format == NULL) {
         return;
@@ -61,6 +84,7 @@ void dmd_log(int priority, const char *format, ...)
     // TODO: why va_start and va_end again ?
     va_start(var_list, format);
     va_end(var_list);
+    fprintf(stdout, "[%s]: ", log_level);
     vfprintf(stdout, format, var_list);
 #endif
 }

@@ -48,6 +48,11 @@ void init_default_global()
 {
     // basic global information
     global.pid = getpid();
+#if defined(DEBUG)
+    global.log_level = LOG_INFO;   // default log level;
+#else
+    global.log_level = LOG_ERR;   // default log level;
+#endif
 
     // global running settings;
 #if defined(DEBUG)

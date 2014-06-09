@@ -46,6 +46,8 @@
 #include <syslog.h>
 #include <stdarg.h>
 
+#include "global_context.h"
+
 #define DMD_IDENT "opendmd"
 #define DMD_LOGOPT LOG_PID
 #define DMD_FACILITY LOG_USER

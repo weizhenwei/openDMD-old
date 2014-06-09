@@ -50,6 +50,7 @@
 #include <linux/limits.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <syslog.h>
 
 #include "log.h"
 
@@ -135,7 +136,18 @@ enum main_notify_target {
 
 struct global_context {
     // basic global information
-    pid_t pid;
+    pid_t pid;                 // main thread's pid;
+
+    // these are defined in syslog.h
+    // #define LOG_EMERG   0   /* system is unusable */
+    // #define LOG_ALERT   1   /* action must be taken immediately */
+    // #define LOG_CRIT    2   /* critical conditions */
+    // #define LOG_ERR     3   /* error conditions */
+    // #define LOG_WARNING 4   /* warning conditions */
+    // #define LOG_NOTICE  5   /* normal but significant condition */
+    // #define LOG_INFO    6   /* informational */
+    // #define LOG_DEBUG   7   /* debug-level messages */
+    unsigned int log_level;    // dmd_log level, equivelent to syslog level;
 
     // global running settings
     enum daemon_mode_type daemon_mode;   // run in daemon mode;

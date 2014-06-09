@@ -100,15 +100,11 @@ void parse_config(const char *conf_file)
     config.sep_char = ' ';
     config.str_char = '"';
 
-    dmd_log(LOG_INFO, "in %s: config file is %s\n", __func__, conf_file);
-
     // parse the config file;
     ccl_parse(&config, conf_file);
 
     // key/value pairs is sorted in ascending order according to key.
     while ((iter = ccl_iterate(&config)) != 0) {
-        dmd_log(LOG_INFO, "key: %s, value: %s\n", iter->key, iter->value);
-
         if (strcmp(iter->key, "daemon_mode") == 0) {
             if (strcmp(iter->value, "on") == 0) {
                 global.daemon_mode = DAEMON_ON;
@@ -116,6 +112,29 @@ void parse_config(const char *conf_file)
                 global.daemon_mode = DAEMON_OFF;
             } else {
                 dmd_log(LOG_ERR, "invalid value of daemon_mode\n");
+            }
+        } else if (strcmp(iter->key, "log_level") == 0) {
+            if (strcmp(iter->value, "LOG_INFO") == 0) {
+                global.log_level = LOG_INFO;
+            } else if (strcmp(iter->value, "LOG_ERR") == 0) {
+                global.log_level = LOG_ERR;
+            } else if (strcmp(iter->value, "LOG_DEBUG") == 0) {
+                global.log_level = LOG_DEBUG;
+            } else if (strcmp(iter->value, "LOG_EMERG") == 0) {
+                global.log_level = LOG_EMERG;
+            } else if (strcmp(iter->value, "LOG_ALERT") == 0) {
+                global.log_level = LOG_ALERT;
+            } else if (strcmp(iter->value, "LOG_CRIT") == 0) {
+                global.log_level = LOG_CRIT;
+            } else if (strcmp(iter->value, "LOG_WARNING") == 0) {
+                global.log_level = LOG_WARNING;
+            } else if (strcmp(iter->value, "LOG_NOTICE") == 0) {
+                global.log_level = LOG_NOTICE;
+            } else {
+                // impossible to reach here!
+                dmd_log(LOG_ERR, "in file %s, function %s, line %s, "
+                        "impossible to reach here!\n", __FILE__, __func__,
+                        __LINE__);
             }
         } else if (strcmp(iter->key, "pid_file") == 0) {
             assert(strlen(iter->value) < PATH_MAX);
