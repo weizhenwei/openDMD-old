@@ -1,9 +1,18 @@
+2014.06.09
+    Urgent:
+        set appropriate parameter on libx264 to encode h264 file perfect,
+    At present, the fps seems to be too fast.
+    Second:
+        investigate RTP protocol and usable open source library.
+    Thrid:
+        The first captured image seems have some problem, solve it;
+
 2014.06.07
     remove uncessary malloc in dmd_picture_thread.c and dmd_video_thread.c, 
     remove dmd prefix in source files;
     all is DONE!
 
-    TODO: pthread caused memory leak!
+    TODO: pthread caused memory leak! it's DONE!
 
     Urgent:
         set appropriate parameter on libx264 to encode h264 file perfect,

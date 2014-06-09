@@ -48,10 +48,24 @@ void dmd_openlog(const char *ident, int logopt, int facility)
 
 void dmd_log(int priority, const char *format, ...)
 {
-    char *log_level = NULL;
 
-    if (priority > global.log_level)
+    if (priority > global.log_level) {
         return;
+    }
+    if (format == NULL) {
+        return;
+    }
+
+    va_list var_list;
+
+    va_start(var_list, format);
+    va_end(var_list);
+    vsyslog(priority, format, var_list);
+
+#if defined(DEBUG)
+    // print to stdout;
+
+    char *log_level = NULL;
 
     if (priority == LOG_INFO) {
         log_level = "info";
@@ -71,16 +85,6 @@ void dmd_log(int priority, const char *format, ...)
         log_level = "notice";
     }
 
-    va_list var_list;
-    if (format == NULL) {
-        return;
-    }
-
-    va_start(var_list, format);
-    va_end(var_list);
-    vsyslog(priority, format, var_list);
-
-#if defined(DEBUG)
     // TODO: why va_start and va_end again ?
     va_start(var_list, format);
     va_end(var_list);
