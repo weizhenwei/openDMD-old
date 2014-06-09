@@ -1,12 +1,21 @@
 #!/bin/bash
 
+ACLOCAL=aclocal
+AUTOHEADER=autoheader
+AUTOCONF=autoconf
+AUTOMAKE=automake
+
 echo "aclocal ..."
-aclocal
+$ACLOCAL
+
 echo "autoheader ..."
-autoheader
+$AUTOHEADER
+
 echo "autoconf ..."
-autoconf
+$AUTOCONF
+
 echo "automake ..."
-automake --add-missing
+$AUTOMAKE --force-missing --add-missing
+
 echo "configure ..."
 ./configure --enable-debug
