@@ -54,7 +54,8 @@ am_opendmd_OBJECTS = main.$(OBJEXT) config.$(OBJEXT) log.$(OBJEXT) \
 opendmd_OBJECTS = $(am_opendmd_OBJECTS)
 opendmd_DEPENDENCIES = $(top_srcdir)/libccl/libccl.a \
 	$(top_srcdir)/libjpeg/libjpeg.a \
-	$(top_srcdir)/libx264/libx264.a
+	$(top_srcdir)/libx264/libx264.a \
+	$(top_srcdir)/libortp/src/libortp.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -69,6 +70,7 @@ ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
+ALLOCA = @ALLOCA@
 AMTAR = @AMTAR@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
@@ -162,11 +164,13 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
 INCLUDES = -I$(top_srcdir)/libccl -I$(top_srcdir)/libjpeg \
+		   -I$(top_srcdir)/libortp/include -I$(top_srcdir)/libortp \
 		   -I$(top_srcdir)/libx264 
 
 opendmd_LDADD = $(top_srcdir)/libccl/libccl.a \
 				$(top_srcdir)/libjpeg/libjpeg.a \
-				$(top_srcdir)/libx264/libx264.a
+				$(top_srcdir)/libx264/libx264.a \
+				$(top_srcdir)/libortp/src/libortp.a
 
 opendmd_SOURCES = main.c \
                   config.h config.c log.h log.c path.h path.c \

@@ -15,7 +15,6 @@
 
 @SET_MAKE@
 
-
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -33,9 +32,8 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-subdir = libjpeg
-DIST_COMMON = README $(include_HEADERS) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in
+subdir = libortp/src
+DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -71,29 +69,24 @@ am__uninstall_files_from_dir = { \
     || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
-am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"
+am__installdirs = "$(DESTDIR)$(libdir)"
 LIBRARIES = $(lib_LIBRARIES)
 AR = ar
 ARFLAGS = cru
-libjpeg_a_AR = $(AR) $(ARFLAGS)
-libjpeg_a_LIBADD =
-am_libjpeg_a_OBJECTS = jaricom.$(OBJEXT) jcapimin.$(OBJEXT) \
-	jcapistd.$(OBJEXT) jcarith.$(OBJEXT) jccoefct.$(OBJEXT) \
-	jccolor.$(OBJEXT) jcdctmgr.$(OBJEXT) jchuff.$(OBJEXT) \
-	jcinit.$(OBJEXT) jcmainct.$(OBJEXT) jcmarker.$(OBJEXT) \
-	jcmaster.$(OBJEXT) jcomapi.$(OBJEXT) jcparam.$(OBJEXT) \
-	jcprepct.$(OBJEXT) jcsample.$(OBJEXT) jctrans.$(OBJEXT) \
-	jdapimin.$(OBJEXT) jdapistd.$(OBJEXT) jdarith.$(OBJEXT) \
-	jdatadst.$(OBJEXT) jdatasrc.$(OBJEXT) jdcoefct.$(OBJEXT) \
-	jdcolor.$(OBJEXT) jddctmgr.$(OBJEXT) jdhuff.$(OBJEXT) \
-	jdinput.$(OBJEXT) jdmainct.$(OBJEXT) jdmarker.$(OBJEXT) \
-	jdmaster.$(OBJEXT) jdmerge.$(OBJEXT) jdpostct.$(OBJEXT) \
-	jdsample.$(OBJEXT) jdtrans.$(OBJEXT) jerror.$(OBJEXT) \
-	jfdctflt.$(OBJEXT) jfdctfst.$(OBJEXT) jfdctint.$(OBJEXT) \
-	jidctflt.$(OBJEXT) jidctfst.$(OBJEXT) jidctint.$(OBJEXT) \
-	jquant1.$(OBJEXT) jquant2.$(OBJEXT) jutils.$(OBJEXT) \
-	jmemmgr.$(OBJEXT) jmemnobs.$(OBJEXT)
-libjpeg_a_OBJECTS = $(am_libjpeg_a_OBJECTS)
+libortp_a_AR = $(AR) $(ARFLAGS)
+libortp_a_LIBADD =
+am_libortp_a_OBJECTS = str_utils.$(OBJEXT) port.$(OBJEXT) \
+	logging.$(OBJEXT) rtpparse.$(OBJEXT) rtpsession.$(OBJEXT) \
+	rtpsession_inet.$(OBJEXT) jitterctl.$(OBJEXT) \
+	rtpsignaltable.$(OBJEXT) rtptimer.$(OBJEXT) \
+	posixtimer.$(OBJEXT) ortp.$(OBJEXT) scheduler.$(OBJEXT) \
+	avprofile.$(OBJEXT) sessionset.$(OBJEXT) \
+	telephonyevents.$(OBJEXT) payloadtype.$(OBJEXT) \
+	rtpprofile.$(OBJEXT) rtcp.$(OBJEXT) utils.$(OBJEXT) \
+	rtcpparse.$(OBJEXT) event.$(OBJEXT) stun.$(OBJEXT) \
+	stun_udp.$(OBJEXT) ortp_srtp.$(OBJEXT) b64.$(OBJEXT) \
+	zrtp.$(OBJEXT) netsim.$(OBJEXT)
+libortp_a_OBJECTS = $(am_libortp_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -102,9 +95,8 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(libjpeg_a_SOURCES)
-DIST_SOURCES = $(libjpeg_a_SOURCES)
-HEADERS = $(include_HEADERS)
+SOURCES = $(libortp_a_SOURCES)
+DIST_SOURCES = $(libortp_a_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -198,20 +190,36 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
-lib_LIBRARIES = libjpeg.a
-libjpeg_a_SOURCES = jaricom.c jcapimin.c jcapistd.c jcarith.c jccoefct.c \
-		     jccolor.c jcdctmgr.c jchuff.c jcinit.c jcmainct.c \
-		     jcmarker.c jcmaster.c jcomapi.c jcparam.c jcprepct.c \
-		     jcsample.c jctrans.c jdapimin.c jdapistd.c jdarith.c \
-		     jdatadst.c jdatasrc.c jdcoefct.c jdcolor.c jddctmgr.c \
-		     jdhuff.c jdinput.c jdmainct.c jdmarker.c jdmaster.c \
-		     jdmerge.c jdpostct.c jdsample.c jdtrans.c jerror.c \
-		     jfdctflt.c  jfdctfst.c jfdctint.c jidctflt.c jidctfst.c \
-		     jidctint.c jquant1.c jquant2.c jutils.c jmemmgr.c jmemnobs.c \
-		     jerror.h jmorecfg.h jpeglib.h cderror.h cdjpeg.h jdct.h \
-		     jinclude.h jmemsys.h jpegint.h jversion.h transupp.h jconfig.h
+INCLUDES = -I$(top_srcdir)/libortp/include -I$(top_srcdir)/libortp
+lib_LIBRARIES = libortp.a
+libortp_a_SOURCES = str_utils.c	\
+			port.c \
+			logging.c \
+			rtpparse.c  \
+			rtpsession.c \
+			rtpsession_inet.c \
+			rtpsession_priv.h \
+			jitterctl.c jitterctl.h \
+			rtpsignaltable.c  \
+			rtptimer.c	rtptimer.h \
+			posixtimer.c \
+			ortp.c \
+			scheduler.c scheduler.h \
+			avprofile.c  \
+			sessionset.c  \
+			telephonyevents.c  \
+			payloadtype.c \
+			rtpprofile.c \
+			rtcp.c  \
+			utils.c utils.h \
+			rtcpparse.c \
+			event.c \
+			stun.c stun_udp.c \
+			ortp_srtp.c \
+			b64.c \
+			zrtp.c \
+			netsim.c
 
-include_HEADERS = jerror.h jmorecfg.h jpeglib.h
 all: all-am
 
 .SUFFIXES:
@@ -225,9 +233,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign libjpeg/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign libortp/src/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign libjpeg/Makefile
+	  $(AUTOMAKE) --foreign libortp/src/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -276,10 +284,10 @@ uninstall-libLIBRARIES:
 
 clean-libLIBRARIES:
 	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
-libjpeg.a: $(libjpeg_a_OBJECTS) $(libjpeg_a_DEPENDENCIES) $(EXTRA_libjpeg_a_DEPENDENCIES) 
-	-rm -f libjpeg.a
-	$(libjpeg_a_AR) libjpeg.a $(libjpeg_a_OBJECTS) $(libjpeg_a_LIBADD)
-	$(RANLIB) libjpeg.a
+libortp.a: $(libortp_a_OBJECTS) $(libortp_a_DEPENDENCIES) $(EXTRA_libortp_a_DEPENDENCIES) 
+	-rm -f libortp.a
+	$(libortp_a_AR) libortp.a $(libortp_a_OBJECTS) $(libortp_a_LIBADD)
+	$(RANLIB) libortp.a
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -287,52 +295,33 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jaricom.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jcapimin.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jcapistd.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jcarith.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jccoefct.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jccolor.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jcdctmgr.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jchuff.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jcinit.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jcmainct.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jcmarker.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jcmaster.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jcomapi.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jcparam.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jcprepct.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jcsample.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jctrans.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdapimin.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdapistd.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdarith.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdatadst.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdatasrc.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdcoefct.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdcolor.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jddctmgr.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdhuff.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdinput.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdmainct.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdmarker.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdmaster.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdmerge.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdpostct.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdsample.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdtrans.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jerror.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jfdctflt.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jfdctfst.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jfdctint.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jidctflt.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jidctfst.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jidctint.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jmemmgr.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jmemnobs.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jquant1.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jquant2.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jutils.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/avprofile.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/b64.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/event.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jitterctl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/logging.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/netsim.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ortp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ortp_srtp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/payloadtype.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/port.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/posixtimer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtcp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtcpparse.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtpparse.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtpprofile.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtpsession.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtpsession_inet.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtpsignaltable.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtptimer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scheduler.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sessionset.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/str_utils.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stun.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stun_udp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/telephonyevents.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utils.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zrtp.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -347,24 +336,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
-install-includeHEADERS: $(include_HEADERS)
-	@$(NORMAL_INSTALL)
-	test -z "$(includedir)" || $(MKDIR_P) "$(DESTDIR)$(includedir)"
-	@list='$(include_HEADERS)'; test -n "$(includedir)" || list=; \
-	for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  echo "$$d$$p"; \
-	done | $(am__base_list) | \
-	while read files; do \
-	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(includedir)'"; \
-	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(includedir)" || exit $$?; \
-	done
-
-uninstall-includeHEADERS:
-	@$(NORMAL_UNINSTALL)
-	@list='$(include_HEADERS)'; test -n "$(includedir)" || list=; \
-	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
-	dir='$(DESTDIR)$(includedir)'; $(am__uninstall_files_from_dir)
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -450,9 +421,9 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LIBRARIES) $(HEADERS)
+all-am: Makefile $(LIBRARIES)
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"; do \
+	for dir in "$(DESTDIR)$(libdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -507,7 +478,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-includeHEADERS
+install-data-am:
 
 install-dvi: install-dvi-am
 
@@ -552,7 +523,7 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-includeHEADERS uninstall-libLIBRARIES
+uninstall-am: uninstall-libLIBRARIES
 
 .MAKE: install-am install-strip
 
@@ -561,20 +532,14 @@ uninstall-am: uninstall-includeHEADERS uninstall-libLIBRARIES
 	distclean-generic distclean-tags distdir dvi dvi-am html \
 	html-am info info-am install install-am install-data \
 	install-data-am install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am \
-	install-includeHEADERS install-info install-info-am \
-	install-libLIBRARIES install-man install-pdf install-pdf-am \
-	install-ps install-ps-am install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
+	install-exec-am install-html install-html-am install-info \
+	install-info-am install-libLIBRARIES install-man install-pdf \
+	install-pdf-am install-ps install-ps-am install-strip \
+	installcheck installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
-	uninstall-am uninstall-includeHEADERS uninstall-libLIBRARIES
+	uninstall-am uninstall-libLIBRARIES
 
-
-#INSTINCLUDES = jerror.h jmorecfg.h jpeglib.h
-#
-#OTHERINCLUDES = cderror.h cdjpeg.h jdct.h jinclude.h jmemsys.h jpegint.h \
-#        jversion.h transupp.h
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
