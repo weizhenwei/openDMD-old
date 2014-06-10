@@ -136,6 +136,14 @@ void parse_config(const char *conf_file)
                         "impossible to reach here!\n", __FILE__, __func__,
                         __LINE__);
             }
+        } else if (strcmp(iter->key, "cluster_mode") == 0) {
+            if (strcmp(iter->value, "singleton") == 0) {
+                global.cluster_mode = CLUSTER_SINGLETON;
+            } else if (strcmp(iter->value, "slave") == 0) {
+                global.cluster_mode = CLUSTER_SLAVE;
+            } else if (strcmp(iter->value, "master") == 0) {
+                global.cluster_mode = CLUSTER_MASTER;
+            }
         } else if (strcmp(iter->key, "pid_file") == 0) {
             assert(strlen(iter->value) < PATH_MAX);
             strncpy(global.pid_file, iter->value, strlen(iter->value));

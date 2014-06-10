@@ -53,6 +53,7 @@ void init_default_global()
 #else
     global.log_level = LOG_ERR;   // default log level;
 #endif
+    global.cluster_mode = CLUSTER_SINGLETON;
 
     // global running settings;
 #if defined(DEBUG)

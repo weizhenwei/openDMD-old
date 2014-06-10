@@ -221,33 +221,41 @@ static void create_thread()
 {
     int dummy = 0;
     int ret;
-    if (global.working_mode == CAPTURE_ALL) {
 
-        // create picture thread;
-        ret = pthread_create(&global.thread_attr.picture_thread_id,
-                &global.thread_attr.global_attr, picture_thread, &dummy);
-        assert(ret == 0);
+    if (global.cluster_mode == CLUSTER_SLAVE ||
+            global.cluster_mode == CLUSTER_SINGLETON) {
+        // create worker thread for slave node;
 
-        // and create video thread;
-        ret = pthread_create(&global.thread_attr.video_thread_id,
-                &global.thread_attr.global_attr, video_thread, &dummy);
-        assert(ret == 0);
+        if (global.working_mode == CAPTURE_ALL) {
+            // create picture thread;
+            ret = pthread_create(&global.thread_attr.picture_thread_id,
+                    &global.thread_attr.global_attr, picture_thread, &dummy);
+            assert(ret == 0);
 
-    } else if (global.working_mode == CAPTURE_PICTURE) {
-        // only create picture thread;
-        ret = pthread_create(&global.thread_attr.picture_thread_id,
-                &global.thread_attr.global_attr, picture_thread, &dummy);
-        assert(ret == 0);
+            // and create video thread;
+            ret = pthread_create(&global.thread_attr.video_thread_id,
+                    &global.thread_attr.global_attr, video_thread, &dummy);
+            assert(ret == 0);
 
-    } else if (global.working_mode == CAPTURE_VIDEO) {
-        // only create video thread;
-        ret = pthread_create(&global.thread_attr.video_thread_id,
-                &global.thread_attr.global_attr, video_thread, &dummy);
-        assert(ret == 0);
+        } else if (global.working_mode == CAPTURE_PICTURE) {
+            // only create picture thread;
+            ret = pthread_create(&global.thread_attr.picture_thread_id,
+                    &global.thread_attr.global_attr, picture_thread, &dummy);
+            assert(ret == 0);
 
-    } else {
-        dmd_log(LOG_ERR, "impossible reach here!\n");
-        assert(0);
+        } else if (global.working_mode == CAPTURE_VIDEO) {
+            // only create video thread;
+            ret = pthread_create(&global.thread_attr.video_thread_id,
+                    &global.thread_attr.global_attr, video_thread, &dummy);
+            assert(ret == 0);
+
+        } else {
+            dmd_log(LOG_ERR, "impossible reach here!\n");
+            assert(0);
+        }
+    } else if (global.cluster_mode == CLUSTER_MASTER) { // master node;
+        // TODO: master node setup receive utils;
+
     }
 
 }

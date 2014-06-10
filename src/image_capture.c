@@ -199,7 +199,7 @@ int dmd_image_capture(struct v4l2_device_info *v4l2_info)
                 return -1;
             }
 
-            if (read_frame(fd, buffers, width, height) == 0)
+            if (read_frame(fd, buffers, width, height) == -1)
                 break;
         }
     } // while

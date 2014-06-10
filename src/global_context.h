@@ -133,6 +133,15 @@ enum main_notify_target {
     NOTIFY_EXIT = 4,
 };
 
+// cluster mode: slave, master, or singleton
+// slave: as a working node, responsible for capturing and sending;
+// master: as a master node, responsible for receiving and saving;
+// singleton: only one node in whole cluster , capturing and saving;
+enum cluster_mode_t {
+    CLUSTER_SLAVE = 1,
+    CLUSTER_MASTER = 2,
+    CLUSTER_SINGLETON = 3,
+};
 
 struct global_context {
     // basic global information
@@ -148,6 +157,8 @@ struct global_context {
     // #define LOG_INFO    6   /* informational */
     // #define LOG_DEBUG   7   /* debug-level messages */
     unsigned int log_level;    // dmd_log level, equivelent to syslog level;
+
+    enum cluster_mode_t cluster_mode;    // cluster mode;
 
     // global running settings
     enum daemon_mode_type daemon_mode;   // run in daemon mode;
