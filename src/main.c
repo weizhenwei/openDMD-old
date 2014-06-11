@@ -351,10 +351,19 @@ int main(int argc, char *argv[])
 
     init();
 
-    // create picture thread and/or video thread;
-    create_thread();
 
-    working_progress();
+    // slave or singleton do the capturing work;
+    if (global.cluster_mode == CLUSTER_SLAVE
+            || global.cluster_mode == CLUSTER_SINGLETON) {
+        // create picture thread and/or video thread;
+        create_thread();
+
+        working_progress();
+    } else if (global.cluster_mode == CLUSTER_MASTER) {
+        // TODO: master do the receiving and storing work;
+
+
+    }
 
     clean();
 
