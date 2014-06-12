@@ -32,3 +32,6 @@ conf/reference.conf
 
 #autom4te.cache
 autom4te.cache
+
+# reconf.sh sysbol link
+reconf.sh

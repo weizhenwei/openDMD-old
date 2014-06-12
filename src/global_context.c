@@ -226,9 +226,22 @@ void release_default_global()
     global.bufferingYUYV422 = NULL;
 
     // clean threads;
-
-    pthread_join(global.thread_attr.picture_thread_id, NULL);
-    pthread_join(global.thread_attr.video_thread_id, NULL);
+    if (global.cluster_mode == CLUSTER_SLAVE ||
+            global.cluster_mode == CLUSTER_SINGLETON) {
+        if (global.working_mode == CAPTURE_ALL) {
+            pthread_join(global.thread_attr.picture_thread_id, NULL);
+            pthread_join(global.thread_attr.video_thread_id, NULL);
+        } else if (global.working_mode == CAPTURE_PICTURE) {
+            pthread_join(global.thread_attr.picture_thread_id, NULL);
+        } else if (global.working_mode == CAPTURE_VIDEO) {
+            pthread_join(global.thread_attr.video_thread_id, NULL);
+        } else {
+            dmd_log(LOG_ERR, "impossible reach here!\n");
+            assert(0);
+        }
+    } else {
+        // TODO: master thread clean utils;
+    }
 
     pthread_attr_destroy(&global.thread_attr.global_attr);
     pthread_rwlock_destroy(&global.thread_attr.bufferYUYV_rwlock);

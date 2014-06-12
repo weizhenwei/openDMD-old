@@ -102,7 +102,7 @@ int process_image(void *yuyv, int length, int width, int height)
         } else if (global.working_mode == CAPTURE_PICTURE) {
             // only notify picture thread;
             notify_picture();
-        } else if (global.working_mode == CAPTURE_PICTURE) {
+        } else if (global.working_mode == CAPTURE_VIDEO) {
             // only notify video thread;
             notify_video();
         } else {
