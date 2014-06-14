@@ -87,9 +87,13 @@ int YUYV422_motion_detect(unsigned char *yuyv, int width,
                 pv += 4;
                 index += 4;
             } // if
+
+            if (counter > DIFF)
+                goto exit;
         } // for inner
     } // for outer
 
+exit:
     // refresh referenceYUYV422 to new captured image;
     memcpy(global.referenceYUYV422, yuyv, length);
     if (counter >= DIFF) {
