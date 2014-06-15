@@ -51,15 +51,19 @@ int encode_yuv420p(unsigned char *yuv420p, int width, int height,
     x264_param_t param;
     // initialize param;
     x264_param_default_preset(&param, "veryfast", "zerolatency");
+    param.i_csp = X264_CSP_I420;
     param.i_threads = 1;
     param.i_width = width;
     param.i_height = height;
     param.i_fps_num = fps;
     param.i_fps_den = 1;
-    param.i_keyint_max = 25;
+    param.i_keyint_max = 250;
     param.b_intra_refresh = 1;
     param.b_annexb = 1;
     param.i_log_level = X264_LOG_WARNING;
+
+    // bitrate, in kbps(kilobits per second);
+    param.rc.i_bitrate = 100;
 
     x264_param_apply_profile(&param, "baseline");
     encoder = x264_encoder_open(&param);
@@ -69,6 +73,7 @@ int encode_yuv420p(unsigned char *yuv420p, int width, int height,
     // WARNING: this caused a memory leak!
     // pic_in.img.plane[0] = yuv420p;
 
+    // yuv420p in YUV420P format;
     memcpy(pic_in.img.plane[0], yuv420p, width * height * 1.5);
     pic_in.img.plane[1] = pic_in.img.plane[0] + width * height;
     pic_in.img.plane[2] = pic_in.img.plane[1] + width * height / 4;
@@ -88,7 +93,7 @@ int encode_yuv420p(unsigned char *yuv420p, int width, int height,
     for (nal = nals; nal < nals + nnal; nal++) {
         int len = fwrite(nal->p_payload, sizeof(unsigned char),
                 nal->i_payload, h264fp);
-        // dmd_log(LOG_INFO, "write to h264 length:%d\n", len);
+        dmd_log(LOG_DEBUG, "write to h264 length:%d\n", len);
         if ( len != nal->i_payload) {
             dmd_log(LOG_ERR, "write to h264 error:%s\n", strerror(errno));
             return -1;
