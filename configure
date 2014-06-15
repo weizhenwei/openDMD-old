@@ -1500,6 +1500,37 @@ fi
 
 } # ac_fn_c_try_link
 
+# ac_fn_c_check_header_compile LINENO HEADER VAR INCLUDES
+# -------------------------------------------------------
+# Tests whether HEADER exists and can be compiled using the include files in
+# INCLUDES, setting the cache variable VAR accordingly.
+ac_fn_c_check_header_compile ()
+{
+  as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $2" >&5
+$as_echo_n "checking for $2... " >&6; }
+if eval \${$3+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+$4
+#include <$2>
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  eval "$3=yes"
+else
+  eval "$3=no"
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+eval ac_res=\$$3
+	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+  eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
+
+} # ac_fn_c_check_header_compile
+
 # ac_fn_c_try_cpp LINENO
 # ----------------------
 # Try to preprocess conftest.$ac_ext, and return whether this succeeded.
@@ -1669,37 +1700,6 @@ fi
   as_fn_set_status $ac_retval
 
 } # ac_fn_c_try_run
-
-# ac_fn_c_check_header_compile LINENO HEADER VAR INCLUDES
-# -------------------------------------------------------
-# Tests whether HEADER exists and can be compiled using the include files in
-# INCLUDES, setting the cache variable VAR accordingly.
-ac_fn_c_check_header_compile ()
-{
-  as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $2" >&5
-$as_echo_n "checking for $2... " >&6; }
-if eval \${$3+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-$4
-#include <$2>
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-  eval "$3=yes"
-else
-  eval "$3=no"
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-fi
-eval ac_res=\$$3
-	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
-$as_echo "$ac_res" >&6; }
-  eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
-
-} # ac_fn_c_check_header_compile
 
 # ac_fn_c_check_type LINENO TYPE VAR INCLUDES
 # -------------------------------------------
@@ -3996,6 +3996,32 @@ fi
 
 
 # Checks for header files.
+for ac_header in sys/types.h netinet/in.h arpa/nameser.h netdb.h resolv.h
+do :
+  as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+ac_fn_c_check_header_compile "$LINENO" "$ac_header" "$as_ac_Header" "#ifdef HAVE_SYS_TYPES_H
+#  include <sys/types.h>
+#endif
+#ifdef HAVE_NETINET_IN_H
+#  include <netinet/in.h>   /* inet_ functions / structs */
+#endif
+#ifdef HAVE_ARPA_NAMESER_H
+#  include <arpa/nameser.h> /* DNS HEADER struct */
+#endif
+#ifdef HAVE_NETDB_H
+#  include <netdb.h>
+#endif
+"
+if eval test \"x\$"$as_ac_Header"\" = x"yes"; then :
+  cat >>confdefs.h <<_ACEOF
+#define `$as_echo "HAVE_$ac_header" | $as_tr_cpp` 1
+_ACEOF
+
+fi
+
+done
+
+
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -4393,7 +4419,7 @@ fi
 done
 
 
-for ac_header in arpa/inet.h fcntl.h inttypes.h limits.h locale.h \
+for ac_header in arpa/inet.h fcntl.h inttypes.h limits.h locale.h netdb.h \
                   malloc.h etdb.h netinet/in.h stddef.h stdint.h stdlib.h \
                   string.h strings.h sys/ioctl.h sys/param.h sys/socket.h \
                   sys/time.h sys/timeb.h syslog.h unistd.h
@@ -5568,7 +5594,7 @@ fi
 
 
 #Attention: this is import, list the Makefile need to generate
-ac_config_files="$ac_config_files Makefile libccl/Makefile libjpeg/Makefile libortp/Makefile libortp/include/Makefile libortp/include/ortp/Makefile libortp/src/Makefile libx264/Makefile libx264/common/Makefile libx264/encoder/Makefile src/Makefile"
+ac_config_files="$ac_config_files Makefile libccl/Makefile libjpeg/Makefile libortp/Makefile libortp/include/Makefile libortp/include/ortp/Makefile libortp/src/Makefile libortp/test/Makefile libx264/Makefile libx264/common/Makefile libx264/encoder/Makefile src/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -6308,6 +6334,7 @@ do
     "libortp/include/Makefile") CONFIG_FILES="$CONFIG_FILES libortp/include/Makefile" ;;
     "libortp/include/ortp/Makefile") CONFIG_FILES="$CONFIG_FILES libortp/include/ortp/Makefile" ;;
     "libortp/src/Makefile") CONFIG_FILES="$CONFIG_FILES libortp/src/Makefile" ;;
+    "libortp/test/Makefile") CONFIG_FILES="$CONFIG_FILES libortp/test/Makefile" ;;
     "libx264/Makefile") CONFIG_FILES="$CONFIG_FILES libx264/Makefile" ;;
     "libx264/common/Makefile") CONFIG_FILES="$CONFIG_FILES libx264/common/Makefile" ;;
     "libx264/encoder/Makefile") CONFIG_FILES="$CONFIG_FILES libx264/encoder/Makefile" ;;

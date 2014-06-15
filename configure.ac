@@ -25,7 +25,8 @@ AC_CHECK_LIB([m], [log10])
 AC_CHECK_LIB([pthread], [pthread_create])
 
 # Checks for header files.
-AC_CHECK_HEADERS([arpa/inet.h fcntl.h inttypes.h limits.h locale.h \
+AC_HEADER_RESOLV
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h inttypes.h limits.h locale.h netdb.h \
                   malloc.h etdb.h netinet/in.h stddef.h stdint.h stdlib.h \
                   string.h strings.h sys/ioctl.h sys/param.h sys/socket.h \
                   sys/time.h sys/timeb.h syslog.h unistd.h])
@@ -81,6 +82,7 @@ AC_CONFIG_FILES([Makefile
                  libortp/include/Makefile
                  libortp/include/ortp/Makefile
                  libortp/src/Makefile
+                 libortp/test/Makefile
                  libx264/Makefile
                  libx264/common/Makefile
                  libx264/encoder/Makefile

@@ -63,7 +63,7 @@ int encode_yuv420p(unsigned char *yuv420p, int width, int height,
     param.i_log_level = X264_LOG_WARNING;
 
     // bitrate, in kbps(kilobits per second);
-    param.rc.i_bitrate = 100;
+    param.rc.i_bitrate = 256;
 
     x264_param_apply_profile(&param, "baseline");
     encoder = x264_encoder_open(&param);
