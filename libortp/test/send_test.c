@@ -47,7 +47,7 @@ const int REMOTE_PORT = 8000;
 
 int  main(int argc, char *argv[])
 {
-    rtp_send("./test.m4v");
+    rtp_send("./test.m4v", REMPTE_IP, REMOTE_PORT);
 
     return 0;
 }

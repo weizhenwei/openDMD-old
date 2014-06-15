@@ -45,6 +45,8 @@ void rtp_send_init()
 {
 	ortp_init();
 	ortp_scheduler_init();
+    ortp_set_log_level_mask(ORTP_MESSAGE | ORTP_WARNING | ORTP_ERROR);
+
 }
 
 void rtp_send_release()
@@ -56,27 +58,28 @@ void rtp_send_release()
 RtpSession *rtp_send_createSession(const char *remoteIP, const int remotePort)
 {
     RtpSession *rtpsession = rtp_session_new(RTP_SESSION_SENDONLY);	
+    assert(rtpsession != NULL);
 
 	rtp_session_set_scheduling_mode(rtpsession, 1);
 	rtp_session_set_blocking_mode(rtpsession, 1);
+    rtp_session_set_connected_mode(rtpsession, 1); // 1 means TRUE;
 	rtp_session_set_remote_addr(rtpsession, remoteIP, remotePort);
+	rtp_session_set_payload_type(rtpsession, PAYLOAD_TYPE_VIDEO);
 
 	char *ssrc = getenv("SSRC");
 	if (ssrc != NULL) {
 		rtp_session_set_ssrc(rtpsession, atoi(ssrc));
 	}
 
-	rtp_session_set_payload_type(rtpsession, PAYLOAD_TYPE_VIDEO);
-
     return rtpsession;
 }
     
-int rtp_send_senddata(RtpSession rtpsession, unsigned char *buffer, int len)
+int rtp_send_senddata(RtpSession *rtpsession, unsigned char *buffer, int len)
 {
 	int sendlen = 0;
     unsigned int current_ts = 0;
 
-    // sendlen = rtp_session_send_with_ts(rtpsession, buffer, len, current_ts);
+    sendlen = rtp_session_send_with_ts(rtpsession, buffer, len, current_ts);
     if (sendlen > 0) {
         current_ts += VIDEO_TIME_STAMP_INC;
     }
@@ -84,18 +87,19 @@ int rtp_send_senddata(RtpSession rtpsession, unsigned char *buffer, int len)
     return sendlen;
 }
 
-void rtp_send(const char *sendfile)
+void rtp_send(const char *sendfile, const char *remoteIP,
+        const int remotePort)
 {
     unsigned char buffer[160];
     unsigned int user_ts = 0;
+    size_t i = 0;
 
-#if 0
     rtp_send_init();
     RtpSession *rtpsession = rtp_send_createSession(remoteIP, remotePort);
     assert(rtpsession != NULL);
 
     assert(sendfile != NULL);
-    FILE *fp = fopen(senfile, 'r');
+    FILE *fp = fopen(sendfile, "r");
     assert(fp != NULL);
 
     while ((i = fread(buffer, sizeof(unsigned char), 160, fp)) > 0) {
@@ -108,8 +112,8 @@ void rtp_send(const char *sendfile)
     rtp_session_destroy(rtpsession);
     rtp_send_release();
     ortp_global_stats_display();
+
     free(rtpsession);
     rtpsession = NULL;
-#endif
 }
 

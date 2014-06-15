@@ -42,8 +42,11 @@
 #ifndef RTP_RECV_H
 #define RTP_RECV_H
 
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <ortp/ortp.h>
-#include <string>
 
 // the video payload type
 #define PAYLOAD_TYPE_VIDEO 34
@@ -51,15 +54,19 @@
 // video sending time stamp increment
 #define VIDEO_TIME_STAMP_INC  3600
 
+#define READ_RECV_PER_TIME 1000
+
 extern void rtp_recv_init(); 
 
 extern void rtp_recv_release(); 
 
-extern RtpSession rtp_recv_createSession(const char *localIP,
+extern RtpSession *rtp_recv_createSession(const char *localIP,
         const int localPort);
 
-extern int rtp_send_recvdata(RtpSession rtpsession, char *buffer, int *len);
+extern int rtp_recv_recvdata(RtpSession *rtpsession, FILE *fp,
+        char *buffer, int len);
 
-extern rtp_receive(const char *senfile);
+extern void rtp_recv(const char *recvfile, const char *localIP,
+        const int localPort);
  
 #endif

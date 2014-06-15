@@ -4,6 +4,8 @@ INCLUDES = -I$(top_srcdir)/libortp/include -I$(top_srcdir)/libortp
 
 lib_LIBRARIES = libortp.a
 
+# libortp_a_LIBADD= -lm -lpthread -lrt
+
 libortp_a_SOURCES = str_utils.c	\
 			port.c \
 			logging.c \

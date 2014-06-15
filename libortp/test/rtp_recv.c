@@ -45,6 +45,9 @@ void rtp_recv_init()
 {
 	ortp_init();
 	ortp_scheduler_init();
+	ortp_set_log_level_mask(ORTP_DEBUG | ORTP_MESSAGE
+            | ORTP_WARNING | ORTP_ERROR);
+
 }
 
 void rtp_recv_release()
@@ -53,48 +56,67 @@ void rtp_recv_release()
 }
 
 
-RtpSession rtp_recv_createSession(const char *localIP, const int localPort)
+RtpSession *rtp_recv_createSession(const char *localIP, const int localPort)
 {
-    RtpSession *rtpsession = rtp_session_new(RTP_SESSION_SENDONLY);	
+    RtpSession *rtpsession = rtp_session_new(RTP_SESSION_RECVONLY);	
+    assert(rtpsession != NULL);
 
 	rtp_session_set_scheduling_mode(rtpsession, 1);
 	rtp_session_set_blocking_mode(rtpsession, 1);
-	rtp_session_set_remote_addr(rtpsession, localIP, localPort);
+	rtp_session_set_local_addr(rtpsession, localIP, localPort, -1);
+	rtp_session_set_connected_mode(rtpsession, 1); // 1 means TRUE;
 	rtp_session_set_payload_type(rtpsession, PAYLOAD_TYPE_VIDEO);
 
     return rtpsession;
 }
 
-int rtp_send_recvdata(RtpSession rtpsession, char *buffer, int *len)
+int rtp_recv_recvdata(RtpSession *rtpsession, FILE *fp, char *buffer, int len)
 {
 	int recvBytes  = 0;
-	int totalBytes = 0;
 	int have_more = 1;
+    uint32_t cur_stamp = 0;
+    int stream_received = 0;
 
-#if 0
 	while (have_more) {
-		if ( totalBytes + READ_RECV_PER_TIME > len ) {
-            return false;
-		}
+
 		recvBytes = rtp_session_recv_with_ts(rtpsession,
-                buffer + totalBytes, READ_RECV_PER_TIME,
-                m_curTimeStamp, &have_more);
+                (uint8_t *)(buffer), len, cur_stamp, &have_more);
 
-		if (recvBytes <= 0) {
-			break;
-		}
+        if (recvBytes > 0)
+            stream_received = 1;
 
-		totalBytes += recvBytes;
+        if ((stream_received) && (recvBytes > 0)) {
+            fwrite(buffer,  1, recvBytes, fp);
+        }
+
+        cur_stamp += 160;
+
 	}
-
-	if (totalBytes == 0) {
-		return false;
-	}
-	len = totalBytes;
-
-	m_curTimeStamp += m_timeStampInc;
-#endif
 
     return 0;
 }
 
+void rtp_recv(const char *recvfile, const char *localIP,
+        const int localPort)
+{
+    char buffer[160];
+
+    rtp_recv_init();
+    RtpSession *rtpsession = rtp_recv_createSession(localIP, localPort);
+    assert(rtpsession != NULL);
+
+    assert(recvfile != NULL);
+    FILE *fp = fopen(recvfile, "ab+");
+    assert(fp != NULL);
+
+    rtp_recv_recvdata(rtpsession, fp, buffer, 160);
+
+    fclose(fp);
+
+    rtp_session_destroy(rtpsession);
+    rtp_recv_release();
+    ortp_global_stats_display();
+    free(rtpsession);
+    rtpsession = NULL;
+
+}

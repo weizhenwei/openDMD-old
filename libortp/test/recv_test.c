@@ -41,47 +41,11 @@
 
 #include "rtp_recv.h"
 
-#if 0
-const char * LOCAL_IP = "127.0.0.1";
-const int LOCAL_PORT = 8000;
+#define LOCAL_IP "192.168.1.101"
+#define LOCAL_PORT 8000
 
-bool ortpClient()
+int main(int argc, char *argv[])
 {
-	COrtpClient ortpClient;
-
-	COrtpClient::init();	
-
-	if (!ortpClient.create(LOCAL_IP_ADDR,LOCAL_RTP_PORT))
-	{
-		std::cout << "ortpClient.create fail!\n";
-		getchar();
-		getchar();
-		return false;
-	}
-
-	char *buffer = new char[RECV_BUFFER_LEN];
-
-	while(1)
-	{
-		int len = RECV_BUFFER_LEN;
-		if (!ortpClient.get_recv_data(buffer,len))
-		{
-			Sleep(10);
-			continue;
-		}
-
-		std::cout << "successful recv,data len =" << len << std::endl;
-	}
-
-	COrtpClient::deInit();
-
-	delete [] buffer;
-
-	return true;
-}
-#endif
-
-void main()
-{
+    rtp_recv("./recv.m4v", LOCAL_IP, LOCAL_PORT);
     return 0;
 }
