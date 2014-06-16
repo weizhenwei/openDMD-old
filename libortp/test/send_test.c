@@ -41,13 +41,14 @@
 
 #include "rtp_send.h"
 
-const char *REMPTE_IP = "192.168.1.101";
-const int REMOTE_PORT = 8000;
+// #define REMPTE_IP "127.0.0.1"
+#define REMPTE_IP "192.168.1.100"
+#define REMOTE_PORT 8000
 
 
 int  main(int argc, char *argv[])
 {
-    rtp_send("./test.m4v", REMPTE_IP, REMOTE_PORT);
+    rtp_send("./send.h264", REMPTE_IP, REMOTE_PORT);
 
     return 0;
 }

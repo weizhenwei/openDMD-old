@@ -355,6 +355,9 @@ void av_profile_init(RtpProfile *profile)
 	rtp_profile_set_payload(profile,31,&payload_type_h261);
 	rtp_profile_set_payload(profile,32,&payload_type_mpv);
 	rtp_profile_set_payload(profile,34,&payload_type_h263);
+
+    // set by weizhenwei, 2014.06.16, which is used for sending h264 video;
+	rtp_profile_set_payload(profile, 96, &payload_type_h264);
 }
 	
 /* these are extra payload types that can be used dynamically */

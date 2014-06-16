@@ -48,13 +48,11 @@
 #include <string.h>
 #include <ortp/ortp.h>
 
-// the video payload type
-#define PAYLOAD_TYPE_VIDEO 34
+// h264 video payload type
+#define PAYLOAD_TYPE_H264 96
 
 // video sending time stamp increment
 #define VIDEO_TIME_STAMP_INC  3600
-
-#define READ_RECV_PER_TIME 1000
 
 extern void rtp_recv_init(); 
 

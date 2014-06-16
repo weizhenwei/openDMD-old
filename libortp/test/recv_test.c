@@ -41,11 +41,12 @@
 
 #include "rtp_recv.h"
 
-#define LOCAL_IP "192.168.1.101"
+#define LOCAL_IP "192.168.1.100"
 #define LOCAL_PORT 8000
 
 int main(int argc, char *argv[])
 {
-    rtp_recv("./recv.m4v", LOCAL_IP, LOCAL_PORT);
+    rtp_recv("./recv.h264", LOCAL_IP, LOCAL_PORT);
+
     return 0;
 }

@@ -45,7 +45,8 @@ void rtp_send_init()
 {
 	ortp_init();
 	ortp_scheduler_init();
-    ortp_set_log_level_mask(ORTP_MESSAGE | ORTP_WARNING | ORTP_ERROR);
+    ortp_set_log_level_mask(ORTP_DEBUG | ORTP_MESSAGE
+            | ORTP_WARNING | ORTP_ERROR);
 
 }
 
@@ -60,11 +61,13 @@ RtpSession *rtp_send_createSession(const char *remoteIP, const int remotePort)
     RtpSession *rtpsession = rtp_session_new(RTP_SESSION_SENDONLY);	
     assert(rtpsession != NULL);
 
-	rtp_session_set_scheduling_mode(rtpsession, 1);
-	rtp_session_set_blocking_mode(rtpsession, 1);
+	rtp_session_set_scheduling_mode(rtpsession, 0);
+	rtp_session_set_blocking_mode(rtpsession, 0);
     rtp_session_set_connected_mode(rtpsession, 1); // 1 means TRUE;
 	rtp_session_set_remote_addr(rtpsession, remoteIP, remotePort);
-	rtp_session_set_payload_type(rtpsession, PAYLOAD_TYPE_VIDEO);
+
+    // set payload type to H264 (96);
+	rtp_session_set_payload_type(rtpsession, PAYLOAD_TYPE_H264);
 
 	char *ssrc = getenv("SSRC");
 	if (ssrc != NULL) {
@@ -90,9 +93,10 @@ int rtp_send_senddata(RtpSession *rtpsession, unsigned char *buffer, int len)
 void rtp_send(const char *sendfile, const char *remoteIP,
         const int remotePort)
 {
-    unsigned char buffer[160];
+    unsigned char buffer[1024];
     unsigned int user_ts = 0;
-    size_t i = 0;
+    int readlen = 0;
+    int sendlen = 0;
 
     rtp_send_init();
     RtpSession *rtpsession = rtp_send_createSession(remoteIP, remotePort);
@@ -102,9 +106,10 @@ void rtp_send(const char *sendfile, const char *remoteIP,
     FILE *fp = fopen(sendfile, "r");
     assert(fp != NULL);
 
-    while ((i = fread(buffer, sizeof(unsigned char), 160, fp)) > 0) {
-        rtp_session_send_with_ts(rtpsession, buffer, i, user_ts);
-        user_ts += 160;
+    while ((readlen = fread(buffer, sizeof(unsigned char), 1024, fp)) > 0) {
+        sendlen = rtp_session_send_with_ts(rtpsession, buffer, readlen, user_ts);
+        printf("read %d bytes, send %d bytes\n", readlen, sendlen);
+        user_ts += VIDEO_TIME_STAMP_INC;
     }
 
     fclose(fp);
@@ -112,8 +117,5 @@ void rtp_send(const char *sendfile, const char *remoteIP,
     rtp_session_destroy(rtpsession);
     rtp_send_release();
     ortp_global_stats_display();
-
-    free(rtpsession);
-    rtpsession = NULL;
 }
 
