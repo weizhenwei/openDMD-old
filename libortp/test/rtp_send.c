@@ -69,6 +69,8 @@ RtpSession *rtp_send_createSession(const char *remoteIP, const int remotePort)
     // set payload type to H264 (96);
 	rtp_session_set_payload_type(rtpsession, PAYLOAD_TYPE_H264);
 
+    // rtp_session_enable_rtcp(rtpsession, 0);
+
 	char *ssrc = getenv("SSRC");
 	if (ssrc != NULL) {
 		rtp_session_set_ssrc(rtpsession, atoi(ssrc));
@@ -93,7 +95,7 @@ int rtp_send_senddata(RtpSession *rtpsession, unsigned char *buffer, int len)
 void rtp_send(const char *sendfile, const char *remoteIP,
         const int remotePort)
 {
-    unsigned char buffer[1024];
+    unsigned char buffer[2024];
     unsigned int user_ts = 0;
     int readlen = 0;
     int sendlen = 0;
@@ -106,10 +108,15 @@ void rtp_send(const char *sendfile, const char *remoteIP,
     FILE *fp = fopen(sendfile, "r");
     assert(fp != NULL);
 
-    while ((readlen = fread(buffer, sizeof(unsigned char), 1024, fp)) > 0) {
+    while ((readlen = fread(buffer, 1, 1024, fp)) > 0) {
         sendlen = rtp_session_send_with_ts(rtpsession, buffer, readlen, user_ts);
         printf("read %d bytes, send %d bytes\n", readlen, sendlen);
         user_ts += VIDEO_TIME_STAMP_INC;
+
+        struct timespec ts;
+        ts.tv_sec = 0;
+        ts.tv_nsec = 1000000; // sleep 0.1 second;
+        nanosleep(&ts, NULL);
     }
 
     fclose(fp);

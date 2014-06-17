@@ -55,6 +55,10 @@ void rtp_recv_release()
     ortp_exit();
 }
 
+void ssrc_cb(RtpSession *session)
+{
+	printf("hey, the ssrc has changed !\n");
+}
 
 RtpSession *rtp_recv_createSession(const char *localIP, const int localPort)
 {
@@ -65,8 +69,13 @@ RtpSession *rtp_recv_createSession(const char *localIP, const int localPort)
 	rtp_session_set_blocking_mode(rtpsession, 0);
 	rtp_session_set_local_addr(rtpsession, localIP, localPort, -1);
 	rtp_session_set_connected_mode(rtpsession, 1); // 1 means TRUE;
+	rtp_session_set_symmetric_rtp(rtpsession, 1);
     rtp_session_enable_adaptive_jitter_compensation(rtpsession, 1);
     rtp_session_set_jitter_compensation(rtpsession, 40);
+    // rtp_session_enable_rtcp(rtpsession, 0);
+
+	rtp_session_signal_connect(rtpsession, "ssrc_changed", (RtpCallback)ssrc_cb, 0);
+	rtp_session_signal_connect(rtpsession, "ssrc_changed", (RtpCallback)rtp_session_reset, 0);
 
     // set video payload type to H264
 	rtp_session_set_payload_type(rtpsession, PAYLOAD_TYPE_H264);
@@ -76,6 +85,7 @@ RtpSession *rtp_recv_createSession(const char *localIP, const int localPort)
 
 int rtp_recv_recvdata(RtpSession *rtpsession, FILE *fp, char *buffer, int len)
 {
+#if 0
 	int recvBytes  = 0;
 	int have_more = 1;
     uint32_t cur_stamp = 0;
@@ -96,8 +106,16 @@ int rtp_recv_recvdata(RtpSession *rtpsession, FILE *fp, char *buffer, int len)
         cur_stamp += 160;
 
 	}
+#endif
 
     return 0;
+}
+
+static int cond = 1;
+
+void stop_handler(int signum)
+{
+	cond = 0;
 }
 
 void rtp_recv(const char *recvfile, const char *localIP,
@@ -107,39 +125,44 @@ void rtp_recv(const char *recvfile, const char *localIP,
     int writelen = 0;
 	int have_more = 1;
     uint32_t user_ts = 0;
-    unsigned char buffer[3024];
+	int stream_received = 0;
+    unsigned char buffer[2024];
 
     rtp_recv_init();
+	signal(SIGINT, stop_handler);
     RtpSession *rtpsession = rtp_recv_createSession(localIP, localPort);
     assert(rtpsession != NULL);
 
-	while (1) {
-        printf("in recv while loop\n");
+    assert(recvfile != NULL);
+    FILE *fp = fopen(recvfile, "w");
+    assert(fp != NULL);
 
-		recvBytes = rtp_session_recv_with_ts(rtpsession,
-                buffer, 3024, user_ts, &have_more);
+    while (cond) {
+        have_more = 1;
+        while (have_more) {
+            // printf("in recv while loop\n");
 
-        if (recvBytes > 0) {
-            assert(recvfile != NULL);
-            FILE *fp = fopen(recvfile, "a");
-            assert(fp != NULL);
+            recvBytes = rtp_session_recv_with_ts(rtpsession,
+                    buffer, 2024, user_ts, &have_more);
 
-            writelen = fwrite(buffer,  sizeof(unsigned char),
-                    recvBytes, fp);
-            
-            fclose(fp);
+            if (recvBytes > 0)
+                stream_received = 1;
 
-            printf("receive %d bytes, write %d bytes\n",
-                    recvBytes, writelen);
-            recvBytes = 0;
-            writelen = 0;
+            if ((stream_received) && (recvBytes > 0)) {
+                writelen = fwrite(buffer, 1, recvBytes, fp);
+                
+                printf("receive %d bytes, write %d bytes\n",
+                        recvBytes, writelen);
+
+                recvBytes = 0;
+                writelen = 0;
+            }
         }
 
-
         user_ts += VIDEO_TIME_STAMP_INC;
-	}
+    }
 
-
+    fclose(fp);
     rtp_session_destroy(rtpsession);
     rtp_recv_release();
     ortp_global_stats_display();
