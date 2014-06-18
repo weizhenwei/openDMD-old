@@ -280,7 +280,9 @@ rtp_session_init (RtpSession * session, int mode)
 	jbp.min_size=RTP_DEFAULT_JITTER_TIME;
 	jbp.nom_size=RTP_DEFAULT_JITTER_TIME;
 	jbp.max_size=-1;
-	jbp.max_packets= 100;/* maximum number of packet allowed to be queued */
+	// jbp.max_packets= 100;/* maximum number of packet allowed to be queued */
+    // by weizhenwei, 2014.06.18
+	jbp.max_packets= 10000;/* maximum number of packet allowed to be queued */
 	jbp.adaptive=TRUE;
 	rtp_session_enable_jitter_buffer(session,TRUE);
 	rtp_session_set_jitter_buffer_params(session,&jbp);

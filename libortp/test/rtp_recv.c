@@ -65,14 +65,13 @@ RtpSession *rtp_recv_createSession(const char *localIP, const int localPort)
     RtpSession *rtpsession = rtp_session_new(RTP_SESSION_RECVONLY);	
     assert(rtpsession != NULL);
 
-	rtp_session_set_scheduling_mode(rtpsession, 0);
-	rtp_session_set_blocking_mode(rtpsession, 0);
+	rtp_session_set_scheduling_mode(rtpsession, 1);
+	rtp_session_set_blocking_mode(rtpsession, 1);
 	rtp_session_set_local_addr(rtpsession, localIP, localPort, -1);
 	rtp_session_set_connected_mode(rtpsession, 1); // 1 means TRUE;
 	rtp_session_set_symmetric_rtp(rtpsession, 1);
     rtp_session_enable_adaptive_jitter_compensation(rtpsession, 1);
     rtp_session_set_jitter_compensation(rtpsession, 40);
-    // rtp_session_enable_rtcp(rtpsession, 0);
 
 	rtp_session_signal_connect(rtpsession, "ssrc_changed", (RtpCallback)ssrc_cb, 0);
 	rtp_session_signal_connect(rtpsession, "ssrc_changed", (RtpCallback)rtp_session_reset, 0);
@@ -81,34 +80,6 @@ RtpSession *rtp_recv_createSession(const char *localIP, const int localPort)
 	rtp_session_set_payload_type(rtpsession, PAYLOAD_TYPE_H264);
 
     return rtpsession;
-}
-
-int rtp_recv_recvdata(RtpSession *rtpsession, FILE *fp, char *buffer, int len)
-{
-#if 0
-	int recvBytes  = 0;
-	int have_more = 1;
-    uint32_t cur_stamp = 0;
-    int stream_received = 0;
-
-	while (1) {
-
-		recvBytes = rtp_session_recv_with_ts(rtpsession,
-                (uint8_t *)(buffer), len, cur_stamp, &have_more);
-
-        if (recvBytes > 0)
-            stream_received = 1;
-
-        if ((stream_received) && (recvBytes > 0)) {
-            fwrite(buffer,  1, recvBytes, fp);
-        }
-
-        cur_stamp += 160;
-
-	}
-#endif
-
-    return 0;
 }
 
 static int cond = 1;
@@ -126,7 +97,7 @@ void rtp_recv(const char *recvfile, const char *localIP,
 	int have_more = 1;
     uint32_t user_ts = 0;
 	int stream_received = 0;
-    unsigned char buffer[2024];
+    unsigned char buffer[RECV_LEN];
 
     rtp_recv_init();
 	signal(SIGINT, stop_handler);
@@ -143,13 +114,14 @@ void rtp_recv(const char *recvfile, const char *localIP,
             // printf("in recv while loop\n");
 
             recvBytes = rtp_session_recv_with_ts(rtpsession,
-                    buffer, 2024, user_ts, &have_more);
+                    buffer, RECV_LEN, user_ts, &have_more);
 
             if (recvBytes > 0)
                 stream_received = 1;
 
             if ((stream_received) && (recvBytes > 0)) {
-                writelen = fwrite(buffer, 1, recvBytes, fp);
+                writelen = fwrite(buffer,
+                        sizeof(unsigned char), recvBytes, fp);
                 
                 printf("receive %d bytes, write %d bytes\n",
                         recvBytes, writelen);

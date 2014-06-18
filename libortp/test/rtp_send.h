@@ -45,12 +45,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include <time.h>
 
 #include <ortp/ortp.h>
 
 // the video payload type
 #define PAYLOAD_TYPE_H264 96
+
+#define SEND_LEN 1024
 
 // video sending time stamp increment, 90000/25;
 #define VIDEO_TIME_STAMP_INC  3600
@@ -61,9 +62,6 @@ extern void rtp_send_release();
 
 extern RtpSession *rtp_send_createSession(const char *remoteIP,
         const int remotePort);
-
-extern int rtp_send_senddata(RtpSession *rtpsession,
-        unsigned char *buffer, int len);
 
 extern void rtp_send(const char *sendfile, const char *remoteIP,
         const int remotePort);

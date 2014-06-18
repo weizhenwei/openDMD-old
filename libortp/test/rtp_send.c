@@ -61,15 +61,13 @@ RtpSession *rtp_send_createSession(const char *remoteIP, const int remotePort)
     RtpSession *rtpsession = rtp_session_new(RTP_SESSION_SENDONLY);	
     assert(rtpsession != NULL);
 
-	rtp_session_set_scheduling_mode(rtpsession, 0);
-	rtp_session_set_blocking_mode(rtpsession, 0);
+	rtp_session_set_scheduling_mode(rtpsession, 1);
+	rtp_session_set_blocking_mode(rtpsession, 1);
     rtp_session_set_connected_mode(rtpsession, 1); // 1 means TRUE;
 	rtp_session_set_remote_addr(rtpsession, remoteIP, remotePort);
 
     // set payload type to H264 (96);
 	rtp_session_set_payload_type(rtpsession, PAYLOAD_TYPE_H264);
-
-    // rtp_session_enable_rtcp(rtpsession, 0);
 
 	char *ssrc = getenv("SSRC");
 	if (ssrc != NULL) {
@@ -79,23 +77,10 @@ RtpSession *rtp_send_createSession(const char *remoteIP, const int remotePort)
     return rtpsession;
 }
     
-int rtp_send_senddata(RtpSession *rtpsession, unsigned char *buffer, int len)
-{
-	int sendlen = 0;
-    unsigned int current_ts = 0;
-
-    sendlen = rtp_session_send_with_ts(rtpsession, buffer, len, current_ts);
-    if (sendlen > 0) {
-        current_ts += VIDEO_TIME_STAMP_INC;
-    }
-
-    return sendlen;
-}
-
 void rtp_send(const char *sendfile, const char *remoteIP,
         const int remotePort)
 {
-    unsigned char buffer[2024];
+    unsigned char buffer[SEND_LEN];
     unsigned int user_ts = 0;
     int readlen = 0;
     int sendlen = 0;
@@ -108,15 +93,13 @@ void rtp_send(const char *sendfile, const char *remoteIP,
     FILE *fp = fopen(sendfile, "r");
     assert(fp != NULL);
 
-    while ((readlen = fread(buffer, 1, 1024, fp)) > 0) {
-        sendlen = rtp_session_send_with_ts(rtpsession, buffer, readlen, user_ts);
+    while ((readlen = fread(buffer,
+                    sizeof(unsigned char), SEND_LEN, fp)) > 0) {
+        sendlen = rtp_session_send_with_ts(rtpsession,
+                buffer, readlen, user_ts);
         printf("read %d bytes, send %d bytes\n", readlen, sendlen);
-        user_ts += VIDEO_TIME_STAMP_INC;
 
-        struct timespec ts;
-        ts.tv_sec = 0;
-        ts.tv_nsec = 1000000; // sleep 0.1 second;
-        nanosleep(&ts, NULL);
+        user_ts += VIDEO_TIME_STAMP_INC;
     }
 
     fclose(fp);

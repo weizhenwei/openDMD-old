@@ -52,6 +52,8 @@
 // h264 video payload type
 #define PAYLOAD_TYPE_H264 96
 
+#define RECV_LEN 1400
+
 // video sending time stamp increment
 #define VIDEO_TIME_STAMP_INC  3600
 
@@ -61,9 +63,6 @@ extern void rtp_recv_release();
 
 extern RtpSession *rtp_recv_createSession(const char *localIP,
         const int localPort);
-
-extern int rtp_recv_recvdata(RtpSession *rtpsession, FILE *fp,
-        char *buffer, int len);
 
 extern void rtp_recv(const char *recvfile, const char *localIP,
         const int localPort);
