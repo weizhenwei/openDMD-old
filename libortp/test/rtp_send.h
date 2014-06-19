@@ -54,7 +54,8 @@
 #define SEND_LEN 1024
 
 // video sending time stamp increment, 90000/25;
-#define VIDEO_TIME_STAMP_INC  3600
+// #define VIDEO_TIME_STAMP_INC  3600
+#define VIDEO_TIME_STAMP_INC  1800
 
 extern void rtp_send_init(); 
 

@@ -52,6 +52,6 @@
 #include "log.h"
 #include "global_context.h"
 
-extern void parse_config(const char *conf_file);
+extern int parse_config(const char *conf_file);
 
 #endif

@@ -49,11 +49,11 @@ int YUYV422_motion_detect(unsigned char *yuyv, int width,
     int line, column;
     unsigned char *py, *pu, *pv;
     unsigned int counter = 0;
-    unsigned char *ref = global.referenceYUYV422;
+    unsigned char *ref = global.client.referenceYUYV422;
     unsigned int index = 0;
-    int DIFF = global.diff_pixels;
-    int ABSY = global.diff_deviation;
-    int ABSCbCr = global.diff_deviation;
+    int DIFF = global.client.diff_pixels;
+    int ABSY = global.client.diff_deviation;
+    int ABSCbCr = global.client.diff_deviation;
 
     // assert about the length
     assert(length == width * height * 2);
@@ -95,7 +95,7 @@ int YUYV422_motion_detect(unsigned char *yuyv, int width,
 
 exit:
     // refresh referenceYUYV422 to new captured image;
-    memcpy(global.referenceYUYV422, yuyv, length);
+    memcpy(global.client.referenceYUYV422, yuyv, length);
     if (counter >= DIFF) {
         dmd_log(LOG_INFO, "diff counter = %d, captured a picture.\n", counter);
         return 0;

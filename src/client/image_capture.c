@@ -45,20 +45,20 @@ static void notify_picture()
 {
     // dmd_log(LOG_INFO, "in %s, notify to picture thread\n",
     //         __func__);
-    pthread_mutex_lock(&global.thread_attr.picture_mutex);
-    global.picture_target = NOTIFY_PICTURE;
-    pthread_cond_signal(&global.thread_attr.picture_cond);
-    pthread_mutex_unlock(&global.thread_attr.picture_mutex);
+    pthread_mutex_lock(&global.client.thread_attr.picture_mutex);
+    global.client.picture_target = NOTIFY_PICTURE;
+    pthread_cond_signal(&global.client.thread_attr.picture_cond);
+    pthread_mutex_unlock(&global.client.thread_attr.picture_mutex);
 }
 
 static void notify_video()
 {
     // dmd_log(LOG_INFO, "in %s, notify to video thread\n",
     //         __func__);
-    pthread_mutex_lock(&global.thread_attr.video_mutex);
-    global.video_target = NOTIFY_VIDEO;
-    pthread_cond_signal(&global.thread_attr.video_cond);
-    pthread_mutex_unlock(&global.thread_attr.video_mutex);
+    pthread_mutex_lock(&global.client.thread_attr.video_mutex);
+    global.client.video_target = NOTIFY_VIDEO;
+    pthread_cond_signal(&global.client.thread_attr.video_cond);
+    pthread_mutex_unlock(&global.client.thread_attr.video_mutex);
 }
 
 int process_image(void *yuyv, int length, int width, int height)
@@ -78,31 +78,31 @@ int process_image(void *yuyv, int length, int width, int height)
         dmd_log(LOG_INFO, "motion detected !\n");
 
         // first refresh detection time;
-        if (global.working_mode == CAPTURE_PICTURE
-                || global.working_mode == CAPTURE_ALL) {
+        if (global.client.working_mode == CAPTURE_PICTURE
+                || global.client.working_mode == CAPTURE_ALL) {
             // associated with jpeg filename;
-            if (global.lasttime == now) {
-                global.counter_in_second++;
+            if (global.client.lasttime == now) {
+                global.client.counter_in_second++;
             } else {
-                global.counter_in_second = 0;
+                global.client.counter_in_second = 0;
             }
         }
-        global.lasttime = now;
+        global.client.lasttime = now;
 
         // then copy image to buffer, remember to lock it first;
-        pthread_rwlock_wrlock(&global.thread_attr.bufferYUYV_rwlock);
-        memcpy(global.bufferingYUYV422, yuyv, length);
-        pthread_rwlock_unlock(&global.thread_attr.bufferYUYV_rwlock);
+        pthread_rwlock_wrlock(&global.client.thread_attr.bufferYUYV_rwlock);
+        memcpy(global.client.bufferingYUYV422, yuyv, length);
+        pthread_rwlock_unlock(&global.client.thread_attr.bufferYUYV_rwlock);
 
         // notify picture thread and/or video thread;
-        if (global.working_mode == CAPTURE_ALL) {
+        if (global.client.working_mode == CAPTURE_ALL) {
             // notify all;
             notify_picture();
             notify_video();
-        } else if (global.working_mode == CAPTURE_PICTURE) {
+        } else if (global.client.working_mode == CAPTURE_PICTURE) {
             // only notify picture thread;
             notify_picture();
-        } else if (global.working_mode == CAPTURE_VIDEO) {
+        } else if (global.client.working_mode == CAPTURE_VIDEO) {
             // only notify video thread;
             notify_video();
         } else {
@@ -112,23 +112,23 @@ int process_image(void *yuyv, int length, int width, int height)
 
     } else { // check time elapsed exceeds global.video_duration;
 
-        if (global.working_mode == CAPTURE_VIDEO
-                || global.working_mode == CAPTURE_ALL) {
+        if (global.client.working_mode == CAPTURE_VIDEO
+                || global.client.working_mode == CAPTURE_ALL) {
 
             // if video capturing is on, continue encode video;
             if (video_capturing_switch == VIDEO_CAPTURING_ON) {
 
                 // then copy image to buffer, remember to lock it first;
-                pthread_rwlock_wrlock(&global.thread_attr.bufferYUYV_rwlock);
-                memcpy(global.bufferingYUYV422, yuyv, length);
-                pthread_rwlock_unlock(&global.thread_attr.bufferYUYV_rwlock);
+                pthread_rwlock_wrlock(&global.client.thread_attr.bufferYUYV_rwlock);
+                memcpy(global.client.bufferingYUYV422, yuyv, length);
+                pthread_rwlock_unlock(&global.client.thread_attr.bufferYUYV_rwlock);
 
                 // only notify video thread;
                 notify_video();
             }
 
             // switch off when time elasped exceeds global.video_duration;
-            if ((now - global.lasttime >= global.video_duration)
+            if ((now - global.client.lasttime >= global.client.video_duration)
                     && (video_capturing_switch == VIDEO_CAPTURING_ON)) {
                 dmd_log(LOG_INFO, "switch video capture off\n");
                 video_capturing_switch = VIDEO_CAPTURING_OFF;

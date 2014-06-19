@@ -55,7 +55,8 @@
 #define RECV_LEN 1400
 
 // video sending time stamp increment
-#define VIDEO_TIME_STAMP_INC  3600
+// #define VIDEO_TIME_STAMP_INC  3600
+#define VIDEO_TIME_STAMP_INC  1800
 
 extern void rtp_recv_init(); 
 

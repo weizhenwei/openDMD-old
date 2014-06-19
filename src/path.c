@@ -76,8 +76,9 @@ char *get_jpeg_filepath()
     // at linux/limits.h, #define PATH_MAX 4096
     static char filepath[PATH_MAX];
     char storepath[PATH_MAX];
-    strncpy(storepath, global.store_dir, strlen(global.store_dir));
-    storepath[strlen(global.store_dir)] = '\0';
+    strncpy(storepath, global.client.store_dir,
+            strlen(global.client.store_dir));
+    storepath[strlen(global.client.store_dir)] = '\0';
     strcat(storepath, "/jpeg");
     assert(test_and_create(storepath) == 0);
 
@@ -94,7 +95,7 @@ char *get_jpeg_filepath()
             tmptr->tm_hour,
             tmptr->tm_min,
             tmptr->tm_sec,
-            global.counter_in_second);
+            global.client.counter_in_second);
 
     assert(strlen(filepath) < PATH_MAX);
 
@@ -111,8 +112,9 @@ char *get_h264_filepath()
     // at linux/limits.h, #define PATH_MAX 4096
     static char filepath[PATH_MAX];
     char storepath[PATH_MAX];
-    strncpy(storepath, global.store_dir, strlen(global.store_dir));
-    storepath[strlen(global.store_dir)] = '\0';
+    strncpy(storepath, global.client.store_dir,
+            strlen(global.client.store_dir));
+    storepath[strlen(global.client.store_dir)] = '\0';
     strcat(storepath, "/h264");
     assert(test_and_create(storepath) == 0);
 
@@ -131,8 +133,8 @@ char *get_h264_filepath()
             tmptr->tm_sec);
     assert(strlen(filepath) < PATH_MAX);
 
-    // dmd_log(LOG_INFO, "in function %s, h264 filename is: %s\n",
-    //        __func__, filepath);
+    dmd_log(LOG_DEBUG, "in function %s, h264 filename is: %s\n",
+           __func__, filepath);
 
     return filepath;
 }

@@ -49,35 +49,36 @@ void *picture_thread(void *arg)
 
     for (;;) {
 
-        pthread_mutex_lock(&global.thread_attr.picture_mutex);
+        pthread_mutex_lock(&global.client.thread_attr.picture_mutex);
 
-        while (global.picture_target == NOTIFY_NONE) {
-            pthread_cond_wait(&global.thread_attr.picture_cond,
-                    &global.thread_attr.picture_mutex);
+        while (global.client.picture_target == NOTIFY_NONE) {
+            pthread_cond_wait(&global.client.thread_attr.picture_cond,
+                    &global.client.thread_attr.picture_mutex);
         }
 
-        notify = global.picture_target;
-        global.picture_target = NOTIFY_NONE;
+        notify = global.client.picture_target;
+        global.client.picture_target = NOTIFY_NONE;
 
         if (notify == NOTIFY_PICTURE) {
             
-            int width = global.image_width;
-            int height = global.image_height;
+            int width = global.client.image_width;
+            int height = global.client.image_height;
             int length = width * height * 2;
 
-            pthread_rwlock_rdlock(&global.thread_attr.bufferYUYV_rwlock);
-            memcpy(global.pyuyv422buffer, global.bufferingYUYV422, length);
-            pthread_rwlock_unlock(&global.thread_attr.bufferYUYV_rwlock);
+            pthread_rwlock_rdlock(&global.client.thread_attr.bufferYUYV_rwlock);
+            memcpy(global.client.pyuyv422buffer,
+                    global.client.bufferingYUYV422, length);
+            pthread_rwlock_unlock(&global.client.thread_attr.bufferYUYV_rwlock);
 
             // convert YUYV422 to RGB888
-            YUYV422toRGB888INT(global.pyuyv422buffer, width, height,
-                    global.rgbbuffer, length);
+            YUYV422toRGB888INT(global.client.pyuyv422buffer, width, height,
+                    global.client.rgbbuffer, length);
 
             // write to jpeg file;
             jpeg_filepath = get_jpeg_filepath();
             dmd_log(LOG_INFO, "in %s, write a jpegfile to %s\n",
                     __func__, jpeg_filepath);
-            ret = write_jpeg(jpeg_filepath, global.rgbbuffer, 100,
+            ret = write_jpeg(jpeg_filepath, global.client.rgbbuffer, 100,
                     width, height, 0);
             assert(ret == 0);
 
@@ -89,7 +90,7 @@ void *picture_thread(void *arg)
 
         notify = NOTIFY_NONE;
 
-        pthread_mutex_unlock(&global.thread_attr.picture_mutex);
+        pthread_mutex_unlock(&global.client.thread_attr.picture_mutex);
     }
 
     pthread_exit(NULL);

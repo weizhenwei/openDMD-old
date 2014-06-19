@@ -57,13 +57,13 @@ struct v4l2_device_info *dmd_video_create(const char *device_path)
     bzero(device, sizeof(device));
 
     device->video_device_path = device_path;
-    device->reqbuffer_count = global.req_count;
+    device->reqbuffer_count = global.client.req_count;
     device->buffers =
         malloc(device->reqbuffer_count * sizeof(struct mmap_buffer));
     assert(device->buffers != NULL);
 
-    device->width = global.image_width;
-    device->height = global.image_height;
+    device->width = global.client.image_width;
+    device->height = global.client.image_height;
 
     return device;
 }

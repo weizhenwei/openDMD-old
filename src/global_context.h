@@ -76,6 +76,9 @@
 #define DEFAULT_RELEASE_STORE_DIR "/tmp/opendmd"
 #define DEFAULT_DEBUG_STORE_DIR "/home/wzw/opendmd"
 
+
+#define SERVER_REPO "/home/wzw/opendmd/server_repo"
+
 // declare the global variable global to control opendmd running.
 extern struct global_context global;
 
@@ -134,37 +137,18 @@ enum main_notify_target {
 };
 
 // cluster mode: slave, master, or singleton
-// slave: as a working node, responsible for capturing and sending;
-// master: as a master node, responsible for receiving and saving;
+// client: as a working node, responsible for capturing and sending;
+// server: as a master node, responsible for receiving and saving;
 // singleton: only one node in whole cluster , capturing and saving;
 enum cluster_mode_t {
-    CLUSTER_SLAVE = 1,
-    CLUSTER_MASTER = 2,
+    CLUSTER_CLIENT = 1,
+    CLUSTER_SERVER = 2,
     CLUSTER_SINGLETON = 3,
 };
 
-struct global_context {
-    // basic global information
-    pid_t pid;                 // main thread's pid;
-
-    // these are defined in syslog.h
-    // #define LOG_EMERG   0   /* system is unusable */
-    // #define LOG_ALERT   1   /* action must be taken immediately */
-    // #define LOG_CRIT    2   /* critical conditions */
-    // #define LOG_ERR     3   /* error conditions */
-    // #define LOG_WARNING 4   /* warning conditions */
-    // #define LOG_NOTICE  5   /* normal but significant condition */
-    // #define LOG_INFO    6   /* informational */
-    // #define LOG_DEBUG   7   /* debug-level messages */
-    unsigned int log_level;    // dmd_log level, equivelent to syslog level;
-
-    enum cluster_mode_t cluster_mode;    // cluster mode;
-
-    // global running settings
-    enum daemon_mode_type daemon_mode;   // run in daemon mode;
+struct client_context {
+    // basic client settings;
     enum working_type  working_mode;     // working mode: picture, video or all;
-    char pid_file[PATH_MAX];             // main process's pid file;
-    char cfg_file[PATH_MAX];             // config file;
 
     // video device settings;
     char video_device[PATH_MAX];         // video device path;
@@ -207,9 +191,41 @@ struct global_context {
                                              // storage directory.
 };
 
+struct server_context {
+    char server_repo[PATH_MAX];              // captured pictures/video
+                                             // storage directory.
+};
+
+struct global_context {
+    // Basic global information
+    pid_t pid;                 // main thread's pid;
+
+    // these are defined in syslog.h
+    // #define LOG_EMERG   0   /* system is unusable */
+    // #define LOG_ALERT   1   /* action must be taken immediately */
+    // #define LOG_CRIT    2   /* critical conditions */
+    // #define LOG_ERR     3   /* error conditions */
+    // #define LOG_WARNING 4   /* warning conditions */
+    // #define LOG_NOTICE  5   /* normal but significant condition */
+    // #define LOG_INFO    6   /* informational */
+    // #define LOG_DEBUG   7   /* debug-level messages */
+    unsigned int log_level;    // dmd_log level, equivelent to syslog level;
+
+    enum cluster_mode_t cluster_mode;    // cluster mode;
+
+    enum daemon_mode_type daemon_mode;   // run in daemon mode;
+    char pid_file[PATH_MAX];             // main process's pid file;
+    char cfg_file[PATH_MAX];             // config file;
+
+    // client/server settings;
+    struct client_context client;
+    struct server_context server;
+    
+};
+
 extern void init_default_global();
 
-extern void dump_global_config();
+extern int dump_global_config();
 
 
 // called at atexit() to free malloced memory in variable global;

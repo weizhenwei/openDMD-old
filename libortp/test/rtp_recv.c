@@ -69,12 +69,12 @@ RtpSession *rtp_recv_createSession(const char *localIP, const int localPort)
 	rtp_session_set_blocking_mode(rtpsession, 1);
 	rtp_session_set_local_addr(rtpsession, localIP, localPort, -1);
 	rtp_session_set_connected_mode(rtpsession, 1); // 1 means TRUE;
-	rtp_session_set_symmetric_rtp(rtpsession, 1);
-    rtp_session_enable_adaptive_jitter_compensation(rtpsession, 1);
-    rtp_session_set_jitter_compensation(rtpsession, 40);
+	// rtp_session_set_symmetric_rtp(rtpsession, 1);
+    // rtp_session_enable_adaptive_jitter_compensation(rtpsession, 1);
+    // rtp_session_set_jitter_compensation(rtpsession, 40);
 
-	rtp_session_signal_connect(rtpsession, "ssrc_changed", (RtpCallback)ssrc_cb, 0);
-	rtp_session_signal_connect(rtpsession, "ssrc_changed", (RtpCallback)rtp_session_reset, 0);
+	// rtp_session_signal_connect(rtpsession, "ssrc_changed", (RtpCallback)ssrc_cb, 0);
+	// rtp_session_signal_connect(rtpsession, "ssrc_changed", (RtpCallback)rtp_session_reset, 0);
 
     // set video payload type to H264
 	rtp_session_set_payload_type(rtpsession, PAYLOAD_TYPE_H264);

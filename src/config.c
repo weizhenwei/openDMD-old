@@ -43,54 +43,59 @@
 
 static void set_buffering()
 {
-    int width = global.image_width;
-    int height = global.image_height;
+    int width = global.client.image_width;
+    int height = global.client.image_height;
 
     // rgb buffer;
     unsigned int rgblength = width * height * 3;
-    global.rgbbuffer = (unsigned char *)malloc(
+    global.client.rgbbuffer = (unsigned char *)malloc(
         rgblength * sizeof(unsigned char));
-    assert(global.rgbbuffer != NULL);
-    bzero(global.rgbbuffer, rgblength * sizeof(unsigned char));
+    assert(global.client.rgbbuffer != NULL);
+    bzero(global.client.rgbbuffer, rgblength * sizeof(unsigned char));
 
     // referenceYUYV422 buffer;
     unsigned int referencelength = width * height * 2;
-    global.referenceYUYV422 = (unsigned char *)malloc(
+    global.client.referenceYUYV422 = (unsigned char *)malloc(
             referencelength * sizeof(unsigned char));
-    assert(global.referenceYUYV422 != NULL);
-    bzero(global.referenceYUYV422, referencelength * sizeof(unsigned char));
+    assert(global.client.referenceYUYV422 != NULL);
+    bzero(global.client.referenceYUYV422,
+            referencelength * sizeof(unsigned char));
 
     // pyuyv422buffer;
     unsigned int pyuyv422length = width * height * 2;
-    global.pyuyv422buffer = (unsigned char *)malloc(
+    global.client.pyuyv422buffer = (unsigned char *)malloc(
             pyuyv422length * sizeof(unsigned char));
-    assert(global.pyuyv422buffer != NULL);
-    bzero(global.pyuyv422buffer, pyuyv422length * sizeof(unsigned char));
+    assert(global.client.pyuyv422buffer != NULL);
+    bzero(global.client.pyuyv422buffer,
+            pyuyv422length * sizeof(unsigned char));
 
     // vyuyv422buffer;
     unsigned int vyuyv422length = width * height * 2;
-    global.vyuyv422buffer = (unsigned char *)malloc(
+    global.client.vyuyv422buffer = (unsigned char *)malloc(
             vyuyv422length * sizeof(unsigned char));
-    assert(global.vyuyv422buffer != NULL);
-    bzero(global.vyuyv422buffer, vyuyv422length * sizeof(unsigned char));
+    assert(global.client.vyuyv422buffer != NULL);
+    bzero(global.client.vyuyv422buffer,
+            vyuyv422length * sizeof(unsigned char));
 
     // yuv420pbuffer;
     unsigned int yuv420plength = width * height * 1.5;
-    global.yuv420pbuffer = (unsigned char *)malloc(
+    global.client.yuv420pbuffer = (unsigned char *)malloc(
             yuv420plength * sizeof(unsigned char));
-    assert(global.yuv420pbuffer != NULL);
-    bzero(global.yuv420pbuffer, yuv420plength * sizeof(unsigned char));
+    assert(global.client.yuv420pbuffer != NULL);
+    bzero(global.client.yuv420pbuffer,
+            yuv420plength * sizeof(unsigned char));
 
     // bufferingYUYV422;
     unsigned int bufferyuyvlength = width * height * 2;
-    global.bufferingYUYV422 = (unsigned char *)malloc(
+    global.client.bufferingYUYV422 = (unsigned char *)malloc(
             bufferyuyvlength * sizeof(unsigned char));
-    assert(global.bufferingYUYV422 != NULL);
-    bzero(global.bufferingYUYV422, bufferyuyvlength * sizeof(unsigned char));
+    assert(global.client.bufferingYUYV422 != NULL);
+    bzero(global.client.bufferingYUYV422,
+            bufferyuyvlength * sizeof(unsigned char));
 
 }
 
-void parse_config(const char *conf_file)
+int parse_config(const char *conf_file)
 {
     struct ccl_t config;
     const struct ccl_pair_t *iter;
@@ -112,6 +117,7 @@ void parse_config(const char *conf_file)
                 global.daemon_mode = DAEMON_OFF;
             } else {
                 dmd_log(LOG_ERR, "invalid value of daemon_mode\n");
+                return -1;
             }
         } else if (strcmp(iter->key, "log_level") == 0) {
             if (strcmp(iter->value, "LOG_INFO") == 0) {
@@ -135,14 +141,18 @@ void parse_config(const char *conf_file)
                 dmd_log(LOG_ERR, "in file %s, function %s, line %s, "
                         "impossible to reach here!\n", __FILE__, __func__,
                         __LINE__);
+                return -1;
             }
         } else if (strcmp(iter->key, "cluster_mode") == 0) {
             if (strcmp(iter->value, "singleton") == 0) {
                 global.cluster_mode = CLUSTER_SINGLETON;
-            } else if (strcmp(iter->value, "slave") == 0) {
-                global.cluster_mode = CLUSTER_SLAVE;
-            } else if (strcmp(iter->value, "master") == 0) {
-                global.cluster_mode = CLUSTER_MASTER;
+            } else if (strcmp(iter->value, "client") == 0) {
+                global.cluster_mode = CLUSTER_CLIENT;
+            } else if (strcmp(iter->value, "server") == 0) {
+                global.cluster_mode = CLUSTER_SERVER;
+            } else {
+                dmd_log(LOG_ERR, "invalid value of cluster_mode\n");
+                return -1;
             }
         } else if (strcmp(iter->key, "pid_file") == 0) {
             assert(strlen(iter->value) < PATH_MAX);
@@ -154,66 +164,95 @@ void parse_config(const char *conf_file)
             global.pid_file[strlen(iter->value)] = '\0';
         } else if (strcmp(iter->key, "working_mode") == 0) {
             if (strcmp(iter->value, "picture") == 0) {
-                global.working_mode = CAPTURE_PICTURE;
+                global.client.working_mode = CAPTURE_PICTURE;
             } else if (strcmp(iter->value, "video") == 0) {
-                global.working_mode = CAPTURE_VIDEO;
+                global.client.working_mode = CAPTURE_VIDEO;
             } else if (strcmp(iter->value, "all") == 0) {
-                global.working_mode = CAPTURE_ALL;
+                global.client.working_mode = CAPTURE_ALL;
             } else {
                 dmd_log(LOG_ERR, "invalid value of working_mode\n");
+                return -1;
             }
         } else if (strcmp(iter->key, "video_device") == 0) {
             assert(strlen(iter->value) < PATH_MAX);
-            strncpy(global.video_device, iter->value, strlen(iter->value));
+            strncpy(global.client.video_device,
+                    iter->value, strlen(iter->value));
             /* Warning:If there is no null byte among the first n bytes of
              * src, the string placed in dest will not be null-terminated,
              * remember add null-terminated manually.
              */
-            global.video_device[strlen(iter->value)] = '\0';
+            global.client.video_device[strlen(iter->value)] = '\0';
         } else if (strcmp(iter->key, "image_width") == 0) {
             // Waring: there is no error detection in atoi();
-            global.image_width = atoi(iter->value);
+            global.client.image_width = atoi(iter->value);
         } else if (strcmp(iter->key, "image_height") == 0) {
             // Waring: there is no error detection in atoi();
-            global.image_height = atoi(iter->value);
+            global.client.image_height = atoi(iter->value);
         } else if (strcmp(iter->key, "req_count") == 0) {
             // Waring: there is no error detection in atoi();
-            global.req_count = atoi(iter->value);
+            global.client.req_count = atoi(iter->value);
         } else if (strcmp(iter->key, "diff_pixels") == 0) {
             // Waring: there is no error detection in atoi();
-            global.diff_pixels = atoi(iter->value);
+            global.client.diff_pixels = atoi(iter->value);
         } else if (strcmp(iter->key, "diff_deviation") == 0) {
             // Waring: there is no error detection in atoi();
-            global.diff_deviation = atoi(iter->value);
+            global.client.diff_deviation = atoi(iter->value);
         } else if (strcmp(iter->key, "video_duration") == 0) {
             // Waring: there is no error detection in atoi();
-            global.video_duration = atoi(iter->value);
+            global.client.video_duration = atoi(iter->value);
         } else if (strcmp(iter->key, "picture_format") == 0) {
             if (strcmp(iter->value, "bmp") == 0) {
-                global.picture_format = PICTURE_BMP;
+                global.client.picture_format = PICTURE_BMP;
             } else if (strcmp(iter->value, "png") == 0) {
-                global.picture_format = PICTURE_PNG;
+                global.client.picture_format = PICTURE_PNG;
             } else if (strcmp(iter->value, "jpeg") == 0) {
-                global.picture_format = PICTURE_JPEG;
+                global.client.picture_format = PICTURE_JPEG;
             } else {
                 dmd_log(LOG_ERR, "invalid value of picture_format\n");
+                return -1;
             }
+        } else if (strcmp(iter->key, "video_device") == 0) {
+            assert(strlen(iter->value) < PATH_MAX);
+            strncpy(global.client.video_device,
+                    iter->value, strlen(iter->value));
+            /* Warning:If there is no null byte among the first n bytes of
+             * src, the string placed in dest will not be null-terminated,
+             * remember add null-terminated manually.
+             */
+            global.client.video_device[strlen(iter->value)] = '\0';
+        } else if (strcmp(iter->key, "image_width") == 0) {
+            // Waring: there is no error detection in atoi();
+            global.client.image_width = atoi(iter->value);
+        } else if (strcmp(iter->key, "image_height") == 0) {
+            // Waring: there is no error detection in atoi();
+            global.client.image_height = atoi(iter->value);
         } else if (strcmp(iter->key, "video_format") == 0) {
             if (strcmp(iter->value, "h264") == 0) {
-                global.video_format = VIDEO_H264;
+                global.client.video_format = VIDEO_H264;
             } else {
                 dmd_log(LOG_ERR, "invalid value of video_format\n");
+                return -1;
             }
         } else if (strcmp(iter->key, "store_dir") == 0) {
             assert(strlen(iter->value) < PATH_MAX);
-            strncpy(global.store_dir, iter->value, strlen(iter->value));
+            strncpy(global.client.store_dir, iter->value, strlen(iter->value));
             /* Warning:If there is no null byte among the first n bytes of
              * src, the string placed in dest will not be null-terminated,
              * remember add null-terminated manually.
              */
-            global.store_dir[strlen(iter->value)] = '\0';
+            global.client.store_dir[strlen(iter->value)] = '\0';
+        } else if (strcmp(iter->key, "server_repo") == 0) {
+            assert(strlen(iter->value) < PATH_MAX);
+            strncpy(global.server.server_repo,
+                    iter->value, strlen(iter->value));
+            /* Warning:If there is no null byte among the first n bytes of
+             * src, the string placed in dest will not be null-terminated,
+             * remember add null-terminated manually.
+             */
+            global.server.server_repo[strlen(iter->value)] = '\0';
         } else {
             dmd_log(LOG_ERR, "unsupported parameter:%s \n", iter->key);
+            return -1;
         }
     } // while
 
@@ -222,4 +261,6 @@ void parse_config(const char *conf_file)
     set_buffering();
 
     ccl_release(&config);
+
+    return 0;
 }

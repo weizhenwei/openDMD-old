@@ -45,16 +45,19 @@ static void sigint_handler(int signal)
 {
     assert(signal == SIGINT);
 
-    // notify picture thread and video thread to exit;
-    pthread_mutex_lock(&global.thread_attr.picture_mutex);
-    global.picture_target = NOTIFY_EXIT;
-    pthread_cond_signal(&global.thread_attr.picture_cond);
-    pthread_mutex_unlock(&global.thread_attr.picture_mutex);
+    if (global.cluster_mode == CLUSTER_CLIENT
+            || global.cluster_mode == CLUSTER_SINGLETON) {
+        // notify picture thread and video thread to exit;
+        pthread_mutex_lock(&global.client.thread_attr.picture_mutex);
+        global.client.picture_target = NOTIFY_EXIT;
+        pthread_cond_signal(&global.client.thread_attr.picture_cond);
+        pthread_mutex_unlock(&global.client.thread_attr.picture_mutex);
 
-    pthread_mutex_lock(&global.thread_attr.video_mutex);
-    global.video_target = NOTIFY_EXIT;
-    pthread_cond_signal(&global.thread_attr.video_cond);
-    pthread_mutex_unlock(&global.thread_attr.video_mutex);
+        pthread_mutex_lock(&global.client.thread_attr.video_mutex);
+        global.client.video_target = NOTIFY_EXIT;
+        pthread_cond_signal(&global.client.thread_attr.video_cond);
+        pthread_mutex_unlock(&global.client.thread_attr.video_mutex);
+    }
 
     dmd_log(LOG_INFO, "captured SIGINT (Ctrl + C), program exit\n");
     exit(EXIT_FAILURE);

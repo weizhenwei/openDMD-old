@@ -51,14 +51,14 @@ void *video_thread(void *arg)
 
     for (;;) {
 
-        pthread_mutex_lock(&global.thread_attr.video_mutex);
+        pthread_mutex_lock(&global.client.thread_attr.video_mutex);
 
-        while (global.video_target == NOTIFY_NONE) {
-            pthread_cond_wait(&global.thread_attr.video_cond,
-                    &global.thread_attr.video_mutex);
+        while (global.client.video_target == NOTIFY_NONE) {
+            pthread_cond_wait(&global.client.thread_attr.video_cond,
+                    &global.client.thread_attr.video_mutex);
         }
-        notify = global.video_target;
-        global.video_target = NOTIFY_NONE;
+        notify = global.client.video_target;
+        global.client.video_target = NOTIFY_NONE;
 
         if (notify == NOTIFY_VIDEO) {
 
@@ -69,22 +69,23 @@ void *video_thread(void *arg)
                 assert(h264_filepath != NULL);
             }
 
-            int width = global.image_width;
-            int height = global.image_height;
+            int width = global.client.image_width;
+            int height = global.client.image_height;
             int length = width * height * 2;
 
-            pthread_rwlock_rdlock(&global.thread_attr.bufferYUYV_rwlock);
-            memcpy(global.vyuyv422buffer, global.bufferingYUYV422, length);
-            pthread_rwlock_unlock(&global.thread_attr.bufferYUYV_rwlock);
+            pthread_rwlock_rdlock(&global.client.thread_attr.bufferYUYV_rwlock);
+            memcpy(global.client.vyuyv422buffer,
+                    global.client.bufferingYUYV422, length);
+            pthread_rwlock_unlock(&global.client.thread_attr.bufferYUYV_rwlock);
 
             // convert Packed YUV422 to Planar YUV420P
-            YUYV422toYUV420P(global.vyuyv422buffer, width, height,
-                    global.yuv420pbuffer, length);
+            YUYV422toYUV420P(global.client.vyuyv422buffer, width, height,
+                    global.client.yuv420pbuffer, length);
 
             // and encode Planar YUV420P frame to H264 format, using libx264
             dmd_log(LOG_INFO, "in %s, encode a frame to %s\n",
                     __func__, h264_filepath);
-            ret = encode_yuv420p(global.yuv420pbuffer, width, height,
+            ret = encode_yuv420p(global.client.yuv420pbuffer, width, height,
                     h264_filepath);
             assert(ret == 0);
 
@@ -96,7 +97,7 @@ void *video_thread(void *arg)
 
         notify = NOTIFY_NONE;
 
-        pthread_mutex_unlock(&global.thread_attr.video_mutex);
+        pthread_mutex_unlock(&global.client.thread_attr.video_mutex);
     }
 
     pthread_exit(NULL);

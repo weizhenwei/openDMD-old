@@ -71,10 +71,10 @@ static void clean(void)
     dmd_closelog();
 }
 
-static void working_progress()
+static void client_working_progress()
 {
     int ret = -1;
-    const char *devpath = global.video_device;
+    const char *devpath = global.client.video_device;
 
     dmd_video = dmd_video_create(devpath);
     assert(dmd_video != NULL);
@@ -198,14 +198,18 @@ static void register_clean_memory()
 
 static void init(void)
 {
+    int ret = -1;
     // signal init;
     signal_init();
 
     // parse config file;
     assert(global.cfg_file != NULL);
-    parse_config(global.cfg_file);
+    ret = parse_config(global.cfg_file);
+    assert(ret == 0);
+
 #if defined(DEBUG)
-    dump_global_config();
+    ret = dump_global_config();
+    assert(ret == 0);
 #endif
 
     // reigister clean memory function;
@@ -217,45 +221,37 @@ static void init(void)
     }
 }
 
-static void create_thread()
+static void client_create_thread()
 {
     int dummy = 0;
     int ret;
 
-    if (global.cluster_mode == CLUSTER_SLAVE ||
-            global.cluster_mode == CLUSTER_SINGLETON) {
-        // create worker thread for slave node;
+    if (global.client.working_mode == CAPTURE_ALL) {
+        // create picture thread;
+        ret = pthread_create(&global.client.thread_attr.picture_thread_id,
+                &global.client.thread_attr.global_attr, picture_thread, &dummy);
+        assert(ret == 0);
 
-        if (global.working_mode == CAPTURE_ALL) {
-            // create picture thread;
-            ret = pthread_create(&global.thread_attr.picture_thread_id,
-                    &global.thread_attr.global_attr, picture_thread, &dummy);
-            assert(ret == 0);
+        // and create video thread;
+        ret = pthread_create(&global.client.thread_attr.video_thread_id,
+                &global.client.thread_attr.global_attr, video_thread, &dummy);
+        assert(ret == 0);
 
-            // and create video thread;
-            ret = pthread_create(&global.thread_attr.video_thread_id,
-                    &global.thread_attr.global_attr, video_thread, &dummy);
-            assert(ret == 0);
+    } else if (global.client.working_mode == CAPTURE_PICTURE) {
+        // only create picture thread;
+        ret = pthread_create(&global.client.thread_attr.picture_thread_id,
+                &global.client.thread_attr.global_attr, picture_thread, &dummy);
+        assert(ret == 0);
 
-        } else if (global.working_mode == CAPTURE_PICTURE) {
-            // only create picture thread;
-            ret = pthread_create(&global.thread_attr.picture_thread_id,
-                    &global.thread_attr.global_attr, picture_thread, &dummy);
-            assert(ret == 0);
+    } else if (global.client.working_mode == CAPTURE_VIDEO) {
+        // only create video thread;
+        ret = pthread_create(&global.client.thread_attr.video_thread_id,
+                &global.client.thread_attr.global_attr, video_thread, &dummy);
+        assert(ret == 0);
 
-        } else if (global.working_mode == CAPTURE_VIDEO) {
-            // only create video thread;
-            ret = pthread_create(&global.thread_attr.video_thread_id,
-                    &global.thread_attr.global_attr, video_thread, &dummy);
-            assert(ret == 0);
-
-        } else {
-            dmd_log(LOG_ERR, "impossible reach here!\n");
-            assert(0);
-        }
-    } else if (global.cluster_mode == CLUSTER_MASTER) { // master node;
-        // TODO: master node setup receive utils;
-
+    } else {
+        dmd_log(LOG_ERR, "impossible reach here!\n");
+        assert(0);
     }
 
 }
@@ -351,17 +347,15 @@ int main(int argc, char *argv[])
 
     init();
 
-
     // slave or singleton do the capturing work;
-    if (global.cluster_mode == CLUSTER_SLAVE
+    if (global.cluster_mode == CLUSTER_CLIENT
             || global.cluster_mode == CLUSTER_SINGLETON) {
         // create picture thread and/or video thread;
-        create_thread();
+        client_create_thread();
 
-        working_progress();
-    } else if (global.cluster_mode == CLUSTER_MASTER) {
+        client_working_progress();
+    } else if (global.cluster_mode == CLUSTER_SERVER) {
         // TODO: master do the receiving and storing work;
-
 
     }
 
