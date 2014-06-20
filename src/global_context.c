@@ -108,6 +108,9 @@ static void init_default_client()
             strlen(DEFAULT_RELEASE_STORE_DIR));
     global.client.store_dir[strlen(DEFAULT_RELEASE_STORE_DIR)] = '\0';
 #endif
+
+    // video sending ortp associated
+    global.client.rtpsession = NULL;
 }
 
 static void init_default_server()

@@ -52,6 +52,8 @@
 #include <unistd.h>
 #include <syslog.h>
 
+#include <ortp/ortp.h>
+
 #include "log.h"
 
 /////////////////////////////////////////////////////////////
@@ -206,6 +208,9 @@ struct client_context {
     enum video_format_type video_format;     // captured video format;
     char store_dir[PATH_MAX];                // captured pictures/video
                                              // storage directory.
+
+    // video sending ortp associated
+    RtpSession *rtpsession;                  // ortp session;
 };
 
 struct server_context {
