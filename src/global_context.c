@@ -166,6 +166,13 @@ void init_default_global()
     global.cfg_file[strlen(DEFAULT_RELEASE_CFG_FILE)] = '\0';
 #endif
 
+    // for server ortp ip/port;
+    assert(strlen(SERVER_IP) < PATH_MAX);
+    strncpy(global.server_ip, SERVER_IP, strlen(SERVER_IP));
+    global.server_ip[strlen(SERVER_IP)] = '\0';
+    global.server_port = SERVER_PORT;
+
+    // init client/server specific;
     init_default_client();
     init_default_server();
 }
@@ -174,6 +181,8 @@ int dump_global_config()
 {
     // only dump, no error detect.
     dmd_log(LOG_INFO, "in function %s:\n", __func__);
+
+    // basic settings;
 
     if (global.cluster_mode == CLUSTER_CLIENT) {
         dmd_log(LOG_INFO, "cluster_mode: client\n");
@@ -186,7 +195,6 @@ int dump_global_config()
         return -1;
     }
 
-    // basic settings;
     if (global.daemon_mode == DAEMON_ON) {
         dmd_log(LOG_INFO, "daemon_mode: on\n");
     } if (global.daemon_mode == DAEMON_OFF) {
@@ -195,6 +203,15 @@ int dump_global_config()
         dmd_log(LOG_ERR, "Unsupported daemon mode\n");
         return -1;
     }
+
+    dmd_log(LOG_INFO, "pid file:%s\n", global.pid_file);
+    dmd_log(LOG_INFO, "cfg file:%s\n", global.cfg_file);
+
+    dmd_log(LOG_INFO, "server ip:%s\n", global.server_ip);
+    dmd_log(LOG_INFO, "server port:%d\n", global.server_port);
+
+
+    // client settings;
 
     if (global.client.working_mode == CAPTURE_VIDEO) {
         dmd_log(LOG_INFO, "working_mode: capture video\n");
@@ -206,9 +223,6 @@ int dump_global_config()
         dmd_log(LOG_ERR, "Unsupported client working mode\n");
         return -1;
     }
-
-    dmd_log(LOG_INFO, "pid file:%s\n", global.pid_file);
-    dmd_log(LOG_INFO, "cfg file:%s\n", global.cfg_file);
 
     dmd_log(LOG_INFO, "video device:%s\n", global.client.video_device);
     dmd_log(LOG_INFO, "image width:%d\n", global.client.image_width);
@@ -237,7 +251,11 @@ int dump_global_config()
         return -1;
     }
 
-    dmd_log(LOG_INFO, "store dir:%s\n", global.client.store_dir);
+    dmd_log(LOG_INFO, "client store dir:%s\n", global.client.store_dir);
+
+
+    // server settings;
+    dmd_log(LOG_INFO, "server repository dir:%s\n", global.server.server_repo);
 
     return 0;
 }

@@ -54,6 +54,9 @@
 
 #include "log.h"
 
+/////////////////////////////////////////////////////////////
+// Common default settings                                 //
+/////////////////////////////////////////////////////////////
 #define DEFAULT_RELEASE_PID_FILE "/var/run/opendmd/opendmd.pid"
 // #define DEFAULT_DEBUG_PID_FILE "/home/wzw/opendmd/opendmd.pid"
 #define DEFAULT_DEBUG_PID_FILE "opendmd.pid"
@@ -62,8 +65,14 @@
 // #define DEFAULT_DEBUG_CFG_FILE "/home/wzw/opendmd/opendmd.cfg"
 #define DEFAULT_DEBUG_CFG_FILE "config/opendmd.cfg"
 
-#define DEFAULT_VIDEO_DEVICE "/dev/video0"
+#define SERVER_IP "127.0.0.1"
+#define SERVER_PORT 8000
 
+/////////////////////////////////////////////////////////////
+// Client default settings                                 //
+/////////////////////////////////////////////////////////////
+
+#define DEFAULT_VIDEO_DEVICE "/dev/video0"
 
 #define DEFAULT_VIDEO_WIDTH 640
 #define DEFAULT_VIDEO_HEIGHT 480
@@ -76,6 +85,14 @@
 #define DEFAULT_RELEASE_STORE_DIR "/tmp/opendmd"
 #define DEFAULT_DEBUG_STORE_DIR "/home/wzw/opendmd"
 
+// default 
+#define SERVER_IP "127.0.0.1"
+#define SERVER_PORT 8000
+
+
+/////////////////////////////////////////////////////////////
+// Server default settings                                 //
+/////////////////////////////////////////////////////////////
 
 #define SERVER_REPO "/home/wzw/opendmd/server_repo"
 
@@ -217,10 +234,12 @@ struct global_context {
     char pid_file[PATH_MAX];             // main process's pid file;
     char cfg_file[PATH_MAX];             // config file;
 
+    char server_ip[PATH_MAX];            // ortp server ip;
+    int server_port;                // ortp server port;
+
     // client/server settings;
     struct client_context client;
     struct server_context server;
-    
 };
 
 extern void init_default_global();
