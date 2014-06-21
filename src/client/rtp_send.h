@@ -48,7 +48,9 @@
 
 #include <ortp/ortp.h>
 
-// the h264 video payload type
+#include "log.h"
+
+// the h264 video payload_type
 #define PAYLOAD_TYPE_H264 96
 
 #define SEND_LEN 1024
@@ -59,12 +61,11 @@
 
 extern void rtp_send_init(); 
 
-extern void rtp_send_release(); 
+extern void rtp_send_release(RtpSession *rtpsession); 
 
 extern RtpSession *rtp_send_createSession(const char *remoteIP,
         const int remotePort);
 
-extern void rtp_send(const char *sendfile, const char *remoteIP,
-        const int remotePort);
+extern int rtp_send(RtpSession *rtpsession, unsigned char *buffer, int len);
  
 #endif

@@ -15,7 +15,8 @@ opendmd_LDADD = $(top_srcdir)/libccl/libccl.a \
 # Warning: system library should be assigned here using LIBS;
 # using opendmd_LDFLAGS at here doesn't work!
 # using LDFLAGS in configure.ac doesn't work, either!
-LIBS=-lm -lpthread
+# -lrt for function clock_gettime()
+LIBS=-lm -lpthread -lrt
 
 opendmd_SOURCES = main.c \
                   config.h config.c log.h log.c path.h path.c \
@@ -27,5 +28,6 @@ opendmd_SOURCES = main.c \
                   client/image_capture.h client/image_capture.c \
 				  client/picture_thread.h client/picture_thread.c \
                   client/libx264.h client/libx264.c \
-				  client/video_thread.h client/video_thread.c
+				  client/video_thread.h client/video_thread.c \
+				  client/rtp_send.h client/rtp_send.c
 

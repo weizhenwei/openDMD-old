@@ -173,7 +173,8 @@ void init_default_global()
     assert(strlen(SERVER_IP) < PATH_MAX);
     strncpy(global.server_ip, SERVER_IP, strlen(SERVER_IP));
     global.server_ip[strlen(SERVER_IP)] = '\0';
-    global.server_port = SERVER_PORT;
+    global.server_rtp_port = SERVER_RTP_PORT;
+    global.server_rtcp_port = SERVER_RTCP_PORT;
 
     // init client/server specific;
     init_default_client();
@@ -211,7 +212,8 @@ int dump_global_config()
     dmd_log(LOG_INFO, "cfg file:%s\n", global.cfg_file);
 
     dmd_log(LOG_INFO, "server ip:%s\n", global.server_ip);
-    dmd_log(LOG_INFO, "server port:%d\n", global.server_port);
+    dmd_log(LOG_INFO, "server rtp port:%d\n", global.server_rtp_port);
+    dmd_log(LOG_INFO, "server rtcp port:%d\n", global.server_rtcp_port);
 
 
     // client settings;

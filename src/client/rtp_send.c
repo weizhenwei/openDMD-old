@@ -50,9 +50,11 @@ void rtp_send_init()
 
 }
 
-void rtp_send_release()
+void rtp_send_release(RtpSession *rtpsession)
 {
     ortp_exit();
+    rtp_session_destroy(rtpsession);
+    ortp_global_stats_display();
 }
 
 
@@ -66,7 +68,7 @@ RtpSession *rtp_send_createSession(const char *remoteIP, const int remotePort)
     rtp_session_set_connected_mode(rtpsession, 1); // 1 means TRUE;
 	rtp_session_set_remote_addr(rtpsession, remoteIP, remotePort);
 
-    // set payload type to H264 (96);
+    // set payload_type to H264 (96);
 	rtp_session_set_payload_type(rtpsession, PAYLOAD_TYPE_H264);
 
 	char *ssrc = getenv("SSRC");
@@ -77,35 +79,31 @@ RtpSession *rtp_send_createSession(const char *remoteIP, const int remotePort)
     return rtpsession;
 }
     
-void rtp_send(const char *sendfile, const char *remoteIP,
-        const int remotePort)
+int rtp_send(RtpSession *rtpsession, unsigned char *buffer, int len)
 {
-    unsigned char buffer[SEND_LEN];
     unsigned int user_ts = 0;
-    int readlen = 0;
+    int payloadlen = 0;
     int sendlen = 0;
+    int remainlen = len;
+    int idx = 0;
 
-    rtp_send_init();
-    RtpSession *rtpsession = rtp_send_createSession(remoteIP, remotePort);
-    assert(rtpsession != NULL);
+    while (remainlen > 0) {
+        sendlen = rtp_session_send_with_ts(rtpsession, buffer + idx,
+                SEND_LEN, user_ts);
 
-    assert(sendfile != NULL);
-    FILE *fp = fopen(sendfile, "r");
-    assert(fp != NULL);
+        if (remainlen < SEND_LEN) {
+            payloadlen = remainlen;
+        } else {
+            payloadlen = SEND_LEN;
+        }
+        dmd_log(LOG_INFO, "in function %s, send total len = %d, \
+                send payload len = %d\n", __func__, sendlen, payloadlen);
 
-    while ((readlen = fread(buffer,
-                    sizeof(unsigned char), SEND_LEN, fp)) > 0) {
-        sendlen = rtp_session_send_with_ts(rtpsession,
-                buffer, readlen, user_ts);
-        printf("read %d bytes, send %d bytes\n", readlen, sendlen);
-
+        remainlen -= payloadlen;
+        idx += payloadlen;
         user_ts += VIDEO_TIME_STAMP_INC;
     }
 
-    fclose(fp);
-
-    rtp_session_destroy(rtpsession);
-    rtp_send_release();
-    ortp_global_stats_display();
+    return 0;
 }
 

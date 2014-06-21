@@ -166,10 +166,15 @@ int parse_config(const char *conf_file)
              */
             global.server_ip[strlen(iter->value)] = '\0';
 
-        } else if (strcmp(iter->key, "server_port") == 0) {
+        } else if (strcmp(iter->key, "server_rtp_port") == 0) {
             int port = atoi(iter->value);
             assert(port >= 0 && port <= 65535);
-            global.server_port = port;
+            global.server_rtp_port = port;
+
+        } else if (strcmp(iter->key, "server_rtcp_port") == 0) {
+            int port = atoi(iter->value);
+            assert(port >= 0 && port <= 65535);
+            global.server_rtcp_port = port;
 
         } else if (strcmp(iter->key, "pid_file") == 0) {
             assert(strlen(iter->value) < PATH_MAX);

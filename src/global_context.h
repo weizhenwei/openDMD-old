@@ -68,7 +68,8 @@
 #define DEFAULT_DEBUG_CFG_FILE "config/opendmd.cfg"
 
 #define SERVER_IP "127.0.0.1"
-#define SERVER_PORT 8000
+#define SERVER_RTP_PORT 5004
+#define SERVER_RTCP_PORT 5005
 
 /////////////////////////////////////////////////////////////
 // Client default settings                                 //
@@ -86,10 +87,6 @@
 
 #define DEFAULT_RELEASE_STORE_DIR "/tmp/opendmd"
 #define DEFAULT_DEBUG_STORE_DIR "/home/wzw/opendmd"
-
-// default 
-#define SERVER_IP "127.0.0.1"
-#define SERVER_PORT 8000
 
 
 /////////////////////////////////////////////////////////////
@@ -240,7 +237,8 @@ struct global_context {
     char cfg_file[PATH_MAX];             // config file;
 
     char server_ip[PATH_MAX];            // ortp server ip;
-    int server_port;                // ortp server port;
+    int server_rtp_port;                 // ortp server rtp port;
+    int server_rtcp_port;                // ortp server rtcp port;
 
     // client/server settings;
     struct client_context client;

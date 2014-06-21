@@ -50,7 +50,7 @@ am_opendmd_OBJECTS = main.$(OBJEXT) config.$(OBJEXT) log.$(OBJEXT) \
 	v4l2_utils.$(OBJEXT) signal_handler.$(OBJEXT) \
 	image_convert.$(OBJEXT) image_capture.$(OBJEXT) \
 	picture_thread.$(OBJEXT) libx264.$(OBJEXT) \
-	video_thread.$(OBJEXT)
+	video_thread.$(OBJEXT) rtp_send.$(OBJEXT)
 opendmd_OBJECTS = $(am_opendmd_OBJECTS)
 opendmd_DEPENDENCIES = $(top_srcdir)/libccl/libccl.a \
 	$(top_srcdir)/libjpeg/libjpeg.a \
@@ -101,7 +101,8 @@ LIBOBJS = @LIBOBJS@
 # Warning: system library should be assigned here using LIBS;
 # using opendmd_LDFLAGS at here doesn't work!
 # using LDFLAGS in configure.ac doesn't work, either!
-LIBS = -lm -lpthread
+# -lrt for function clock_gettime()
+LIBS = -lm -lpthread -lrt
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
@@ -183,7 +184,8 @@ opendmd_SOURCES = main.c \
                   client/image_capture.h client/image_capture.c \
 				  client/picture_thread.h client/picture_thread.c \
                   client/libx264.h client/libx264.c \
-				  client/video_thread.h client/video_thread.c
+				  client/video_thread.h client/video_thread.c \
+				  client/rtp_send.h client/rtp_send.c
 
 all: all-am
 
@@ -275,6 +277,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/path.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/picture_thread.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtp_send.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/signal_handler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/v4l2_utils.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/video.Po@am__quote@
@@ -377,6 +380,20 @@ video_thread.obj: client/video_thread.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='client/video_thread.c' object='video_thread.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o video_thread.obj `if test -f 'client/video_thread.c'; then $(CYGPATH_W) 'client/video_thread.c'; else $(CYGPATH_W) '$(srcdir)/client/video_thread.c'; fi`
+
+rtp_send.o: client/rtp_send.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rtp_send.o -MD -MP -MF $(DEPDIR)/rtp_send.Tpo -c -o rtp_send.o `test -f 'client/rtp_send.c' || echo '$(srcdir)/'`client/rtp_send.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/rtp_send.Tpo $(DEPDIR)/rtp_send.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='client/rtp_send.c' object='rtp_send.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rtp_send.o `test -f 'client/rtp_send.c' || echo '$(srcdir)/'`client/rtp_send.c
+
+rtp_send.obj: client/rtp_send.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rtp_send.obj -MD -MP -MF $(DEPDIR)/rtp_send.Tpo -c -o rtp_send.obj `if test -f 'client/rtp_send.c'; then $(CYGPATH_W) 'client/rtp_send.c'; else $(CYGPATH_W) '$(srcdir)/client/rtp_send.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/rtp_send.Tpo $(DEPDIR)/rtp_send.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='client/rtp_send.c' object='rtp_send.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rtp_send.obj `if test -f 'client/rtp_send.c'; then $(CYGPATH_W) 'client/rtp_send.c'; else $(CYGPATH_W) '$(srcdir)/client/rtp_send.c'; fi`
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
