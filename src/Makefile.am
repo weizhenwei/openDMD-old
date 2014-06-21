@@ -29,5 +29,6 @@ opendmd_SOURCES = main.c \
 				  client/picture_thread.h client/picture_thread.c \
                   client/libx264.h client/libx264.c \
 				  client/video_thread.h client/video_thread.c \
-				  client/rtp_send.h client/rtp_send.c
+				  client/rtp_send.h client/rtp_send.c \
+				  server/rtp_recv.h server/rtp_recv.c
 

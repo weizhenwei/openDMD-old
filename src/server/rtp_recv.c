@@ -30,9 +30,9 @@
  *
  * File: rtp_recv.c
  *
- * Brief: ortp receive test;
+ * Brief: ortp receive;
  *
- * Date: 2014.06.15
+ * Date: 2014.06.21
  *
  * Author: weizhenwei <weizhenwei1988@gmail.com>
  *
@@ -50,14 +50,11 @@ void rtp_recv_init()
 
 }
 
-void rtp_recv_release()
+void rtp_recv_release(RtpSession *rtpsession)
 {
     ortp_exit();
-}
-
-void ssrc_cb(RtpSession *session)
-{
-	printf("hey, the ssrc has changed !\n");
+    rtp_session_destroy(rtpsession);
+    ortp_global_stats_display();
 }
 
 RtpSession *rtp_recv_createSession(const char *localIP, const int localPort)
@@ -69,14 +66,10 @@ RtpSession *rtp_recv_createSession(const char *localIP, const int localPort)
 	rtp_session_set_blocking_mode(rtpsession, 1);
 	rtp_session_set_local_addr(rtpsession, localIP, localPort, -1);
 	rtp_session_set_connected_mode(rtpsession, 1); // 1 means TRUE;
-	// rtp_session_set_symmetric_rtp(rtpsession, 1);
-    // rtp_session_enable_adaptive_jitter_compensation(rtpsession, 1);
-    // rtp_session_set_jitter_compensation(rtpsession, 40);
+    rtp_session_enable_adaptive_jitter_compensation(rtpsession, 1);
+    rtp_session_set_jitter_compensation(rtpsession, 40);
 
-	// rtp_session_signal_connect(rtpsession, "ssrc_changed", (RtpCallback)ssrc_cb, 0);
-	// rtp_session_signal_connect(rtpsession, "ssrc_changed", (RtpCallback)rtp_session_reset, 0);
-
-    // set video payload type to H264
+    // set video payload_type to H264
 	rtp_session_set_payload_type(rtpsession, PAYLOAD_TYPE_H264);
 
     return rtpsession;
@@ -89,8 +82,7 @@ void stop_handler(int signum)
 	cond = 0;
 }
 
-void rtp_recv(const char *recvfile, const char *localIP,
-        const int localPort)
+int rtp_recv(RtpSession *rtpsession, const char *recvfile)
 {
 	int recvBytes  = 0;
     int writelen = 0;
@@ -99,19 +91,16 @@ void rtp_recv(const char *recvfile, const char *localIP,
 	int stream_received = 0;
     unsigned char buffer[RECV_LEN];
 
-    rtp_recv_init();
 	signal(SIGINT, stop_handler);
-    RtpSession *rtpsession = rtp_recv_createSession(localIP, localPort);
-    assert(rtpsession != NULL);
 
     assert(recvfile != NULL);
-    FILE *fp = fopen(recvfile, "w");
+    FILE *fp = fopen(recvfile, "a");
     assert(fp != NULL);
 
     while (cond) {
         have_more = 1;
         while (have_more) {
-            // printf("in recv while loop\n");
+            dmd_log(LOG_INFO, "in recv while loop\n");
 
             recvBytes = rtp_session_recv_with_ts(rtpsession,
                     buffer, RECV_LEN, user_ts, &have_more);
@@ -134,8 +123,5 @@ void rtp_recv(const char *recvfile, const char *localIP,
         user_ts += VIDEO_TIME_STAMP_INC;
     }
 
-    fclose(fp);
-    rtp_session_destroy(rtpsession);
-    rtp_recv_release();
-    ortp_global_stats_display();
+    return 0;
 }

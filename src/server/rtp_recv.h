@@ -30,9 +30,9 @@
  *
  * File: rtp_recv.h
  *
- * Brief: ortp receive test;
+ * Brief: ortp receive;
  *
- * Date: 2014.06.15
+ * Date: 2014.06.21
  *
  * Author: weizhenwei <weizhenwei1988@gmail.com>
  *
@@ -49,7 +49,9 @@
 #include <string.h>
 #include <ortp/ortp.h>
 
-// h264 video payload type
+#include "log.h"
+
+// h264 video payload_type
 #define PAYLOAD_TYPE_H264 96
 
 #define RECV_LEN 1400
@@ -60,12 +62,11 @@
 
 extern void rtp_recv_init(); 
 
-extern void rtp_recv_release(); 
+extern void rtp_recv_release(RtpSession *rtpsession); 
 
 extern RtpSession *rtp_recv_createSession(const char *localIP,
         const int localPort);
 
-extern void rtp_recv(const char *recvfile, const char *localIP,
-        const int localPort);
+extern int rtp_recv(RtpSession *rtpsession, const char *recvfile);
  
 #endif
