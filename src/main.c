@@ -66,6 +66,8 @@
 #include "picture_thread.h"
 #include "signal_handler.h"
 
+#include "rtp_server.h"
+
 static void clean(void)
 {
     dmd_closelog();
@@ -256,12 +258,6 @@ static void client_create_thread()
 
 }
 
-static void server_create_thread()
-{
-    return ;
-}
-
-
 static void usage(const char *progname)
 {
     fprintf(stdout, "Usage:%s [OPTION...]\n", progname);
@@ -363,7 +359,8 @@ int main(int argc, char *argv[])
     } else if (global.cluster_mode == CLUSTER_SERVER) {
         // TODO: master do the receiving and storing work;
 
-        server_create_thread();
+        rtp_server_running();
+
     }
 
     clean();

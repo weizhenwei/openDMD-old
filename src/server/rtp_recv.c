@@ -47,7 +47,6 @@ void rtp_recv_init()
 	ortp_scheduler_init();
 	ortp_set_log_level_mask(ORTP_DEBUG | ORTP_MESSAGE
             | ORTP_WARNING | ORTP_ERROR);
-
 }
 
 void rtp_recv_release(RtpSession *rtpsession)
@@ -82,12 +81,11 @@ void stop_handler(int signum)
 	cond = 0;
 }
 
-int rtp_recv(RtpSession *rtpsession, const char *recvfile)
+int rtp_recv(RtpSession *rtpsession, uint32_t *user_ts, const char *recvfile)
 {
 	int recvBytes  = 0;
     int writelen = 0;
 	int have_more = 1;
-    uint32_t user_ts = 0;
 	int stream_received = 0;
     unsigned char buffer[RECV_LEN];
 
@@ -100,10 +98,10 @@ int rtp_recv(RtpSession *rtpsession, const char *recvfile)
     while (cond) {
         have_more = 1;
         while (have_more) {
-            dmd_log(LOG_INFO, "in recv while loop\n");
+            dmd_log(LOG_DEBUG, "in recv while loop\n");
 
             recvBytes = rtp_session_recv_with_ts(rtpsession,
-                    buffer, RECV_LEN, user_ts, &have_more);
+                    buffer, RECV_LEN, *user_ts, &have_more);
 
             if (recvBytes > 0)
                 stream_received = 1;
@@ -120,7 +118,7 @@ int rtp_recv(RtpSession *rtpsession, const char *recvfile)
             }
         }
 
-        user_ts += VIDEO_TIME_STAMP_INC;
+        *user_ts += VIDEO_TIME_STAMP_INC;
     }
 
     return 0;

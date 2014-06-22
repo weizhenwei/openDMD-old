@@ -60,6 +60,9 @@
 // #define VIDEO_TIME_STAMP_INC  3600
 #define VIDEO_TIME_STAMP_INC  1800
 
+#define LOCAL_IP "127.0.0.1"
+#define LOCAL_PORT 5004
+
 extern void rtp_recv_init(); 
 
 extern void rtp_recv_release(RtpSession *rtpsession); 
@@ -67,6 +70,7 @@ extern void rtp_recv_release(RtpSession *rtpsession);
 extern RtpSession *rtp_recv_createSession(const char *localIP,
         const int localPort);
 
-extern int rtp_recv(RtpSession *rtpsession, const char *recvfile);
+extern int rtp_recv(RtpSession *rtpsession, uint32_t *user_ts,
+        const char *recvfile);
  
 #endif
