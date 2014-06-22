@@ -47,6 +47,7 @@ void rtp_send_init()
 	ortp_scheduler_init();
     ortp_set_log_level_mask(ORTP_DEBUG | ORTP_MESSAGE
             | ORTP_WARNING | ORTP_ERROR);
+    // ortp_set_log_level_mask(ORTP_ERROR);
 
 }
 
@@ -56,7 +57,9 @@ void rtp_send_release()
 }
 
 
-RtpSession *rtp_send_createSession(const char *remoteIP, const int remotePort)
+RtpSession *rtp_send_createSession(
+        const char *clientIP, const int clientPort,
+        const char *remoteIP, const int remotePort)
 {
     RtpSession *rtpsession = rtp_session_new(RTP_SESSION_SENDONLY);	
     assert(rtpsession != NULL);
@@ -64,7 +67,23 @@ RtpSession *rtp_send_createSession(const char *remoteIP, const int remotePort)
 	rtp_session_set_scheduling_mode(rtpsession, 1);
 	rtp_session_set_blocking_mode(rtpsession, 1);
     rtp_session_set_connected_mode(rtpsession, 1); // 1 means TRUE;
+    rtp_session_set_local_addr(rtpsession, clientIP, clientPort, -1);
 	rtp_session_set_remote_addr(rtpsession, remoteIP, remotePort);
+
+	rtp_session_set_symmetric_rtp(rtpsession, 1);
+    
+    rtp_session_set_source_description(
+            rtpsession,
+            "cname", /*cname*/
+            "name",  /*name*/
+            "weizhenwei1988@gmail.com", /*email*/
+            "110", /*phone number*/
+            "loc", /*loc*/
+            "tool", /*tool*/
+            "note:rtp_send test" /*note*/
+            );
+
+    rtp_session_enable_rtcp(rtpsession, 1); // 1 means TRUE;
 
     // set payload type to H264 (96);
 	rtp_session_set_payload_type(rtpsession, PAYLOAD_TYPE_H264);
@@ -77,8 +96,9 @@ RtpSession *rtp_send_createSession(const char *remoteIP, const int remotePort)
     return rtpsession;
 }
     
-void rtp_send(const char *sendfile, const char *remoteIP,
-        const int remotePort)
+void rtp_send(const char *sendfile,
+        const char *clientIP, const int clientPort,
+        const char *remoteIP, const int remotePort)
 {
     unsigned char buffer[SEND_LEN];
     unsigned int user_ts = 0;
@@ -86,7 +106,8 @@ void rtp_send(const char *sendfile, const char *remoteIP,
     int sendlen = 0;
 
     rtp_send_init();
-    RtpSession *rtpsession = rtp_send_createSession(remoteIP, remotePort);
+    RtpSession *rtpsession = rtp_send_createSession(
+            clientIP, clientPort, remoteIP, remotePort);
     assert(rtpsession != NULL);
 
     assert(sendfile != NULL);

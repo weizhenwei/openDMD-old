@@ -1065,6 +1065,7 @@ rtp_session_rtcp_send (RtpSession * session, mblk_t * m)
 	if (session->rtcp.enabled &&
 		( (sockfd!=(ortp_socket_t)-1 && (session->rtcp.rem_addrlen>0 ||using_connected_socket))
 			|| rtp_session_using_transport(session, rtcp) ) ){
+
 		if (rtp_session_using_transport(session, rtcp)){
 			error = (session->rtcp.tr->t_sendto) (session->rtcp.tr, m, 0,
 			destaddr, destlen);
@@ -1086,7 +1087,14 @@ rtp_session_rtcp_send (RtpSession * session, mblk_t * m)
 			if (session->on_network_error.count>0){
 				rtp_signal_table_emit3(&session->on_network_error,(long)"Error sending RTCP packet",INT_TO_POINTER(getSocketErrorCode()));
 			}else ortp_warning ("Error sending rtcp packet: %s ; socket=%i; addr=%s", getSocketError(), session->rtcp.socket, ortp_inet_ntoa((struct sockaddr*)&session->rtcp.rem_addr,session->rtcp.rem_addrlen,host,sizeof(host)) );
-		}
+		} else { // by weizhenwei, 2014.06.22
+			char host[65];
+            ortp_message("Sending rtcp package to  socket=%i, addr=%s",
+                    session->rtcp.socket,
+                    ortp_inet_ntoa((struct sockaddr*)&session->rtcp.rem_addr,
+                        session->rtcp.rem_addrlen,host,sizeof(host)));
+
+        }
 	}else ortp_message("Not sending rtcp report: sockfd=%i, rem_addrlen=%i, connected=%i",sockfd,session->rtcp.rem_addrlen,using_connected_socket);
 	freemsg (m);
 	return error;
@@ -1221,6 +1229,15 @@ int rtp_session_rtp_recv (RtpSession * session, uint32_t user_ts)
 				  &addrlen);
 		}
 		if (error > 0){
+
+            {
+                // by weizhenwei, 2014.06.22
+                // char host[65];
+                // ortp_message("in function %s, recv from addr %s", __func__, 
+                //         ortp_inet_ntoa((struct sockaddr*)&session->rtcp.rem_addr,
+                //             session->rtcp.rem_addrlen,host,sizeof(host)));
+            }
+
 			if (session->use_connect){
 				/* In the case where use_connect is false, symmetric RTP is handled in rtp_session_rtp_parse() */
 				if (session->symmetric_rtp && !sock_connected){

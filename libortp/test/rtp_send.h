@@ -61,10 +61,12 @@ extern void rtp_send_init();
 
 extern void rtp_send_release(); 
 
-extern RtpSession *rtp_send_createSession(const char *remoteIP,
-        const int remotePort);
+extern RtpSession *rtp_send_createSession(
+        const char *clientIP, const int clientPort,
+        const char *remoteIP, const int remotePort);
 
-extern void rtp_send(const char *sendfile, const char *remoteIP,
-        const int remotePort);
+extern void rtp_send(const char *sendfile,
+        const char *clientIP, const int clientPort,
+        const char *remoteIP, const int remotePort);
  
 #endif

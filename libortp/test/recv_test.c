@@ -41,9 +41,9 @@
 
 #include "rtp_recv.h"
 
-// #define LOCAL_IP "192.168.1.100"
-#define LOCAL_IP "127.0.0.1"
-#define LOCAL_PORT 8000
+// #define LOCAL_IP "127.0.0.1"
+#define LOCAL_IP "192.168.1.100"
+#define LOCAL_PORT 5004
 
 int main(int argc, char *argv[])
 {
