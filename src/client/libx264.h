@@ -52,6 +52,8 @@
 #include <unistd.h>
 #include <x264.h>
 
+#include "global_context.h"
+#include "rtp_send.h"
 #include "log.h"
 
 // encode Planar YUV420P to H264 foramt using libx264

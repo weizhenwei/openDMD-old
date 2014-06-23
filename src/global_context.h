@@ -67,6 +67,9 @@
 // #define DEFAULT_DEBUG_CFG_FILE "/home/wzw/opendmd/opendmd.cfg"
 #define DEFAULT_DEBUG_CFG_FILE "config/opendmd.cfg"
 
+#define LOCAL_IP "0.0.0.0"
+#define LOCAL_PORT 8000
+
 #define SERVER_IP "127.0.0.1"
 #define SERVER_RTP_PORT 5004
 #define SERVER_RTCP_PORT 5005
@@ -162,6 +165,18 @@ enum cluster_mode_t {
     CLUSTER_SINGLETON = 3,
 };
 
+// for client sending rtp packet to server;
+struct client_rtp {
+    RtpSession *rtpsession;
+    uint32_t user_ts;
+
+    char local_ip[PATH_MAX];
+    int local_port;
+    char server_ip[PATH_MAX];
+    int server_rtp_port;
+    int server_rtcp_port;
+};
+
 struct client_context {
     // basic client settings;
     enum working_type  working_mode;     // working mode: picture, video or all;
@@ -205,14 +220,17 @@ struct client_context {
     enum video_format_type video_format;     // captured video format;
     char store_dir[PATH_MAX];                // captured pictures/video
                                              // storage directory.
-
     // video sending ortp associated
-    RtpSession *rtpsession;                  // ortp session;
+    struct client_rtp clientrtp;                   // client ortp session;
 };
 
 struct server_context {
     char server_repo[PATH_MAX];              // captured pictures/video
                                              // storage directory.
+
+    char server_ip[PATH_MAX];            // ortp server ip;
+    int server_rtp_port;                 // ortp server rtp port;
+    int server_rtcp_port;                // ortp server rtcp port;
 };
 
 struct global_context {
@@ -235,10 +253,6 @@ struct global_context {
     enum daemon_mode_type daemon_mode;   // run in daemon mode;
     char pid_file[PATH_MAX];             // main process's pid file;
     char cfg_file[PATH_MAX];             // config file;
-
-    char server_ip[PATH_MAX];            // ortp server ip;
-    int server_rtp_port;                 // ortp server rtp port;
-    int server_rtcp_port;                // ortp server rtcp port;
 
     // client/server settings;
     struct client_context client;

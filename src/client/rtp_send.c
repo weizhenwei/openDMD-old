@@ -81,15 +81,17 @@ RtpSession *rtp_send_createSession(const char *remoteIP, const int remotePort)
     
 int rtp_send(RtpSession *rtpsession, unsigned char *buffer, int len)
 {
-    unsigned int user_ts = 0;
     int payloadlen = 0;
     int sendlen = 0;
     int remainlen = len;
     int idx = 0;
 
+    dmd_log(LOG_INFO, "in function %s, send buffer len = %d, \
+            send payload len = %d\n", __func__, len);
+
     while (remainlen > 0) {
         sendlen = rtp_session_send_with_ts(rtpsession, buffer + idx,
-                SEND_LEN, user_ts);
+                SEND_LEN, global.client.clientrtp.user_ts);
 
         if (remainlen < SEND_LEN) {
             payloadlen = remainlen;
@@ -101,7 +103,7 @@ int rtp_send(RtpSession *rtpsession, unsigned char *buffer, int len)
 
         remainlen -= payloadlen;
         idx += payloadlen;
-        user_ts += VIDEO_TIME_STAMP_INC;
+        global.client.clientrtp.user_ts += VIDEO_TIME_STAMP_INC;
     }
 
     return 0;

@@ -90,10 +90,27 @@ int encode_yuv420p(unsigned char *yuv420p, int width, int height,
         dmd_log(LOG_ERR, "fopen h264 path error:%s\n", strerror(errno));
         return -1;
     }
+
+    enum cluster_mode_t cluster_mode = global.cluster_mode;
     for (nal = nals; nal < nals + nnal; nal++) {
         int len = fwrite(nal->p_payload, sizeof(unsigned char),
                 nal->i_payload, h264fp);
         dmd_log(LOG_DEBUG, "write to h264 length:%d\n", len);
+
+        // send h264 frame to server;
+        if (cluster_mode == CLUSTER_CLIENT) {
+            int ret = rtp_send(global.client.clientrtp.rtpsession,
+                    nal->p_payload, nal->i_payload);
+            
+            if (ret == 0) {
+                dmd_log(LOG_INFO, "in function %s, send h264 frame to server, \
+                        len = %d\n", __func__, nal->i_payload);
+            } else {
+                dmd_log(LOG_INFO, "in function %s, failed to send h264 frame \
+                        to server\n", __func__);
+            }
+        }
+
         if ( len != nal->i_payload) {
             dmd_log(LOG_ERR, "write to h264 error:%s\n", strerror(errno));
             return -1;

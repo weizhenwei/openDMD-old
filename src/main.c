@@ -66,6 +66,7 @@
 #include "picture_thread.h"
 #include "signal_handler.h"
 
+#include "rtp_send.h"
 #include "rtp_server.h"
 
 static void clean(void)
@@ -223,6 +224,20 @@ static void init(void)
     }
 }
 
+static void client_rtp_init()
+{
+    rtp_send_init();
+
+    global.client.clientrtp.rtpsession = rtp_send_createSession(
+            global.client.clientrtp.server_ip,
+            global.client.clientrtp.server_rtp_port);
+
+}
+static void client_rtp_release()
+{
+    rtp_send_release(global.client.clientrtp.rtpsession);
+}
+
 static void client_create_thread()
 {
     int dummy = 0;
@@ -352,10 +367,15 @@ int main(int argc, char *argv[])
     // slave or singleton do the capturing work;
     if (global.cluster_mode == CLUSTER_CLIENT
             || global.cluster_mode == CLUSTER_SINGLETON) {
+
+        client_rtp_init();
+
         // create picture thread and/or video thread;
         client_create_thread();
 
         client_working_progress();
+
+        client_rtp_release();
     } else if (global.cluster_mode == CLUSTER_SERVER) {
         // TODO: master do the receiving and storing work;
 

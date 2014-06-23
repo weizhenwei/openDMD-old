@@ -48,6 +48,7 @@
 
 #include <ortp/ortp.h>
 
+#include "global_context.h"
 #include "log.h"
 
 // the h264 video payload_type

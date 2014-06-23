@@ -44,6 +44,23 @@
 // define the global variable global to control opendmd running;
 struct global_context global;
 
+static void init_client_rtp()
+{
+    global.client.clientrtp.rtpsession = NULL;
+    global.client.clientrtp.user_ts = 0;
+
+    assert(strlen(LOCAL_IP) < PATH_MAX);
+    strncpy(global.client.clientrtp.local_ip, LOCAL_IP, strlen(LOCAL_IP));
+    global.client.clientrtp.local_ip[strlen(LOCAL_IP)] = '\0';
+    global.client.clientrtp.local_port = LOCAL_PORT;
+
+    assert(strlen(SERVER_IP) < PATH_MAX);
+    strncpy(global.client.clientrtp.server_ip, SERVER_IP, strlen(SERVER_IP));
+    global.client.clientrtp.server_ip[strlen(SERVER_IP)] = '\0';
+    global.client.clientrtp.server_rtp_port = SERVER_RTP_PORT;
+    global.client.clientrtp.server_rtcp_port = SERVER_RTCP_PORT;
+}
+
 static void init_default_client()
 {
     // video device settings;
@@ -109,8 +126,8 @@ static void init_default_client()
     global.client.store_dir[strlen(DEFAULT_RELEASE_STORE_DIR)] = '\0';
 #endif
 
-    // video sending ortp associated
-    global.client.rtpsession = NULL;
+    // initialize rtpsession associated;
+    init_client_rtp();
 }
 
 static void init_default_server()
@@ -119,6 +136,14 @@ static void init_default_server()
     strncpy(global.server.server_repo, SERVER_REPO,
             strlen(SERVER_REPO));
     global.server.server_repo[strlen(SERVER_REPO)] = '\0';
+
+    // for server ortp ip/port;
+    assert(strlen(SERVER_IP) < PATH_MAX);
+    strncpy(global.server.server_ip, SERVER_IP, strlen(SERVER_IP));
+    global.server.server_ip[strlen(SERVER_IP)] = '\0';
+    global.server.server_rtp_port = SERVER_RTP_PORT;
+    global.server.server_rtcp_port = SERVER_RTCP_PORT;
+
 }
 
 void init_default_global()
@@ -169,13 +194,6 @@ void init_default_global()
     global.cfg_file[strlen(DEFAULT_RELEASE_CFG_FILE)] = '\0';
 #endif
 
-    // for server ortp ip/port;
-    assert(strlen(SERVER_IP) < PATH_MAX);
-    strncpy(global.server_ip, SERVER_IP, strlen(SERVER_IP));
-    global.server_ip[strlen(SERVER_IP)] = '\0';
-    global.server_rtp_port = SERVER_RTP_PORT;
-    global.server_rtcp_port = SERVER_RTCP_PORT;
-
     // init client/server specific;
     init_default_client();
     init_default_server();
@@ -211,9 +229,11 @@ int dump_global_config()
     dmd_log(LOG_INFO, "pid file:%s\n", global.pid_file);
     dmd_log(LOG_INFO, "cfg file:%s\n", global.cfg_file);
 
-    dmd_log(LOG_INFO, "server ip:%s\n", global.server_ip);
-    dmd_log(LOG_INFO, "server rtp port:%d\n", global.server_rtp_port);
-    dmd_log(LOG_INFO, "server rtcp port:%d\n", global.server_rtcp_port);
+    dmd_log(LOG_INFO, "local ip:%s\n", global.client.clientrtp.local_ip);
+    dmd_log(LOG_INFO, "local port:%d\n", global.client.clientrtp.local_port);
+    dmd_log(LOG_INFO, "server ip:%s\n", global.server.server_ip);
+    dmd_log(LOG_INFO, "server rtp port:%d\n", global.server.server_rtp_port);
+    dmd_log(LOG_INFO, "server rtcp port:%d\n", global.server.server_rtcp_port);
 
 
     // client settings;
@@ -326,7 +346,5 @@ void release_default_global()
         // TODO: master thread clean utils;
         release_server();
     }
-
-
 
 }

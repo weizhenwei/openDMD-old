@@ -49,6 +49,7 @@
 #include <string.h>
 #include <ortp/ortp.h>
 
+#include "global_context.h"
 #include "log.h"
 
 // h264 video payload_type
@@ -59,9 +60,6 @@
 // video sending time stamp increment
 // #define VIDEO_TIME_STAMP_INC  3600
 #define VIDEO_TIME_STAMP_INC  1800
-
-#define LOCAL_IP "127.0.0.1"
-#define LOCAL_PORT 5004
 
 extern void rtp_recv_init(); 
 

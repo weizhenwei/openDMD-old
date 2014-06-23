@@ -157,24 +157,36 @@ int parse_config(const char *conf_file)
                 return -1;
             }
 
+        } else if (strcmp(iter->key, "local_ip") == 0) {
+            assert(strlen(iter->value) < PATH_MAX);
+            strncpy(global.client.clientrtp.local_ip,
+                    iter->value, strlen(iter->value));
+            global.client.clientrtp.local_ip[strlen(iter->value)] = '\0';
+        } else if (strcmp(iter->key, "local_port") == 0) {
+            int port = atoi(iter->value);
+            assert(port >= 0 && port <= 65535);
+            global.client.clientrtp.local_port = port;
+
         } else if (strcmp(iter->key, "server_ip") == 0) {
             assert(strlen(iter->value) < PATH_MAX);
-            strncpy(global.server_ip, iter->value, strlen(iter->value));
-            /* Warning:If there is no null byte among the first n bytes of
-             * src, the string placed in dest will not be null-terminated,
-             * remember add null-terminated manually.
-             */
-            global.server_ip[strlen(iter->value)] = '\0';
+            strncpy(global.client.clientrtp.server_ip,
+                    iter->value, strlen(iter->value));
+            global.client.clientrtp.server_ip[strlen(iter->value)] = '\0';
+
+            strncpy(global.server.server_ip, iter->value, strlen(iter->value));
+            global.server.server_ip[strlen(iter->value)] = '\0';
 
         } else if (strcmp(iter->key, "server_rtp_port") == 0) {
             int port = atoi(iter->value);
             assert(port >= 0 && port <= 65535);
-            global.server_rtp_port = port;
+            global.client.clientrtp.server_rtp_port = port;
+            global.server.server_rtp_port = port;
 
         } else if (strcmp(iter->key, "server_rtcp_port") == 0) {
             int port = atoi(iter->value);
             assert(port >= 0 && port <= 65535);
-            global.server_rtcp_port = port;
+            global.client.clientrtp.server_rtcp_port = port;
+            global.server.server_rtcp_port = port;
 
         } else if (strcmp(iter->key, "pid_file") == 0) {
             assert(strlen(iter->value) < PATH_MAX);
