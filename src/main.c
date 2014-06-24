@@ -226,13 +226,24 @@ static void init(void)
 
 static void client_rtp_init()
 {
+    global.client.clientrtp.server_rtp_port =
+        global.client.clientrtp.server_port_base +
+        2 * global.client.clientrtp.local_sequence_number;
+
+    global.client.clientrtp.server_rtcp_port =
+        global.client.clientrtp.server_port_base +
+        2 * global.client.clientrtp.local_sequence_number + 1;
+
     rtp_send_init();
 
     global.client.clientrtp.rtpsession = rtp_send_createSession(
+            global.client.clientrtp.local_ip,
+            global.client.clientrtp.local_port,
             global.client.clientrtp.server_ip,
             global.client.clientrtp.server_rtp_port);
 
 }
+
 static void client_rtp_release()
 {
     rtp_send_release(global.client.clientrtp.rtpsession);

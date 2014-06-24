@@ -69,10 +69,12 @@
 
 #define LOCAL_IP "0.0.0.0"
 #define LOCAL_PORT 8000
+#define LOCAL_SEQUENCE_NUMBER 1
 
 #define SERVER_IP "127.0.0.1"
-#define SERVER_RTP_PORT 5004
-#define SERVER_RTCP_PORT 5005
+#define SERVER_PORT_BASE 5000
+#define CLIENT_SCALE 5
+
 
 /////////////////////////////////////////////////////////////
 // Client default settings                                 //
@@ -170,9 +172,22 @@ struct client_rtp {
     RtpSession *rtpsession;
     uint32_t user_ts;
 
+    // local ip and port for symmetric communication;
     char local_ip[PATH_MAX];
     int local_port;
+    int local_sequence_number;    // client sequence number in cluster;
+                                  // valid range:[1, client_scale],
+                                  // client_scale defined in server_context;
+
+    // server port and port for multiple session receiving;
     char server_ip[PATH_MAX];
+    /*
+     * server port_base is the base port for rtp_port and rtcp_port allocation;
+     * server_rtp_port = server_port_base + 2 * local_sequence_number
+     * server_rtcp_port = server_port_base + 2 * local_sequence_number + 1;
+     * server is using session_set_select() to do Multiplex I/O;
+     */
+    int server_port_base;         // the start port of the server port;
     int server_rtp_port;
     int server_rtcp_port;
 };
@@ -228,9 +243,13 @@ struct server_context {
     char server_repo[PATH_MAX];              // captured pictures/video
                                              // storage directory.
 
+    int client_scale;                    // total number of client node;
     char server_ip[PATH_MAX];            // ortp server ip;
-    int server_rtp_port;                 // ortp server rtp port;
-    int server_rtcp_port;                // ortp server rtcp port;
+    int server_port_base;                // base port for rtp_port
+                                         // and rtcp_port mallocation;
+
+    RtpSession **rtpsessionSet;          // total RtpSession set,
+                                         // len = client_scale;
 };
 
 struct global_context {

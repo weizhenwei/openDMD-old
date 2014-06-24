@@ -32,7 +32,8 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-noinst_PROGRAMS = sendtest$(EXEEXT) recvtest$(EXEEXT)
+noinst_PROGRAMS = sendtest$(EXEEXT) recvtest$(EXEEXT) \
+	mrtprecv$(EXEEXT)
 subdir = libortp/test
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -44,6 +45,9 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
+am_mrtprecv_OBJECTS = mrtprecv.$(OBJEXT)
+mrtprecv_OBJECTS = $(am_mrtprecv_OBJECTS)
+mrtprecv_DEPENDENCIES = $(top_srcdir)/libortp/src/libortp.a
 am_recvtest_OBJECTS = rtp_recv.$(OBJEXT) recv_test.$(OBJEXT)
 recvtest_OBJECTS = $(am_recvtest_OBJECTS)
 recvtest_DEPENDENCIES = $(top_srcdir)/libortp/src/libortp.a
@@ -58,8 +62,9 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(recvtest_SOURCES) $(sendtest_SOURCES)
-DIST_SOURCES = $(recvtest_SOURCES) $(sendtest_SOURCES)
+SOURCES = $(mrtprecv_SOURCES) $(recvtest_SOURCES) $(sendtest_SOURCES)
+DIST_SOURCES = $(mrtprecv_SOURCES) $(recvtest_SOURCES) \
+	$(sendtest_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -161,8 +166,10 @@ INCLUDES = -I$(top_srcdir)/libortp/include -I$(top_srcdir)/libortp \
 
 sendtest_LDADD = $(top_srcdir)/libortp/src/libortp.a
 recvtest_LDADD = $(top_srcdir)/libortp/src/libortp.a
+mrtprecv_LDADD = $(top_srcdir)/libortp/src/libortp.a
 sendtest_SOURCES = rtp_send.h rtp_send.c send_test.c
 recvtest_SOURCES = rtp_recv.h rtp_recv.c recv_test.c
+mrtprecv_SOURCES = mrtprecv.c
 all: all-am
 
 .SUFFIXES:
@@ -200,6 +207,9 @@ $(am__aclocal_m4_deps):
 
 clean-noinstPROGRAMS:
 	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
+mrtprecv$(EXEEXT): $(mrtprecv_OBJECTS) $(mrtprecv_DEPENDENCIES) $(EXTRA_mrtprecv_DEPENDENCIES) 
+	@rm -f mrtprecv$(EXEEXT)
+	$(LINK) $(mrtprecv_OBJECTS) $(mrtprecv_LDADD) $(LIBS)
 recvtest$(EXEEXT): $(recvtest_OBJECTS) $(recvtest_DEPENDENCIES) $(EXTRA_recvtest_DEPENDENCIES) 
 	@rm -f recvtest$(EXEEXT)
 	$(LINK) $(recvtest_OBJECTS) $(recvtest_LDADD) $(LIBS)
@@ -213,6 +223,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mrtprecv.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/recv_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtp_recv.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtp_send.Po@am__quote@

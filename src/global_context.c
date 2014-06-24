@@ -53,12 +53,18 @@ static void init_client_rtp()
     strncpy(global.client.clientrtp.local_ip, LOCAL_IP, strlen(LOCAL_IP));
     global.client.clientrtp.local_ip[strlen(LOCAL_IP)] = '\0';
     global.client.clientrtp.local_port = LOCAL_PORT;
+    global.client.clientrtp.local_sequence_number = LOCAL_SEQUENCE_NUMBER;
 
     assert(strlen(SERVER_IP) < PATH_MAX);
     strncpy(global.client.clientrtp.server_ip, SERVER_IP, strlen(SERVER_IP));
     global.client.clientrtp.server_ip[strlen(SERVER_IP)] = '\0';
-    global.client.clientrtp.server_rtp_port = SERVER_RTP_PORT;
-    global.client.clientrtp.server_rtcp_port = SERVER_RTCP_PORT;
+    global.client.clientrtp.server_port_base = SERVER_PORT_BASE;
+    global.client.clientrtp.server_rtp_port =
+        global.client.clientrtp.server_port_base +
+        2 * global.client.clientrtp.local_sequence_number;
+    global.client.clientrtp.server_rtcp_port =
+        global.client.clientrtp.server_port_base +
+        2 * global.client.clientrtp.local_sequence_number + 1;
 }
 
 static void init_default_client()
@@ -137,13 +143,13 @@ static void init_default_server()
             strlen(SERVER_REPO));
     global.server.server_repo[strlen(SERVER_REPO)] = '\0';
 
+    global.server.client_scale = CLIENT_SCALE;
     // for server ortp ip/port;
     assert(strlen(SERVER_IP) < PATH_MAX);
     strncpy(global.server.server_ip, SERVER_IP, strlen(SERVER_IP));
     global.server.server_ip[strlen(SERVER_IP)] = '\0';
-    global.server.server_rtp_port = SERVER_RTP_PORT;
-    global.server.server_rtcp_port = SERVER_RTCP_PORT;
-
+    global.server.rtpsessionSet = NULL;  // this will be malloced
+                                         // after config parsing;
 }
 
 void init_default_global()
@@ -199,45 +205,28 @@ void init_default_global()
     init_default_server();
 }
 
-int dump_global_config()
+static void dump_client_rtp()
 {
-    // only dump, no error detect.
-    dmd_log(LOG_INFO, "in function %s:\n", __func__);
-
-    // basic settings;
-
-    if (global.cluster_mode == CLUSTER_CLIENT) {
-        dmd_log(LOG_INFO, "cluster_mode: client\n");
-    } else if (global.cluster_mode == CLUSTER_SERVER) {
-        dmd_log(LOG_INFO, "cluster_mode: server\n");
-    } else if (global.cluster_mode == CLUSTER_SINGLETON) {
-        dmd_log(LOG_INFO, "cluster_mode: singleton\n");
-    } else {
-        dmd_log(LOG_ERR, "Unsupported cluster mode\n");
-        return -1;
-    }
-
-    if (global.daemon_mode == DAEMON_ON) {
-        dmd_log(LOG_INFO, "daemon_mode: on\n");
-    } if (global.daemon_mode == DAEMON_OFF) {
-        dmd_log(LOG_INFO, "daemon_mode: off\n");
-    } else {
-        dmd_log(LOG_ERR, "Unsupported daemon mode\n");
-        return -1;
-    }
-
-    dmd_log(LOG_INFO, "pid file:%s\n", global.pid_file);
-    dmd_log(LOG_INFO, "cfg file:%s\n", global.cfg_file);
-
     dmd_log(LOG_INFO, "local ip:%s\n", global.client.clientrtp.local_ip);
-    dmd_log(LOG_INFO, "local port:%d\n", global.client.clientrtp.local_port);
-    dmd_log(LOG_INFO, "server ip:%s\n", global.server.server_ip);
-    dmd_log(LOG_INFO, "server rtp port:%d\n", global.server.server_rtp_port);
-    dmd_log(LOG_INFO, "server rtcp port:%d\n", global.server.server_rtcp_port);
+    dmd_log(LOG_INFO, "local port:%d\n",
+            global.client.clientrtp.local_port);
+    dmd_log(LOG_INFO, "local_sequence_number:%d\n",
+            global.client.clientrtp.local_sequence_number);
 
+    dmd_log(LOG_INFO, "server ip:%s\n",
+            global.client.clientrtp.server_ip);
+    dmd_log(LOG_INFO, "server port base %d\n",
+            global.client.clientrtp.server_port_base);
+    dmd_log(LOG_INFO, "server rtp port:%d\n",
+            global.client.clientrtp.server_rtp_port);
+    dmd_log(LOG_INFO, "server rtcp port:%d\n",
+            global.client.clientrtp.server_rtcp_port);
 
+}
+
+static int dump_client()
+{
     // client settings;
-
     if (global.client.working_mode == CAPTURE_VIDEO) {
         dmd_log(LOG_INFO, "working_mode: capture video\n");
     } else if (global.client.working_mode == CAPTURE_PICTURE) {
@@ -278,9 +267,71 @@ int dump_global_config()
 
     dmd_log(LOG_INFO, "client store dir:%s\n", global.client.store_dir);
 
+    dump_client_rtp();
 
+    return 0;
+}
+
+static int dump_server()
+{
     // server settings;
     dmd_log(LOG_INFO, "server repository dir:%s\n", global.server.server_repo);
+
+    dmd_log(LOG_INFO, "client_scale:%d\n", global.server.client_scale);
+
+    dmd_log(LOG_INFO, "server_ip:%s\n", global.server.server_ip);
+
+    dmd_log(LOG_INFO, "server port base %d\n", global.server.server_port_base);
+
+    return 0;
+}
+
+static int dump_common()
+{
+    // basic settings;
+    if (global.cluster_mode == CLUSTER_CLIENT) {
+        dmd_log(LOG_INFO, "cluster_mode: client\n");
+    } else if (global.cluster_mode == CLUSTER_SERVER) {
+        dmd_log(LOG_INFO, "cluster_mode: server\n");
+    } else if (global.cluster_mode == CLUSTER_SINGLETON) {
+        dmd_log(LOG_INFO, "cluster_mode: singleton\n");
+    } else {
+        dmd_log(LOG_ERR, "Unsupported cluster mode\n");
+        return -1;
+    }
+
+    if (global.daemon_mode == DAEMON_ON) {
+        dmd_log(LOG_INFO, "daemon_mode: on\n");
+    } if (global.daemon_mode == DAEMON_OFF) {
+        dmd_log(LOG_INFO, "daemon_mode: off\n");
+    } else {
+        dmd_log(LOG_ERR, "Unsupported daemon mode\n");
+        return -1;
+    }
+
+    dmd_log(LOG_INFO, "pid file:%s\n", global.pid_file);
+    dmd_log(LOG_INFO, "cfg file:%s\n", global.cfg_file);
+
+    return 0;
+
+}
+
+int dump_global_config()
+{
+    // only dump, no error detect.
+    dmd_log(LOG_INFO, "in function %s:\n", __func__);
+
+    int ret = dump_common();
+    assert(ret == 0);
+
+    if (global.cluster_mode == CLUSTER_CLIENT
+            || global.cluster_mode == CLUSTER_SINGLETON) {
+        ret = dump_client();
+        assert(ret == 0);
+    } else if (global.cluster_mode == CLUSTER_SERVER) {
+        ret = dump_server();
+        assert(ret == 0);
+    }
 
     return 0;
 }

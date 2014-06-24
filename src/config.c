@@ -41,6 +41,20 @@
 
 #include "config.h"
 
+static int check_config_integrity()
+{
+    // client side check;
+    if (global.cluster_mode == CLUSTER_CLIENT) {
+        int lsn = global.client.clientrtp.local_sequence_number;
+        int cs = global.server.client_scale;
+        if (lsn <= 0 || lsn > cs)
+            return -1;
+    }
+
+    return 0;
+
+}
+
 static void set_buffering()
 {
     int width = global.client.image_width;
@@ -166,6 +180,11 @@ int parse_config(const char *conf_file)
             int port = atoi(iter->value);
             assert(port >= 0 && port <= 65535);
             global.client.clientrtp.local_port = port;
+        } else if (strcmp(iter->key, "local_sequence_number") == 0) {
+            int local_sequence_number = atoi(iter->value);
+            assert(local_sequence_number > 0);
+            global.client.clientrtp.local_sequence_number =
+                local_sequence_number;
 
         } else if (strcmp(iter->key, "server_ip") == 0) {
             assert(strlen(iter->value) < PATH_MAX);
@@ -173,6 +192,7 @@ int parse_config(const char *conf_file)
                     iter->value, strlen(iter->value));
             global.client.clientrtp.server_ip[strlen(iter->value)] = '\0';
 
+            // also available for server end;
             strncpy(global.server.server_ip, iter->value, strlen(iter->value));
             global.server.server_ip[strlen(iter->value)] = '\0';
 
@@ -180,13 +200,23 @@ int parse_config(const char *conf_file)
             int port = atoi(iter->value);
             assert(port >= 0 && port <= 65535);
             global.client.clientrtp.server_rtp_port = port;
-            global.server.server_rtp_port = port;
+        } else if (strcmp(iter->key, "server_port_base") == 0) {
+            int portbase = atoi(iter->value);
+            assert(portbase >= 0 && portbase <= 65535);
+            global.client.clientrtp.server_port_base = portbase;
+
+            // also available for server end;
+            global.server.server_port_base = portbase;
 
         } else if (strcmp(iter->key, "server_rtcp_port") == 0) {
             int port = atoi(iter->value);
             assert(port >= 0 && port <= 65535);
             global.client.clientrtp.server_rtcp_port = port;
-            global.server.server_rtcp_port = port;
+
+        } else if (strcmp(iter->key, "client_scale") == 0) {
+            int client_scale = atoi(iter->value);
+            assert(client_scale > 0);
+            global.server.client_scale = client_scale;
 
         } else if (strcmp(iter->key, "pid_file") == 0) {
             assert(strlen(iter->value) < PATH_MAX);
@@ -306,11 +336,16 @@ int parse_config(const char *conf_file)
         }
     } // while
 
+    ccl_release(&config);
+
+    // after config parse, check config integrity;
+    int ret = check_config_integrity();
+    assert(ret == 0);
+
     // after image_width and image_height are finally determined,
     // set reusable image buffers;
     set_buffering();
 
-    ccl_release(&config);
 
     return 0;
 }

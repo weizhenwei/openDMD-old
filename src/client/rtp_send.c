@@ -58,7 +58,9 @@ void rtp_send_release(RtpSession *rtpsession)
 }
 
 
-RtpSession *rtp_send_createSession(const char *remoteIP, const int remotePort)
+RtpSession *rtp_send_createSession(
+        const char *localIP, const int localPort,
+        const char *remoteIP, const int remotePort)
 {
     RtpSession *rtpsession = rtp_session_new(RTP_SESSION_SENDONLY);	
     assert(rtpsession != NULL);
@@ -66,6 +68,7 @@ RtpSession *rtp_send_createSession(const char *remoteIP, const int remotePort)
 	rtp_session_set_scheduling_mode(rtpsession, 1);
 	rtp_session_set_blocking_mode(rtpsession, 1);
     rtp_session_set_connected_mode(rtpsession, 1); // 1 means TRUE;
+	rtp_session_set_local_addr(rtpsession, localIP, localPort, -1);
 	rtp_session_set_remote_addr(rtpsession, remoteIP, remotePort);
 
     // set payload_type to H264 (96);
@@ -86,8 +89,8 @@ int rtp_send(RtpSession *rtpsession, unsigned char *buffer, int len)
     int remainlen = len;
     int idx = 0;
 
-    dmd_log(LOG_INFO, "in function %s, send buffer len = %d, \
-            send payload len = %d\n", __func__, len);
+    dmd_log(LOG_INFO, "in function %s, send buffer len = %d, "
+            "send payload len = %d\n", __func__, len);
 
     while (remainlen > 0) {
         sendlen = rtp_session_send_with_ts(rtpsession, buffer + idx,
@@ -98,8 +101,8 @@ int rtp_send(RtpSession *rtpsession, unsigned char *buffer, int len)
         } else {
             payloadlen = SEND_LEN;
         }
-        dmd_log(LOG_INFO, "in function %s, send total len = %d, \
-                send payload len = %d\n", __func__, sendlen, payloadlen);
+        dmd_log(LOG_INFO, "in function %s, send total len = %d, "
+                "send payload len = %d\n", __func__, sendlen, payloadlen);
 
         remainlen -= payloadlen;
         idx += payloadlen;

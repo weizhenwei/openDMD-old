@@ -103,11 +103,11 @@ int encode_yuv420p(unsigned char *yuv420p, int width, int height,
                     nal->p_payload, nal->i_payload);
             
             if (ret == 0) {
-                dmd_log(LOG_INFO, "in function %s, send h264 frame to server, \
-                        len = %d\n", __func__, nal->i_payload);
+                dmd_log(LOG_INFO, "in function %s, send h264 frame to server, "
+                        "len = %d\n", __func__, nal->i_payload);
             } else {
-                dmd_log(LOG_INFO, "in function %s, failed to send h264 frame \
-                        to server\n", __func__);
+                dmd_log(LOG_INFO, "in function %s, failed to send h264 frame "
+                        "to server\n", __func__);
             }
         }
 

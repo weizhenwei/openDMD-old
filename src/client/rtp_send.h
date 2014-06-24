@@ -64,8 +64,9 @@ extern void rtp_send_init();
 
 extern void rtp_send_release(RtpSession *rtpsession); 
 
-extern RtpSession *rtp_send_createSession(const char *remoteIP,
-        const int remotePort);
+extern RtpSession *rtp_send_createSession(
+        const char *localIP, const int localPort,
+        const char *remoteIP, const int remotePort);
 
 extern int rtp_send(RtpSession *rtpsession, unsigned char *buffer, int len);
  
