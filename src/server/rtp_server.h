@@ -42,21 +42,19 @@
 #ifndef RTP_SERVER_H
 #define RTP_SERVER_H
 
+#include <strings.h>
+#include <stdlib.h>
+
 #include <ortp/ortp.h>
 
-#include "log.h"
+#include "global_context.h"
 #include "rtp_recv.h"
+#include "log.h"
 
-struct _rtp_server {
-    RtpSession *rtpsession;
-    uint32_t user_ts;
-};
-
-typedef struct _rtp_server rtp_server;
-
-// global variable rtpserver declaration;
-extern rtp_server rtpserver;
+extern int rtp_server_init();
 
 extern void rtp_server_running(); 
+
+extern void rtp_server_clean();
 
 #endif

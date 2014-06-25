@@ -71,6 +71,8 @@ RtpSession *rtp_send_createSession(
 	rtp_session_set_local_addr(rtpsession, localIP, localPort, -1);
 	rtp_session_set_remote_addr(rtpsession, remoteIP, remotePort);
 
+    rtp_session_set_symmetric_rtp(rtpsession, 1); // 1 means TRUE;
+
     // set payload_type to H264 (96);
 	rtp_session_set_payload_type(rtpsession, PAYLOAD_TYPE_H264);
 

@@ -148,7 +148,8 @@ static void init_default_server()
     assert(strlen(SERVER_IP) < PATH_MAX);
     strncpy(global.server.server_ip, SERVER_IP, strlen(SERVER_IP));
     global.server.server_ip[strlen(SERVER_IP)] = '\0';
-    global.server.rtpsessionSet = NULL;  // this will be malloced
+    global.server.last_duration = 0;
+    global.server.client_items = NULL;   // this will be malloced
                                          // after config parsing;
 }
 
@@ -281,7 +282,9 @@ static int dump_server()
 
     dmd_log(LOG_INFO, "server_ip:%s\n", global.server.server_ip);
 
-    dmd_log(LOG_INFO, "server port base %d\n", global.server.server_port_base);
+    dmd_log(LOG_INFO, "server port base:%d\n", global.server.server_port_base);
+
+    dmd_log(LOG_INFO, "server last_duration:%d\n", global.server.last_duration);
 
     return 0;
 }
@@ -313,7 +316,6 @@ static int dump_common()
     dmd_log(LOG_INFO, "cfg file:%s\n", global.cfg_file);
 
     return 0;
-
 }
 
 int dump_global_config()

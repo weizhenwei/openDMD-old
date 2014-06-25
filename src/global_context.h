@@ -44,6 +44,7 @@
 
 #include <time.h>
 #include <assert.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
@@ -239,17 +240,29 @@ struct client_context {
     struct client_rtp clientrtp;                   // client ortp session;
 };
 
+// describe a client in server side;
+struct server_client_item {
+    RtpSession *rtpsession;   // rtpsession used for send/recv;
+    time_t lasttime;          // last time when received from this client;
+    FILE *fp;                 // fp for writing to disk file;
+    char filename[PATH_MAX];  // disk filename for writing to;
+    
+};
+
 struct server_context {
     char server_repo[PATH_MAX];              // captured pictures/video
                                              // storage directory.
 
-    int client_scale;                    // total number of client node;
-    char server_ip[PATH_MAX];            // ortp server ip;
-    int server_port_base;                // base port for rtp_port
-                                         // and rtcp_port mallocation;
+    int client_scale;                        // total number of client node;
+    char server_ip[PATH_MAX];                // ortp server ip;
+    int server_port_base;                    // base port for rtp_port
+                                             // and rtcp_port mallocation;
 
-    RtpSession **rtpsessionSet;          // total RtpSession set,
-                                         // len = client_scale;
+    time_t last_duration;                    // if time elapsed this period,
+                                             // but no receiving from client,
+                                             // restart fp for next filename;
+    struct server_client_item *client_items; // total client items,
+                                             // totalnumber = client_scale;
 };
 
 struct global_context {

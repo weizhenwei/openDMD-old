@@ -217,6 +217,10 @@ int parse_config(const char *conf_file)
             int client_scale = atoi(iter->value);
             assert(client_scale > 0);
             global.server.client_scale = client_scale;
+        } else if (strcmp(iter->key, "last_duration") == 0) {
+            int last_duration = atoi(iter->value);
+            assert(last_duration > 0);
+            global.server.last_duration = last_duration;
 
         } else if (strcmp(iter->key, "pid_file") == 0) {
             assert(strlen(iter->value) < PATH_MAX);

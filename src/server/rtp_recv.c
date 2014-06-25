@@ -62,9 +62,11 @@ RtpSession *rtp_recv_createSession(const char *localIP, const int localPort)
     assert(rtpsession != NULL);
 
 	rtp_session_set_scheduling_mode(rtpsession, 1);
-	rtp_session_set_blocking_mode(rtpsession, 1);
-	rtp_session_set_local_addr(rtpsession, localIP, localPort, -1);
+	rtp_session_set_blocking_mode(rtpsession, 0);
+	rtp_session_set_local_addr(rtpsession, localIP, localPort, localPort + 1);
 	rtp_session_set_connected_mode(rtpsession, 1); // 1 means TRUE;
+    rtp_session_set_symmetric_rtp(rtpsession, 1);  // 1 means TRUE;
+
     rtp_session_enable_adaptive_jitter_compensation(rtpsession, 1);
     rtp_session_set_jitter_compensation(rtpsession, 40);
 

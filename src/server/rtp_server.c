@@ -41,26 +41,62 @@
 
 #include "rtp_server.h"
 
-// global variable rtpserver defination;
-rtp_server rtpserver = {
-    .rtpsession = NULL,
-    .user_ts = 0
-};
+
+// init rtpsession;
+int rtp_server_init()
+{
+    int i = 0;
+    rtp_recv_init();
+
+    char *serverIP = global.server.server_ip;
+    int client_scale = global.server.client_scale;
+    int server_port_base = global.server.server_port_base;
+
+    global.server.client_items = (struct server_client_item *)malloc(
+            sizeof(struct server_client_item) * client_scale);
+    if (global.server.client_items == NULL) {
+        dmd_log(LOG_ERR, "in function %s, failed to malloc for "
+                "server_client_item\n", __func__);
+        return -1;
+    }
+
+    for (i = 0; i < client_scale; i++) {
+        global.server.client_items[i].rtpsession = rtp_recv_createSession(
+                serverIP, server_port_base + 2 * (i + 1));
+        if (global.server.client_items[i].rtpsession == NULL) {
+            dmd_log(LOG_ERR, "in function %s, failed to malloc for "
+                    "rtpsession\n", __func__);
+            return -1;
+        }
+
+        global.server.client_items[i].lasttime = 0;
+        global.server.client_items[i].fp = NULL;
+        bzero(global.server.client_items[i].filename, PATH_MAX);
+    } // for
+
+    return 0;
+}
 
 void rtp_server_running()
 {
-    // initialize rtp
-    rtp_recv_init();
-    rtpserver.rtpsession = rtp_recv_createSession(LOCAL_IP, LOCAL_PORT);
-    rtpserver.user_ts = 0;
-
     dmd_log(LOG_INFO, "in function %s, rtp server is running\n", __func__);
 
     while (1) {
-        rtp_recv(rtpserver.rtpsession, &rtpserver.user_ts, "test.h264");
+        dmd_log(LOG_INFO, "in function %s, hehe\n", __func__);
     }
+}
 
-    rtp_recv_release(rtpserver.rtpsession);
+// release rtp_session;
+void rtp_server_clean()
+{
+    int i = 0;
+    int client_scale = global.server.client_scale;
 
+    for (i = 0; i < client_scale; i++) {
+        rtp_recv_release(global.server.client_items[i].rtpsession);
+    } // for
+
+    free(global.server.client_items);
+    global.server.client_items = NULL;
 }
 
