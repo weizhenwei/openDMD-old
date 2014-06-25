@@ -252,7 +252,7 @@ struct server_client_item {
 struct server_context {
     char server_repo[PATH_MAX];              // captured pictures/video
                                              // storage directory.
-
+    uint32_t user_ts;                        // user_ts for receiving client;
     int client_scale;                        // total number of client node;
     char server_ip[PATH_MAX];                // ortp server ip;
     int server_port_base;                    // base port for rtp_port

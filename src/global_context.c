@@ -143,6 +143,7 @@ static void init_default_server()
             strlen(SERVER_REPO));
     global.server.server_repo[strlen(SERVER_REPO)] = '\0';
 
+    global.server.user_ts = 0;
     global.server.client_scale = CLIENT_SCALE;
     // for server ortp ip/port;
     assert(strlen(SERVER_IP) < PATH_MAX);

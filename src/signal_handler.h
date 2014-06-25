@@ -50,6 +50,9 @@
 #include "log.h"
 #include "global_context.h"
 
+// for controlling server running;
+extern int server_running;
+
 extern void signal_init();
 
 extern void signal_register(int sig, void (*sighandler)(int));

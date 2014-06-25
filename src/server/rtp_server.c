@@ -77,13 +77,89 @@ int rtp_server_init()
     return 0;
 }
 
+static int deal_with_client(int i, uint32_t user_ts)
+{
+    RtpSession *rtpsession = global.server.client_items[i].rtpsession;
+    time_t lasttime = global.server.client_items[i].lasttime;
+    time_t last_duration = global.server.last_duration;
+    time_t now = time(&now);
+    assert(now != -1);
+    
+    dmd_log(LOG_DEBUG, "in function %s, dealing with client\n", __func__);
+
+    // create an new h264 file;
+    if (now - lasttime > last_duration) {
+        char *filename = get_h264_filepath();
+        strncpy(global.server.client_items[i].filename,
+                filename, strlen(filename));
+    }
+
+    global.server.client_items[i].lasttime = now;
+
+    char *h264file = global.server.client_items[i].filename;
+    assert(h264file != NULL);
+    FILE *fp = global.server.client_items[i].fp;
+        fp = fopen(h264file, "a");
+    assert(fp != NULL);
+
+    unsigned char buffer[RECV_LEN];
+	int readlen, havemore = 1;
+	while (havemore) {
+        dmd_log(LOG_DEBUG, "in function %s, in while loop\n", __func__);
+
+		readlen = rtp_session_recv_with_ts(rtpsession, buffer, RECV_LEN,
+                user_ts, &havemore);
+
+        dmd_log(LOG_DEBUG, "in function %s, readlen = %d, havemore=%d\n",
+                __func__, readlen, havemore);
+
+		if (readlen > 0) {
+			/*
+             * to indicate that (for the application) the stream has started,
+             * so we can start recording on disk */
+			rtp_session_set_data(rtpsession,(void*)1);
+		}
+
+		if (rtpsession->user_data != NULL) {
+			size_t ret = fwrite(buffer, sizeof(unsigned char), readlen, fp);
+			assert( ret == readlen );
+		}
+	}
+
+    fflush(fp);
+    fclose(fp);
+
+	return 0;
+}
+
 void rtp_server_running()
 {
+    SessionSet *set;
+    int client_scale = global.server.client_scale;
+
     dmd_log(LOG_INFO, "in function %s, rtp server is running\n", __func__);
 
-    while (1) {
-        dmd_log(LOG_INFO, "in function %s, hehe\n", __func__);
-    }
+    set = session_set_new();
+    while (server_running) {
+
+        int i = 0;
+        for (i = 0; i < client_scale; i++) {
+            session_set_set(set, global.server.client_items[i].rtpsession);
+        }
+
+        i = session_set_select(set, NULL, NULL);
+        dmd_log(LOG_INFO, "session_set_select is returning 0 ...\n");
+
+        for (i = 0; i < client_scale; i++) {
+            if (session_set_is_set(set,
+                        global.server.client_items[i].rtpsession)) {
+                dmd_log(LOG_INFO, "dealing with client %d\n", i + 1);
+                deal_with_client(i, global.server.user_ts);
+            }
+        } // for
+
+        global.server.user_ts +=  VIDEO_TIME_STAMP_INC;
+    } // while
 }
 
 // release rtp_session;
