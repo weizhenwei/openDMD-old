@@ -155,6 +155,7 @@ void rtp_server_running()
                         global.server.client_items[i].rtpsession)) {
                 dmd_log(LOG_INFO, "dealing with client %d\n", i + 1);
                 deal_with_client(i, global.server.user_ts);
+                dmd_log(LOG_INFO, "back to function %s\n", __func__);
             }
         } // for
 

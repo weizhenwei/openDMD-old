@@ -66,7 +66,8 @@ RtpSession *rtp_send_createSession(
     assert(rtpsession != NULL);
 
 	rtp_session_set_scheduling_mode(rtpsession, 1);
-	rtp_session_set_blocking_mode(rtpsession, 1);
+    // WARNING: in multiple receiving condtion, block mode is must unset;
+	rtp_session_set_blocking_mode(rtpsession, 0);
     rtp_session_set_connected_mode(rtpsession, 1); // 1 means TRUE;
 	rtp_session_set_local_addr(rtpsession, localIP, localPort, -1);
 	rtp_session_set_remote_addr(rtpsession, remoteIP, remotePort);
@@ -90,26 +91,31 @@ int rtp_send(RtpSession *rtpsession, unsigned char *buffer, int len)
     int sendlen = 0;
     int remainlen = len;
     int idx = 0;
+    int totalsendlen = 0;
 
-    dmd_log(LOG_INFO, "in function %s, send buffer len = %d, "
-            "send payload len = %d\n", __func__, len);
+    dmd_log(LOG_INFO, "in function %s, send buffer len = %d\n", __func__, len);
 
     while (remainlen > 0) {
-        sendlen = rtp_session_send_with_ts(rtpsession, buffer + idx,
-                SEND_LEN, global.client.clientrtp.user_ts);
-
         if (remainlen < SEND_LEN) {
+            sendlen = rtp_session_send_with_ts(rtpsession, buffer + idx,
+                    remainlen, global.client.clientrtp.user_ts);
             payloadlen = remainlen;
         } else {
+            sendlen = rtp_session_send_with_ts(rtpsession, buffer + idx,
+                    SEND_LEN, global.client.clientrtp.user_ts);
             payloadlen = SEND_LEN;
         }
         dmd_log(LOG_INFO, "in function %s, send total len = %d, "
                 "send payload len = %d\n", __func__, sendlen, payloadlen);
 
+        totalsendlen += payloadlen;
         remainlen -= payloadlen;
         idx += payloadlen;
         global.client.clientrtp.user_ts += VIDEO_TIME_STAMP_INC;
     }
+
+    // Be sure send successfully!
+    assert(totalsendlen == len);
 
     return 0;
 }

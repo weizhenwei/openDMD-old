@@ -62,6 +62,7 @@ RtpSession *rtp_recv_createSession(const char *localIP, const int localPort)
     assert(rtpsession != NULL);
 
 	rtp_session_set_scheduling_mode(rtpsession, 1);
+    // WARNING: in multiple receiving condtion, block mode is must unset;
 	rtp_session_set_blocking_mode(rtpsession, 0);
 	rtp_session_set_local_addr(rtpsession, localIP, localPort, localPort + 1);
 	rtp_session_set_connected_mode(rtpsession, 1); // 1 means TRUE;
