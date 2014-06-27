@@ -48,6 +48,11 @@ int rtp_server_init()
     int i = 0;
     rtp_recv_init();
 
+    // init server repository directory;
+    if (server_init_repodir() != 0) {
+        return -1;
+    }
+
     char *serverIP = global.server.server_ip;
     int client_scale = global.server.client_scale;
     int server_port_base = global.server.server_port_base;
@@ -61,6 +66,7 @@ int rtp_server_init()
     }
 
     for (i = 0; i < client_scale; i++) {
+        // step1: create rtpsession and init;
         global.server.client_items[i].rtpsession = rtp_recv_createSession(
                 serverIP, server_port_base + 2 * (i + 1));
         if (global.server.client_items[i].rtpsession == NULL) {
@@ -68,10 +74,14 @@ int rtp_server_init()
                     "rtpsession\n", __func__);
             return -1;
         }
-
         global.server.client_items[i].lasttime = 0;
         global.server.client_items[i].fp = NULL;
         bzero(global.server.client_items[i].filename, PATH_MAX);
+
+        // step2: init store repository directory;
+        if (server_init_client_repodir(i + 1) != 0) {
+            return -1;
+        }
     } // for
 
     return 0;
@@ -89,7 +99,7 @@ static int deal_with_client(int i, uint32_t user_ts)
 
     // create an new h264 file;
     if (now - lasttime > last_duration) {
-        char *filename = get_h264_filepath();
+        char *filename = server_get_h264_filepath(i+1);
         strncpy(global.server.client_items[i].filename,
                 filename, strlen(filename));
     }

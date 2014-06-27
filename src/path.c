@@ -139,3 +139,52 @@ char *get_h264_filepath()
     return filepath;
 }
 
+int server_init_repodir()
+{
+    return test_and_create(global.server.server_repo);
+}
+
+int server_init_client_repodir(int client_number)
+{
+    char client_repodir[PATH_MAX];
+
+    sprintf(client_repodir, "%s/client-%02d",
+            global.server.server_repo, client_number);
+
+    dmd_log(LOG_DEBUG, "in function %s,  client repodir is : %s\n",
+           __func__, client_repodir);
+    
+    return test_and_create(client_repodir);
+}
+
+char *server_get_h264_filepath(int client_number)
+{
+    time_t now;
+    struct tm *tmptr;
+    // at linux/limits.h, #define PATH_MAX 4096
+    static char filepath[PATH_MAX];
+    char storepath[PATH_MAX];
+    sprintf(storepath, "%s/client-%02d",
+            global.server.server_repo, client_number);
+    assert(test_and_create(storepath) == 0);
+
+    now = time(&now);
+    assert(now != -1);
+
+    tmptr = localtime(&now);
+    assert(tmptr != NULL);
+    sprintf(filepath, "%s/%04d%02d%02d%02d%02d%02d.h264",
+            storepath,
+            tmptr->tm_year + 1900,
+            tmptr->tm_mon + 1,
+            tmptr->tm_mday,
+            tmptr->tm_hour,
+            tmptr->tm_min,
+            tmptr->tm_sec);
+    assert(strlen(filepath) < PATH_MAX);
+
+    dmd_log(LOG_DEBUG, "in function %s, h264 filename is: %s\n",
+           __func__, filepath);
+
+    return filepath;
+}

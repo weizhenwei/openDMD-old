@@ -42,9 +42,9 @@
 #include "rtp_send.h"
 
 #define CLIENT_IP "127.0.0.1"
-#define CLIENT_PORT 8000
+#define CLIENT_PORT 9000
 
-#define REMPTE_IP "192.168.1.100"
+#define REMPTE_IP "192.168.1.101"
 #define REMOTE_PORT 5004
 
 

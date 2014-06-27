@@ -390,13 +390,18 @@ int main(int argc, char *argv[])
     } else if (global.cluster_mode == CLUSTER_SERVER) {
         // TODO: master do the receiving and storing work;
 
-        rtp_server_init();
+        if (rtp_server_init() != 0) {
+            dmd_log(LOG_ERR, "rtp_server_init failed, the program exit!\n");
+            goto end;
+        }
 
         rtp_server_running();
 
         rtp_server_clean();
 
     }
+
+end:
 
     clean();
 
