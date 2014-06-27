@@ -92,25 +92,10 @@ static int deal_with_client(int i, uint32_t user_ts)
     RtpSession *rtpsession = global.server.client_items[i].rtpsession;
     time_t lasttime = global.server.client_items[i].lasttime;
     time_t last_duration = global.server.last_duration;
-    time_t now = time(&now);
-    assert(now != -1);
+    FILE *fp = NULL;
     
-    dmd_log(LOG_DEBUG, "in function %s, dealing with client\n", __func__);
-
-    // create an new h264 file;
-    if (now - lasttime > last_duration) {
-        char *filename = server_get_h264_filepath(i+1);
-        strncpy(global.server.client_items[i].filename,
-                filename, strlen(filename));
-    }
-
-    global.server.client_items[i].lasttime = now;
-
-    char *h264file = global.server.client_items[i].filename;
-    assert(h264file != NULL);
-    FILE *fp = global.server.client_items[i].fp;
-        fp = fopen(h264file, "a");
-    assert(fp != NULL);
+    dmd_log(LOG_DEBUG, "in function %s, dealing with client %d\n",
+            __func__, i + 1);
 
     unsigned char buffer[RECV_LEN];
 	int readlen, havemore = 1;
@@ -124,13 +109,23 @@ static int deal_with_client(int i, uint32_t user_ts)
                 __func__, readlen, havemore);
 
 		if (readlen > 0) {
-			/*
-             * to indicate that (for the application) the stream has started,
-             * so we can start recording on disk */
-			rtp_session_set_data(rtpsession,(void*)1);
-		}
+            // create an new h264 file;
+            time_t now = time(&now);
+            assert(now != -1);
+            if (now - lasttime > last_duration) {
+                char *filename = server_get_h264_filepath(i+1);
+                strncpy(global.server.client_items[i].filename,
+                        filename, strlen(filename));
+            }
 
-		if (rtpsession->user_data != NULL) {
+            global.server.client_items[i].lasttime = now;
+
+            char *h264file = global.server.client_items[i].filename;
+            assert(h264file != NULL);
+            fp = global.server.client_items[i].fp;
+                fp = fopen(h264file, "a");
+            assert(fp != NULL);
+
 			size_t ret = fwrite(buffer, sizeof(unsigned char), readlen, fp);
 			assert( ret == readlen );
 		}
