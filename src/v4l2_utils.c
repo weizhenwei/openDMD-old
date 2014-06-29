@@ -275,6 +275,44 @@ int video_getfmt(struct v4l2_device_info *v4l2_info)
     return ret;
 }
 
+
+/*
+ * struct v4l2_streamparm {
+ *     enum v4l2_buf_type type;
+ *     union {
+ *         struct v4l2_captureparm capture;
+ *         struct v4l2_outputparm  output;
+ *         __u8    raw_data[200];  // user-defined
+ *     } parm;
+ * };
+ */
+// set stream fps;
+int video_set_fps(struct v4l2_device_info *v4l2_info)
+{
+    int ret = 0;
+    int fd = v4l2_info->video_device_fd;
+    struct v4l2_streamparm *setfps =
+        (struct v4l2_streamparm *)malloc(sizeof(struct v4l2_streamparm));
+    assert(setfps != NULL);
+    bzero(setfps, sizeof(struct v4l2_streamparm));
+
+    // TODO: these two parameters should be set as config file;
+    setfps->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    setfps->parm.capture.capturemode = V4L2_MODE_HIGHQUALITY;
+    setfps->parm.capture.capability = V4L2_CAP_TIMEPERFRAME;
+    setfps->parm.capture.timeperframe.numerator = 1;
+    setfps->parm.capture.timeperframe.denominator = 25;  // 25 fps;
+
+    if ((ret = ioctl(fd, VIDIOC_S_PARM, setfps)) == -1) {
+        dmd_log(LOG_ERR, "ioctl VIDIOC_S_PARM error:%s\n", strerror(errno));
+        return ret;
+    }
+    dmd_log(LOG_INFO, "\n*********************get VIDIOC_G_PARM fps = %d\n",
+            setfps->parm.capture.timeperframe.denominator);
+
+    return 0;
+}
+
 /*
  *	MEMORY-MAPPING BUFFERS
  *

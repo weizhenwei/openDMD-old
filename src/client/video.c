@@ -109,6 +109,11 @@ int dmd_video_init(struct v4l2_device_info *v4l2_info)
     if ((ret = video_getfmt(v4l2_info)) == -1) {
         return ret;
     }
+
+    // set stream fps;
+    if ((ret = video_set_fps(v4l2_info)) == -1) {
+        return ret;
+    }
     
     // memory map for the request buffer
     if ((ret = video_mmap(v4l2_info)) == -1) {

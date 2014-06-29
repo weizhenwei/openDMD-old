@@ -44,7 +44,7 @@
 int encode_yuv420p(unsigned char *yuv420p, int width, int height,
         const char *h264file)
 {
-    int fps = 25;
+    int fps = 25;  // 25 frames per second;
     x264_t *encoder;
     x264_picture_t pic_in, pic_out;
 

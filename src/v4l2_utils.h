@@ -107,6 +107,9 @@ extern int video_getfmt(struct v4l2_device_info *v4l2_info);
 // query video stream data format
 extern int video_getfmt(struct v4l2_device_info *v4l2_info);
 
+// set stream fps;
+extern int video_set_fps(struct v4l2_device_info *v4l2_info);
+
 // malloc request buffer and mmap it
 extern int video_mmap(struct v4l2_device_info *v4l2_info);
 
