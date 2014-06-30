@@ -301,7 +301,7 @@ int video_set_fps(struct v4l2_device_info *v4l2_info)
     setfps->parm.capture.capturemode = V4L2_MODE_HIGHQUALITY;
     setfps->parm.capture.capability = V4L2_CAP_TIMEPERFRAME;
     setfps->parm.capture.timeperframe.numerator = 1;
-    setfps->parm.capture.timeperframe.denominator = 25;  // 25 fps;
+    setfps->parm.capture.timeperframe.denominator = 30;  // 30 fps;
 
     if ((ret = ioctl(fd, VIDIOC_S_PARM, setfps)) == -1) {
         dmd_log(LOG_ERR, "ioctl VIDIOC_S_PARM error:%s\n", strerror(errno));
