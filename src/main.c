@@ -379,14 +379,18 @@ int main(int argc, char *argv[])
     if (global.cluster_mode == CLUSTER_CLIENT
             || global.cluster_mode == CLUSTER_SINGLETON) {
 
-        client_rtp_init();
+        if (global.cluster_mode == CLUSTER_CLIENT) {
+            client_rtp_init();
+        }
 
         // create picture thread and/or video thread;
         client_create_thread();
 
         client_working_progress();
 
-        client_rtp_release();
+        if (global.cluster_mode == CLUSTER_CLIENT) {
+            client_rtp_release();
+        }
     } else if (global.cluster_mode == CLUSTER_SERVER) {
         // TODO: master do the receiving and storing work;
 

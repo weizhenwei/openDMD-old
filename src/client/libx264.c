@@ -48,24 +48,45 @@ int encode_yuv420p(unsigned char *yuv420p, int width, int height,
     x264_t *encoder;
     x264_picture_t pic_in, pic_out;
 
-    x264_param_t param;
     // initialize param;
+    x264_param_t param;
     x264_param_default_preset(&param, "veryfast", "zerolatency");
+    
+    // basic settings;
     param.i_csp = X264_CSP_I420;
     param.i_threads = 1;
     param.i_width = width;
     param.i_height = height;
     param.i_fps_num = fps;
     param.i_fps_den = 1;
-    param.i_keyint_max = 250;
-    param.b_intra_refresh = 1;
-    param.b_annexb = 1;
     param.i_log_level = X264_LOG_WARNING;
 
-    // bitrate, in kbps(kilobits per second);
-    param.rc.i_bitrate = 256;
+
+    // intra refres
+    param.i_keyint_max = fps;
+    param.b_intra_refresh = 1;
+
+    if (global.cluster_mode == CLUSTER_CLIENT) {
+        // limit each nalu slice length < 1400, including nalu header,
+        // so that sending UDP without packet fragmented;
+        param.i_slice_max_size = 1400;
+    }
+
+    // for rate control;
+    param.rc.i_rc_method = X264_RC_ABR;
+    param.rc.i_bitrate = 256; // bitrate, in kbps(kilobits per second);
+    // param.rc.i_rc_method = X264_RC_CRF;
+    // param.rc.f_rf_constant = 25;
+    // param.rc.f_rf_constant_max = 35;
+
+    // for streaming;
+    param.b_repeat_headers = 1;
+    param.b_annexb = 1;
 
     x264_param_apply_profile(&param, "baseline");
+
+
+    // create encoder;
     encoder = x264_encoder_open(&param);
 
     x264_picture_alloc(&pic_in, X264_CSP_I420, width, height);
@@ -96,6 +117,25 @@ int encode_yuv420p(unsigned char *yuv420p, int width, int height,
         int len = fwrite(nal->p_payload, sizeof(unsigned char),
                 nal->i_payload, h264fp);
         dmd_log(LOG_DEBUG, "write to h264 length:%d\n", len);
+
+
+        // debug info, dump heading bytes;
+        // if (nal->i_payload >= 10) {
+        //     dmd_log(LOG_DEBUG, "dump first 10 bytes of this NALU: ");
+        //     int j = 0;
+        //     for (j = 0; j < 10; j++) {
+        //         printf("%02X ", nal->p_payload[j]);
+        //     }
+        //     printf("\n");
+        // } else {
+        //     dmd_log(LOG_DEBUG, "dump first %d bytes of this NALU: ", nal->i_payload);
+        //     int j = 0;
+        //     for (j = 0; j < nal->i_payload; j++) {
+        //         printf("%02X ", nal->p_payload[j]);
+        //     }
+        //     printf("\n");
+
+        // }
 
         // send h264 frame to server;
         if (cluster_mode == CLUSTER_CLIENT) {
