@@ -49,7 +49,7 @@ am_opendmd_OBJECTS = main.$(OBJEXT) config.$(OBJEXT) log.$(OBJEXT) \
 	path.$(OBJEXT) global_context.$(OBJEXT) video.$(OBJEXT) \
 	v4l2_utils.$(OBJEXT) signal_handler.$(OBJEXT) \
 	image_convert.$(OBJEXT) image_capture.$(OBJEXT) \
-	picture_thread.$(OBJEXT) libx264.$(OBJEXT) \
+	picture_thread.$(OBJEXT) flv_muxer.$(OBJEXT) libx264.$(OBJEXT) \
 	video_thread.$(OBJEXT) rtp_send.$(OBJEXT) rtp_recv.$(OBJEXT) \
 	rtp_server.$(OBJEXT)
 opendmd_OBJECTS = $(am_opendmd_OBJECTS)
@@ -184,6 +184,7 @@ opendmd_SOURCES = main.c \
                   client/image_convert.h client/image_convert.c \
                   client/image_capture.h client/image_capture.c \
 				  client/picture_thread.h client/picture_thread.c \
+				  client/flv_muxer.h client/flv_muxer.c \
                   client/libx264.h client/libx264.c \
 				  client/video_thread.h client/video_thread.c \
 				  client/rtp_send.h client/rtp_send.c \
@@ -272,6 +273,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/config.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flv_muxer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/global_context.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/image_capture.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/image_convert.Po@am__quote@
@@ -357,6 +359,20 @@ picture_thread.obj: client/picture_thread.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='client/picture_thread.c' object='picture_thread.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o picture_thread.obj `if test -f 'client/picture_thread.c'; then $(CYGPATH_W) 'client/picture_thread.c'; else $(CYGPATH_W) '$(srcdir)/client/picture_thread.c'; fi`
+
+flv_muxer.o: client/flv_muxer.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT flv_muxer.o -MD -MP -MF $(DEPDIR)/flv_muxer.Tpo -c -o flv_muxer.o `test -f 'client/flv_muxer.c' || echo '$(srcdir)/'`client/flv_muxer.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/flv_muxer.Tpo $(DEPDIR)/flv_muxer.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='client/flv_muxer.c' object='flv_muxer.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o flv_muxer.o `test -f 'client/flv_muxer.c' || echo '$(srcdir)/'`client/flv_muxer.c
+
+flv_muxer.obj: client/flv_muxer.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT flv_muxer.obj -MD -MP -MF $(DEPDIR)/flv_muxer.Tpo -c -o flv_muxer.obj `if test -f 'client/flv_muxer.c'; then $(CYGPATH_W) 'client/flv_muxer.c'; else $(CYGPATH_W) '$(srcdir)/client/flv_muxer.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/flv_muxer.Tpo $(DEPDIR)/flv_muxer.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='client/flv_muxer.c' object='flv_muxer.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o flv_muxer.obj `if test -f 'client/flv_muxer.c'; then $(CYGPATH_W) 'client/flv_muxer.c'; else $(CYGPATH_W) '$(srcdir)/client/flv_muxer.c'; fi`
 
 libx264.o: client/libx264.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libx264.o -MD -MP -MF $(DEPDIR)/libx264.Tpo -c -o libx264.o `test -f 'client/libx264.c' || echo '$(srcdir)/'`client/libx264.c

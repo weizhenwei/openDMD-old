@@ -27,6 +27,7 @@ opendmd_SOURCES = main.c \
                   client/image_convert.h client/image_convert.c \
                   client/image_capture.h client/image_capture.c \
 				  client/picture_thread.h client/picture_thread.c \
+				  client/flv_muxer.h client/flv_muxer.c \
                   client/libx264.h client/libx264.c \
 				  client/video_thread.h client/video_thread.c \
 				  client/rtp_send.h client/rtp_send.c \

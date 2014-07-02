@@ -40,6 +40,70 @@
  */
 #include "libx264.h"
 
+static void dump_nalu_type(unsigned char typebyte)
+{
+    int type = typebyte & 0x1f;
+    dmd_log(LOG_INFO, "NALU TYPE:");
+    if (type == 1) {
+        printf("NALU_TYPE_SLICE");
+    } else if (type == 2) {
+        printf("NALU_TYPE_DPA");
+    } else if (type == 3) {
+        printf("NALU_TYPE_DPB");
+    } else if (type == 4) {
+        printf("NALU_TYPE_DPC");
+    } else if (type == 5) {
+        printf("NALU_TYPE_IDR");
+    } else if (type == 6) {
+        printf("NALU_TYPE_SEI");
+    } else if (type == 7) {
+        printf("NALU_TYPE_SPS");
+    } else if (type == 8) {
+        printf("NALU_TYPE_PPS");
+    } else if (type == 9) {
+        printf("NALU_TYPE_AUD");
+    } else if (type == 10) {
+        printf("NALU_TYPE_EOSEQ");
+    } else if (type == 11) {
+        printf("NALU_TYPE_EOSTREAM");
+    } else if (type == 12) {
+        printf("NALU_TYPE_FILL");
+    }
+
+    printf("\n");
+}
+
+static void analyze_nalu(const unsigned char *nalu, int length)
+{
+    assert(length > 4);
+    // debug info, dump heading bytes;
+    if (length >= 10) {
+        dmd_log(LOG_DEBUG, "dump first 10 bytes of this NALU: ");
+        int j = 0;
+        for (j = 0; j < 10; j++) {
+            printf("%02X ", nalu[j]);
+        }
+        printf("\n");
+    } else {
+        dmd_log(LOG_DEBUG, "dump first %d bytes of this NALU: ", length);
+        int j = 0;
+        for (j = 0; j < length; j++) {
+            printf("%02X ", nalu[j]);
+        }
+        printf("\n");
+    }
+
+    const unsigned char *p = nalu;
+    while (*p == 0) {
+        p++;
+    }
+    assert(*p == 1);
+    p++;
+
+    dump_nalu_type(*p);
+
+}
+
 // encode Planar YUV420P to H264 foramt using libx264
 int encode_yuv420p(unsigned char *yuv420p, int width, int height,
         const char *h264file)
@@ -65,12 +129,13 @@ int encode_yuv420p(unsigned char *yuv420p, int width, int height,
     // intra refres
     param.i_keyint_max = fps;
     param.b_intra_refresh = 1;
-
-    if (global.cluster_mode == CLUSTER_CLIENT) {
-        // limit each nalu slice length < 1400, including nalu header,
-        // so that sending UDP without packet fragmented;
-        param.i_slice_max_size = 1400;
-    }
+    
+    param.i_slice_max_size = 1400;
+    // if (global.cluster_mode == CLUSTER_CLIENT) {
+    //     // limit each nalu slice length < 1400, including nalu header,
+    //     // so that sending UDP without packet fragmented;
+    //     param.i_slice_max_size = 1400;
+    // }
 
     // for rate control;
     param.rc.i_rc_method = X264_RC_ABR;
@@ -118,24 +183,8 @@ int encode_yuv420p(unsigned char *yuv420p, int width, int height,
                 nal->i_payload, h264fp);
         dmd_log(LOG_DEBUG, "write to h264 length:%d\n", len);
 
-
-        // debug info, dump heading bytes;
-        // if (nal->i_payload >= 10) {
-        //     dmd_log(LOG_DEBUG, "dump first 10 bytes of this NALU: ");
-        //     int j = 0;
-        //     for (j = 0; j < 10; j++) {
-        //         printf("%02X ", nal->p_payload[j]);
-        //     }
-        //     printf("\n");
-        // } else {
-        //     dmd_log(LOG_DEBUG, "dump first %d bytes of this NALU: ", nal->i_payload);
-        //     int j = 0;
-        //     for (j = 0; j < nal->i_payload; j++) {
-        //         printf("%02X ", nal->p_payload[j]);
-        //     }
-        //     printf("\n");
-
-        // }
+        // dump the nalu infomation;
+        analyze_nalu(nal->p_payload, nal->i_payload);
 
         // send h264 frame to server;
         if (cluster_mode == CLUSTER_CLIENT) {
