@@ -40,7 +40,7 @@
  */
 #include "libx264.h"
 
-static void dump_nalu_type(unsigned char typebyte)
+static int dump_nalu_type(unsigned char typebyte)
 {
     int type = typebyte & 0x1f;
     dmd_log(LOG_INFO, "NALU TYPE:");
@@ -71,6 +71,8 @@ static void dump_nalu_type(unsigned char typebyte)
     }
 
     printf("\n");
+
+    return type;
 }
 
 static void analyze_nalu(const unsigned char *nalu, int length)
@@ -101,7 +103,125 @@ static void analyze_nalu(const unsigned char *nalu, int length)
     p++;
 
     dump_nalu_type(*p);
+}
 
+// write nalu to flv file and/or network;
+static int write_nals(const char *h264file, x264_nal_t *nals, int nnal)
+{
+    dmd_log(LOG_DEBUG, "in function %s, at the beginning\n", __func__);
+    x264_nal_t *nal;
+    // enum cluster_mode_t cluster_mode = global.cluster_mode;
+
+    // SPS + PPS + SEI + n * IDR;
+    assert(nnal > 4);
+
+    // SPS
+    nal = nals;
+    // dump the nalu infomation;
+    analyze_nalu(nal->p_payload, nal->i_payload);
+    unsigned char *payload = nal->p_payload;
+    unsigned char *p = payload;
+    int len =  nal->i_payload;
+    int offset = 0;
+    while (*p == 0) { // strip heading 0x00 0x00 ... 0x01;
+        p++;
+        offset++;
+    }
+    assert(*p == 1);
+    p++; offset++;
+    assert(dump_nalu_type(*p) == 7); // SPS frame;
+    int sps_len = len - offset;
+    unsigned char *sps = (unsigned char *)malloc(sizeof(unsigned char) * sps_len);
+    bzero(sps, sps_len);
+    memcpy(sps, payload + offset, sps_len);
+
+    // PPS
+    nals++;
+    nal = nals;
+    // dump the nalu infomation;
+    analyze_nalu(nal->p_payload, nal->i_payload);
+    payload = nal->p_payload;
+    p = payload;
+    len =  nal->i_payload;
+    offset = 0;
+    while (*p == 0) { // strip heading 0x00 0x00 ... 0x01;
+        p++;
+        offset++;
+    }
+    assert(*p == 1);
+    p++; offset++;
+    assert(dump_nalu_type(*p) == 8); // PPS frame;
+    int pps_len = len - offset;
+    unsigned char *pps = (unsigned char *)malloc(sizeof(unsigned char) * pps_len);
+    bzero(pps, pps_len);
+    memcpy(pps, payload + offset, pps_len);
+
+    dmd_log(LOG_DEBUG, "in function %s, before encapulate spspps\n", __func__);
+    encapulate_spspps(sps,sps_len, pps, pps_len,  h264file);
+    free(sps);
+    free(pps);
+
+    nals++;
+    nal = nals;
+    nnal -= 2;
+    for (nal = nals; nal < nals + nnal; nal++) {
+        // dump the nalu infomation;
+        analyze_nalu(nal->p_payload, nal->i_payload);
+
+        payload = nal->p_payload;
+        p = payload;
+        len =  nal->i_payload;
+        offset = 0;
+        while (*p == 0) { // strip heading 0x00 0x00 ... 0x01;
+            p++;
+            offset++;
+        }
+        assert(*p == 1);
+        p++; offset++;
+        int nalu_type = dump_nalu_type(*p);
+        if (nalu_type != 5) { // only write IDR frame;
+            continue;
+        }
+        int idr_len = len - offset;
+        unsigned char *idr = (unsigned char *)
+            malloc(sizeof(unsigned char) * idr_len);
+        bzero(idr, idr_len);
+        memcpy(idr, payload + offset, idr_len);
+        
+        dmd_log(LOG_DEBUG, "in function %s, before encapulate spspps\n", __func__);
+        encapulate_nalu(idr, idr_len, h264file);
+        free(idr);
+    }
+
+    return 0;
+
+#if 0
+        int len = fwrite(nal->p_payload, sizeof(unsigned char),
+                nal->i_payload, h264fp);
+        dmd_log(LOG_DEBUG, "write to h264 length:%d\n", len);
+
+
+        // send h264 frame to server;
+        if (cluster_mode == CLUSTER_CLIENT) {
+            int ret = rtp_send(global.client.clientrtp.rtpsession,
+                    nal->p_payload, nal->i_payload);
+            
+            if (ret == 0) {
+                dmd_log(LOG_INFO, "in function %s, send h264 frame to server, "
+                        "len = %d\n", __func__, nal->i_payload);
+            } else {
+                dmd_log(LOG_INFO, "in function %s, failed to send h264 frame "
+                        "to server\n", __func__);
+            }
+        }
+
+        if ( len != nal->i_payload) {
+            dmd_log(LOG_ERR, "write to h264 error:%s\n", strerror(errno));
+            return -1;
+        }
+    }
+    fclose(h264fp);
+#endif
 }
 
 // encode Planar YUV420P to H264 foramt using libx264
@@ -130,7 +250,7 @@ int encode_yuv420p(unsigned char *yuv420p, int width, int height,
     param.i_keyint_max = fps;
     param.b_intra_refresh = 1;
     
-    param.i_slice_max_size = 1400;
+    // param.i_slice_max_size = 1400;
     // if (global.cluster_mode == CLUSTER_CLIENT) {
     //     // limit each nalu slice length < 1400, including nalu header,
     //     // so that sending UDP without packet fragmented;
@@ -150,7 +270,6 @@ int encode_yuv420p(unsigned char *yuv420p, int width, int height,
 
     x264_param_apply_profile(&param, "baseline");
 
-
     // create encoder;
     encoder = x264_encoder_open(&param);
 
@@ -164,48 +283,14 @@ int encode_yuv420p(unsigned char *yuv420p, int width, int height,
     pic_in.img.plane[1] = pic_in.img.plane[0] + width * height;
     pic_in.img.plane[2] = pic_in.img.plane[1] + width * height / 4;
 
-    assert(h264file != NULL);
     static int64_t i_pts = 0;
     x264_nal_t *nals;
     int nnal;
     pic_in.i_pts = i_pts++;
     x264_encoder_encode(encoder, &nals, &nnal, &pic_in, &pic_out);
-    x264_nal_t *nal;
-    FILE *h264fp = NULL;
-    if ((h264fp = fopen(h264file, "ab+")) == NULL) {
-        dmd_log(LOG_ERR, "fopen h264 path error:%s\n", strerror(errno));
-        return -1;
-    }
 
-    enum cluster_mode_t cluster_mode = global.cluster_mode;
-    for (nal = nals; nal < nals + nnal; nal++) {
-        int len = fwrite(nal->p_payload, sizeof(unsigned char),
-                nal->i_payload, h264fp);
-        dmd_log(LOG_DEBUG, "write to h264 length:%d\n", len);
-
-        // dump the nalu infomation;
-        analyze_nalu(nal->p_payload, nal->i_payload);
-
-        // send h264 frame to server;
-        if (cluster_mode == CLUSTER_CLIENT) {
-            int ret = rtp_send(global.client.clientrtp.rtpsession,
-                    nal->p_payload, nal->i_payload);
-            
-            if (ret == 0) {
-                dmd_log(LOG_INFO, "in function %s, send h264 frame to server, "
-                        "len = %d\n", __func__, nal->i_payload);
-            } else {
-                dmd_log(LOG_INFO, "in function %s, failed to send h264 frame "
-                        "to server\n", __func__);
-            }
-        }
-
-        if ( len != nal->i_payload) {
-            dmd_log(LOG_ERR, "write to h264 error:%s\n", strerror(errno));
-            return -1;
-        }
-    }
-    fclose(h264fp);
+    // write to file or network;
+    write_nals(h264file, nals, nnal);
 
     // WARNING: remember to free pic_in;
     x264_picture_clean(&pic_in);

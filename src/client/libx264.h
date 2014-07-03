@@ -55,6 +55,7 @@
 #include "global_context.h"
 #include "rtp_send.h"
 #include "log.h"
+#include "flv_muxer.h"
 
 // encode Planar YUV420P to H264 foramt using libx264
 extern int encode_yuv420p(unsigned char *yuv420p,

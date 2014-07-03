@@ -67,6 +67,10 @@ void *video_thread(void *arg)
                 video_capturing_switch = VIDEO_CAPTURING_ON;
                 h264_filepath = get_h264_filepath();
                 assert(h264_filepath != NULL);
+
+                dmd_log(LOG_INFO, "in function %s, encapsulate flvheader\n",
+                        __func__);
+                encapulate_flvheader(h264_filepath);
             }
 
             int width = global.client.image_width;

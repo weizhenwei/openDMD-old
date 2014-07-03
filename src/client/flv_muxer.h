@@ -42,7 +42,11 @@
 #ifndef FLV_MUXER_H
 #define FLV_MUXER_H
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <stdint.h>
+#include <assert.h>
+#include <string.h>
 
 
 /*
@@ -62,15 +66,10 @@
  *            namely, a script tag containing first AMF and second AMF;
  */
 
-uint8_t flv_header[9] = {
-    0x46, 0x4c, 0x56, /* file type, namely string "FLV" */
-    0x01,             /* version number, always to be 0x01 */
-    0x01,             /* stream info: 0x01 is video, 0x04 audio, 0x05 both */
-    0x00, 0x00, 0x00, 0x09 /* flv header length, always to be 0x09 */
-};
+extern uint8_t flv_header[13];
+extern uint8_t first_AMF[13];
 
 struct tag_header {
-    uint8_t previous_tag_size[4];
     uint8_t tag_type;             /* 0x08 audio, 0x09 video, ox12 script */
     uint8_t tag_data_len[3];
     uint8_t timestamp[3];
@@ -78,13 +77,18 @@ struct tag_header {
     uint8_t stream_id[3];
 };
 
-uint8_t first_AMF[13] = {
-    0x02, /* AMF package type: AMF_DATA_TYPE_STRING */
-    0x00, 0x0a, /* package data len, always to be 10 */
-    0x6f, 0x6e, /* string "on" */
-    0x4d, 0x65, 0x74, 0x61, /* string "Meta" */
-    0x44, 0x61, 0x74, 0x61  /* string "Data" */
-};
+#define FLV_TAG_HEADER_SIZE 11
+#define FLV_PRE_TAG_SIZE 4
+
+// encapulate flv header;
+extern int encapulate_flvheader(const char *filename);
+
+// encapulate first tag body;
+extern int encapulate_spspps(uint8_t *sps, int sps_len,
+        uint8_t *pps, int pps_len, const char *filename);
+
+// encapulate IDR/SLICE nalu;
+extern int encapulate_nalu(uint8_t *nalu, int nalu_len, const char *filename);
 
 #endif
 

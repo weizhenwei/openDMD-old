@@ -123,7 +123,8 @@ char *get_h264_filepath()
 
     tmptr = localtime(&now);
     assert(tmptr != NULL);
-    sprintf(filepath, "%s/%04d%02d%02d%02d%02d%02d.h264",
+    // sprintf(filepath, "%s/%04d%02d%02d%02d%02d%02d.h264",
+    sprintf(filepath, "%s/%04d%02d%02d%02d%02d%02d.flv",
             storepath,
             tmptr->tm_year + 1900,
             tmptr->tm_mon + 1,
