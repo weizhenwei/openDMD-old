@@ -64,11 +64,12 @@ uint8_t first_AMF[13] = {
 // encapulate flv header;
 extern int encapulate_flvheader(const char *filename)
 {
-    FILE *fp = fopen(filename, "w+");
+    FILE *fp = fopen(filename, "a");
     assert(fp != NULL);
 
     int writelen = fwrite(flv_header, sizeof(uint8_t), sizeof(flv_header), fp);
     assert(writelen == sizeof(flv_header));
+    fclose(fp);
 
     return 0;
 }
@@ -132,9 +133,9 @@ extern int encapulate_spspps(uint8_t *sps, int sps_len,
 
     assert(offset == total_tag_len);
 
-    FILE *fp = fopen(filename, "w+");
+    FILE *fp = fopen(filename, "a");
     assert(fp != NULL);
-    int writelen = fwrite(buffer, sizeof(uint8_t), sizeof(buffer), fp);
+    int writelen = fwrite(buffer, sizeof(uint8_t), total_tag_len, fp);
     assert(writelen == total_tag_len);
     fclose(fp);
     free(buffer);
@@ -189,9 +190,9 @@ extern int encapulate_nalu(uint8_t *nalu, int nalu_len, const char *filename)
 
     assert(offset == total_tag_len);
 
-    FILE *fp = fopen(filename, "w+");
+    FILE *fp = fopen(filename, "a");
     assert(fp != NULL);
-    int writelen = fwrite(buffer, sizeof(uint8_t), sizeof(buffer), fp);
+    int writelen = fwrite(buffer, sizeof(uint8_t), total_tag_len, fp);
     assert(writelen == total_tag_len);
     fclose(fp);
     free(buffer);

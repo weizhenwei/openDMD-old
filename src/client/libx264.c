@@ -113,7 +113,7 @@ static int write_nals(const char *h264file, x264_nal_t *nals, int nnal)
     // enum cluster_mode_t cluster_mode = global.cluster_mode;
 
     // SPS + PPS + SEI + n * IDR;
-    assert(nnal > 4);
+    assert(nnal >= 4);
 
     // SPS
     nal = nals;
