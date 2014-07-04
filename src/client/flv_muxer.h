@@ -83,6 +83,8 @@ struct tag_header {
 // encapulate flv header;
 extern int encapulate_flvheader(const char *filename);
 
+extern int encapulate_first_tag(const char *filename);
+
 // encapulate first tag body;
 extern int encapulate_spspps(uint8_t *sps, int sps_len,
         uint8_t *pps, int pps_len, const char *filename);

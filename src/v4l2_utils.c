@@ -310,6 +310,8 @@ int video_set_fps(struct v4l2_device_info *v4l2_info)
     dmd_log(LOG_INFO, "\n*********************get VIDIOC_G_PARM fps = %d\n",
             setfps->parm.capture.timeperframe.denominator);
 
+    free(setfps);
+
     return 0;
 }
 

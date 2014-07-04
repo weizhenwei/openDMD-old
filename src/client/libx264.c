@@ -117,6 +117,7 @@ static int write_nals(const char *h264file, x264_nal_t *nals, int nnal)
 
     // SPS
     nal = nals;
+    assert(nal->i_type == NAL_SPS); // SPS frame;
     // dump the nalu infomation;
     analyze_nalu(nal->p_payload, nal->i_payload);
     unsigned char *payload = nal->p_payload;
@@ -129,15 +130,18 @@ static int write_nals(const char *h264file, x264_nal_t *nals, int nnal)
     }
     assert(*p == 1);
     p++; offset++;
-    assert(dump_nalu_type(*p) == 7); // SPS frame;
     int sps_len = len - offset;
-    unsigned char *sps = (unsigned char *)malloc(sizeof(unsigned char) * sps_len);
+    unsigned char *sps = (unsigned char *)
+        malloc(sizeof(unsigned char) * sps_len);
     bzero(sps, sps_len);
     memcpy(sps, payload + offset, sps_len);
+    dmd_log(LOG_DEBUG, "in function %s, SPS frame length:%d, sps_len = %d\n",
+           __func__, len, sps_len);
 
     // PPS
     nals++;
     nal = nals;
+    assert(nal->i_type == NAL_PPS); // PPS frame;
     // dump the nalu infomation;
     analyze_nalu(nal->p_payload, nal->i_payload);
     payload = nal->p_payload;
@@ -150,14 +154,15 @@ static int write_nals(const char *h264file, x264_nal_t *nals, int nnal)
     }
     assert(*p == 1);
     p++; offset++;
-    assert(dump_nalu_type(*p) == 8); // PPS frame;
     int pps_len = len - offset;
     unsigned char *pps = (unsigned char *)malloc(sizeof(unsigned char) * pps_len);
     bzero(pps, pps_len);
     memcpy(pps, payload + offset, pps_len);
+    dmd_log(LOG_DEBUG, "in function %s, PPS frame length:%d, pps_len = %d\n",
+           __func__, len, pps_len);
 
     dmd_log(LOG_DEBUG, "in function %s, before encapulate spspps\n", __func__);
-    encapulate_spspps(sps,sps_len, pps, pps_len,  h264file);
+    encapulate_spspps(sps, sps_len, pps, pps_len,  h264file);
     free(sps);
     free(pps);
 
@@ -165,6 +170,10 @@ static int write_nals(const char *h264file, x264_nal_t *nals, int nnal)
     nal = nals;
     nnal -= 2;
     for (nal = nals; nal < nals + nnal; nal++) {
+        if (nal->i_type != NAL_SLICE_IDR) { // only write IDR frame;
+            continue;
+        }
+        assert(nal->i_type == NAL_SLICE_IDR); // IDR frame;
         // dump the nalu infomation;
         analyze_nalu(nal->p_payload, nal->i_payload);
 
@@ -178,20 +187,22 @@ static int write_nals(const char *h264file, x264_nal_t *nals, int nnal)
         }
         assert(*p == 1);
         p++; offset++;
-        int nalu_type = dump_nalu_type(*p);
-        if (nalu_type != 5) { // only write IDR frame;
-            continue;
-        }
         int idr_len = len - offset;
         unsigned char *idr = (unsigned char *)
             malloc(sizeof(unsigned char) * idr_len);
         bzero(idr, idr_len);
         memcpy(idr, payload + offset, idr_len);
+        dmd_log(LOG_DEBUG, "in function %s, IDR frame len:%d, idr_len:%d\n",
+           __func__, len, idr_len);
         
-        dmd_log(LOG_DEBUG, "in function %s, before encapulate spspps\n", __func__);
+        dmd_log(LOG_DEBUG, "in function %s, before encapulate nalu\n",
+                __func__);
         encapulate_nalu(idr, idr_len, h264file);
         free(idr);
     }
+
+    dmd_log(LOG_DEBUG, "in function %s, "
+            "end of current H264 frame encapulation\n\n", __func__);
 
     return 0;
 
@@ -258,11 +269,11 @@ int encode_yuv420p(unsigned char *yuv420p, int width, int height,
     // }
 
     // for rate control;
-    param.rc.i_rc_method = X264_RC_ABR;
-    param.rc.i_bitrate = 256; // bitrate, in kbps(kilobits per second);
-    // param.rc.i_rc_method = X264_RC_CRF;
-    // param.rc.f_rf_constant = 25;
-    // param.rc.f_rf_constant_max = 35;
+    // param.rc.i_rc_method = X264_RC_ABR;
+    // param.rc.i_bitrate = 256; // bitrate, in kbps(kilobits per second);
+    param.rc.i_rc_method = X264_RC_CRF;
+    param.rc.f_rf_constant = 25;
+    param.rc.f_rf_constant_max = 35;
 
     // for streaming;
     param.b_repeat_headers = 1;

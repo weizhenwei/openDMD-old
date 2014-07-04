@@ -59,16 +59,25 @@ uint8_t first_AMF[13] = {
     0x44, 0x61, 0x74, 0x61  /* string "Data" */
 };
 
-
-
 // encapulate flv header;
 extern int encapulate_flvheader(const char *filename)
 {
-    FILE *fp = fopen(filename, "a");
+    FILE *fp = fopen(filename, "ab");
     assert(fp != NULL);
 
     int writelen = fwrite(flv_header, sizeof(uint8_t), sizeof(flv_header), fp);
     assert(writelen == sizeof(flv_header));
+    fflush(fp);
+    fclose(fp);
+
+    return 0;
+}
+
+// TODO: encapulate 2 AMFs to flv file;
+int encapulate_first_tag(const char *filename)
+{
+    FILE *fp = fopen(filename, "ab");
+    assert(fp != NULL);
     fclose(fp);
 
     return 0;
@@ -79,9 +88,16 @@ extern int encapulate_flvheader(const char *filename)
 extern int encapulate_spspps(uint8_t *sps, int sps_len,
         uint8_t *pps, int pps_len, const char *filename)
 {
+    // type infomation assertation;
+    assert(sps[0] == 0x67);
+    assert(pps[0] == 0x68);
+
     int offset= 0;
-    uint32_t ts = 0;
-    uint32_t body_len = sps_len + pps_len + 16; // 16 = 5 + 5 + 3 + 3;
+    static uint32_t ts = 0;
+    // 16 = 5  bytes flv video header + 5 bytes AVCDecoderConfigurationRecord
+    //      + 1 byte numofsequenceset + 2 bytes sps_len
+    //      + 2 byte numofpictureset + 2 bytes pps_len
+    uint32_t body_len = sps_len + pps_len + 16; // 16 = 5 + 5 + 1 + 2 + 1 + 2;
     uint32_t total_tag_len = body_len + FLV_TAG_HEADER_SIZE + FLV_PRE_TAG_SIZE;
     uint8_t *buffer = (uint8_t *)malloc(sizeof(uint8_t) * total_tag_len);
     assert(buffer != NULL);
@@ -106,7 +122,7 @@ extern int encapulate_spspps(uint8_t *sps, int sps_len,
     buffer[offset++] = 0x00; // composition time;
     buffer[offset++] = 0x00; // composition time;
 
-    // fill flv video body, AVCDecoderConfigurationRecord;
+    // fill flv video body, AVCDecoderConfigurationRecord, 5 bytes;
     buffer[offset++] = 0x01;   // configuration version;
     buffer[offset++] = sps[1]; // avcprofileindication;
     buffer[offset++] = sps[2]; // profilecompatibilty;
@@ -122,6 +138,7 @@ extern int encapulate_spspps(uint8_t *sps, int sps_len,
     buffer[offset++] = 0x01;  // numofpictureset;
     buffer[offset++] = (uint8_t)(pps_len >> 8);   // pps_len high 8 bits;
     buffer[offset++] = (uint8_t)(pps_len);        // pps_len low 8 bits;
+    memcpy(buffer + offset, pps, pps_len);
     offset += pps_len;
 
     // fill previous tag size;
@@ -133,10 +150,12 @@ extern int encapulate_spspps(uint8_t *sps, int sps_len,
 
     assert(offset == total_tag_len);
 
-    FILE *fp = fopen(filename, "a");
+    // write to flv file;
+    FILE *fp = fopen(filename, "ab");
     assert(fp != NULL);
     int writelen = fwrite(buffer, sizeof(uint8_t), total_tag_len, fp);
     assert(writelen == total_tag_len);
+    fflush(fp);
     fclose(fp);
     free(buffer);
 
@@ -147,11 +166,15 @@ extern int encapulate_spspps(uint8_t *sps, int sps_len,
 extern int encapulate_nalu(uint8_t *nalu, int nalu_len, const char *filename)
 {
     int offset= 0;
-    uint32_t ts = 0;
+    static uint32_t ts = 0;
+    // 9 = 5 bytes flv video header + 4 nalu length;
     uint32_t body_len = nalu_len + 9; // 9 = 5 + 4;
     uint32_t total_tag_len = body_len + FLV_TAG_HEADER_SIZE + FLV_PRE_TAG_SIZE;
     uint8_t *buffer = (uint8_t *)malloc(sizeof(uint8_t) * total_tag_len);
     assert(buffer != NULL);
+
+    // TODO: ts incrementation is so important!
+    ts += 80;
 
     // fill flv tag header, 11 bytes;
     buffer[offset++] = 0x09;  // tagtype: video;
@@ -190,16 +213,16 @@ extern int encapulate_nalu(uint8_t *nalu, int nalu_len, const char *filename)
 
     assert(offset == total_tag_len);
 
-    FILE *fp = fopen(filename, "a");
+    // write to flv file;
+    FILE *fp = fopen(filename, "ab");
     assert(fp != NULL);
     int writelen = fwrite(buffer, sizeof(uint8_t), total_tag_len, fp);
     assert(writelen == total_tag_len);
+    fflush(fp);
     fclose(fp);
     free(buffer);
 
     return 0;
 }
-
-
 
 
