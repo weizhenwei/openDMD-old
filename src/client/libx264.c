@@ -120,7 +120,7 @@ static int write_nals(const char *h264file, x264_nal_t *nals, int nnal)
     // enum cluster_mode_t cluster_mode = global.cluster_mode;
 
     int fps = global.x264_fps;
-    int ts_inc = 1000 / fps * 2;
+    int ts_inc = 1000 / fps * 2.5;
     dmd_log(LOG_DEBUG, "in function %s, time stamp increment is %d\n",
             __func__, ts_inc);
     ts += ts_inc;
