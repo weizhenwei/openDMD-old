@@ -163,7 +163,7 @@ extern int encapulate_spspps(uint8_t *sps, int sps_len,
 
 // encapulate IDR/SLICE nalu;
 extern int encapulate_nalu(uint8_t *nalu, int nalu_len,
-        const char *filename, uint32_t ts)
+        const char *filename, uint32_t ts, int type)
 {
     int offset = 0;
     // 9 = 5 bytes flv video header + 4 nalu length;
@@ -187,7 +187,14 @@ extern int encapulate_nalu(uint8_t *nalu, int nalu_len,
     buffer[offset++] = 0x00; // stream id 0;
 
     // fill flv video header, 5 bytes;
-    buffer[offset++] = 0x17; // key frame, AVC;
+    if (type == NAL_SLICE_IDR) {
+        buffer[offset++] = 0x17; // key frame, AVC;
+    } else if (type == NAL_SLICE) {
+        buffer[offset++] = 0x27; // key frame, AVC;
+    } else {
+        dmd_log(LOG_INFO, "impossible to reach here!\n");
+        assert(0);
+    }
     buffer[offset++] = 0x01; // AVC NALU unit;
     buffer[offset++] = 0x00; // composition time;
     buffer[offset++] = 0x00; // composition time;

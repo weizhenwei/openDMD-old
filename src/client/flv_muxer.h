@@ -48,6 +48,8 @@
 #include <assert.h>
 #include <string.h>
 
+#include <x264.h>
+
 #include "log.h"
 #include "global_context.h"
 
@@ -94,7 +96,7 @@ extern int encapulate_spspps(uint8_t *sps, int sps_len,
 
 // encapulate IDR/SLICE nalu;
 extern int encapulate_nalu(uint8_t *nalu, int nalu_len,
-        const char *filename, uint32_t ts);
+        const char *filename, uint32_t ts, int type);
 
 #endif
 

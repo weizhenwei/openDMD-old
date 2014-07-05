@@ -180,7 +180,8 @@ static int write_nals(const char *h264file, x264_nal_t *nals, int nnal)
 
     nal++;
     for (nal = nals + 2; nal < nals + nnal; nal++) {
-        if (nal->i_type != NAL_SLICE_IDR) { // only write IDR frame;
+        if ((nal->i_type != NAL_SLICE_IDR)
+                && (nal->i_type != NAL_SLICE)) { // only write IDR/SLICE frame;
             continue;
         }
         assert(nal->i_type == NAL_SLICE_IDR); // IDR frame;
@@ -204,10 +205,10 @@ static int write_nals(const char *h264file, x264_nal_t *nals, int nnal)
         memcpy(idr, payload + offset, idr_len);
         dmd_log(LOG_DEBUG, "in function %s, IDR frame len:%d, idr_len:%d\n",
            __func__, len, idr_len);
-        
+
         dmd_log(LOG_DEBUG, "in function %s, before encapulate nalu\n",
                 __func__);
-        encapulate_nalu(idr, idr_len, h264file, ts);
+        encapulate_nalu(idr, idr_len, h264file, ts, nal->i_type);
         free(idr);
     }
 
