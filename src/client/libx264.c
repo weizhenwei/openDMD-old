@@ -239,7 +239,8 @@ static int write_nals(const char *h264file, x264_nal_t *nals, int nnal)
 int encode_yuv420p(unsigned char *yuv420p, int width, int height,
         const char *h264file)
 {
-    int fps = 25;  // 25 frames per second;
+    // int fps = 25;  // 25 frames per second;
+    int fps = global.x264_fps;
     x264_t *encoder;
     x264_picture_t pic_in, pic_out;
 
@@ -269,6 +270,7 @@ int encode_yuv420p(unsigned char *yuv420p, int width, int height,
     // }
 
     // for rate control;
+    // ABR method generate low quality of video;
     // param.rc.i_rc_method = X264_RC_ABR;
     // param.rc.i_bitrate = 256; // bitrate, in kbps(kilobits per second);
     param.rc.i_rc_method = X264_RC_CRF;

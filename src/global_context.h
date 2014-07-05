@@ -94,6 +94,8 @@
 #define DEFAULT_RELEASE_STORE_DIR "/tmp/opendmd"
 #define DEFAULT_DEBUG_STORE_DIR "/home/wzw/opendmd"
 
+#define DEFAULT_X264_FPS 25
+
 
 /////////////////////////////////////////////////////////////
 // Server default settings                                 //
@@ -285,6 +287,9 @@ struct global_context {
     enum daemon_mode_type daemon_mode;   // run in daemon mode;
     char pid_file[PATH_MAX];             // main process's pid file;
     char cfg_file[PATH_MAX];             // config file;
+
+    // x264 fps setting
+    int x264_fps;
 
     // client/server settings;
     struct client_context client;

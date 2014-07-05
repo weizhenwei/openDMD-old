@@ -48,6 +48,9 @@
 #include <assert.h>
 #include <string.h>
 
+#include "log.h"
+#include "global_context.h"
+
 
 /*
  * an flv file format:

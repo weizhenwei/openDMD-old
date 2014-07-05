@@ -231,6 +231,11 @@ int parse_config(const char *conf_file)
              */
             global.pid_file[strlen(iter->value)] = '\0';
 
+        } else if (strcmp(iter->key, "x264_fps") == 0) {
+            int x264_fps = atoi(iter->value);
+            assert(x264_fps > 0);
+            global.x264_fps = x264_fps;
+
         } else if (strcmp(iter->key, "working_mode") == 0) {
             if (strcmp(iter->value, "picture") == 0) {
                 global.client.working_mode = CAPTURE_PICTURE;

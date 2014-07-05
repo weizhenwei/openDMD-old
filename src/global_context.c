@@ -202,6 +202,8 @@ void init_default_global()
     global.cfg_file[strlen(DEFAULT_RELEASE_CFG_FILE)] = '\0';
 #endif
 
+    global.x264_fps = DEFAULT_X264_FPS;
+
     // init client/server specific;
     init_default_client();
     init_default_server();
@@ -315,6 +317,8 @@ static int dump_common()
 
     dmd_log(LOG_INFO, "pid file:%s\n", global.pid_file);
     dmd_log(LOG_INFO, "cfg file:%s\n", global.cfg_file);
+
+    dmd_log(LOG_INFO, "x264_fps:%d\n", global.x264_fps);
 
     return 0;
 }

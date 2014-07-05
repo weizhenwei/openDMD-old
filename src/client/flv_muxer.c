@@ -174,7 +174,11 @@ extern int encapulate_nalu(uint8_t *nalu, int nalu_len, const char *filename)
     assert(buffer != NULL);
 
     // TODO: ts incrementation is so important!
-    ts += 80;
+    // ts += 80;
+    int fps = global.x264_fps;
+    int ts_inc = 1000 / fps * 2;
+    dmd_log(LOG_DEBUG, "time stamp increment is %d\n", ts_inc);
+    ts += ts_inc;
 
     // fill flv tag header, 11 bytes;
     buffer[offset++] = 0x09;  // tagtype: video;
