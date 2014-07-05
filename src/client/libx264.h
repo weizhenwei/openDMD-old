@@ -57,6 +57,9 @@
 #include "log.h"
 #include "flv_muxer.h"
 
+// global time stamp;
+extern uint32_t ts;
+
 // encode Planar YUV420P to H264 foramt using libx264
 extern int encode_yuv420p(unsigned char *yuv420p,
         int height, int width, const char *h264file);

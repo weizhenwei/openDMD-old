@@ -40,6 +40,10 @@
  */
 #include "libx264.h"
 
+
+// global time stamp;
+uint32_t ts = 0;
+
 static int dump_nalu_type(unsigned char typebyte)
 {
     int type = typebyte & 0x1f;
@@ -99,10 +103,10 @@ static void analyze_nalu(const unsigned char *nalu, int length)
     }
 
     const unsigned char *p = nalu;
-    while (*p == 0) {
+    while (*p == 0x00) {
         p++;
     }
-    assert(*p == 1);
+    assert(*p == 0x01);
     p++;
 
     dump_nalu_type(*p);
@@ -112,14 +116,19 @@ static void analyze_nalu(const unsigned char *nalu, int length)
 static int write_nals(const char *h264file, x264_nal_t *nals, int nnal)
 {
     dmd_log(LOG_DEBUG, "in function %s, at the beginning\n", __func__);
-    x264_nal_t *nal;
+    x264_nal_t *nal = nals;
     // enum cluster_mode_t cluster_mode = global.cluster_mode;
+
+    int fps = global.x264_fps;
+    int ts_inc = 1000 / fps * 2;
+    dmd_log(LOG_DEBUG, "in function %s, time stamp increment is %d\n",
+            __func__, ts_inc);
+    ts += ts_inc;
 
     // SPS + PPS + SEI + n * IDR;
     assert(nnal >= 4);
 
-    // SPS
-    nal = nals;
+    // first frame is SPS
     assert(nal->i_type == NAL_SPS); // SPS frame;
     // dump the nalu infomation;
     analyze_nalu(nal->p_payload, nal->i_payload);
@@ -127,11 +136,11 @@ static int write_nals(const char *h264file, x264_nal_t *nals, int nnal)
     unsigned char *p = payload;
     int len =  nal->i_payload;
     int offset = 0;
-    while (*p == 0) { // strip heading 0x00 0x00 ... 0x01;
+    while (*p == 0x00) { // strip heading 0x00 0x00 ... 0x01;
         p++;
         offset++;
     }
-    assert(*p == 1);
+    assert(*p == 0x01);
     p++; offset++;
     int sps_len = len - offset;
     unsigned char *sps = (unsigned char *)
@@ -141,9 +150,9 @@ static int write_nals(const char *h264file, x264_nal_t *nals, int nnal)
     dmd_log(LOG_DEBUG, "in function %s, SPS frame length:%d, sps_len = %d\n",
            __func__, len, sps_len);
 
-    // PPS
-    nals++;
-    nal = nals;
+
+    nal++;
+    // second frame is PPS
     assert(nal->i_type == NAL_PPS); // PPS frame;
     // dump the nalu infomation;
     analyze_nalu(nal->p_payload, nal->i_payload);
@@ -151,11 +160,11 @@ static int write_nals(const char *h264file, x264_nal_t *nals, int nnal)
     p = payload;
     len =  nal->i_payload;
     offset = 0;
-    while (*p == 0) { // strip heading 0x00 0x00 ... 0x01;
+    while (*p == 0x00) { // strip heading 0x00 0x00 ... 0x01;
         p++;
         offset++;
     }
-    assert(*p == 1);
+    assert(*p == 0x01);
     p++; offset++;
     int pps_len = len - offset;
     unsigned char *pps = (unsigned char *)malloc(sizeof(unsigned char) * pps_len);
@@ -165,14 +174,12 @@ static int write_nals(const char *h264file, x264_nal_t *nals, int nnal)
            __func__, len, pps_len);
 
     dmd_log(LOG_DEBUG, "in function %s, before encapulate spspps\n", __func__);
-    encapulate_spspps(sps, sps_len, pps, pps_len,  h264file);
+    encapulate_spspps(sps, sps_len, pps, pps_len,  h264file, ts);
     free(sps);
     free(pps);
 
-    nals++;
-    nal = nals;
-    nnal -= 2;
-    for (nal = nals; nal < nals + nnal; nal++) {
+    nal++;
+    for (nal = nals + 2; nal < nals + nnal; nal++) {
         if (nal->i_type != NAL_SLICE_IDR) { // only write IDR frame;
             continue;
         }
@@ -184,11 +191,11 @@ static int write_nals(const char *h264file, x264_nal_t *nals, int nnal)
         p = payload;
         len =  nal->i_payload;
         offset = 0;
-        while (*p == 0) { // strip heading 0x00 0x00 ... 0x01;
+        while (*p == 0x00) { // strip heading 0x00 0x00 ... 0x01;
             p++;
             offset++;
         }
-        assert(*p == 1);
+        assert(*p == 0x01);
         p++; offset++;
         int idr_len = len - offset;
         unsigned char *idr = (unsigned char *)
@@ -200,7 +207,7 @@ static int write_nals(const char *h264file, x264_nal_t *nals, int nnal)
         
         dmd_log(LOG_DEBUG, "in function %s, before encapulate nalu\n",
                 __func__);
-        encapulate_nalu(idr, idr_len, h264file);
+        encapulate_nalu(idr, idr_len, h264file, ts);
         free(idr);
     }
 

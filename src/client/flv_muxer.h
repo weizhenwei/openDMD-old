@@ -90,10 +90,11 @@ extern int encapulate_first_tag(const char *filename);
 
 // encapulate first tag body;
 extern int encapulate_spspps(uint8_t *sps, int sps_len,
-        uint8_t *pps, int pps_len, const char *filename);
+        uint8_t *pps, int pps_len, const char *filename, uint32_t ts);
 
 // encapulate IDR/SLICE nalu;
-extern int encapulate_nalu(uint8_t *nalu, int nalu_len, const char *filename);
+extern int encapulate_nalu(uint8_t *nalu, int nalu_len,
+        const char *filename, uint32_t ts);
 
 #endif
 

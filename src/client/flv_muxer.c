@@ -86,14 +86,13 @@ int encapulate_first_tag(const char *filename)
 // encapulate first tag body;
 // in: the heading 00 00 01 in sps and pps is stripped already;
 extern int encapulate_spspps(uint8_t *sps, int sps_len,
-        uint8_t *pps, int pps_len, const char *filename)
+        uint8_t *pps, int pps_len, const char *filename, uint32_t ts)
 {
     // type infomation assertation;
     assert(sps[0] == 0x67);
     assert(pps[0] == 0x68);
 
-    int offset= 0;
-    static uint32_t ts = 0;
+    int offset = 0;
     // 16 = 5  bytes flv video header + 5 bytes AVCDecoderConfigurationRecord
     //      + 1 byte numofsequenceset + 2 bytes sps_len
     //      + 2 byte numofpictureset + 2 bytes pps_len
@@ -163,23 +162,16 @@ extern int encapulate_spspps(uint8_t *sps, int sps_len,
 }
 
 // encapulate IDR/SLICE nalu;
-extern int encapulate_nalu(uint8_t *nalu, int nalu_len, const char *filename)
+extern int encapulate_nalu(uint8_t *nalu, int nalu_len,
+        const char *filename, uint32_t ts)
 {
-    int offset= 0;
-    static uint32_t ts = 0;
+    int offset = 0;
     // 9 = 5 bytes flv video header + 4 nalu length;
     uint32_t body_len = nalu_len + 9; // 9 = 5 + 4;
     uint32_t total_tag_len = body_len + FLV_TAG_HEADER_SIZE + FLV_PRE_TAG_SIZE;
     uint8_t *buffer = (uint8_t *)malloc(sizeof(uint8_t) * total_tag_len);
     assert(buffer != NULL);
 
-    // TODO: ts incrementation is so important!
-    // ts += 80;
-    int fps = global.x264_fps;
-    int ts_inc = 1000 / fps * 2;
-    dmd_log(LOG_DEBUG, "in function %s, time stamp increment is %d\n",
-            __func__, ts_inc);
-    ts += ts_inc;
 
     // fill flv tag header, 11 bytes;
     buffer[offset++] = 0x09;  // tagtype: video;
