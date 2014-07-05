@@ -43,56 +43,59 @@
 static int dump_nalu_type(unsigned char typebyte)
 {
     int type = typebyte & 0x1f;
-    dmd_log(LOG_INFO, "NALU TYPE:");
-    if (type == 1) {
-        printf("NALU_TYPE_SLICE");
-    } else if (type == 2) {
-        printf("NALU_TYPE_DPA");
-    } else if (type == 3) {
-        printf("NALU_TYPE_DPB");
-    } else if (type == 4) {
-        printf("NALU_TYPE_DPC");
-    } else if (type == 5) {
-        printf("NALU_TYPE_IDR");
-    } else if (type == 6) {
-        printf("NALU_TYPE_SEI");
-    } else if (type == 7) {
-        printf("NALU_TYPE_SPS");
-    } else if (type == 8) {
-        printf("NALU_TYPE_PPS");
-    } else if (type == 9) {
-        printf("NALU_TYPE_AUD");
-    } else if (type == 10) {
-        printf("NALU_TYPE_EOSEQ");
-    } else if (type == 11) {
-        printf("NALU_TYPE_EOSTREAM");
-    } else if (type == 12) {
-        printf("NALU_TYPE_FILL");
-    }
 
-    printf("\n");
+    if (type == 1) {
+        dmd_log(LOG_DEBUG, "NALU TYPE: NALU_TYPE_SLICE\n");
+    } else if (type == 2) {
+        dmd_log(LOG_DEBUG, "NALU TYPE: NALU_TYPE_DPA\n");
+    } else if (type == 3) {
+        dmd_log(LOG_DEBUG, "NALU TYPE: NALU_TYPE_DPB\n");
+    } else if (type == 4) {
+        dmd_log(LOG_DEBUG, "NALU TYPE: NALU_TYPE_DPC\n");
+    } else if (type == 5) {
+        dmd_log(LOG_DEBUG, "NALU TYPE: NALU_TYPE_IDR\n");
+    } else if (type == 6) {
+        dmd_log(LOG_DEBUG, "NALU TYPE: NALU_TYPE_SEI\n");
+    } else if (type == 7) {
+        dmd_log(LOG_DEBUG, "NALU TYPE: NALU_TYPE_SPS\n");
+    } else if (type == 8) {
+        dmd_log(LOG_DEBUG, "NALU TYPE: NALU_TYPE_PPS\n");
+    } else if (type == 9) {
+        dmd_log(LOG_DEBUG, "NALU TYPE: NALU_TYPE_AUD\n");
+    } else if (type == 10) {
+        dmd_log(LOG_DEBUG, "NALU TYPE: NALU_TYPE_EOSEQ\n");
+    } else if (type == 11) {
+        dmd_log(LOG_DEBUG, "NALU TYPE: NALU_TYPE_EOSTREAM\n");
+    } else if (type == 12) {
+        dmd_log(LOG_DEBUG, "NALU TYPE: NALU_TYPE_FILL\n");
+    }
 
     return type;
 }
 
 static void analyze_nalu(const unsigned char *nalu, int length)
 {
+    char buffer[30];
+    int index = 0;
     assert(length > 4);
     // debug info, dump heading bytes;
     if (length >= 10) {
-        dmd_log(LOG_DEBUG, "dump first 10 bytes of this NALU: ");
         int j = 0;
         for (j = 0; j < 10; j++) {
-            printf("%02X ", nalu[j]);
+            sprintf(buffer + index, "%02X ", nalu[j]);
+            index += 3;
         }
-        printf("\n");
+
+        dmd_log(LOG_DEBUG, "dump first 10 bytes of this NALU: %s\n", buffer);
     } else {
-        dmd_log(LOG_DEBUG, "dump first %d bytes of this NALU: ", length);
         int j = 0;
         for (j = 0; j < length; j++) {
-            printf("%02X ", nalu[j]);
+            sprintf(buffer + index, "%02X ", nalu[j]);
+            index += 3;
         }
-        printf("\n");
+
+        dmd_log(LOG_DEBUG, "dump first %d bytes of this NALU: %s\n",
+                length, buffer);
     }
 
     const unsigned char *p = nalu;

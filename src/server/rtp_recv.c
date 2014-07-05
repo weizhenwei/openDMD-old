@@ -113,7 +113,7 @@ int rtp_recv(RtpSession *rtpsession, uint32_t *user_ts, const char *recvfile)
                 writelen = fwrite(buffer,
                         sizeof(unsigned char), recvBytes, fp);
                 
-                printf("receive %d bytes, write %d bytes\n",
+                dmd_log(LOG_DEBUG, "receive %d bytes, write %d bytes\n",
                         recvBytes, writelen);
 
                 recvBytes = 0;
