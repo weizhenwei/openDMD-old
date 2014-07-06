@@ -44,44 +44,65 @@
 // global time stamp;
 uint32_t ts = 0;
 
-static int dump_nalu_type(unsigned char typebyte)
+/*
+ * enum nal_unit_type_e
+ * {
+ *     NAL_UNKNOWN     = 0,
+ *     NAL_SLICE       = 1,
+ *     NAL_SLICE_DPA   = 2,
+ *     NAL_SLICE_DPB   = 3,
+ *     NAL_SLICE_DPC   = 4,
+ *     NAL_SLICE_IDR   = 5,    // ref_idc != 0 
+ *     NAL_SEI         = 6,    // ref_idc == 0
+ *     NAL_SPS         = 7,
+ *     NAL_PPS         = 8,
+ *     NAL_AUD         = 9,
+ *     NAL_FILLER      = 12,
+ *     // ref_idc == 0 for 6,9,10,11,12
+ * };
+ *
+ */
+static void dump_nalu_type(unsigned char typebyte)
 {
     int type = typebyte & 0x1f;
 
-    if (type == 1) {
-        dmd_log(LOG_DEBUG, "NALU TYPE: NALU_TYPE_SLICE\n");
-    } else if (type == 2) {
-        dmd_log(LOG_DEBUG, "NALU TYPE: NALU_TYPE_DPA\n");
-    } else if (type == 3) {
-        dmd_log(LOG_DEBUG, "NALU TYPE: NALU_TYPE_DPB\n");
-    } else if (type == 4) {
-        dmd_log(LOG_DEBUG, "NALU TYPE: NALU_TYPE_DPC\n");
-    } else if (type == 5) {
-        dmd_log(LOG_DEBUG, "NALU TYPE: NALU_TYPE_IDR\n");
-    } else if (type == 6) {
-        dmd_log(LOG_DEBUG, "NALU TYPE: NALU_TYPE_SEI\n");
-    } else if (type == 7) {
-        dmd_log(LOG_DEBUG, "NALU TYPE: NALU_TYPE_SPS\n");
-    } else if (type == 8) {
-        dmd_log(LOG_DEBUG, "NALU TYPE: NALU_TYPE_PPS\n");
-    } else if (type == 9) {
-        dmd_log(LOG_DEBUG, "NALU TYPE: NALU_TYPE_AUD\n");
+    if (type == NAL_SLICE) {
+        dmd_log(LOG_DEBUG, "NALU TYPE: NAL_SLICE\n");
+    } else if (type == NAL_SLICE_DPA) {
+        dmd_log(LOG_DEBUG, "NALU TYPE: NAL_SLICE_DPA\n");
+    } else if (type == NAL_SLICE_DPB) {
+        dmd_log(LOG_DEBUG, "NALU TYPE: NAL_SLICE_DPB\n");
+    } else if (type == NAL_SLICE_DPC) {
+        dmd_log(LOG_DEBUG, "NALU TYPE: NAL_SLICE_DPC\n");
+    } else if (type == NAL_SLICE_IDR) {
+        dmd_log(LOG_DEBUG, "NALU TYPE: NAL_SLICE_IDR\n");
+    } else if (type == NAL_SEI) {
+        dmd_log(LOG_DEBUG, "NALU TYPE: NAL_SEI\n");
+    } else if (type == NAL_SPS) {
+        dmd_log(LOG_DEBUG, "NALU TYPE: NAL_SPS\n");
+    } else if (type == NAL_PPS) {
+        dmd_log(LOG_DEBUG, "NALU TYPE: NAL_PPS\n");
+    } else if (type == NAL_AUD) {
+        dmd_log(LOG_DEBUG, "NALU TYPE: NAL_AUD\n");
+        /*
     } else if (type == 10) {
         dmd_log(LOG_DEBUG, "NALU TYPE: NALU_TYPE_EOSEQ\n");
     } else if (type == 11) {
         dmd_log(LOG_DEBUG, "NALU TYPE: NALU_TYPE_EOSTREAM\n");
-    } else if (type == 12) {
-        dmd_log(LOG_DEBUG, "NALU TYPE: NALU_TYPE_FILL\n");
+        */
+    } else if (type == NAL_FILLER) {
+        dmd_log(LOG_DEBUG, "NALU TYPE: NAL_FILLER\n");
     }
-
-    return type;
 }
 
-static void analyze_nalu(const unsigned char *nalu, int length)
+static void analyze_nalu(x264_nal_t *nal)
 {
+    unsigned char *nalu = nal->p_payload;
+    int length = nal->i_payload;
     char buffer[30];
     int index = 0;
     assert(length > 4);
+
     // debug info, dump heading bytes;
     if (length >= 10) {
         int j = 0;
@@ -108,8 +129,8 @@ static void analyze_nalu(const unsigned char *nalu, int length)
     }
     assert(*p == 0x01);
     p++;
-
     dump_nalu_type(*p);
+
 }
 
 // write nalu to flv file and/or network;
@@ -131,7 +152,7 @@ static int write_nals(const char *h264file, x264_nal_t *nals, int nnal)
     // first frame is SPS
     assert(nal->i_type == NAL_SPS); // SPS frame;
     // dump the nalu infomation;
-    analyze_nalu(nal->p_payload, nal->i_payload);
+    analyze_nalu(nal);
     unsigned char *payload = nal->p_payload;
     unsigned char *p = payload;
     int len =  nal->i_payload;
@@ -155,7 +176,7 @@ static int write_nals(const char *h264file, x264_nal_t *nals, int nnal)
     // second frame is PPS
     assert(nal->i_type == NAL_PPS); // PPS frame;
     // dump the nalu infomation;
-    analyze_nalu(nal->p_payload, nal->i_payload);
+    analyze_nalu(nal);
     payload = nal->p_payload;
     p = payload;
     len =  nal->i_payload;
@@ -186,7 +207,7 @@ static int write_nals(const char *h264file, x264_nal_t *nals, int nnal)
         }
         assert(nal->i_type == NAL_SLICE_IDR); // IDR frame;
         // dump the nalu infomation;
-        analyze_nalu(nal->p_payload, nal->i_payload);
+        analyze_nalu(nal);
 
         payload = nal->p_payload;
         p = payload;
