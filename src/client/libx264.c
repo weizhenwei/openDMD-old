@@ -333,7 +333,7 @@ static int write_nals(const char *h264file, x264_nal_t *nals, int nnal)
 {
     dmd_log(LOG_DEBUG, "in function %s, at the beginning\n", __func__);
     x264_nal_t *nal = nals;
-    // enum cluster_mode_t cluster_mode = global.cluster_mode;
+    enum cluster_mode_t cluster_mode = global.cluster_mode;
 
     int fps = global.x264_fps;
     int ts_inc = 1000 / fps * 2.5;
@@ -431,16 +431,9 @@ static int write_nals(const char *h264file, x264_nal_t *nals, int nnal)
     dmd_log(LOG_DEBUG, "in function %s, "
             "end of current H264 frame encapulation\n\n", __func__);
 
-    return 0;
-
-#if 0
-        int len = fwrite(nal->p_payload, sizeof(unsigned char),
-                nal->i_payload, h264fp);
-        dmd_log(LOG_DEBUG, "write to h264 length:%d\n", len);
-
-
-        // send h264 frame to server;
-        if (cluster_mode == CLUSTER_CLIENT) {
+    // if node is client, send h264 frame to server;
+    if (cluster_mode == CLUSTER_CLIENT) {
+        for (nal = nals; nal < nals + nnal; nal++) {
             int ret = rtp_send(global.client.clientrtp.rtpsession,
                     nal->p_payload, nal->i_payload);
             
@@ -452,14 +445,9 @@ static int write_nals(const char *h264file, x264_nal_t *nals, int nnal)
                         "to server\n", __func__);
             }
         }
+    } // if 
 
-        if ( len != nal->i_payload) {
-            dmd_log(LOG_ERR, "write to h264 error:%s\n", strerror(errno));
-            return -1;
-        }
-    }
-    fclose(h264fp);
-#endif
+    return 0;
 }
 
 

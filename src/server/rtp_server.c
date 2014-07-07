@@ -123,16 +123,16 @@ static int deal_with_client(int i, uint32_t user_ts)
             char *h264file = global.server.client_items[i].filename;
             assert(h264file != NULL);
             fp = global.server.client_items[i].fp;
-                fp = fopen(h264file, "a");
+            fp = fopen(h264file, "a");
             assert(fp != NULL);
 
 			size_t ret = fwrite(buffer, sizeof(unsigned char), readlen, fp);
 			assert( ret == readlen );
+
+            fflush(fp);
+            fclose(fp);
 		}
 	}
-
-    fflush(fp);
-    fclose(fp);
 
 	return 0;
 }
