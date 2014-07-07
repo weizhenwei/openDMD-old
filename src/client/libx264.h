@@ -60,6 +60,27 @@
 // global time stamp;
 extern uint32_t ts;
 
+// NAL_SLICE_IDR nalu
+struct h264_idr_nalu {
+    struct h264_idr_nalu *next;
+    unsigned int idr_len; // pure payload len;
+    uint8_t *idr_payload; // idr unit stripped heading 0x00 0x00 0x01
+};
+
+// nalu lists of a h264 frame
+struct h264_frame {
+    unsigned int sps_len;
+    uint8_t *sps_payload;
+    unsigned int pps_len;
+    uint8_t *pps_payload;
+
+    unsigned int idr_total; // total node of h264_idr_nalu
+    struct h264_idr_nalu *idr_list;
+
+    unsigned int idr_total_len;
+    uint8_t *idr_payload;
+};
+
 // encode Planar YUV420P to H264 foramt using libx264
 extern int encode_yuv420p(unsigned char *yuv420p,
         int height, int width, const char *h264file);

@@ -133,6 +133,201 @@ static void analyze_nalu(x264_nal_t *nal)
 
 }
 
+static struct h264_frame *new_h264_frame()
+{
+    struct h264_frame *hf = NULL;
+    hf = (struct h264_frame *)malloc(sizeof(struct h264_frame));
+    assert(hf != NULL);
+
+    hf->sps_len = 0;
+    hf->sps_payload = 0;
+    hf->pps_len = 0;
+    hf->pps_payload = 0;
+
+    hf->idr_total = 0;
+    hf->idr_list = NULL;
+
+    hf->idr_total_len = 0;
+    hf->idr_payload = NULL;
+
+    return hf;
+}
+
+static void dump_h264_frame(struct h264_frame *hf)
+{
+    dmd_log(LOG_DEBUG, "hf->sps_len = %d\n", hf->sps_len);
+    dmd_log(LOG_DEBUG, "hf->pps_len = %d\n", hf->pps_len);
+    dmd_log(LOG_DEBUG, "hf->idr_total = %d\n", hf->idr_total);
+    dmd_log(LOG_DEBUG, "hf->idr_total_len = %d\n", hf->idr_total_len);
+}
+
+static void release_h264_frame(struct h264_frame *hf)
+{
+    if (hf == NULL)
+        return;
+
+    if (hf->sps_payload != NULL) {
+        free(hf->sps_payload);
+    }
+    if (hf->pps_payload != NULL) {
+        free(hf->pps_payload);
+    }
+
+    struct h264_idr_nalu *p = hf->idr_list;
+    struct h264_idr_nalu *idr = p;
+    while (idr != NULL) {
+        idr = p->next;
+        free(p->idr_payload);
+        free(p);
+        p = idr;
+    }
+
+    if (hf->idr_payload != NULL) {
+        free(hf->idr_payload);
+    }
+
+    free(hf);
+}
+
+static int pack_nals(const char *h264file, x264_nal_t *nals, int nnal)
+{
+    x264_nal_t *nal = nals;
+
+    // SPS + PPS + [SEI] + n * IDR;
+    assert(nnal >= 4);
+
+    int fps = global.x264_fps;
+    int ts_inc = 1000 / fps * 2.5;
+    dmd_log(LOG_DEBUG, "in function %s, time stamp increment is %d\n",
+            __func__, ts_inc);
+    ts += ts_inc;
+
+    struct h264_frame *hf = new_h264_frame();
+
+    // first frame is SPS
+    assert(nal->i_type == NAL_SPS); // SPS frame;
+    analyze_nalu(nal); // dump the nalu infomation;
+    uint8_t *payload = nal->p_payload;
+    uint8_t *p = payload;
+    int len =  nal->i_payload;
+    int offset = 0;
+    while (*p == 0x00) { // strip heading 0x00 0x00 ... 0x01;
+        p++;
+        offset++;
+    }
+    assert(*p == 0x01);
+    p++; offset++;
+    int sps_len = len - offset;
+    uint8_t *sps = (uint8_t *)malloc(sizeof(uint8_t) * sps_len);
+    assert(sps != NULL);
+    bzero(sps, sps_len);
+    memcpy(sps, payload + offset, sps_len);
+    hf->sps_len = sps_len;
+    hf->sps_payload = sps;
+    dmd_log(LOG_DEBUG, "in function %s, SPS frame length:%d, sps_len = %d\n",
+           __func__, len, sps_len);
+
+
+    nal++;
+    // second frame is PPS
+    assert(nal->i_type == NAL_PPS); // PPS frame;
+    analyze_nalu(nal); // dump the nalu infomation;
+    payload = nal->p_payload;
+    p = payload;
+    len =  nal->i_payload;
+    offset = 0;
+    while (*p == 0x00) { // strip heading 0x00 0x00 ... 0x01;
+        p++;
+        offset++;
+    }
+    assert(*p == 0x01);
+    p++; offset++;
+    int pps_len = len - offset;
+    uint8_t *pps = (uint8_t *)malloc(sizeof(uint8_t) * pps_len);
+    assert(pps != NULL);
+    bzero(pps, pps_len);
+    memcpy(pps, payload + offset, pps_len);
+    hf->pps_len = pps_len;
+    hf->pps_payload = pps;
+    dmd_log(LOG_DEBUG, "in function %s, PPS frame length:%d, pps_len = %d\n",
+           __func__, len, pps_len);
+
+
+    nal++;
+    hf->idr_list = (struct h264_idr_nalu *) malloc(sizeof(struct h264_idr_nalu));
+    hf->idr_list->idr_len = -1;
+    hf->idr_list->idr_payload = NULL;
+    hf->idr_list->next = NULL;
+    struct h264_idr_nalu *hf_idr = hf->idr_list;
+    for (nal = nals + 2; nal < nals + nnal; nal++) {
+        if ((nal->i_type != NAL_SLICE_IDR)
+                && (nal->i_type != NAL_SLICE)) { // only write IDR/SLICE frame;
+            continue;
+        }
+        assert(nal->i_type == NAL_SLICE_IDR); // IDR frame;
+        // dump the nalu infomation;
+        analyze_nalu(nal);
+
+        payload = nal->p_payload;
+        p = payload;
+        len =  nal->i_payload;
+        offset = 0;
+        while (*p == 0x00) { // strip heading 0x00 0x00 ... 0x01;
+            p++;
+            offset++;
+        }
+        assert(*p == 0x01);
+        p++; offset++;
+        int idr_len = len - offset;
+        uint8_t *idr = (uint8_t *)malloc(sizeof(uint8_t) * idr_len);
+        bzero(idr, idr_len);
+        memcpy(idr, payload + offset, idr_len);
+        struct h264_idr_nalu *idr_nalu = (struct h264_idr_nalu *)
+            malloc(sizeof(struct h264_idr_nalu));
+        assert(idr_nalu != NULL);
+        idr_nalu->idr_len = idr_len;
+        idr_nalu->idr_payload = idr;
+        idr_nalu->next = NULL;
+        hf->idr_total++;
+        hf->idr_total_len += idr_len;
+        hf_idr->next = idr_nalu;
+        hf_idr = hf_idr->next;
+        dmd_log(LOG_DEBUG, "in function %s, IDR frame len:%d, idr_len:%d\n",
+           __func__, len, idr_len);
+    }
+    dump_h264_frame(hf);
+
+
+    // generate idr frame;
+    hf->idr_payload = (uint8_t *)
+        malloc(sizeof(uint8_t) * hf->idr_total_len);
+    hf_idr = hf->idr_list->next;
+    unsigned int idx = 0;
+    while (hf_idr != NULL) {
+        memcpy(hf->idr_payload + idx, hf_idr->idr_payload,
+                hf_idr->idr_len);
+        idx += hf_idr->idr_len;
+        hf_idr = hf_idr->next;
+    }
+    printf("idx = %d, hf->idr_total_len = %d\n", idx, hf->idr_total_len);
+    assert(idx == hf->idr_total_len);
+
+    // write to flv file
+    dmd_log(LOG_DEBUG, "in function %s, before encapulate spspps\n", __func__);
+    encapulate_spspps(hf->sps_payload, hf->sps_len,
+            hf->pps_payload, hf->pps_len, h264file, ts);
+
+    dmd_log(LOG_DEBUG, "in function %s, before encapulate nalu\n",
+            __func__);
+    int i_type = NAL_SLICE_IDR;
+    encapulate_nalu(hf->idr_payload, hf->idr_total_len,
+            h264file, ts, i_type);
+
+    release_h264_frame(hf);
+
+    return 0;
+}
+
 // write nalu to flv file and/or network;
 static int write_nals(const char *h264file, x264_nal_t *nals, int nnal)
 {
@@ -265,6 +460,48 @@ static int write_nals(const char *h264file, x264_nal_t *nals, int nnal)
     }
     fclose(h264fp);
 #endif
+}
+
+
+
+// write nalu to flv file and/or network;
+static int write_nalss(const char *h264file, x264_nal_t *nals, int nnal)
+{
+    // int ret = pack_nals(h264file, nals, nnal);
+    // assert(ret == 0);
+    x264_nal_t *nal = nals;
+    enum cluster_mode_t cluster_mode = global.cluster_mode;
+
+    FILE *h264fp = fopen(h264file, "ab");
+    assert(h264fp != NULL);
+    for (nal = nals; nal < nals + nnal; nal++) {
+        int len = fwrite(nal->p_payload, sizeof(unsigned char),
+                nal->i_payload, h264fp);
+        dmd_log(LOG_DEBUG, "write to h264 length:%d\n", len);
+
+
+        // send h264 frame to server;
+        if (cluster_mode == CLUSTER_CLIENT) {
+            int ret = rtp_send(global.client.clientrtp.rtpsession,
+                    nal->p_payload, nal->i_payload);
+            
+            if (ret == 0) {
+                dmd_log(LOG_INFO, "in function %s, send h264 frame to server, "
+                        "len = %d\n", __func__, nal->i_payload);
+            } else {
+                dmd_log(LOG_INFO, "in function %s, failed to send h264 frame "
+                        "to server\n", __func__);
+            }
+        }
+
+        if ( len != nal->i_payload) {
+            dmd_log(LOG_ERR, "write to h264 error:%s\n", strerror(errno));
+            return -1;
+        }
+    }
+    fclose(h264fp);
+
+    return 0;
 }
 
 // encode Planar YUV420P to H264 foramt using libx264
