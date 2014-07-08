@@ -1,14 +1,14 @@
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = common encoder
+SUBDIRS = common encoder output
 
 lib_LIBRARIES=libx264.a
 
 INCLUDES = -I$(top_srcdir)/libx264 -I$(top_srcdir)/libx264/common \
-		   -I$(top_srcdir)/libx264/encoder
+		   -I$(top_srcdir)/libx264/encoder -I$(top_srcdir)/libx264/output
 
 #this method can work, but ugly.
-libx264_a_SOURCES = x264.h x264_config.h
+libx264_a_SOURCES = x264.h x264_config.h x264cli.h
 libx264_a_LIBADD = common/mc.o \
 				   common/predict.o \
 				   common/pixel.o \
@@ -34,6 +34,9 @@ libx264_a_LIBADD = common/mc.o \
 				   encoder/cabac.o \
 				   encoder/cavlc.o \
 				   encoder/encoder.o \
-				   encoder/lookahead.o
+				   encoder/lookahead.o \
+				   output/flv_bytestream.o \
+				   output/flv.o \
+				   output/raw.o
 
 include_HEADERS = x264.h

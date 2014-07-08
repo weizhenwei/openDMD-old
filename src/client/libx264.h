@@ -50,7 +50,9 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
+
 #include <x264.h>
+#include <output/output.h>
 
 #include "global_context.h"
 #include "rtp_send.h"

@@ -23,6 +23,8 @@ AC_DEFINE(HAVE_INTERLACED, 0, [interlaced scan(no)])
 AC_CHECK_LIB([m], [log10])
 # FIXME: Replace `main' with a function in `-lpthread':
 AC_CHECK_LIB([pthread], [pthread_create])
+# FIXME: Replace `main' with a function in `-lrt':
+AC_CHECK_LIB([rt], [clock_gettime])
 
 # Checks for header files.
 AC_HEADER_RESOLV
@@ -86,5 +88,6 @@ AC_CONFIG_FILES([Makefile
                  libx264/Makefile
                  libx264/common/Makefile
                  libx264/encoder/Makefile
+                 libx264/output/Makefile
                  src/Makefile])
 AC_OUTPUT

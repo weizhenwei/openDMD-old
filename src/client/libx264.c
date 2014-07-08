@@ -329,7 +329,7 @@ static int pack_nals(const char *h264file, x264_nal_t *nals, int nnal)
 }
 
 // write nalu to flv file and/or network;
-static int write_nals(const char *h264file, x264_nal_t *nals, int nnal)
+static int write_nals_wzw(const char *h264file, x264_nal_t *nals, int nnal)
 {
     dmd_log(LOG_DEBUG, "in function %s, at the beginning\n", __func__);
     x264_nal_t *nal = nals;
@@ -450,8 +450,6 @@ static int write_nals(const char *h264file, x264_nal_t *nals, int nnal)
     return 0;
 }
 
-
-
 // write nalu to flv file and/or network;
 static int write_nalss(const char *h264file, x264_nal_t *nals, int nnal)
 {
@@ -488,6 +486,25 @@ static int write_nalss(const char *h264file, x264_nal_t *nals, int nnal)
         }
     }
     fclose(h264fp);
+
+    return 0;
+}
+
+static int write_nals(const char *h264file, x264_nal_t *nals, int nnal,
+        x264_param_t param, x264_picture_t *pic_out)
+{
+    int largest_pts = pic_out->i_pts;
+    // global flv_output;
+    hnd_t *p_flv = (hnd_t *)malloc(sizeof(hnd_t));
+    cli_output_opt_t opt;
+    opt.use_dts_compress = 0;
+    flv_output.open_file((char *)h264file, p_flv, &opt);
+    flv_output.set_param(*p_flv, &param);
+    flv_output.write_headers(*p_flv, nals);
+    x264_nal_t *nal = nals + 3;
+    assert(nal->i_type == NAL_SLICE_IDR);
+    flv_output.write_frame(*p_flv, nal->p_payload, nal->i_payload, pic_out);
+    flv_output.close_file(*p_flv, 0, 0);
 
     return 0;
 }
@@ -537,6 +554,8 @@ int encode_yuv420p(unsigned char *yuv420p, int width, int height,
     // for streaming;
     param.b_repeat_headers = 1;
     param.b_annexb = 1;
+    // param.b_repeat_headers = 0;
+    // param.b_annexb = 0;
 
     x264_param_apply_profile(&param, "baseline");
 
@@ -560,7 +579,8 @@ int encode_yuv420p(unsigned char *yuv420p, int width, int height,
     x264_encoder_encode(encoder, &nals, &nnal, &pic_in, &pic_out);
 
     // write to file or network;
-    write_nals(h264file, nals, nnal);
+    write_nals_wzw(h264file, nals, nnal);
+    // write_nals(h264file, nals, nnal, param, &pic_out);
 
     // WARNING: remember to free pic_in;
     x264_picture_clean(&pic_in);
