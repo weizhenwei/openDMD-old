@@ -65,7 +65,7 @@ void *video_thread(void *arg)
             if (video_capturing_switch == VIDEO_CAPTURING_OFF) {
                 // switch on video capturing state and refresh h264 filename;
                 video_capturing_switch = VIDEO_CAPTURING_ON;
-                h264_filepath = get_h264_filepath();
+                h264_filepath = get_flv_filepath();
                 assert(h264_filepath != NULL);
 
                 dmd_log(LOG_INFO, "in function %s, encapsulate flvheader\n",

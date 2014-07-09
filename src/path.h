@@ -57,10 +57,12 @@
 
 extern char *get_jpeg_filepath();
 extern char *get_h264_filepath();
+extern char *get_flv_filepath();
 
 extern int server_init_repodir();
 extern int server_init_client_repodir(int client_number);
 extern char *server_get_h264_filepath(int client_number);
+extern char *server_get_flv_filepath(int client_number);
 
 
 #endif

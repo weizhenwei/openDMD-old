@@ -124,6 +124,41 @@ char *get_h264_filepath()
     tmptr = localtime(&now);
     assert(tmptr != NULL);
     // sprintf(filepath, "%s/%04d%02d%02d%02d%02d%02d.h264",
+    sprintf(filepath, "%s/%04d%02d%02d%02d%02d%02d.h264",
+            storepath,
+            tmptr->tm_year + 1900,
+            tmptr->tm_mon + 1,
+            tmptr->tm_mday,
+            tmptr->tm_hour,
+            tmptr->tm_min,
+            tmptr->tm_sec);
+    assert(strlen(filepath) < PATH_MAX);
+
+    dmd_log(LOG_DEBUG, "in function %s, h264 filename is: %s\n",
+           __func__, filepath);
+
+    return filepath;
+}
+
+char *get_flv_filepath()
+{
+    time_t now;
+    struct tm *tmptr;
+    // at linux/limits.h, #define PATH_MAX 4096
+    static char filepath[PATH_MAX];
+    char storepath[PATH_MAX];
+    strncpy(storepath, global.client.store_dir,
+            strlen(global.client.store_dir));
+    storepath[strlen(global.client.store_dir)] = '\0';
+    strcat(storepath, "/h264");
+    assert(test_and_create(storepath) == 0);
+
+    now = time(&now);
+    assert(now != -1);
+
+    tmptr = localtime(&now);
+    assert(tmptr != NULL);
+    // sprintf(filepath, "%s/%04d%02d%02d%02d%02d%02d.h264",
     sprintf(filepath, "%s/%04d%02d%02d%02d%02d%02d.flv",
             storepath,
             tmptr->tm_year + 1900,
@@ -175,6 +210,38 @@ char *server_get_h264_filepath(int client_number)
     tmptr = localtime(&now);
     assert(tmptr != NULL);
     sprintf(filepath, "%s/%04d%02d%02d%02d%02d%02d.h264",
+            storepath,
+            tmptr->tm_year + 1900,
+            tmptr->tm_mon + 1,
+            tmptr->tm_mday,
+            tmptr->tm_hour,
+            tmptr->tm_min,
+            tmptr->tm_sec);
+    assert(strlen(filepath) < PATH_MAX);
+
+    dmd_log(LOG_DEBUG, "in function %s, h264 filename is: %s\n",
+           __func__, filepath);
+
+    return filepath;
+}
+
+char *server_get_flv_filepath(int client_number)
+{
+    time_t now;
+    struct tm *tmptr;
+    // at linux/limits.h, #define PATH_MAX 4096
+    static char filepath[PATH_MAX];
+    char storepath[PATH_MAX];
+    sprintf(storepath, "%s/client-%02d",
+            global.server.server_repo, client_number);
+    assert(test_and_create(storepath) == 0);
+
+    now = time(&now);
+    assert(now != -1);
+
+    tmptr = localtime(&now);
+    assert(tmptr != NULL);
+    sprintf(filepath, "%s/%04d%02d%02d%02d%02d%02d.flv",
             storepath,
             tmptr->tm_year + 1900,
             tmptr->tm_mon + 1,
