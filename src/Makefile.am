@@ -21,9 +21,9 @@ LIBS=-lm -lpthread -lrt
 opendmd_SOURCES = main.c \
                   config.h config.c log.h log.c path.h path.c \
                   global_context.h global_context.c \
-                  client/video.h client/video.c \
-				  v4l2_utils.h v4l2_utils.c \
+				  parser.h parser.c v4l2_utils.h v4l2_utils.c \
                   signal_handler.h signal_handler.c \
+                  client/video.h client/video.c \
                   client/image_convert.h client/image_convert.c \
                   client/image_capture.h client/image_capture.c \
 				  client/picture_thread.h client/picture_thread.c \

@@ -46,8 +46,8 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_opendmd_OBJECTS = main.$(OBJEXT) config.$(OBJEXT) log.$(OBJEXT) \
-	path.$(OBJEXT) global_context.$(OBJEXT) video.$(OBJEXT) \
-	v4l2_utils.$(OBJEXT) signal_handler.$(OBJEXT) \
+	path.$(OBJEXT) global_context.$(OBJEXT) parser.$(OBJEXT) \
+	v4l2_utils.$(OBJEXT) signal_handler.$(OBJEXT) video.$(OBJEXT) \
 	image_convert.$(OBJEXT) image_capture.$(OBJEXT) \
 	picture_thread.$(OBJEXT) flv_muxer.$(OBJEXT) libx264.$(OBJEXT) \
 	video_thread.$(OBJEXT) rtp_send.$(OBJEXT) rtp_recv.$(OBJEXT) \
@@ -178,9 +178,9 @@ opendmd_LDADD = $(top_srcdir)/libccl/libccl.a \
 opendmd_SOURCES = main.c \
                   config.h config.c log.h log.c path.h path.c \
                   global_context.h global_context.c \
-                  client/video.h client/video.c \
-				  v4l2_utils.h v4l2_utils.c \
+				  parser.h parser.c v4l2_utils.h v4l2_utils.c \
                   signal_handler.h signal_handler.c \
+                  client/video.h client/video.c \
                   client/image_convert.h client/image_convert.c \
                   client/image_capture.h client/image_capture.c \
 				  client/picture_thread.h client/picture_thread.c \
@@ -280,6 +280,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libx264.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/log.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/path.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/picture_thread.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtp_recv.Po@am__quote@
