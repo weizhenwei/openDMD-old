@@ -63,6 +63,21 @@ struct config *new_config(const char comment_char,
 int parse_config_file(const char *config_file, struct config *conf)
 {
     dmd_log(LOG_INFO, "hehe\n");
+    FILE *fp = fopen(config_file, "r");
+#define LINE 1024
+    char buffer[LINE];
+    if (fp == NULL) {
+        dmd_log(LOG_ERR, "in function %s, "
+                "can not open config file %s for read\n", config_file);
+        return -1;
+    }
+
+    char *p = fgets(buffer, LINE, fp);
+    while ( p != NULL) {
+        printf("%s\n", buffer);
+    }
+
+    fclose(fp);
 
     return 0;
 }
