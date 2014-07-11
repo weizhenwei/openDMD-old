@@ -58,6 +58,7 @@
 #include "log.h"
 #include "video.h"
 #include "config.h"
+#include "parser.h"
 #include "v4l2_utils.h"
 #include "video_thread.h"
 #include "image_capture.h"
@@ -214,6 +215,12 @@ static void init(void)
     ret = dump_global_config();
     assert(ret == 0);
 #endif
+
+    // test new config parser
+    struct config *conf = new_config('#', ' ');
+    ret = parse_config_file(global.cfg_file, conf);
+    release_config(conf);
+
 
     // reigister clean memory function;
     register_clean_memory();

@@ -62,7 +62,6 @@ struct config *new_config(const char comment_char,
 
 int parse_config_file(const char *config_file, struct config *conf)
 {
-    dmd_log(LOG_INFO, "hehe\n");
     FILE *fp = fopen(config_file, "r");
 #define LINE 1024
     char buffer[LINE];
@@ -72,9 +71,44 @@ int parse_config_file(const char *config_file, struct config *conf)
         return -1;
     }
 
+    // TODO: we assume that the chars of each line is less than 1024
+    // remove this assumption later!
     char *p = fgets(buffer, LINE, fp);
     while ( p != NULL) {
-        printf("%s\n", buffer);
+        dmd_log(LOG_DEBUG, "in function %s, config line is %s",
+                __func__, buffer);
+        if (buffer[0] == conf->comment_char) { // comment line;
+            p = fgets(buffer, LINE, fp);
+            continue;
+        }
+
+        if (buffer[0] == '\n') { // empty line;
+            p = fgets(buffer, LINE, fp);
+            continue;
+        }
+
+        // find the key and value;
+        char *sep = strchr(buffer, conf->separator_char);
+        if (sep == NULL) {
+            dmd_log(LOG_ERR, "first judge, bad config line:%s\n", buffer);
+            return -1;
+        }
+        char *end = strchr(sep + 1, conf->separator_char);
+        if (end != NULL) {
+            dmd_log(LOG_ERR, "second judge, bad config line:%s\n", buffer);
+            return -1;
+        }
+
+        char key[LINE];
+        char value[LINE];
+        int len = strlen(buffer);
+        strncpy(key, buffer, sep - buffer);
+        key[sep - buffer] = '\0';
+        strncpy(value, sep + 1, buffer + len - (sep + 1));
+        value[buffer + len - (sep + 1)] = '\0';
+
+        dmd_log(LOG_INFO, "key = %s, value = %s\n", key, value);
+        p = fgets(buffer, LINE, fp);
     }
 
     fclose(fp);
