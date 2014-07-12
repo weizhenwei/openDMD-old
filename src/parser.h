@@ -58,12 +58,15 @@ struct config {
     char separator_char;
     unsigned int total_item;
     struct config_item *items;
+    struct config_item *tail;
 };
 
 extern struct config *new_config(const char comment_char,
         const char separator_char);
 
 extern int parse_config_file(const char *config_file, struct config *conf);
+
+extern void dump_config(const struct config *conf);
 
 extern void release_config(struct config *conf);
 
