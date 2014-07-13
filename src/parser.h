@@ -47,6 +47,47 @@
 
 #include "log.h"
 
+// config item type, for optimization parsing process;
+enum config_item_type {
+    CONFIG_ITEM_NULL = 0,
+
+    // global basic settngs
+    CLUSTER_MODE = 1,
+    LOG_LEVEL = 2,
+    DAEMON_MODE = 3,
+    PID_FILE = 4,
+    X264_FPS = 5,
+
+    // client settings
+    WORKING_MODE = 6,
+    VIDEO_DEVICE = 7,
+    IMAGE_WIDTH = 8,
+    IMAGE_HEIGHT = 9,
+    REQ_COUNT = 10,
+    DIFF_PIXELS = 11,
+    DIFF_DEVIATION = 12,
+    VIDEO_DURATION = 13,
+    PICTURE_FORMAT = 14,
+    VIDEO_FORMAT = 15,
+    STORE_DIR = 16,
+    
+
+    // rtp session settings
+    LOCAL_IP = 17,
+    LOCAL_PORT = 18,
+    LOCAL_SEQUENCE_NUMBER = 19,
+
+    SERVER_IP = 20,
+    SERVER_PORT_BASE = 21,
+    SERVER_RTP_PORT = 22,
+    SERVER_RTCP_PORT = 23,
+    
+    // server settings;
+    SERVER_REPO = 24,
+    CLIENT_SCALE = 25,
+    LAST_DURATION = 26,
+};
+
 struct config_item {
     struct config_item *next;
     char *key;
