@@ -216,12 +216,6 @@ static void init(void)
     assert(ret == 0);
 #endif
 
-    // test new config parser
-    struct config *conf = new_config('#', ' ');
-    ret = parse_config_file(global.cfg_file, conf);
-    release_config(conf);
-
-
     // reigister clean memory function;
     register_clean_memory();
 

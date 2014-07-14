@@ -47,9 +47,8 @@
 #include <string.h>
 #include <strings.h>
 
-// use libccl to parse config file;
-#include <ccl.h>
 #include "log.h"
+#include "parser.h"
 #include "global_context.h"
 
 extern int parse_config(const char *conf_file);

@@ -2,13 +2,12 @@ AUTOMAKE_OPTIONS = foreign
 
 bin_PROGRAMS = opendmd
 
-INCLUDES = -I$(top_srcdir)/libccl -I$(top_srcdir)/libjpeg \
+INCLUDES = -I$(top_srcdir)/libjpeg \
 		   -I$(top_srcdir)/libortp/include -I$(top_srcdir)/libortp \
 		   -I$(top_srcdir)/libx264 -I$(top_srcdir)/libx264/output \
 		   -I$(top_srcdir)/src/client -I$(top_srcdir)/src/server
 
-opendmd_LDADD = $(top_srcdir)/libccl/libccl.a \
-				$(top_srcdir)/libjpeg/libjpeg.a \
+opendmd_LDADD = $(top_srcdir)/libjpeg/libjpeg.a \
 				$(top_srcdir)/libx264/libx264.a \
 				$(top_srcdir)/libortp/src/libortp.a
 

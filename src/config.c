@@ -111,45 +111,40 @@ static void set_buffering()
 
 int parse_config(const char *conf_file)
 {
-    struct ccl_t config;
-    const struct ccl_pair_t *iter;
+    struct config *conf = new_config('#', ' ');
+    int ret = parse_config_file(global.cfg_file, conf);
+    assert(ret == 0);
+    assert(conf->items != NULL);
 
-    // set config parsing control character;
-    config.comment_char = '#';
-    config.sep_char = ' ';
-    config.str_char = '"';
-
-    // parse the config file;
-    ccl_parse(&config, conf_file);
-
-    // key/value pairs is sorted in ascending order according to key.
-    while ((iter = ccl_iterate(&config)) != 0) {
-        if (strcmp(iter->key, "daemon_mode") == 0) {
-            if (strcmp(iter->value, "on") == 0) {
+    // heading node is not used;
+    struct config_item *item = conf->items->next;
+    while (item != NULL) {
+        if (strcmp(item->key, "daemon_mode") == 0) {
+            if (strcmp(item->value, "on") == 0) {
                 global.daemon_mode = DAEMON_ON;
-            } else if (strcmp(iter->value, "off") == 0) {
+            } else if (strcmp(item->value, "off") == 0) {
                 global.daemon_mode = DAEMON_OFF;
             } else {
                 dmd_log(LOG_ERR, "invalid value of daemon_mode\n");
                 return -1;
             }
 
-        } else if (strcmp(iter->key, "log_level") == 0) {
-            if (strcmp(iter->value, "LOG_INFO") == 0) {
+        } else if (strcmp(item->key, "log_level") == 0) {
+            if (strcmp(item->value, "LOG_INFO") == 0) {
                 global.log_level = LOG_INFO;
-            } else if (strcmp(iter->value, "LOG_ERR") == 0) {
+            } else if (strcmp(item->value, "LOG_ERR") == 0) {
                 global.log_level = LOG_ERR;
-            } else if (strcmp(iter->value, "LOG_DEBUG") == 0) {
+            } else if (strcmp(item->value, "LOG_DEBUG") == 0) {
                 global.log_level = LOG_DEBUG;
-            } else if (strcmp(iter->value, "LOG_EMERG") == 0) {
+            } else if (strcmp(item->value, "LOG_EMERG") == 0) {
                 global.log_level = LOG_EMERG;
-            } else if (strcmp(iter->value, "LOG_ALERT") == 0) {
+            } else if (strcmp(item->value, "LOG_ALERT") == 0) {
                 global.log_level = LOG_ALERT;
-            } else if (strcmp(iter->value, "LOG_CRIT") == 0) {
+            } else if (strcmp(item->value, "LOG_CRIT") == 0) {
                 global.log_level = LOG_CRIT;
-            } else if (strcmp(iter->value, "LOG_WARNING") == 0) {
+            } else if (strcmp(item->value, "LOG_WARNING") == 0) {
                 global.log_level = LOG_WARNING;
-            } else if (strcmp(iter->value, "LOG_NOTICE") == 0) {
+            } else if (strcmp(item->value, "LOG_NOTICE") == 0) {
                 global.log_level = LOG_NOTICE;
             } else {
                 // impossible to reach here!
@@ -159,202 +154,209 @@ int parse_config(const char *conf_file)
                 return -1;
             }
 
-        } else if (strcmp(iter->key, "cluster_mode") == 0) {
-            if (strcmp(iter->value, "singleton") == 0) {
+        } else if (strcmp(item->key, "cluster_mode") == 0) {
+            if (strcmp(item->value, "singleton") == 0) {
                 global.cluster_mode = CLUSTER_SINGLETON;
-            } else if (strcmp(iter->value, "client") == 0) {
+            } else if (strcmp(item->value, "client") == 0) {
                 global.cluster_mode = CLUSTER_CLIENT;
-            } else if (strcmp(iter->value, "server") == 0) {
+            } else if (strcmp(item->value, "server") == 0) {
                 global.cluster_mode = CLUSTER_SERVER;
             } else {
                 dmd_log(LOG_ERR, "invalid value of cluster_mode\n");
                 return -1;
             }
 
-        } else if (strcmp(iter->key, "local_ip") == 0) {
-            assert(strlen(iter->value) < PATH_MAX);
+        } else if (strcmp(item->key, "local_ip") == 0) {
+            assert(strlen(item->value) < PATH_MAX);
             strncpy(global.client.clientrtp.local_ip,
-                    iter->value, strlen(iter->value));
-            global.client.clientrtp.local_ip[strlen(iter->value)] = '\0';
-        } else if (strcmp(iter->key, "local_port") == 0) {
-            int port = atoi(iter->value);
+                    item->value, strlen(item->value));
+            global.client.clientrtp.local_ip[strlen(item->value)] = '\0';
+        } else if (strcmp(item->key, "local_port") == 0) {
+            int port = atoi(item->value);
             assert(port >= 0 && port <= 65535);
             global.client.clientrtp.local_port = port;
-        } else if (strcmp(iter->key, "local_sequence_number") == 0) {
-            int local_sequence_number = atoi(iter->value);
+        } else if (strcmp(item->key, "local_sequence_number") == 0) {
+            int local_sequence_number = atoi(item->value);
             assert(local_sequence_number > 0);
             global.client.clientrtp.local_sequence_number =
                 local_sequence_number;
 
-        } else if (strcmp(iter->key, "server_ip") == 0) {
-            assert(strlen(iter->value) < PATH_MAX);
+        } else if (strcmp(item->key, "server_ip") == 0) {
+            assert(strlen(item->value) < PATH_MAX);
             strncpy(global.client.clientrtp.server_ip,
-                    iter->value, strlen(iter->value));
-            global.client.clientrtp.server_ip[strlen(iter->value)] = '\0';
+                    item->value, strlen(item->value));
+            global.client.clientrtp.server_ip[strlen(item->value)] = '\0';
 
             // also available for server end;
-            strncpy(global.server.server_ip, iter->value, strlen(iter->value));
-            global.server.server_ip[strlen(iter->value)] = '\0';
+            strncpy(global.server.server_ip, item->value, strlen(item->value));
+            global.server.server_ip[strlen(item->value)] = '\0';
 
-        } else if (strcmp(iter->key, "server_rtp_port") == 0) {
-            int port = atoi(iter->value);
+        } else if (strcmp(item->key, "server_rtp_port") == 0) {
+            int port = atoi(item->value);
             assert(port >= 0 && port <= 65535);
             global.client.clientrtp.server_rtp_port = port;
-        } else if (strcmp(iter->key, "server_port_base") == 0) {
-            int portbase = atoi(iter->value);
+        } else if (strcmp(item->key, "server_port_base") == 0) {
+            int portbase = atoi(item->value);
             assert(portbase >= 0 && portbase <= 65535);
             global.client.clientrtp.server_port_base = portbase;
 
             // also available for server end;
             global.server.server_port_base = portbase;
 
-        } else if (strcmp(iter->key, "server_rtcp_port") == 0) {
-            int port = atoi(iter->value);
+        } else if (strcmp(item->key, "server_rtcp_port") == 0) {
+            int port = atoi(item->value);
             assert(port >= 0 && port <= 65535);
             global.client.clientrtp.server_rtcp_port = port;
 
-        } else if (strcmp(iter->key, "client_scale") == 0) {
-            int client_scale = atoi(iter->value);
+        } else if (strcmp(item->key, "client_scale") == 0) {
+            int client_scale = atoi(item->value);
             assert(client_scale > 0);
             global.server.client_scale = client_scale;
-        } else if (strcmp(iter->key, "last_duration") == 0) {
-            int last_duration = atoi(iter->value);
+        } else if (strcmp(item->key, "last_duration") == 0) {
+            int last_duration = atoi(item->value);
             assert(last_duration > 0);
             global.server.last_duration = last_duration;
 
-        } else if (strcmp(iter->key, "pid_file") == 0) {
-            assert(strlen(iter->value) < PATH_MAX);
-            strncpy(global.pid_file, iter->value, strlen(iter->value));
+        } else if (strcmp(item->key, "pid_file") == 0) {
+            assert(strlen(item->value) < PATH_MAX);
+            strncpy(global.pid_file, item->value, strlen(item->value));
             /* Warning:If there is no null byte among the first n bytes of
              * src, the string placed in dest will not be null-terminated,
              * remember add null-terminated manually.
              */
-            global.pid_file[strlen(iter->value)] = '\0';
+            global.pid_file[strlen(item->value)] = '\0';
 
-        } else if (strcmp(iter->key, "x264_fps") == 0) {
-            int x264_fps = atoi(iter->value);
+        } else if (strcmp(item->key, "x264_fps") == 0) {
+            int x264_fps = atoi(item->value);
             assert(x264_fps > 0);
             global.x264_fps = x264_fps;
 
-        } else if (strcmp(iter->key, "working_mode") == 0) {
-            if (strcmp(iter->value, "picture") == 0) {
+        } else if (strcmp(item->key, "working_mode") == 0) {
+            if (strcmp(item->value, "picture") == 0) {
                 global.client.working_mode = CAPTURE_PICTURE;
-            } else if (strcmp(iter->value, "video") == 0) {
+            } else if (strcmp(item->value, "video") == 0) {
                 global.client.working_mode = CAPTURE_VIDEO;
-            } else if (strcmp(iter->value, "all") == 0) {
+            } else if (strcmp(item->value, "all") == 0) {
                 global.client.working_mode = CAPTURE_ALL;
             } else {
                 dmd_log(LOG_ERR, "invalid value of working_mode\n");
                 return -1;
             }
 
-        } else if (strcmp(iter->key, "video_device") == 0) {
-            assert(strlen(iter->value) < PATH_MAX);
+        } else if (strcmp(item->key, "video_device") == 0) {
+            assert(strlen(item->value) < PATH_MAX);
             strncpy(global.client.video_device,
-                    iter->value, strlen(iter->value));
+                    item->value, strlen(item->value));
             /* Warning:If there is no null byte among the first n bytes of
              * src, the string placed in dest will not be null-terminated,
              * remember add null-terminated manually.
              */
-            global.client.video_device[strlen(iter->value)] = '\0';
+            global.client.video_device[strlen(item->value)] = '\0';
 
-        } else if (strcmp(iter->key, "image_width") == 0) {
+        } else if (strcmp(item->key, "image_width") == 0) {
             // Waring: there is no error detection in atoi();
-            global.client.image_width = atoi(iter->value);
+            global.client.image_width = atoi(item->value);
 
-        } else if (strcmp(iter->key, "image_height") == 0) {
+        } else if (strcmp(item->key, "image_height") == 0) {
             // Waring: there is no error detection in atoi();
-            global.client.image_height = atoi(iter->value);
+            global.client.image_height = atoi(item->value);
 
-        } else if (strcmp(iter->key, "req_count") == 0) {
+        } else if (strcmp(item->key, "req_count") == 0) {
             // Waring: there is no error detection in atoi();
-            global.client.req_count = atoi(iter->value);
+            global.client.req_count = atoi(item->value);
 
-        } else if (strcmp(iter->key, "diff_pixels") == 0) {
+        } else if (strcmp(item->key, "diff_pixels") == 0) {
             // Waring: there is no error detection in atoi();
-            global.client.diff_pixels = atoi(iter->value);
+            global.client.diff_pixels = atoi(item->value);
 
-        } else if (strcmp(iter->key, "diff_deviation") == 0) {
+        } else if (strcmp(item->key, "diff_deviation") == 0) {
             // Waring: there is no error detection in atoi();
-            global.client.diff_deviation = atoi(iter->value);
+            global.client.diff_deviation = atoi(item->value);
 
-        } else if (strcmp(iter->key, "video_duration") == 0) {
+        } else if (strcmp(item->key, "video_duration") == 0) {
             // Waring: there is no error detection in atoi();
-            global.client.video_duration = atoi(iter->value);
+            global.client.video_duration = atoi(item->value);
 
-        } else if (strcmp(iter->key, "picture_format") == 0) {
-            if (strcmp(iter->value, "bmp") == 0) {
+        } else if (strcmp(item->key, "picture_format") == 0) {
+            if (strcmp(item->value, "bmp") == 0) {
                 global.client.picture_format = PICTURE_BMP;
-            } else if (strcmp(iter->value, "png") == 0) {
+            } else if (strcmp(item->value, "png") == 0) {
                 global.client.picture_format = PICTURE_PNG;
-            } else if (strcmp(iter->value, "jpeg") == 0) {
+            } else if (strcmp(item->value, "jpeg") == 0) {
                 global.client.picture_format = PICTURE_JPEG;
             } else {
                 dmd_log(LOG_ERR, "invalid value of picture_format\n");
                 return -1;
             }
 
-        } else if (strcmp(iter->key, "video_device") == 0) {
-            assert(strlen(iter->value) < PATH_MAX);
+        } else if (strcmp(item->key, "video_device") == 0) {
+            assert(strlen(item->value) < PATH_MAX);
             strncpy(global.client.video_device,
-                    iter->value, strlen(iter->value));
+                    item->value, strlen(item->value));
             /* Warning:If there is no null byte among the first n bytes of
              * src, the string placed in dest will not be null-terminated,
              * remember add null-terminated manually.
              */
-            global.client.video_device[strlen(iter->value)] = '\0';
+            global.client.video_device[strlen(item->value)] = '\0';
 
-        } else if (strcmp(iter->key, "image_width") == 0) {
+        } else if (strcmp(item->key, "image_width") == 0) {
             // Waring: there is no error detection in atoi();
-            global.client.image_width = atoi(iter->value);
+            global.client.image_width = atoi(item->value);
 
-        } else if (strcmp(iter->key, "image_height") == 0) {
+        } else if (strcmp(item->key, "image_height") == 0) {
             // Waring: there is no error detection in atoi();
-            global.client.image_height = atoi(iter->value);
+            global.client.image_height = atoi(item->value);
 
-        } else if (strcmp(iter->key, "video_format") == 0) {
-            if (strcmp(iter->value, "h264") == 0) {
+        } else if (strcmp(item->key, "video_format") == 0) {
+            if (strcmp(item->value, "h264") == 0) {
                 global.client.video_format = VIDEO_H264;
             } else {
                 dmd_log(LOG_ERR, "invalid value of video_format\n");
                 return -1;
             }
 
-        } else if (strcmp(iter->key, "store_dir") == 0) {
-            assert(strlen(iter->value) < PATH_MAX);
-            strncpy(global.client.store_dir, iter->value, strlen(iter->value));
+        } else if (strcmp(item->key, "store_dir") == 0) {
+            assert(strlen(item->value) < PATH_MAX);
+            strncpy(global.client.store_dir, item->value, strlen(item->value));
             /* Warning:If there is no null byte among the first n bytes of
              * src, the string placed in dest will not be null-terminated,
              * remember add null-terminated manually.
              */
-            global.client.store_dir[strlen(iter->value)] = '\0';
+            global.client.store_dir[strlen(item->value)] = '\0';
 
-        } else if (strcmp(iter->key, "server_repo") == 0) {
-            assert(strlen(iter->value) < PATH_MAX);
+        } else if (strcmp(item->key, "server_repo") == 0) {
+            assert(strlen(item->value) < PATH_MAX);
             strncpy(global.server.server_repo,
-                    iter->value, strlen(iter->value));
+                    item->value, strlen(item->value));
             /* Warning:If there is no null byte among the first n bytes of
              * src, the string placed in dest will not be null-terminated,
              * remember add null-terminated manually.
              */
-            global.server.server_repo[strlen(iter->value)] = '\0';
+            global.server.server_repo[strlen(item->value)] = '\0';
 
         } else {
-            dmd_log(LOG_ERR, "unsupported parameter:%s \n", iter->key);
+            dmd_log(LOG_ERR, "unsupported parameter:%s \n", item->key);
             return -1;
         }
+
+        item = item->next;
     } // while
 
-    ccl_release(&config);
+
+    // clean the config parser;
+    release_config(conf);
 
     // after config parse, check config integrity;
-    int ret = check_config_integrity();
-    assert(ret == 0);
+    ret = check_config_integrity();
+    if (ret != 0) {
+        dmd_log(LOG_ERR, "in function %s, "
+                "config file has some integrity problem\n", __func__);
+        return -1;
+    }
 
     // after image_width and image_height are finally determined,
     // set reusable image buffers;
     set_buffering();
-
 
     return 0;
 }

@@ -5640,7 +5640,7 @@ fi
 
 
 #Attention: this is import, list the Makefile need to generate
-ac_config_files="$ac_config_files Makefile libccl/Makefile libjpeg/Makefile libortp/Makefile libortp/include/Makefile libortp/include/ortp/Makefile libortp/src/Makefile libortp/test/Makefile libx264/Makefile libx264/common/Makefile libx264/encoder/Makefile libx264/output/Makefile src/Makefile"
+ac_config_files="$ac_config_files Makefile libjpeg/Makefile libortp/Makefile libortp/include/Makefile libortp/include/ortp/Makefile libortp/src/Makefile libortp/test/Makefile libx264/Makefile libx264/common/Makefile libx264/encoder/Makefile libx264/output/Makefile src/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -6374,7 +6374,6 @@ do
     "config.h") CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
-    "libccl/Makefile") CONFIG_FILES="$CONFIG_FILES libccl/Makefile" ;;
     "libjpeg/Makefile") CONFIG_FILES="$CONFIG_FILES libjpeg/Makefile" ;;
     "libortp/Makefile") CONFIG_FILES="$CONFIG_FILES libortp/Makefile" ;;
     "libortp/include/Makefile") CONFIG_FILES="$CONFIG_FILES libortp/include/Makefile" ;;

@@ -192,7 +192,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
-SUBDIRS = libccl libjpeg libx264 libortp src 
+SUBDIRS = libjpeg libx264 libortp src 
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 

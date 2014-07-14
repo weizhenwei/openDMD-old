@@ -78,7 +78,6 @@ AS_IF([test "x$enable_debug" = "xyes"], [CFLAGS+="-DDEBUG "],
 
 #Attention: this is import, list the Makefile need to generate
 AC_CONFIG_FILES([Makefile
-                 libccl/Makefile
                  libjpeg/Makefile
                  libortp/Makefile
                  libortp/include/Makefile
