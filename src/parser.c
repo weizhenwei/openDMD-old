@@ -87,18 +87,9 @@ static int add_config_item(struct config *conf,
                 __func__);
         return -1;
     } else {
-        int klen = strlen(key);
-        int vlen = strlen(value);
-        char *k = (char *)malloc(sizeof(char) * klen);
-        assert(k != NULL);
-        char *v = (char *)malloc(sizeof(char) * vlen);
-        assert(v != NULL);
-
-        item->key = k;
-        item->value = v;
+        item->key = strdup(key);
+        item->value = strdup(value);
         item->next = NULL;
-        strcpy(item->key, key);
-        strcpy(item->value, value);
 
         conf->tail->next = item;
         conf->tail = conf->tail->next;
