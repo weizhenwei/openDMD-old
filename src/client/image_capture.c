@@ -43,8 +43,7 @@
 
 static void notify_picture()
 {
-    // dmd_log(LOG_INFO, "in %s, notify to picture thread\n",
-    //         __func__);
+    dmd_log(LOG_DEBUG, "in %s, notify to picture thread\n", __func__);
     pthread_mutex_lock(&global.client.thread_attr.picture_mutex);
     global.client.picture_target = NOTIFY_PICTURE;
     pthread_cond_signal(&global.client.thread_attr.picture_cond);
@@ -53,8 +52,7 @@ static void notify_picture()
 
 static void notify_video()
 {
-    // dmd_log(LOG_INFO, "in %s, notify to video thread\n",
-    //         __func__);
+    dmd_log(LOG_DEBUG, "in %s, notify to video thread\n", __func__);
     pthread_mutex_lock(&global.client.thread_attr.video_mutex);
     global.client.video_target = NOTIFY_VIDEO;
     pthread_cond_signal(&global.client.thread_attr.video_cond);
@@ -175,6 +173,7 @@ int dmd_image_capture(struct v4l2_device_info *v4l2_info)
     int height = v4l2_info->height;
     struct mmap_buffer *buffers = v4l2_info->buffers;
 
+    // FIXME: optimize this while later!
     while (1) {
         for (;;) {
             fd_set fds;
