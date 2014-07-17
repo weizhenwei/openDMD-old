@@ -53,7 +53,9 @@ static void payload_type_changed(RtpSession *session, PayloadType *pt){
 	rtp_session_set_rtcp_report_interval(session,session->rtcp.interval);
 	if (pt->type==PAYLOAD_VIDEO){
 		session->permissive=TRUE;
-		ortp_message("Using permissive algorithm");
+		// ortp_message("Using permissive algorithm");
+        // replaced by weizhenwei, 2014.07.17
+		ortp_debug("Using permissive algorithm");
 	}
 	else session->permissive=FALSE;
 }

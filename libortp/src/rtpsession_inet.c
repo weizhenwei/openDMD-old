@@ -1089,7 +1089,7 @@ rtp_session_rtcp_send (RtpSession * session, mblk_t * m)
 			}else ortp_warning ("Error sending rtcp packet: %s ; socket=%i; addr=%s", getSocketError(), session->rtcp.socket, ortp_inet_ntoa((struct sockaddr*)&session->rtcp.rem_addr,session->rtcp.rem_addrlen,host,sizeof(host)) );
 		} else { // by weizhenwei, 2014.06.22
 			char host[65];
-            ortp_message("Sending rtcp package to  socket=%i, addr=%s",
+            ortp_debug("Sending rtcp package to  socket=%i, addr=%s",
                     session->rtcp.socket,
                     ortp_inet_ntoa((struct sockaddr*)&session->rtcp.rem_addr,
                         session->rtcp.rem_addrlen,host,sizeof(host)));
@@ -1232,10 +1232,10 @@ int rtp_session_rtp_recv (RtpSession * session, uint32_t user_ts)
 
             {
                 // by weizhenwei, 2014.06.22
-                // char host[65];
-                // ortp_message("in function %s, recv from addr %s", __func__, 
-                //         ortp_inet_ntoa((struct sockaddr*)&session->rtcp.rem_addr,
-                //             session->rtcp.rem_addrlen,host,sizeof(host)));
+                char host[65];
+                ortp_debug("in function %s, recv from addr %s", __func__, 
+                        ortp_inet_ntoa((struct sockaddr*)&session->rtcp.rem_addr,
+                            session->rtcp.rem_addrlen,host,sizeof(host)));
             }
 
 			if (session->use_connect){
