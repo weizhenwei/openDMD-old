@@ -66,7 +66,7 @@ int process_image(void *yuyv, int length, int width, int height)
     assert(length == width * height * 2);
 
     // motion detection;
-    ret = YUYV422_motion_detect((unsigned char *)yuyv, width, height, length);
+    ret = YUYV422_motion_detect((uint8_t *)yuyv, width, height, length);
 
     time_t now;
     now = time(&now);

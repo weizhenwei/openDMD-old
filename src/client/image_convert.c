@@ -43,13 +43,12 @@
 
 
 // diff with referenceYUYV422 to detect whether motion occured;
-int YUYV422_motion_detect(unsigned char *yuyv, int width,
-        int height, int length)
+int YUYV422_motion_detect(uint8_t *yuyv, int width, int height, int length)
 {
     int line, column;
-    unsigned char *py, *pu, *pv;
+    uint8_t *py, *pu, *pv;
     unsigned int counter = 0;
-    unsigned char *ref = global.client.referenceYUYV422;
+    uint8_t *ref = global.client.referenceYUYV422;
     unsigned int index = 0;
     int DIFF = global.client.diff_pixels;
     int ABSY = global.client.diff_deviation;
@@ -120,12 +119,12 @@ exit:
  *  0 <= R <= 255, 0 <= G <= 255, 0 <= B <= 255;
  *
  */
-void YUYV422toRGB888(unsigned char *yuyv, int width,
-    int height, unsigned char *rgb, int length)
+void YUYV422toRGB888(uint8_t *yuyv, int width,
+    int height, uint8_t *rgb, int length)
 {
     int line, column;
-    unsigned char *py, *pu, *pv;
-    unsigned char *tmp = rgb;
+    uint8_t *py, *pu, *pv;
+    uint8_t *tmp = rgb;
     unsigned int index = 0;
 
     // assert about the length
@@ -160,12 +159,12 @@ void YUYV422toRGB888(unsigned char *yuyv, int width,
  * convert YUYV422 to RGB88 using integer operation, 
  * it's said this method is more efficient than float operation;
  */
-void YUYV422toRGB888INT(unsigned char *yuyv, int width,
-    int height, unsigned char *rgb, int length)
+void YUYV422toRGB888INT(uint8_t *yuyv, int width,
+    int height, uint8_t *rgb, int length)
 {
     int line, column;
-    unsigned char *py, *pu, *pv;
-    unsigned char *tmp = rgb;
+    uint8_t *py, *pu, *pv;
+    uint8_t *tmp = rgb;
     unsigned int index = 0;
 
     // assert about the length
@@ -202,12 +201,12 @@ void YUYV422toRGB888INT(unsigned char *yuyv, int width,
 }
 
 // convert packed YUYV422 to planar YUV422P
-void YUYV422toYUV422P(unsigned char *yuyv422, int width,
-	int height, unsigned char *yuv422p, int length)
+void YUYV422toYUV422P(uint8_t *yuyv422, int width,
+	int height, uint8_t *yuv422p, int length)
 {
     int line, column;
-    unsigned char *py, *pu, *pv;
-    unsigned char *yuyvTemp;
+    uint8_t *py, *pu, *pv;
+    uint8_t *yuyvTemp;
 
     // assert about the length
     assert(length == width * height * 2);
@@ -233,12 +232,12 @@ void YUYV422toYUV422P(unsigned char *yuyv422, int width,
 }
 
 // convert planar YUV422P to planar YUV420P
-void YUV422PtoYUV420P(unsigned char *yuv422p, int width,
-	int height, unsigned char *yuv420p, int length)
+void YUV422PtoYUV420P(uint8_t *yuv422p, int width,
+	int height, uint8_t *yuv420p, int length)
 {
     int line, column;
-    unsigned char *py, *pu, *pv;
-    unsigned char *yuyvTemp;
+    uint8_t *py, *pu, *pv;
+    uint8_t *yuyvTemp;
 
     // assert about the length
     assert(length == width * height * 1.5);
@@ -276,16 +275,16 @@ void YUV422PtoYUV420P(unsigned char *yuv422p, int width,
 }
 
 // convert packed YUYV422 to planar YUV420P
-void YUYV422toYUV420P(unsigned char *yuyv422, int width,
-	int height, unsigned char *yuv420p, int length)
+void YUYV422toYUV420P(uint8_t *yuyv422, int width,
+	int height, uint8_t *yuv420p, int length)
 {
     int i,j;
-    unsigned char *pY = yuv420p;
-    unsigned char *pU = yuv420p + width * height;
-    unsigned char *pV = pU + (width * height) / 4;
+    uint8_t *pY = yuv420p;
+    uint8_t *pU = yuv420p + width * height;
+    uint8_t *pV = pU + (width * height) / 4;
 
-    unsigned char *pYUVTemp = yuyv422;
-    unsigned char *pYUVTempNext = yuyv422+width * 2;
+    uint8_t *pYUVTemp = yuyv422;
+    uint8_t *pYUVTempNext = yuyv422+width * 2;
 
     for (i = 0; i < height; i += 2) {
         for (j = 0; j < width; j += 2) {

@@ -44,6 +44,7 @@
 
 #include <assert.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 
 #include "log.h"
@@ -51,26 +52,26 @@
 #include "global_context.h"
 
 // diff with referenceYUYV422 to detect whether motion occured;
-extern int YUYV422_motion_detect(unsigned char *yuyv, int width,
+extern int YUYV422_motion_detect(uint8_t *yuyv, int width,
         int height, int length);
 
 // rgb format should be the base for futher convert.
-extern void YUYV422toRGB888(unsigned char *yuyv, int width,
-        int height, unsigned char *rgb, int length);
+extern void YUYV422toRGB888(uint8_t *yuyv, int width,
+        int height, uint8_t *rgb, int length);
 
-extern void YUYV422toRGB888INT(unsigned char *yuyv, int width,
-        int height, unsigned char *rgb, int length);
+extern void YUYV422toRGB888INT(uint8_t *yuyv, int width,
+        int height, uint8_t *rgb, int length);
 
 // convert packed YUYV422 to planar YUV422P
-extern void YUYV422toYUV422P(unsigned char *yuyv422, int width,
-        int height, unsigned char *yuv422p, int length);
+extern void YUYV422toYUV422P(uint8_t *yuyv422, int width,
+        int height, uint8_t *yuv422p, int length);
 
 // convert planar YUV422P to planar YUV420P
-extern void YUV422PtoYUV420P(unsigned char *yuv422p, int width,
-        int height, unsigned char *yuv420p, int length);
+extern void YUV422PtoYUV420P(uint8_t *yuv422p, int width,
+        int height, uint8_t *yuv420p, int length);
 
 // convert packed YUYV422 to planar YUV420P
-extern void YUYV422toYUV420P(unsigned char *yuyv422, int width,
-        int height, unsigned char *yuv420p, int length);
+extern void YUYV422toYUV420P(uint8_t *yuyv422, int width,
+        int height, uint8_t *yuv420p, int length);
 
 #endif

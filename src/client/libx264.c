@@ -62,7 +62,7 @@ uint32_t ts = 0;
  * };
  *
  */
-static void dump_nalu_type(unsigned char typebyte)
+static void dump_nalu_type(uint8_t typebyte)
 {
     int type = typebyte & 0x1f;
 
@@ -97,7 +97,7 @@ static void dump_nalu_type(unsigned char typebyte)
 
 static void analyze_nalu(x264_nal_t *nal)
 {
-    unsigned char *nalu = nal->p_payload;
+    uint8_t *nalu = nal->p_payload;
     int length = nal->i_payload;
     char buffer[30];
     int index = 0;
@@ -123,7 +123,7 @@ static void analyze_nalu(x264_nal_t *nal)
                 length, buffer);
     }
 
-    const unsigned char *p = nalu;
+    const uint8_t *p = nalu;
     while (*p == 0x00) {
         p++;
     }
@@ -348,8 +348,8 @@ static int write_nals_wzw(const char *h264file, x264_nal_t *nals, int nnal)
     assert(nal->i_type == NAL_SPS); // SPS frame;
     // dump the nalu infomation;
     analyze_nalu(nal);
-    unsigned char *payload = nal->p_payload;
-    unsigned char *p = payload;
+    uint8_t *payload = nal->p_payload;
+    uint8_t *p = payload;
     int len =  nal->i_payload;
     int offset = 0;
     while (*p == 0x00) { // strip heading 0x00 0x00 ... 0x01;
@@ -359,8 +359,8 @@ static int write_nals_wzw(const char *h264file, x264_nal_t *nals, int nnal)
     assert(*p == 0x01);
     p++; offset++;
     int sps_len = len - offset;
-    unsigned char *sps = (unsigned char *)
-        malloc(sizeof(unsigned char) * sps_len);
+    uint8_t *sps = (uint8_t *)
+        malloc(sizeof(uint8_t) * sps_len);
     bzero(sps, sps_len);
     memcpy(sps, payload + offset, sps_len);
     dmd_log(LOG_DEBUG, "in function %s, SPS frame length:%d, sps_len = %d\n",
@@ -383,7 +383,7 @@ static int write_nals_wzw(const char *h264file, x264_nal_t *nals, int nnal)
     assert(*p == 0x01);
     p++; offset++;
     int pps_len = len - offset;
-    unsigned char *pps = (unsigned char *)malloc(sizeof(unsigned char) * pps_len);
+    uint8_t *pps = (uint8_t *)malloc(sizeof(uint8_t) * pps_len);
     bzero(pps, pps_len);
     memcpy(pps, payload + offset, pps_len);
     dmd_log(LOG_DEBUG, "in function %s, PPS frame length:%d, pps_len = %d\n",
@@ -415,8 +415,8 @@ static int write_nals_wzw(const char *h264file, x264_nal_t *nals, int nnal)
         assert(*p == 0x01);
         p++; offset++;
         int idr_len = len - offset;
-        unsigned char *idr = (unsigned char *)
-            malloc(sizeof(unsigned char) * idr_len);
+        uint8_t *idr = (uint8_t *)
+            malloc(sizeof(uint8_t) * idr_len);
         bzero(idr, idr_len);
         memcpy(idr, payload + offset, idr_len);
         dmd_log(LOG_DEBUG, "in function %s, IDR frame len:%d, idr_len:%d\n",
@@ -461,7 +461,7 @@ static int write_nalss(const char *h264file, x264_nal_t *nals, int nnal)
     FILE *h264fp = fopen(h264file, "ab");
     assert(h264fp != NULL);
     for (nal = nals; nal < nals + nnal; nal++) {
-        int len = fwrite(nal->p_payload, sizeof(unsigned char),
+        int len = fwrite(nal->p_payload, sizeof(uint8_t),
                 nal->i_payload, h264fp);
         dmd_log(LOG_DEBUG, "write to h264 length:%d\n", len);
 
@@ -493,7 +493,6 @@ static int write_nalss(const char *h264file, x264_nal_t *nals, int nnal)
 static int write_nals(const char *h264file, x264_nal_t *nals, int nnal,
         x264_param_t param, x264_picture_t *pic_out)
 {
-    int largest_pts = pic_out->i_pts;
     // global flv_output;
     hnd_t *p_flv = (hnd_t *)malloc(sizeof(hnd_t));
     cli_output_opt_t opt;
@@ -510,7 +509,7 @@ static int write_nals(const char *h264file, x264_nal_t *nals, int nnal,
 }
 
 // encode Planar YUV420P to H264 foramt using libx264
-int encode_yuv420p(unsigned char *yuv420p, int width, int height,
+int encode_yuv420p(uint8_t *yuv420p, int width, int height,
         const char *h264file)
 {
     // int fps = 25;  // 25 frames per second;

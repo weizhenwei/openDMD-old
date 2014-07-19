@@ -46,6 +46,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <strings.h>
 #include <linux/limits.h>
@@ -216,17 +217,17 @@ struct client_context {
                                       // (in seconds);
 
     // reusable image buffer;
-    unsigned char *referenceYUYV422;  // reference image when detect motion;
+    uint8_t *referenceYUYV422;        // reference image when detect motion;
                                       // length = image_width*image_height*2
-    unsigned char *rgbbuffer;         // rgb buffer used in picture capturing;
+    uint8_t *rgbbuffer;               // rgb buffer used in picture capturing;
                                       // length = image_width*image_height*3;
-    unsigned char *pyuyv422buffer;    // yuyv422buffer used in picture capture;
+    uint8_t *pyuyv422buffer;          // yuyv422buffer used in picture capture;
                                       // length = image_width*image_height*2;
-    unsigned char *vyuyv422buffer;    // yuyv422buffer used in video capture;
+    uint8_t *vyuyv422buffer;          // yuyv422buffer used in video capture;
                                       // length = image_width*image_height*2;
-    unsigned char *yuv420pbuffer;     // yuyv420pbuffer used in video capture;
+    uint8_t *yuv420pbuffer;           // yuyv420pbuffer used in video capture;
                                       // length = image_width*image_height*1.5;
-    unsigned char *bufferingYUYV422;  // buffered place when captured new image
+    uint8_t *bufferingYUYV422;        // buffered place when captured new image
                                       // length = image_width*image_height*2;
 
     struct thread_attribute thread_attr;    // thread attribute;

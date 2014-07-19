@@ -62,56 +62,51 @@ static void set_buffering()
 
     // rgb buffer;
     unsigned int rgblength = width * height * 3;
-    global.client.rgbbuffer = (unsigned char *)malloc(
-        rgblength * sizeof(unsigned char));
+    global.client.rgbbuffer = (uint8_t *)malloc( rgblength * sizeof(uint8_t));
     assert(global.client.rgbbuffer != NULL);
-    bzero(global.client.rgbbuffer, rgblength * sizeof(unsigned char));
+    bzero(global.client.rgbbuffer, rgblength * sizeof(uint8_t));
 
     // referenceYUYV422 buffer;
     unsigned int referencelength = width * height * 2;
-    global.client.referenceYUYV422 = (unsigned char *)malloc(
-            referencelength * sizeof(unsigned char));
+    global.client.referenceYUYV422 = (uint8_t *)malloc(
+            referencelength * sizeof(uint8_t));
     assert(global.client.referenceYUYV422 != NULL);
-    bzero(global.client.referenceYUYV422,
-            referencelength * sizeof(unsigned char));
+    bzero(global.client.referenceYUYV422, referencelength * sizeof(uint8_t));
 
     // pyuyv422buffer;
     unsigned int pyuyv422length = width * height * 2;
-    global.client.pyuyv422buffer = (unsigned char *)malloc(
-            pyuyv422length * sizeof(unsigned char));
+    global.client.pyuyv422buffer = (uint8_t *)malloc(
+            pyuyv422length * sizeof(uint8_t));
     assert(global.client.pyuyv422buffer != NULL);
-    bzero(global.client.pyuyv422buffer,
-            pyuyv422length * sizeof(unsigned char));
+    bzero(global.client.pyuyv422buffer, pyuyv422length * sizeof(uint8_t));
 
     // vyuyv422buffer;
     unsigned int vyuyv422length = width * height * 2;
-    global.client.vyuyv422buffer = (unsigned char *)malloc(
-            vyuyv422length * sizeof(unsigned char));
+    global.client.vyuyv422buffer = (uint8_t *)malloc(
+            vyuyv422length * sizeof(uint8_t));
     assert(global.client.vyuyv422buffer != NULL);
-    bzero(global.client.vyuyv422buffer,
-            vyuyv422length * sizeof(unsigned char));
+    bzero(global.client.vyuyv422buffer, vyuyv422length * sizeof(uint8_t));
 
     // yuv420pbuffer;
     unsigned int yuv420plength = width * height * 1.5;
-    global.client.yuv420pbuffer = (unsigned char *)malloc(
-            yuv420plength * sizeof(unsigned char));
+    global.client.yuv420pbuffer = (uint8_t *)malloc(
+            yuv420plength * sizeof(uint8_t));
     assert(global.client.yuv420pbuffer != NULL);
-    bzero(global.client.yuv420pbuffer,
-            yuv420plength * sizeof(unsigned char));
+    bzero(global.client.yuv420pbuffer, yuv420plength * sizeof(uint8_t));
 
     // bufferingYUYV422;
     unsigned int bufferyuyvlength = width * height * 2;
-    global.client.bufferingYUYV422 = (unsigned char *)malloc(
-            bufferyuyvlength * sizeof(unsigned char));
+    global.client.bufferingYUYV422 = (uint8_t *)malloc(
+            bufferyuyvlength * sizeof(uint8_t));
     assert(global.client.bufferingYUYV422 != NULL);
-    bzero(global.client.bufferingYUYV422,
-            bufferyuyvlength * sizeof(unsigned char));
-
+    bzero(global.client.bufferingYUYV422, bufferyuyvlength * sizeof(uint8_t));
 }
 
 int parse_config(const char *conf_file)
 {
-    struct config *conf = new_config('#', ' ');
+    char comment_char = '#';
+    char separate_char = ' ';
+    struct config *conf = new_config(comment_char, separate_char);
     int ret = parse_config_file(global.cfg_file, conf);
     assert(ret == 0);
     assert(conf->items != NULL);

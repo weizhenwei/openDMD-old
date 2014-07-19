@@ -48,6 +48,7 @@
 #include <string.h>
 #include <errno.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <fcntl.h>
 #include <unistd.h>
 
@@ -84,7 +85,7 @@ struct h264_frame {
 };
 
 // encode Planar YUV420P to H264 foramt using libx264
-extern int encode_yuv420p(unsigned char *yuv420p,
+extern int encode_yuv420p(uint8_t *yuv420p,
         int height, int width, const char *h264file);
 
 #endif
