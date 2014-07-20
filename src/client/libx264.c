@@ -123,7 +123,7 @@ static void analyze_nalu(x264_nal_t *nal)
                 length, buffer);
     }
 
-    const uint8_t *p = nalu;
+    uint8_t *p = nalu;
     while (*p == 0x00) {
         p++;
     }
@@ -194,8 +194,10 @@ static int pack_nals(const char *h264file, x264_nal_t *nals, int nnal)
     x264_nal_t *nal = nals;
 
     // SPS + PPS + [SEI] + n * IDR;
+    // TODO: this may cause problems;
     assert(nnal >= 4);
 
+    // TODO: ts_inc is heuristic;
     int fps = global.x264_fps;
     int ts_inc = 1000 / fps * 2.5;
     dmd_log(LOG_DEBUG, "in function %s, time stamp increment is %d\n",
@@ -309,7 +311,8 @@ static int pack_nals(const char *h264file, x264_nal_t *nals, int nnal)
         idx += hf_idr->idr_len;
         hf_idr = hf_idr->next;
     }
-    printf("idx = %d, hf->idr_total_len = %d\n", idx, hf->idr_total_len);
+    dmd_log(LOG_DEBUG, "idx = %d, hf->idr_total_len = %d\n",
+            idx, hf->idr_total_len);
     assert(idx == hf->idr_total_len);
 
     // write to flv file
