@@ -1,3 +1,6 @@
+2014.07.21:
+    Urgent: Avoid unnecessary memory copy when converting YUYV422 
+            to RGB888 or YUV420.
 2014.06.09
     Urgent:
         set appropriate parameter on libx264 to encode h264 file perfect,

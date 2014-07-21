@@ -97,6 +97,9 @@ static void init_default_client()
     global.client.bufferingYUYV422 = NULL;
 
 
+    // FIXME: according config item:working mode to initialize picture thread
+    //        or video thread or both.
+
     // set thread attribute;
     pthread_attr_init(&global.client.thread_attr.global_attr);
     struct sched_param param;
