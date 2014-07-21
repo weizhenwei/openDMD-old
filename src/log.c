@@ -66,7 +66,6 @@ void dmd_log(int priority, const char *format, ...)
     // print to stdout;
 
     char *log_level = NULL;
-
     if (priority == LOG_INFO) {
         log_level = "info";
     } else if (priority == LOG_ERR) {

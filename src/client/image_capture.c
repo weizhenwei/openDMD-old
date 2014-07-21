@@ -173,35 +173,33 @@ int dmd_image_capture(struct v4l2_device_info *v4l2_info)
     int height = v4l2_info->height;
     struct mmap_buffer *buffers = v4l2_info->buffers;
 
-    // FIXME: optimize this while later!
-    while (1) {
-        for (;;) {
-            fd_set fds;
-            struct timeval tv;
-            int r;
+    while (client_running == 1) {
+        fd_set fds;
+        struct timeval tv;
+        int r;
 
-            FD_ZERO(&fds);
-            FD_SET(fd, &fds);
+        FD_ZERO(&fds);
+        FD_SET(fd, &fds);
 
-            // timeout
-            tv.tv_sec = 2;
-            tv.tv_usec = 0;
+        // timeout
+        tv.tv_sec = 2;
+        tv.tv_usec = 0;
 
-            r = select(fd + 1, &fds, NULL, NULL, &tv);
-            if ( r == -1) {
-                if (errno == EINTR)
-                    continue;
-                dmd_log(LOG_ERR, "Multi I/O select failed.\n");
-                return -1;
-            } else if (r == 0) {
-                dmd_log(LOG_ERR, "Multi I/O select timeout.\n");
-                return -1;
-            }
-
-            if (read_frame(fd, buffers, width, height) == -1)
-                break;
+        r = select(fd + 1, &fds, NULL, NULL, &tv);
+        if ( r == -1) {
+            if (errno == EINTR)
+                continue;
+            dmd_log(LOG_ERR, "Multi I/O select failed.\n");
+            return -1;
+        } else if (r == 0) {
+            dmd_log(LOG_ERR, "Multi I/O select timeout.\n");
+            return -1;
         }
-    } // while
+
+        if (read_frame(fd, buffers, width, height) == -1)
+            break;
+
+    }
 
     return 0;
 }

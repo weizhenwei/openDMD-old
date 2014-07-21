@@ -41,6 +41,7 @@
 
 #include "signal_handler.h"
 
+int client_running = 1;
 int server_running = 1;
 static void sigint_handler(int signal)
 {
@@ -58,6 +59,9 @@ static void sigint_handler(int signal)
         global.client.video_target = NOTIFY_EXIT;
         pthread_cond_signal(&global.client.thread_attr.video_cond);
         pthread_mutex_unlock(&global.client.thread_attr.video_mutex);
+
+        client_running = 0;
+
     } else if (global.cluster_mode == CLUSTER_SERVER) {
         server_running = 0;
     }

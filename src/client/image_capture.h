@@ -61,6 +61,7 @@
 #include "v4l2_utils.h"
 #include "global_context.h"
 #include "picture_thread.h"
+#include "signal_handler.h"
 #include "video_thread.h"
 
 extern int process_image(void *yuyv, int length, int width, int height);

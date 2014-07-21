@@ -51,6 +51,7 @@
 #include "global_context.h"
 
 // for controlling server running;
+extern int client_running;
 extern int server_running;
 
 extern void signal_init();
