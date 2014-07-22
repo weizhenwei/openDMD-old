@@ -49,21 +49,47 @@ static void sigint_handler(int signal)
 
     if (global.cluster_mode == CLUSTER_CLIENT
             || global.cluster_mode == CLUSTER_SINGLETON) {
-        // notify picture thread and video thread to exit;
-        pthread_mutex_lock(&global.client.thread_attr.picture_mutex);
-        global.client.picture_target = NOTIFY_EXIT;
-        pthread_cond_signal(&global.client.thread_attr.picture_cond);
-        pthread_mutex_unlock(&global.client.thread_attr.picture_mutex);
 
-        pthread_mutex_lock(&global.client.thread_attr.video_mutex);
-        global.client.video_target = NOTIFY_EXIT;
-        pthread_cond_signal(&global.client.thread_attr.video_cond);
-        pthread_mutex_unlock(&global.client.thread_attr.video_mutex);
+        if (global.client.working_mode == CAPTURE_ALL) {
+            // notify picture thread and video thread to exit;
+            pthread_mutex_lock(&global.client.thread_attr.picture_mutex);
+            global.client.picture_target = NOTIFY_EXIT;
+            pthread_cond_signal(&global.client.thread_attr.picture_cond);
+            pthread_mutex_unlock(&global.client.thread_attr.picture_mutex);
 
+            pthread_mutex_lock(&global.client.thread_attr.video_mutex);
+            global.client.video_target = NOTIFY_EXIT;
+            pthread_cond_signal(&global.client.thread_attr.video_cond);
+            pthread_mutex_unlock(&global.client.thread_attr.video_mutex);
+
+        } else if (global.client.working_mode == CAPTURE_PICTURE) {
+            // notify picture thread to exit;
+            pthread_mutex_lock(&global.client.thread_attr.picture_mutex);
+            global.client.picture_target = NOTIFY_EXIT;
+            pthread_cond_signal(&global.client.thread_attr.picture_cond);
+            pthread_mutex_unlock(&global.client.thread_attr.picture_mutex);
+
+        } else if (global.client.working_mode == CAPTURE_VIDEO) {
+            // notify video thread to exit;
+            pthread_mutex_lock(&global.client.thread_attr.video_mutex);
+            global.client.video_target = NOTIFY_EXIT;
+            pthread_cond_signal(&global.client.thread_attr.video_cond);
+            pthread_mutex_unlock(&global.client.thread_attr.video_mutex);
+
+        } else {
+            dmd_log(LOG_ERR, "in function %s, impossible reach here!\n",
+                    __func__);
+            assert(0);
+        }
+
+        // notify main thread to stop
         client_running = 0;
-
     } else if (global.cluster_mode == CLUSTER_SERVER) {
         server_running = 0;
+    } else {
+        dmd_log(LOG_ERR, "in function %s, can't reach here!\n",
+                __func__);
+        assert(0);
     }
 
     dmd_log(LOG_INFO, "captured SIGINT (Ctrl + C), program exit\n");
