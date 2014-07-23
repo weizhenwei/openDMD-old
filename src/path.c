@@ -43,28 +43,55 @@
 
 static int test_and_create(const char *path)
 {
-    if (access(path, F_OK) == -1) { // if path didn't exist, mkdir it;
-        if (mkdir(path, 0755) == -1) {
-            dmd_log(LOG_ERR, "mkdir %s error:%s\n", path, strerror(errno));
-            return -1;
-        }
-    } else { // path exists, be sure it is directory;
-        struct stat path_stat;
-        if (stat(path, &path_stat) == -1) {
-            dmd_log(LOG_ERR, "stat error:%s\n", path, strerror(errno));
-            return -1;
-        }
-        if (!S_ISDIR(path_stat.st_mode)) { // first delete, then mkdir;
-            if (unlink(path) == -1) {
-                dmd_log(LOG_ERR, "unlink error:%s", strerror(errno));
-                return -1;
-            }
+    // first, find parent path;
+    char *ptr = path + strlen(path);
+    while (*ptr != '/' && ptr > path) {
+        ptr--;
+    }
+    char *parent = strndup(path, ptr - path);
+    assert(parent != NULL);
+    dmd_log(LOG_DEBUG, "in function %s, parent path is %s\n",
+            __func__, parent);
+    dmd_log(LOG_DEBUG, "in function %s, path is %s\n",
+            __func__, path);
+
+    if (access(parent, F_OK) == 0) { // parent exist, just mkdir
+        if (access(path, F_OK) == 0) { // path exist, just return
+            dmd_log(LOG_DEBUG, "in function %s, dir %s existed already\n",
+                    __func__, path);
+            free(parent);
+            return 0;
+        } else {
             if (mkdir(path, 0755) == -1) {
-                dmd_log(LOG_ERR, "mkdir %s error:%s\n", path, strerror(errno));
+                dmd_log(LOG_ERR, "in function %s, mkdir %s error:%s\n", 
+                        __func__, path, strerror(errno));
                 return -1;
+            } else {
+                dmd_log(LOG_DEBUG, "in function %s, mkdir %s succeed\n", 
+                        __func__, path);
             }
         }
-    } // else
+
+    } else { // parent doesn't exist, recursive call test_and_create;
+        // first mkdir parent;
+        int ret = test_and_create(parent);
+        if (ret == -1) {
+            free(parent); // remember to free parent;
+            return ret;
+        }
+
+        // then mkdir path;
+        if (mkdir(path, 0755) == -1) {
+            dmd_log(LOG_ERR, "in function %s, mkdir %s error:%s\n", 
+                    __func__, path, strerror(errno));
+            return -1;
+        } else {
+            dmd_log(LOG_DEBUG, "in function %s, mkdir2 %s succeed\n",
+                    __func__, path);
+        }
+    }
+
+    free(parent);
 
     return 0;
 }
