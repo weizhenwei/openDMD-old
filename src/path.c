@@ -103,6 +103,7 @@ char *get_jpeg_filepath()
     // at linux/limits.h, #define PATH_MAX 4096
     static char filepath[PATH_MAX];
     char storepath[PATH_MAX];
+    // FIXME: check store_dir's correntness;
     strncpy(storepath, global.client.store_dir,
             strlen(global.client.store_dir));
     storepath[strlen(global.client.store_dir)] = '\0';
@@ -139,6 +140,7 @@ char *get_h264_filepath()
     // at linux/limits.h, #define PATH_MAX 4096
     static char filepath[PATH_MAX];
     char storepath[PATH_MAX];
+    // FIXME: check store_dir's correntness;
     strncpy(storepath, global.client.store_dir,
             strlen(global.client.store_dir));
     storepath[strlen(global.client.store_dir)] = '\0';
