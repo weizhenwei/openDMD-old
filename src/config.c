@@ -41,6 +41,27 @@
 
 #include "config.h"
 
+
+static void remove_tail_slash(char *path)
+{
+    dmd_log(LOG_DEBUG, "in function %s, before remove tail, path is %s\n",
+            __func__, path);
+    int len = strlen(path);
+    // we only remove once, because path like "/home/abc/" may happen,
+    // but path like "/home/abc//"may not happen always;
+    if (*(path + len - 1) == '/') { // remove the tail slash;
+        *(path + len - 1) = '\0';
+    }
+    dmd_log(LOG_DEBUG, "in function %s, after remove tail, path is %s\n",
+            __func__, path);
+}
+
+static void check_path()
+{
+    remove_tail_slash(global.client.store_dir);
+    remove_tail_slash(global.server.server_repo);
+}
+
 static int check_config_integrity()
 {
     // client side check;
@@ -50,6 +71,8 @@ static int check_config_integrity()
         if (lsn <= 0 || lsn > cs)
             return -1;
     }
+
+    check_path();
 
     return 0;
 
