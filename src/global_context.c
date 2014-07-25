@@ -123,6 +123,11 @@ static void init_default_client()
     // captured picture/video storage settings;
     global.client.picture_format = PICTURE_JPEG;
     global.client.video_format = VIDEO_H264;
+
+    // TODO: need more optimization;
+    const char *home = getenv("HOME");
+    sprintf(global.client.store_dir, "%s/opendmd/client_repo", home);
+#if 0
 #if defined(DEBUG)
     assert(strlen(DEFAULT_DEBUG_STORE_DIR) < PATH_MAX);
     strncpy(global.client.store_dir, DEFAULT_DEBUG_STORE_DIR,
@@ -134,6 +139,7 @@ static void init_default_client()
             strlen(DEFAULT_RELEASE_STORE_DIR));
     global.client.store_dir[strlen(DEFAULT_RELEASE_STORE_DIR)] = '\0';
 #endif
+#endif
 
     // initialize rtpsession associated;
     init_client_rtp();
@@ -141,10 +147,15 @@ static void init_default_client()
 
 static void init_default_server()
 {
+    // TODO: need more optimization;
+    const char *home = getenv("HOME");
+    sprintf(global.server.server_repo, "%s/opendmd/server_repo", home);
+#if 0
     assert(strlen(SERVER_REPO) < PATH_MAX);
     strncpy(global.server.server_repo, SERVER_REPO,
             strlen(SERVER_REPO));
     global.server.server_repo[strlen(SERVER_REPO)] = '\0';
+#endif
 
     global.server.user_ts = 0;
     global.server.client_scale = CLIENT_SCALE;
