@@ -99,7 +99,7 @@ static int test_and_mkdir(const char *path)
 // client path stuff;
 int client_init_repodir()
 {
-    return test_and_mkdir(global.client.store_dir);
+    return test_and_mkdir(global.client.client_repo);
 }
 
 char *client_get_filepath(int path_type)
@@ -119,9 +119,9 @@ char *client_get_filepath(int path_type)
         dmd_log(LOG_ERR, "in function %s, error to reach here!\n", __func__);
         return NULL;
     }
-    // global.client.store_dir's correctness is checked at
+    // global.client.client_repo's correctness is checked at
     // check_path() at src/config.c
-    sprintf(storepath, "%s/%s", global.client.store_dir, suffix);
+    sprintf(storepath, "%s/%s", global.client.client_repo, suffix);
     assert(test_and_mkdir(storepath) == 0);
 
     time_t now;

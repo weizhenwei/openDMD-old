@@ -237,7 +237,7 @@ struct client_context {
     // captured pictures/video storage settings;
     enum picture_format_type picture_format; // captured picture format.
     enum video_format_type video_format;     // captured video format;
-    char store_dir[PATH_MAX];                // captured pictures/video
+    char client_repo[PATH_MAX];              // captured pictures/video
                                              // storage directory.
     // video sending ortp associated
     struct client_rtp clientrtp;                   // client ortp session;

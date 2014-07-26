@@ -126,18 +126,18 @@ static void init_default_client()
 
     // TODO: need more optimization;
     const char *home = getenv("HOME");
-    sprintf(global.client.store_dir, "%s/opendmd/client_repo", home);
+    sprintf(global.client.client_repo, "%s/opendmd/client_repo", home);
 #if 0
 #if defined(DEBUG)
     assert(strlen(DEFAULT_DEBUG_STORE_DIR) < PATH_MAX);
-    strncpy(global.client.store_dir, DEFAULT_DEBUG_STORE_DIR,
+    strncpy(global.client.client_repo, DEFAULT_DEBUG_STORE_DIR,
             strlen(DEFAULT_DEBUG_STORE_DIR));
-    global.client.store_dir[strlen(DEFAULT_DEBUG_STORE_DIR)] = '\0';
+    global.client.client_repo[strlen(DEFAULT_DEBUG_STORE_DIR)] = '\0';
 #else
     assert(strlen(DEFAULT_RELEASE_STORE_DIR) < PATH_MAX);
-    strncpy(global.client.store_dir, DEFAULT_RELEASE_STORE_DIR,
+    strncpy(global.client.client_repo, DEFAULT_RELEASE_STORE_DIR,
             strlen(DEFAULT_RELEASE_STORE_DIR));
-    global.client.store_dir[strlen(DEFAULT_RELEASE_STORE_DIR)] = '\0';
+    global.client.client_repo[strlen(DEFAULT_RELEASE_STORE_DIR)] = '\0';
 #endif
 #endif
 
@@ -283,7 +283,7 @@ static int dump_client()
         return -1;
     }
 
-    dmd_log(LOG_INFO, "client store dir:%s\n", global.client.store_dir);
+    dmd_log(LOG_INFO, "client repo dir:%s\n", global.client.client_repo);
 
     dump_client_rtp();
 

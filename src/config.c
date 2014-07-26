@@ -58,7 +58,7 @@ static void remove_tail_slash(char *path)
 
 static void check_path()
 {
-    remove_tail_slash(global.client.store_dir);
+    remove_tail_slash(global.client.client_repo);
     remove_tail_slash(global.server.server_repo);
 }
 
@@ -333,14 +333,14 @@ int parse_config(const char *conf_file)
                 return -1;
             }
 
-        } else if (strcmp(item->key, "store_dir") == 0) {
+        } else if (strcmp(item->key, "client_repo") == 0) {
             assert(strlen(item->value) < PATH_MAX);
-            strncpy(global.client.store_dir, item->value, strlen(item->value));
+            strncpy(global.client.client_repo, item->value, strlen(item->value));
             /* Warning:If there is no null byte among the first n bytes of
              * src, the string placed in dest will not be null-terminated,
              * remember add null-terminated manually.
              */
-            global.client.store_dir[strlen(item->value)] = '\0';
+            global.client.client_repo[strlen(item->value)] = '\0';
 
         } else if (strcmp(item->key, "server_repo") == 0) {
             assert(strlen(item->value) < PATH_MAX);
