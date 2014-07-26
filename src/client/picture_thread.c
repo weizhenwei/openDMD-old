@@ -75,7 +75,7 @@ void *picture_thread(void *arg)
                     global.client.rgbbuffer, length);
 
             // write to jpeg file;
-            jpeg_filepath = get_jpeg_filepath();
+            jpeg_filepath = client_get_filepath(JPEG_FILE);
             dmd_log(LOG_INFO, "in %s, write a jpegfile to %s\n",
                     __func__, jpeg_filepath);
             ret = write_jpeg(jpeg_filepath, global.client.rgbbuffer, 100,

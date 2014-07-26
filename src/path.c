@@ -41,10 +41,10 @@
 
 #include "path.h"
 
-static int test_and_create(const char *path)
+static int test_and_mkdir(const char *path)
 {
     // first, find parent path;
-    char *ptr = path + strlen(path);
+    const char *ptr = path + strlen(path);
     while (*ptr != '/' && ptr > path) {
         ptr--;
     }
@@ -61,7 +61,7 @@ static int test_and_create(const char *path)
                     __func__, path);
             free(parent);
             return 0;
-        } else {
+        } else { // else just mkdir path;
             if (mkdir(path, 0755) == -1) {
                 dmd_log(LOG_ERR, "in function %s, mkdir %s error:%s\n", 
                         __func__, path, strerror(errno));
@@ -72,9 +72,9 @@ static int test_and_create(const char *path)
             }
         }
 
-    } else { // parent doesn't exist, recursive call test_and_create;
+    } else { // parent doesn't exist, recursively call test_and_mkdir();
         // first mkdir parent;
-        int ret = test_and_create(parent);
+        int ret = test_and_mkdir(parent);
         if (ret == -1) {
             free(parent); // remember to free parent;
             return ret;
@@ -96,117 +96,75 @@ static int test_and_create(const char *path)
     return 0;
 }
 
-char *get_jpeg_filepath()
+// client path stuff;
+int client_init_repodir()
 {
-    time_t now;
-    struct tm *tmptr;
-    // at linux/limits.h, #define PATH_MAX 4096
-    static char filepath[PATH_MAX];
-    char storepath[PATH_MAX];
-    // FIXME: check store_dir's correntness;
-    strncpy(storepath, global.client.store_dir,
-            strlen(global.client.store_dir));
-    storepath[strlen(global.client.store_dir)] = '\0';
-    strcat(storepath, "/jpeg");
-    assert(test_and_create(storepath) == 0);
-
-    now = time(&now);
-    assert(now != -1);
-
-    tmptr = localtime(&now);
-    assert(tmptr != NULL);
-    sprintf(filepath, "%s/%04d%02d%02d%02d%02d%02d-%02d.jpg",
-            storepath, 
-            tmptr->tm_year + 1900,
-            tmptr->tm_mon + 1,
-            tmptr->tm_mday,
-            tmptr->tm_hour,
-            tmptr->tm_min,
-            tmptr->tm_sec,
-            global.client.counter_in_second);
-
-    assert(strlen(filepath) < PATH_MAX);
-
-    // dmd_log(LOG_INFO, "in function %s, jpeg filename is: %s\n",
-    //         __func__, filepath);
-
-    return filepath;
+    return test_and_mkdir(global.client.store_dir);
 }
 
-char *get_h264_filepath()
+char *client_get_filepath(int path_type)
 {
+    // static variable filepath, return many times;
+    static char filepath[PATH_MAX]; // #define PATH_MAX 4096 at linux/limits.h
+    char storepath[PATH_MAX];
+
+    char *suffix = NULL;
+    if (path_type == JPEG_FILE) {
+        suffix = "jpg";
+    } else if (path_type == H264_FILE) {
+        suffix = "h264";
+    } else if (path_type == FLV_FILE) {
+        suffix = "flv";
+    } else {
+        dmd_log(LOG_ERR, "in function %s, error to reach here!\n", __func__);
+        return NULL;
+    }
+    // global.client.store_dir's correctness is checked at
+    // check_path() at src/config.c
+    sprintf(storepath, "%s/%s", global.client.store_dir, suffix);
+    assert(test_and_mkdir(storepath) == 0);
+
     time_t now;
     struct tm *tmptr;
-    // at linux/limits.h, #define PATH_MAX 4096
-    static char filepath[PATH_MAX];
-    char storepath[PATH_MAX];
-    // FIXME: check store_dir's correntness;
-    strncpy(storepath, global.client.store_dir,
-            strlen(global.client.store_dir));
-    storepath[strlen(global.client.store_dir)] = '\0';
-    strcat(storepath, "/h264");
-    assert(test_and_create(storepath) == 0);
-
     now = time(&now);
     assert(now != -1);
-
     tmptr = localtime(&now);
     assert(tmptr != NULL);
-    // sprintf(filepath, "%s/%04d%02d%02d%02d%02d%02d.h264",
-    sprintf(filepath, "%s/%04d%02d%02d%02d%02d%02d.h264",
-            storepath,
-            tmptr->tm_year + 1900,
-            tmptr->tm_mon + 1,
-            tmptr->tm_mday,
-            tmptr->tm_hour,
-            tmptr->tm_min,
-            tmptr->tm_sec);
+
+    if (strcmp(suffix, "jpg") == 0) {
+        sprintf(filepath, "%s/%04d%02d%02d%02d%02d%02d-%02d.%s",
+                storepath, 
+                tmptr->tm_year + 1900,
+                tmptr->tm_mon + 1,
+                tmptr->tm_mday,
+                tmptr->tm_hour,
+                tmptr->tm_min,
+                tmptr->tm_sec,
+                global.client.counter_in_second,
+                suffix);
+    } else {
+        sprintf(filepath, "%s/%04d%02d%02d%02d%02d%02d.%s",
+                storepath,
+                tmptr->tm_year + 1900,
+                tmptr->tm_mon + 1,
+                tmptr->tm_mday,
+                tmptr->tm_hour,
+                tmptr->tm_min,
+                tmptr->tm_sec,
+                suffix);
+    }
     assert(strlen(filepath) < PATH_MAX);
 
-    dmd_log(LOG_DEBUG, "in function %s, h264 filename is: %s\n",
+    dmd_log(LOG_DEBUG, "in function %s, get filename: %s\n",
            __func__, filepath);
 
     return filepath;
 }
 
-char *get_flv_filepath()
-{
-    time_t now;
-    struct tm *tmptr;
-    // at linux/limits.h, #define PATH_MAX 4096
-    static char filepath[PATH_MAX];
-    char storepath[PATH_MAX];
-    strncpy(storepath, global.client.store_dir,
-            strlen(global.client.store_dir));
-    storepath[strlen(global.client.store_dir)] = '\0';
-    strcat(storepath, "/h264");
-    assert(test_and_create(storepath) == 0);
-
-    now = time(&now);
-    assert(now != -1);
-
-    tmptr = localtime(&now);
-    assert(tmptr != NULL);
-    // sprintf(filepath, "%s/%04d%02d%02d%02d%02d%02d.h264",
-    sprintf(filepath, "%s/%04d%02d%02d%02d%02d%02d.flv",
-            storepath,
-            tmptr->tm_year + 1900,
-            tmptr->tm_mon + 1,
-            tmptr->tm_mday,
-            tmptr->tm_hour,
-            tmptr->tm_min,
-            tmptr->tm_sec);
-    assert(strlen(filepath) < PATH_MAX);
-
-    dmd_log(LOG_DEBUG, "in function %s, h264 filename is: %s\n",
-           __func__, filepath);
-
-    return filepath;
-}
 
 int server_init_repodir()
 {
-    return test_and_create(global.server.server_repo);
+    return test_and_mkdir(global.server.server_repo);
 }
 
 int server_init_client_repodir(int client_number)
@@ -219,69 +177,67 @@ int server_init_client_repodir(int client_number)
     dmd_log(LOG_DEBUG, "in function %s,  client repodir is : %s\n",
            __func__, client_repodir);
     
-    return test_and_create(client_repodir);
+    return test_and_mkdir(client_repodir);
 }
 
-char *server_get_h264_filepath(int client_number)
+
+char *server_get_filepath(int path_type, int client_number)
 {
+    // static variable filepath, return many times;
+    static char filepath[PATH_MAX]; // #define PATH_MAX 4096 at linux/limits.h
+    char storepath[PATH_MAX];
+
+    char *suffix = NULL;
+    if (path_type == JPEG_FILE) {
+        suffix = "jpg";
+    } else if (path_type == H264_FILE) {
+        suffix = "h264";
+    } else if (path_type == FLV_FILE) {
+        suffix = "flv";
+    } else {
+        dmd_log(LOG_ERR, "in function %s, error to reach here!\n", __func__);
+        return NULL;
+    }
+    // global.server.server_repo's correctness is checked at
+    // check_path() at src/config.c
+    sprintf(storepath, "%s/client-%02d/%s", global.server.server_repo,
+           client_number, suffix);
+    assert(test_and_mkdir(storepath) == 0);
+
     time_t now;
     struct tm *tmptr;
-    // at linux/limits.h, #define PATH_MAX 4096
-    static char filepath[PATH_MAX];
-    char storepath[PATH_MAX];
-    sprintf(storepath, "%s/client-%02d",
-            global.server.server_repo, client_number);
-    assert(test_and_create(storepath) == 0);
-
     now = time(&now);
     assert(now != -1);
-
     tmptr = localtime(&now);
     assert(tmptr != NULL);
-    sprintf(filepath, "%s/%04d%02d%02d%02d%02d%02d.h264",
-            storepath,
-            tmptr->tm_year + 1900,
-            tmptr->tm_mon + 1,
-            tmptr->tm_mday,
-            tmptr->tm_hour,
-            tmptr->tm_min,
-            tmptr->tm_sec);
+
+    if (strcmp(suffix, "jpg") == 0) {
+        sprintf(filepath, "%s/%04d%02d%02d%02d%02d%02d-%02d.%s",
+                storepath, 
+                tmptr->tm_year + 1900,
+                tmptr->tm_mon + 1,
+                tmptr->tm_mday,
+                tmptr->tm_hour,
+                tmptr->tm_min,
+                tmptr->tm_sec,
+                global.client.counter_in_second,
+                suffix);
+    } else {
+        sprintf(filepath, "%s/%04d%02d%02d%02d%02d%02d.%s",
+                storepath,
+                tmptr->tm_year + 1900,
+                tmptr->tm_mon + 1,
+                tmptr->tm_mday,
+                tmptr->tm_hour,
+                tmptr->tm_min,
+                tmptr->tm_sec,
+                suffix);
+    }
     assert(strlen(filepath) < PATH_MAX);
 
-    dmd_log(LOG_DEBUG, "in function %s, h264 filename is: %s\n",
+    dmd_log(LOG_DEBUG, "in function %s, get filename: %s\n",
            __func__, filepath);
 
     return filepath;
 }
 
-char *server_get_flv_filepath(int client_number)
-{
-    time_t now;
-    struct tm *tmptr;
-    // at linux/limits.h, #define PATH_MAX 4096
-    static char filepath[PATH_MAX];
-    char storepath[PATH_MAX];
-    sprintf(storepath, "%s/client-%02d",
-            global.server.server_repo, client_number);
-    assert(test_and_create(storepath) == 0);
-
-    now = time(&now);
-    assert(now != -1);
-
-    tmptr = localtime(&now);
-    assert(tmptr != NULL);
-    sprintf(filepath, "%s/%04d%02d%02d%02d%02d%02d.flv",
-            storepath,
-            tmptr->tm_year + 1900,
-            tmptr->tm_mon + 1,
-            tmptr->tm_mday,
-            tmptr->tm_hour,
-            tmptr->tm_min,
-            tmptr->tm_sec);
-    assert(strlen(filepath) < PATH_MAX);
-
-    dmd_log(LOG_DEBUG, "in function %s, h264 filename is: %s\n",
-           __func__, filepath);
-
-    return filepath;
-}

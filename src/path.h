@@ -55,14 +55,23 @@
 #include "log.h"
 #include "global_context.h"
 
-extern char *get_jpeg_filepath();
-extern char *get_h264_filepath();
-extern char *get_flv_filepath();
+// what type of this node, jpeg file, h264 file, or flv file;
+enum path_type {
+    JPEG_FILE = 1,
+    H264_FILE = 2,
+    FLV_FILE  = 3
+};
 
+// initialize and get client repository dir;
+extern int client_init_repodir();
+// path_type is member of enum path_type;
+extern char *client_get_filepath(int path_type);
+
+
+// initialize and get client repository dir;
 extern int server_init_repodir();
 extern int server_init_client_repodir(int client_number);
-extern char *server_get_h264_filepath(int client_number);
-extern char *server_get_flv_filepath(int client_number);
-
+// path_type is member of enum path_type;
+extern char *server_get_filepath(int path_type, int client_number);
 
 #endif

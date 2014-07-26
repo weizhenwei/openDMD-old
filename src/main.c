@@ -380,6 +380,7 @@ int main(int argc, char *argv[])
     if (global.cluster_mode == CLUSTER_CLIENT
             || global.cluster_mode == CLUSTER_SINGLETON) {
 
+        client_init_repodir();
         if (global.cluster_mode == CLUSTER_CLIENT) {
             client_rtp_init();
         }
