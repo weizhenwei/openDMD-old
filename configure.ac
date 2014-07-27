@@ -55,11 +55,10 @@ AC_FUNC_MALLOC
 AC_FUNC_MMAP
 AC_FUNC_REALLOC
 AC_FUNC_STRTOD
-AC_CHECK_FUNCS([atexit bzero clock_gettime ftime gethostbyname \
-                gethrtime gettimeofday inet_ntoa memmove memset \
-                mkdir munmap pow select setlocale socket sqrt \
-                strcasecmp strchr strcspn strdup strerror \
-                strncasecmp strpbrk strspn strstr strtol])
+AC_CHECK_FUNCS([atexit bzero clock_gettime ftime gethostbyname gethrtime \
+                gettimeofday inet_ntoa memmove memset mkdir munmap pow \
+                select setlocale socket sqrt strcasecmp strchr strcspn \
+                strdup strerror strncasecmp strpbrk strspn strstr strtol])
 
 # set CFLAGS.
 CFLAGS="-Wall -ggdb3 -std=gnu99 "

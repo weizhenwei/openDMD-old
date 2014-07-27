@@ -48,7 +48,7 @@ static int test_and_mkdir(const char *path)
     while (*ptr != '/' && ptr > path) {
         ptr--;
     }
-    char *parent = strndup(path, ptr - path);
+    char *parent = strndupa(path, ptr - path); // no need to free manually
     assert(parent != NULL);
     dmd_log(LOG_DEBUG, "in function %s, parent path is %s\n",
             __func__, parent);
@@ -59,7 +59,6 @@ static int test_and_mkdir(const char *path)
         if (access(path, F_OK) == 0) { // path exist, just return
             dmd_log(LOG_DEBUG, "in function %s, dir %s existed already\n",
                     __func__, path);
-            free(parent);
             return 0;
         } else { // else just mkdir path;
             if (mkdir(path, 0755) == -1) {
@@ -76,7 +75,6 @@ static int test_and_mkdir(const char *path)
         // first mkdir parent;
         int ret = test_and_mkdir(parent);
         if (ret == -1) {
-            free(parent); // remember to free parent;
             return ret;
         }
 
@@ -91,7 +89,6 @@ static int test_and_mkdir(const char *path)
         }
     }
 
-    free(parent);
 
     return 0;
 }

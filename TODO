@@ -1,7 +1,6 @@
 2014.07.23:
     Urgent: Avoid unnecessary memory copy when converting YUYV422 
             to RGB888 or YUV420.
-    Urgent: check config item's integrity, especially path's correctness;
 
 2014.07.21:
     Urgent: Avoid unnecessary memory copy when converting YUYV422 

@@ -42,6 +42,8 @@
 #ifndef PATH_H
 #define PATH_H
 
+#define _GNU_SOURCE  // for strndupa() function;
+
 #include <time.h>
 #include <stdio.h>
 #include <assert.h>
