@@ -46,7 +46,7 @@ enum video_capturing_type video_capturing_switch = VIDEO_CAPTURING_OFF;
 void *video_thread(void *arg)
 {
     int ret = -1;
-    static char *h264_filepath;
+    struct path_t *flv_filepath = NULL;
     enum main_notify_target notify = NOTIFY_NONE;
 
     for (;;) {
@@ -65,12 +65,22 @@ void *video_thread(void *arg)
             if (video_capturing_switch == VIDEO_CAPTURING_OFF) {
                 // switch on video capturing state and refresh h264 filename;
                 video_capturing_switch = VIDEO_CAPTURING_ON;
-                h264_filepath = client_get_filepath(H264_FILE);
-                assert(h264_filepath != NULL);
 
+                if (flv_filepath != NULL) {
+                    free(flv_filepath->path);
+                    flv_filepath->path = NULL;
+                    free(flv_filepath);
+                    flv_filepath = NULL;
+                }
+
+                flv_filepath = client_get_filepath(FLV_FILE);
+                assert(flv_filepath != NULL);
+
+                dmd_log(LOG_INFO, "in %s, write a video frame to %s\n",
+                        __func__, flv_filepath->path);
                 dmd_log(LOG_INFO, "in function %s, encapsulate flvheader\n",
                         __func__);
-                encapulate_flvheader(h264_filepath);
+                encapulate_flvheader(flv_filepath->path);
             }
 
             int width = global.client.image_width;
@@ -88,9 +98,9 @@ void *video_thread(void *arg)
 
             // and encode Planar YUV420P frame to H264 format, using libx264
             dmd_log(LOG_INFO, "in %s, encode a frame to %s\n",
-                    __func__, h264_filepath);
+                    __func__, flv_filepath->path);
             ret = encode_yuv420p(global.client.yuv420pbuffer, width, height,
-                    h264_filepath);
+                    flv_filepath->path);
             assert(ret == 0);
 
         } else if (notify == NOTIFY_EXIT) {
@@ -102,6 +112,13 @@ void *video_thread(void *arg)
         notify = NOTIFY_NONE;
 
         pthread_mutex_unlock(&global.client.thread_attr.video_mutex);
+    } // for
+
+    if (flv_filepath != NULL) {
+        free(flv_filepath->path);
+        flv_filepath->path = NULL;
+        free(flv_filepath);
+        flv_filepath = NULL;
     }
 
     pthread_exit(NULL);

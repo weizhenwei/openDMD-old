@@ -113,9 +113,15 @@ static int deal_with_client(int i, uint32_t user_ts)
             time_t now = time(&now);
             assert(now != -1);
             if (now - lasttime > last_duration) {
-                char *filename = server_get_filepath(H264_FILE, i+1);
+                struct path_t *filename = server_get_filepath(H264_FILE, i+1);
+                assert(filename != NULL);
                 strncpy(global.server.client_items[i].filename,
-                        filename, strlen(filename));
+                        filename->path, strlen(filename->path));
+
+                free(filename->path);
+                filename->path = NULL;
+                free(filename);
+                filename = NULL;
             }
 
             global.server.client_items[i].lasttime = now;

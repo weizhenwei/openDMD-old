@@ -99,10 +99,9 @@ int client_init_repodir()
     return test_and_mkdir(global.client.client_repo);
 }
 
-char *client_get_filepath(int path_type)
+struct path_t *client_get_filepath(int path_type)
 {
-    // static variable filepath, return many times;
-    static char filepath[PATH_MAX]; // #define PATH_MAX 4096 at linux/limits.h
+    char filepath[PATH_MAX]; // #define PATH_MAX 4096 at linux/limits.h
     char storepath[PATH_MAX];
 
     char *suffix = NULL;
@@ -152,10 +151,18 @@ char *client_get_filepath(int path_type)
     }
     assert(strlen(filepath) < PATH_MAX);
 
+    struct path_t *path = (struct path_t *)malloc(sizeof(struct path_t));
+    assert(path != NULL);
+    int len = strlen(filepath);
+    path->path = (char *)malloc(sizeof(char) * (len + 1));
+    assert(path->path != NULL);
+    strcpy(path->path, filepath);
+    path->len = len;
+
     dmd_log(LOG_DEBUG, "in function %s, get filename: %s\n",
            __func__, filepath);
 
-    return filepath;
+    return path;
 }
 
 
@@ -178,10 +185,9 @@ int server_init_client_repodir(int client_number)
 }
 
 
-char *server_get_filepath(int path_type, int client_number)
+struct path_t *server_get_filepath(int path_type, int client_number)
 {
-    // static variable filepath, return many times;
-    static char filepath[PATH_MAX]; // #define PATH_MAX 4096 at linux/limits.h
+    char filepath[PATH_MAX]; // #define PATH_MAX 4096 at linux/limits.h
     char storepath[PATH_MAX];
 
     char *suffix = NULL;
@@ -232,9 +238,17 @@ char *server_get_filepath(int path_type, int client_number)
     }
     assert(strlen(filepath) < PATH_MAX);
 
+    struct path_t *path = (struct path_t *)malloc(sizeof(struct path_t));
+    assert(path != NULL);
+    int len = strlen(filepath);
+    path->path = (char *)malloc(sizeof(char) * (len + 1));
+    assert(path->path != NULL);
+    strcpy(path->path, filepath);
+    path->len = len;
+
     dmd_log(LOG_DEBUG, "in function %s, get filename: %s\n",
            __func__, filepath);
 
-    return filepath;
+    return path;
 }
 

@@ -44,7 +44,7 @@
 void *picture_thread(void *arg)
 {
     int ret = -1;
-    char *jpeg_filepath = NULL;
+    struct path_t *jpeg_filepath = NULL;
     enum main_notify_target notify = NOTIFY_NONE;
 
     for (;;) {
@@ -76,12 +76,17 @@ void *picture_thread(void *arg)
 
             // write to jpeg file;
             jpeg_filepath = client_get_filepath(JPEG_FILE);
+            assert(jpeg_filepath != NULL);
             dmd_log(LOG_INFO, "in %s, write a jpegfile to %s\n",
-                    __func__, jpeg_filepath);
-            ret = write_jpeg(jpeg_filepath, global.client.rgbbuffer, 100,
+                    __func__, jpeg_filepath->path);
+            ret = write_jpeg(jpeg_filepath->path, global.client.rgbbuffer, 100,
                     width, height, 0);
             assert(ret == 0);
 
+            free(jpeg_filepath->path);
+            jpeg_filepath->path = NULL;
+            free(jpeg_filepath);
+            jpeg_filepath = NULL;
         } else if (notify == NOTIFY_EXIT) {
             // signal or main thread told us exit;
             dmd_log(LOG_INFO, "in %s, thread to exit\n", __func__);
@@ -91,7 +96,7 @@ void *picture_thread(void *arg)
         notify = NOTIFY_NONE;
 
         pthread_mutex_unlock(&global.client.thread_attr.picture_mutex);
-    }
+    } // for
 
     pthread_exit(NULL);
 }

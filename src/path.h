@@ -64,16 +64,21 @@ enum path_type {
     FLV_FILE  = 3
 };
 
+struct path_t {
+    char *path;
+    unsigned int len;
+};
+
 // initialize and get client repository dir;
 extern int client_init_repodir();
 // path_type is member of enum path_type;
-extern char *client_get_filepath(int path_type);
+extern struct path_t *client_get_filepath(int path_type);
 
 
 // initialize and get client repository dir;
 extern int server_init_repodir();
 extern int server_init_client_repodir(int client_number);
 // path_type is member of enum path_type;
-extern char *server_get_filepath(int path_type, int client_number);
+extern struct path_t *server_get_filepath(int path_type, int client_number);
 
 #endif
