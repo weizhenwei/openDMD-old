@@ -511,63 +511,64 @@ static int write_nals(const char *h264file, x264_nal_t *nals, int nnal,
     return 0;
 }
 
+static void x264_param_config(x264_param_t *param, int width, int height)
+{
+    // int fps = 25;  // 25 frames per second;
+    int fps = global.x264_fps;
+    x264_param_default_preset(param, "veryfast", "zerolatency");
+
+    // basic settings;
+    param->i_csp = X264_CSP_I420;
+    param->i_threads = 1;
+    param->i_width = width;
+    param->i_height = height;
+    param->i_fps_num = fps;
+    param->i_fps_den = 1;
+    param->i_log_level = X264_LOG_WARNING;
+
+    // intra refres
+    param->i_keyint_max = fps;
+    param->b_intra_refresh = 1;
+    
+    // param->i_slice_max_size = 1400;
+    // if (global.cluster_mode == CLUSTER_CLIENT) {
+    //     // limit each nalu slice length < 1400, including nalu header,
+    //     // so that sending UDP without packet fragmented;
+    //     param->i_slice_max_size = 1400;
+    // }
+
+    // for rate control;
+    // ABR method generate low quality of video;
+    // param->rc.i_rc_method = X264_RC_ABR;
+    // param->rc.i_bitrate = 256; // bitrate, in kbps(kilobits per second);
+    param->rc.i_rc_method = X264_RC_CRF;
+    param->rc.f_rf_constant = 25;
+    param->rc.f_rf_constant_max = 35;
+
+    // for streaming;
+    param->b_repeat_headers = 1;
+    param->b_annexb = 1;
+    // param->b_repeat_headers = 0;
+    // param->b_annexb = 0;
+
+    x264_param_apply_profile(param, "baseline");
+
+}
+
 // encode Planar YUV420P to H264 foramt using libx264
 int encode_yuv420p(uint8_t *yuv420p, int width, int height,
         const char *h264file)
 {
-    // int fps = 25;  // 25 frames per second;
-    int fps = global.x264_fps;
     x264_t *encoder;
     x264_picture_t pic_in, pic_out;
 
     // initialize param;
     x264_param_t param;
-    x264_param_default_preset(&param, "veryfast", "zerolatency");
+    x264_param_config(&param, width, height);
     
-    // basic settings;
-    param.i_csp = X264_CSP_I420;
-    param.i_threads = 1;
-    param.i_width = width;
-    param.i_height = height;
-    param.i_fps_num = fps;
-    param.i_fps_den = 1;
-    param.i_log_level = X264_LOG_WARNING;
-
-
-    // intra refres
-    param.i_keyint_max = fps;
-    param.b_intra_refresh = 1;
-    
-    // param.i_slice_max_size = 1400;
-    // if (global.cluster_mode == CLUSTER_CLIENT) {
-    //     // limit each nalu slice length < 1400, including nalu header,
-    //     // so that sending UDP without packet fragmented;
-    //     param.i_slice_max_size = 1400;
-    // }
-
-    // for rate control;
-    // ABR method generate low quality of video;
-    // param.rc.i_rc_method = X264_RC_ABR;
-    // param.rc.i_bitrate = 256; // bitrate, in kbps(kilobits per second);
-    param.rc.i_rc_method = X264_RC_CRF;
-    param.rc.f_rf_constant = 25;
-    param.rc.f_rf_constant_max = 35;
-
-    // for streaming;
-    param.b_repeat_headers = 1;
-    param.b_annexb = 1;
-    // param.b_repeat_headers = 0;
-    // param.b_annexb = 0;
-
-    x264_param_apply_profile(&param, "baseline");
-
     // create encoder;
     encoder = x264_encoder_open(&param);
-
     x264_picture_alloc(&pic_in, X264_CSP_I420, width, height);
-
-    // WARNING: this caused a memory leak!
-    // pic_in.img.plane[0] = yuv420p;
 
     // yuv420p in YUV420P format;
     memcpy(pic_in.img.plane[0], yuv420p, width * height * 1.5);
