@@ -195,8 +195,8 @@ static void daemonize()
 static void register_clean_memory()
 {
     if (atexit(release_default_global) != 0) {
-        dmd_log(LOG_ERR, "%s\n",
-                "register function release_default_global at atexit error");
+        dmd_log(LOG_ERR, "%s\n", "register function "
+                "release_default_global at atexit error");
     }
 }
 
