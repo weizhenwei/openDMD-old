@@ -1,3 +1,9 @@
+2014.07.30:
+    Urgent: continue working on libx264!
+    Urgent: Avoid unnecessary memory copy when converting YUYV422 
+            to RGB888 or YUV420.
+    Urgent: add reload config file to project!
+
 2014.07.27:
     Urgent: continue working on libx264!
     Urgent: Avoid unnecessary memory copy when converting YUYV422 

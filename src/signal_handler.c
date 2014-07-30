@@ -96,14 +96,23 @@ static void sigint_handler(int signal)
     exit(EXIT_FAILURE);
 }
 
+static void sighup_handler(int signal)
+{
+    // TODO: reload config file;
+
+    dmd_log(LOG_INFO, "reload config file\n");
+}
+
 void signal_init()
 {
     signal(SIGPIPE, SIG_IGN);
-    signal(SIGHUP, SIG_DFL);
     signal(SIGTERM, SIG_DFL);
 
     // signal Ctrl+C, capture it manually;
     signal(SIGINT, sigint_handler);
+
+    // SIGHUP handler, reload config file;
+    signal(SIGHUP, sighup_handler);
 }
 
 void signal_register(int sig, void (*sighandler)(int))
