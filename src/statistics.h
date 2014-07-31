@@ -42,4 +42,29 @@
 #ifndef STATISTICS_H
 #define STATISTICS_H
 
+#include <time.h>
+#include <assert.h>
+#include <stdint.h>
+
+#include "global_context.h"
+#include "log.h"
+
+struct motion_t {
+    time_t start;  // start time of motion;
+    time_t end;    // end time of motion;
+    uint64_t pictures; // for picture_thread use;
+    uint64_t video_frames; // for video_thread use;
+
+    struct motion_t *next; // for next node;
+};
+
+struct stats {
+    struct motion_t *motion_list;
+    uint32_t num_motions;
+    uint64_t total_pictures; // for picture_thread statistics;
+    uint64_t total_video_frames; // for video_thread statistics;
+};
+
+extern void dump_statistics(const struct stats *stats);
+
 #endif

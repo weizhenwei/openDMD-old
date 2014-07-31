@@ -40,3 +40,13 @@
  */
 
 #include "statistics.h"
+
+
+void dump_statistics(const struct stats *stats)
+{
+    // TODO: fulfill this function later!
+    dmd_log(LOG_INFO, "in function %s, Detected %d motions:\n",
+            __func__, stats->num_motions);
+}
+
+

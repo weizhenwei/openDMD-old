@@ -47,11 +47,11 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_opendmd_OBJECTS = main.$(OBJEXT) config.$(OBJEXT) log.$(OBJEXT) \
 	path.$(OBJEXT) global_context.$(OBJEXT) parser.$(OBJEXT) \
-	v4l2_utils.$(OBJEXT) signal_handler.$(OBJEXT) video.$(OBJEXT) \
-	image_convert.$(OBJEXT) image_capture.$(OBJEXT) \
-	picture_thread.$(OBJEXT) flv_muxer.$(OBJEXT) libx264.$(OBJEXT) \
-	video_thread.$(OBJEXT) rtp_send.$(OBJEXT) rtp_recv.$(OBJEXT) \
-	rtp_server.$(OBJEXT)
+	v4l2_utils.$(OBJEXT) signal_handler.$(OBJEXT) \
+	statistics.$(OBJEXT) video.$(OBJEXT) image_convert.$(OBJEXT) \
+	image_capture.$(OBJEXT) picture_thread.$(OBJEXT) \
+	flv_muxer.$(OBJEXT) libx264.$(OBJEXT) video_thread.$(OBJEXT) \
+	rtp_send.$(OBJEXT) rtp_recv.$(OBJEXT) rtp_server.$(OBJEXT)
 opendmd_OBJECTS = $(am_opendmd_OBJECTS)
 opendmd_DEPENDENCIES = $(top_srcdir)/libjpeg/libjpeg.a \
 	$(top_srcdir)/libx264/libx264.a \
@@ -178,6 +178,7 @@ opendmd_SOURCES = main.c \
                   global_context.h global_context.c \
 				  parser.h parser.c v4l2_utils.h v4l2_utils.c \
                   signal_handler.h signal_handler.c \
+				  statistics.h statistics.c \
                   client/video.h client/video.c \
                   client/image_convert.h client/image_convert.c \
                   client/image_capture.h client/image_capture.c \
@@ -285,6 +286,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtp_send.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtp_server.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/signal_handler.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/statistics.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/v4l2_utils.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/video.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/video_thread.Po@am__quote@
