@@ -65,6 +65,12 @@ struct stats {
     uint64_t total_video_frames; // for video_thread statistics;
 };
 
+extern struct stats global_stats;
+
+// add struct motion_t motion to struct stats stats
+extern int add_motion(struct stats *stats, struct motion_t *motion);
+
+
 extern void dump_statistics(const struct stats *stats);
 
 #endif

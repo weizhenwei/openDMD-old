@@ -41,6 +41,41 @@
 
 #include "statistics.h"
 
+struct stats global_stats = {
+    .motion_list = NULL,
+    .num_motions = 0,
+    .total_pictures = 0,
+    .total_video_frames = 0
+};
+
+// add struct motion_t motion to struct stats stats
+int add_motion(struct stats *stats, struct motion_t *motion)
+{
+    assert(stats != NULL);
+    assert(motion != NULL);
+
+    if (stats->motion_list == NULL) { // motion is the first;
+        stats->motion_list = motion;
+        stats->num_motions = 1;
+        stats->total_pictures = motion->pictures;
+        stats->total_video_frames = motion->video_frames;
+    } else { // insert motion at head of stats->motion_list;
+        motion->next = stats->motion_list;
+        stats->motion_list = motion;
+        stats->num_motions += 1;
+        stats->total_pictures += motion->pictures;
+        stats->total_video_frames += motion->video_frames;
+    }
+
+    return 0;
+}
+
+static void dump_motion(const struct motion_t *motion)
+{
+
+    // TODO: fulfill this function later!
+    return ;
+}
 
 void dump_statistics(const struct stats *stats)
 {
