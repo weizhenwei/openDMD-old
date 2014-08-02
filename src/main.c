@@ -66,6 +66,7 @@
 #include "global_context.h"
 #include "picture_thread.h"
 #include "signal_handler.h"
+#include "statistics.h"
 
 #include "rtp_send.h"
 #include "rtp_server.h"

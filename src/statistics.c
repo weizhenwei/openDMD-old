@@ -41,12 +41,46 @@
 
 #include "statistics.h"
 
+#if 0
 struct stats global_stats = {
     .motion_list = NULL,
     .num_motions = 0,
     .total_pictures = 0,
     .total_video_frames = 0
 };
+#endif
+
+struct stats *new_statistics()
+{
+    struct stats *stats = (struct stats *)malloc(sizeof(struct stats));
+    assert(stats != NULL);
+    bzero(stats, sizeof(stats));
+
+    stats->motion_list = NULL;
+    stats->num_motions = 0;
+    stats->total_pictures = 0;
+    stats->total_video_frames = 0;
+
+    return stats;
+}
+
+// create a new struct motion_t
+struct motion_t *new_motion(time_t start, const char *video_path)
+{
+    struct motion_t *motion = (struct motion_t *)malloc(sizeof(struct motion_t));
+    assert(motion != NULL);
+    bzero(motion, sizeof(struct motion_t));
+
+    motion->start = start;
+    motion->end = 0;
+    motion->pictures = 0;
+    motion->video_frames = 0;
+    // when calling strdup, remember to free later!
+    motion->video_path = strdup(video_path);
+    motion->next = NULL;
+
+    return motion;
+}
 
 // add struct motion_t motion to struct stats stats
 int add_motion(struct stats *stats, struct motion_t *motion)
@@ -104,4 +138,24 @@ void dump_statistics(const struct stats *stats)
     assert(i = stats->num_motions);
 }
 
+// release memory
+void release_statistics(struct stats *stats)
+{
+    struct motion_t *motion = stats->motion_list;
+    struct motion_t *m = motion;
+    while (motion != NULL) {
+        m = motion;
+        motion = motion->next;
+
+        if (m->video_path != NULL) {
+            free(m->video_path);
+            m->video_path = NULL;
+        }
+
+        free(m);
+        m = NULL;
+    }
+
+    free(stats);
+}
 

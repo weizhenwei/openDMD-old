@@ -42,9 +42,12 @@
 #ifndef STATISTICS_H
 #define STATISTICS_H
 
+#include <stdlib.h>
 #include <time.h>
 #include <assert.h>
 #include <stdint.h>
+#include <string.h>
+#include <strings.h>
 
 #include "global_context.h"
 #include "log.h"
@@ -69,12 +72,21 @@ struct stats {
     uint64_t total_video_frames; // for video_thread statistics;
 };
 
-extern struct stats global_stats;
+extern struct stats *global_stats;
+
+extern struct stats *new_statistics();
+
+// create a new struct motion_t
+extern struct motion_t *new_motion(time_t start, const char *video_path);
 
 // add struct motion_t motion to struct stats stats
 extern int add_motion(struct stats *stats, struct motion_t *motion);
 
 
 extern void dump_statistics(const struct stats *stats);
+
+// release memory
+extern void release_statistics(struct stats *stats);
+
 
 #endif
