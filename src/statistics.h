@@ -30,7 +30,7 @@
  *
  * File: statistics.h
  *
- * Brief: file path operation for storing picture and video. 
+ * Brief: motion detection statistics while opendmd is running;
  *
  * Date: 2014.07.31
  *
@@ -50,10 +50,14 @@
 #include "log.h"
 
 struct motion_t {
+    // public
     time_t start;  // start time of motion;
     time_t end;    // end time of motion;
     uint64_t pictures; // for picture_thread use;
     uint64_t video_frames; // for video_thread use;
+
+    // private
+    char *video_path;      // for showing video path?
 
     struct motion_t *next; // for next node;
 };

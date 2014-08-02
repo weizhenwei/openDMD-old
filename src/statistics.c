@@ -30,7 +30,7 @@
  *
  * File: statistics.c
  *
- * Brief: file path operation for storing picture and video. 
+ * Brief: motion detection statistics while opendmd is running;
  *
  * Date: 2014.07.31
  *
@@ -72,16 +72,36 @@ int add_motion(struct stats *stats, struct motion_t *motion)
 
 static void dump_motion(const struct motion_t *motion)
 {
+    dmd_log(LOG_INFO, "motion start time:%s\n",
+            ctime((const time_t *) &motion->start));
+    dmd_log(LOG_INFO, "motion end time:%s\n",
+            ctime((const time_t *) &motion->end));
+    dmd_log(LOG_INFO, "motion with %d pictures captured\n",
+            motion->pictures);
+    dmd_log(LOG_INFO, "motion with %d video frames captured\n",
+            motion->video_frames);
 
-    // TODO: fulfill this function later!
     return ;
 }
 
 void dump_statistics(const struct stats *stats)
 {
-    // TODO: fulfill this function later!
-    dmd_log(LOG_INFO, "in function %s, Detected %d motions:\n",
-            __func__, stats->num_motions);
+    dmd_log(LOG_INFO, "in function %s, dump the statistics "
+            "while opendmd is running:\n", __func__);
+    dmd_log(LOG_INFO, "Detected %d motions:\n", stats->num_motions);
+    dmd_log(LOG_INFO, "Captured total %d pictures\n", stats->total_pictures);
+    dmd_log(LOG_INFO, "Captured total %d video frames\n",
+            stats->total_video_frames);
+    dmd_log(LOG_INFO, "Each motion displays as following:\n");
+    int i = 0;
+    struct motion_t *m = stats->motion_list;
+    while (m != NULL) {
+        i++;
+        dmd_log(LOG_INFO, "Dump motion %d:\n", i);
+        dump_motion(m);
+        m = m->next;
+    }
+    assert(i = stats->num_motions);
 }
 
 
