@@ -67,22 +67,31 @@ struct motion_t {
 
 struct stats {
     struct motion_t *motion_list;
+    struct motion_t *current_motion;
     uint32_t num_motions;
     uint64_t total_pictures; // for picture_thread statistics;
     uint64_t total_video_frames; // for video_thread statistics;
 };
 
+// global statistics variable;
 extern struct stats *global_stats;
 
-extern struct stats *new_statistics();
-
-// create a new struct motion_t
-extern struct motion_t *new_motion(time_t start, const char *video_path);
-
+// struct motion_t operations;
+extern struct motion_t *new_motion();
+extern void set_motion_start_time(struct motion_t *motion,
+        const time_t start_time);
+extern void set_motion_end_time(struct motion_t *motion,
+        const time_t end_time);
+extern void increase_motion_pictures(struct motion_t *motion);
+extern void increase_motion_video_frames(struct motion_t *motion);
+extern void set_motion_videopath(struct motion_t *motion,
+        const char *video_path);
 // add struct motion_t motion to struct stats stats
 extern int add_motion(struct stats *stats, struct motion_t *motion);
 
 
+extern struct stats *new_statistics();
+// at the end of programming running, dump the statistics;
 extern void dump_statistics(const struct stats *stats);
 
 // release memory

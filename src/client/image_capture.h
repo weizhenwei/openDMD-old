@@ -63,6 +63,7 @@
 #include "picture_thread.h"
 #include "signal_handler.h"
 #include "video_thread.h"
+#include "statistics.h"
 
 extern int process_image(void *yuyv, int length, int width, int height);
 

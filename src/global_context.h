@@ -57,6 +57,7 @@
 #include <ortp/ortp.h>
 
 #include "log.h"
+#include "statistics.h"
 
 /////////////////////////////////////////////////////////////
 // Common default settings                                 //

@@ -419,4 +419,8 @@ void release_default_global()
         release_server();
     }
 
+
+    // dump and release global statistics;
+    dump_statistics(global_stats);
+    release_statistics(global_stats);
 }

@@ -220,6 +220,9 @@ static void init(void)
     // reigister clean memory function;
     register_clean_memory();
 
+    // init statistics global variable;
+    global_stats = new_statistics();
+
     // daemonize;
     if (global.daemon_mode == DAEMON_ON) {
         daemonize();

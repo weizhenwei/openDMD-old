@@ -49,6 +49,8 @@ struct stats global_stats = {
     .total_video_frames = 0
 };
 #endif
+// global statistics variable;
+struct stats *global_stats = NULL;
 
 struct stats *new_statistics()
 {
@@ -57,6 +59,7 @@ struct stats *new_statistics()
     bzero(stats, sizeof(stats));
 
     stats->motion_list = NULL;
+    stats->current_motion = NULL;
     stats->num_motions = 0;
     stats->total_pictures = 0;
     stats->total_video_frames = 0;
@@ -64,22 +67,45 @@ struct stats *new_statistics()
     return stats;
 }
 
+// struct motion_t operations;
 // create a new struct motion_t
-struct motion_t *new_motion(time_t start, const char *video_path)
+struct motion_t *new_motion()
 {
     struct motion_t *motion = (struct motion_t *)malloc(sizeof(struct motion_t));
     assert(motion != NULL);
     bzero(motion, sizeof(struct motion_t));
 
-    motion->start = start;
+    motion->start = 0;
     motion->end = 0;
     motion->pictures = 0;
     motion->video_frames = 0;
     // when calling strdup, remember to free later!
-    motion->video_path = strdup(video_path);
+    motion->video_path = NULL;
     motion->next = NULL;
 
     return motion;
+}
+void set_motion_start_time(struct motion_t *motion, const time_t start_time)
+{
+    motion->start = start_time;
+}
+void set_motion_end_time(struct motion_t *motion, const time_t end_time)
+{
+    motion->end = end_time;
+}
+void increase_motion_pictures(struct motion_t *motion)
+{
+    motion->pictures++;
+}
+void increase_motion_video_frames(struct motion_t *motion)
+{
+    motion->video_frames++;
+}
+void set_motion_videopath(struct motion_t *motion, const char *video_path)
+{
+    // WARNING: when calling strdup, remember to free later!
+    motion->video_path = strdup(video_path);
+    assert(motion->video_path != NULL);
 }
 
 // add struct motion_t motion to struct stats stats
@@ -120,22 +146,28 @@ static void dump_motion(const struct motion_t *motion)
 
 void dump_statistics(const struct stats *stats)
 {
-    dmd_log(LOG_INFO, "in function %s, dump the statistics "
-            "while opendmd is running:\n", __func__);
-    dmd_log(LOG_INFO, "Detected %d motions:\n", stats->num_motions);
-    dmd_log(LOG_INFO, "Captured total %d pictures\n", stats->total_pictures);
-    dmd_log(LOG_INFO, "Captured total %d video frames\n",
+    dmd_log(LOG_INFO, "****************************AT END"
+            "****************************\n");
+    dmd_log(LOG_INFO, "DUMP the motion detection statistics "
+            "while opendmd was running:\n");
+    dmd_log(LOG_INFO, "Detected %d motions.\n", stats->num_motions);
+    dmd_log(LOG_INFO, "Captured total %d pictures.\n", stats->total_pictures);
+    dmd_log(LOG_INFO, "Captured total %d video frames.\n",
             stats->total_video_frames);
-    dmd_log(LOG_INFO, "Each motion displays as following:\n");
-    int i = 0;
-    struct motion_t *m = stats->motion_list;
-    while (m != NULL) {
-        i++;
-        dmd_log(LOG_INFO, "Dump motion %d:\n", i);
-        dump_motion(m);
-        m = m->next;
+
+    if (stats->num_motions > 0) {
+        dmd_log(LOG_INFO, "Each motion displays as following:\n");
+
+        int i = 0;
+        struct motion_t *m = stats->motion_list;
+        while (m != NULL) {
+            i++;
+            dmd_log(LOG_INFO, "Dump motion %d:\n", i);
+            dump_motion(m);
+            m = m->next;
+        }
+        assert(i == stats->num_motions);
     }
-    assert(i = stats->num_motions);
 }
 
 // release memory
@@ -154,6 +186,14 @@ void release_statistics(struct stats *stats)
 
         free(m);
         m = NULL;
+    }
+    if (stats->current_motion != NULL) {
+        if (stats->current_motion->video_path != NULL) {
+            free(stats->current_motion->video_path);
+            stats->current_motion->video_path = NULL;
+        }
+
+        free(stats->current_motion);
     }
 
     free(stats);
