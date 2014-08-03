@@ -74,6 +74,11 @@ AS_IF([test "x$enable_debug" = "xyes"], [CFLAGS+="-DDEBUG "],
       [echo "enable-debug with wrong value"]
       )
 
+# add code-coverage info to gcc options;
+AS_IF([test "x$enable_debug" = "xyes"], [CFLAGS+="-fprofile-arcs -ftest-coverage"],
+      [test "x$enable_debug" = "xno"], [CFLAGS+=" "],
+      [echo "enable-debug with wrong value"]
+      )
 
 #Attention: this is import, list the Makefile need to generate
 AC_CONFIG_FILES([Makefile

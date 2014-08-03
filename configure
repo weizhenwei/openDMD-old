@@ -5603,8 +5603,7 @@ fi
 for ac_func in atexit bzero clock_gettime ftime gethostbyname gethrtime \
                 gettimeofday inet_ntoa memmove memset mkdir munmap pow \
                 select setlocale socket sqrt strcasecmp strchr strcspn \
-                strdup strerror strncasecmp strndup strpbrk strspn strstr \
-                strtol
+                strdup strerror strncasecmp strpbrk strspn strstr strtol
 do :
   as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
 ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
@@ -5638,6 +5637,15 @@ else
 
 fi
 
+# add code-coverage info to gcc options;
+if test "x$enable_debug" = "xyes"; then :
+  CFLAGS+="-fprofile-arcs -ftest-coverage"
+elif test "x$enable_debug" = "xno"; then :
+  CFLAGS+=" "
+else
+  echo "enable-debug with wrong value"
+
+fi
 
 #Attention: this is import, list the Makefile need to generate
 ac_config_files="$ac_config_files Makefile libjpeg/Makefile libortp/Makefile libortp/include/Makefile libortp/include/ortp/Makefile libortp/src/Makefile libortp/test/Makefile libx264/Makefile libx264/common/Makefile libx264/encoder/Makefile libx264/output/Makefile src/Makefile"
