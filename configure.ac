@@ -62,6 +62,9 @@ AC_CHECK_FUNCS([atexit bzero clock_gettime ftime gethostbyname gethrtime \
 
 # set CFLAGS.
 CFLAGS="-Wall -ggdb3 -std=gnu99 "
+# set LDFLAGS.
+LDFLAGS=
+
 
 # add --enable-debug option.
 AC_ARG_ENABLE( [debug], 
@@ -74,10 +77,17 @@ AS_IF([test "x$enable_debug" = "xyes"], [CFLAGS+="-DDEBUG "],
       [echo "enable-debug with wrong value"]
       )
 
+# add --enable-gcov option.
+AC_ARG_ENABLE( [gcov], 
+	      AS_HELP_STRING([--enable-gcov], [enable gcov code-coverage(default=no)]),
+	      [enable_debug=yes],
+	      [enable_debug=no]
+	      )
 # add code-coverage info to gcc options;
-AS_IF([test "x$enable_debug" = "xyes"], [CFLAGS+="-fprofile-arcs -ftest-coverage"],
-      [test "x$enable_debug" = "xno"], [CFLAGS+=" "],
-      [echo "enable-debug with wrong value"]
+AS_IF([test "x$enable_gcov" = "xyes"], [CFLAGS+="-fprofile-arcs -ftest-coverage"
+       LDFLAGS+="-lgcov"],
+      [test "x$enable_gcov" = "xno"], [CFLAGS+=" " LDFLAGS+=" "],
+      [echo "enable-gcov with wrong value"]
       )
 
 #Attention: this is import, list the Makefile need to generate

@@ -696,6 +696,7 @@ ac_user_opts='
 enable_option_checking
 enable_dependency_tracking
 enable_debug
+enable_gcov
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1325,6 +1326,7 @@ Optional Features:
   --disable-dependency-tracking  speeds up one-time build
   --enable-dependency-tracking   do not reject slow dependency extractors
   --enable-debug          enable debug mode(default=no)
+  --enable-gcov           enable gcov code-coverage(default=no)
 
 Some influential environment variables:
   CC          C compiler command
@@ -5618,6 +5620,9 @@ done
 
 # set CFLAGS.
 CFLAGS="-Wall -ggdb3 -std=gnu99 "
+# set LDFLAGS.
+LDFLAGS=
+
 
 # add --enable-debug option.
 # Check whether --enable-debug was given.
@@ -5637,13 +5642,23 @@ else
 
 fi
 
-# add code-coverage info to gcc options;
-if test "x$enable_debug" = "xyes"; then :
-  CFLAGS+="-fprofile-arcs -ftest-coverage"
-elif test "x$enable_debug" = "xno"; then :
-  CFLAGS+=" "
+# add --enable-gcov option.
+# Check whether --enable-gcov was given.
+if test "${enable_gcov+set}" = set; then :
+  enableval=$enable_gcov; enable_debug=yes
 else
-  echo "enable-debug with wrong value"
+  enable_debug=no
+
+fi
+
+# add code-coverage info to gcc options;
+if test "x$enable_gcov" = "xyes"; then :
+  CFLAGS+="-fprofile-arcs -ftest-coverage"
+       LDFLAGS+="-lgcov"
+elif test "x$enable_gcov" = "xno"; then :
+  CFLAGS+=" " LDFLAGS+=" "
+else
+  echo "enable-gcov with wrong value"
 
 fi
 
