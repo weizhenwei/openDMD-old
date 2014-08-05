@@ -132,14 +132,18 @@ int add_motion(struct stats *stats, struct motion_t *motion)
 
 static void dump_motion(const struct motion_t *motion)
 {
-    dmd_log(LOG_INFO, "motion start time:%s\n",
+    dmd_log(LOG_INFO, "motion start time:%s",
             ctime((const time_t *) &motion->start));
-    dmd_log(LOG_INFO, "motion end time:%s\n",
+    dmd_log(LOG_INFO, "motion end time:%s",
             ctime((const time_t *) &motion->end));
     dmd_log(LOG_INFO, "motion with %d pictures captured\n",
             motion->pictures);
     dmd_log(LOG_INFO, "motion with %d video frames captured\n",
             motion->video_frames);
+    if (motion->video_path != NULL) {
+        dmd_log(LOG_INFO, "motion video path is:%s\n",
+                motion->video_path);
+    }
 
     return ;
 }

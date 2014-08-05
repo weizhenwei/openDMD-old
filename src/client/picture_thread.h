@@ -53,6 +53,7 @@
 #include "path.h"
 #include "image_convert.h"
 #include "global_context.h"
+#include "statistics.h"
 
 // from libjpeg library
 #include "jpeglib.h"

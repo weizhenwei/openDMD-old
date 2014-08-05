@@ -83,6 +83,12 @@ void *picture_thread(void *arg)
                     width, height, 0);
             assert(ret == 0);
 
+            // increase statistics data;
+#if defined(DEBUG)
+            assert(global_stats->current_motion != NULL);
+#endif
+            increase_motion_pictures(global_stats->current_motion);
+
             free(jpeg_filepath->path);
             jpeg_filepath->path = NULL;
             free(jpeg_filepath);

@@ -75,6 +75,13 @@ int process_image(void *yuyv, int length, int width, int height)
         
         dmd_log(LOG_INFO, "motion detected !\n");
 
+        // if this detection is the first capture in current motion,
+        // create struct motion_t variable;
+        if (global_stats->current_motion == NULL) {
+            global_stats->current_motion = new_motion();
+            set_motion_start_time(global_stats->current_motion, now);
+        }
+
         // first refresh detection time;
         if (global.client.working_mode == CAPTURE_PICTURE
                 || global.client.working_mode == CAPTURE_ALL) {
@@ -115,21 +122,61 @@ int process_image(void *yuyv, int length, int width, int height)
 
             // if video capturing is on, continue encode video;
             if (video_capturing_switch == VIDEO_CAPTURING_ON) {
+                dmd_log(LOG_INFO, "in function %s, notify video thread\n",
+                        __func__);
 
                 // then copy image to buffer, remember to lock it first;
-                pthread_rwlock_wrlock(&global.client.thread_attr.bufferYUYV_rwlock);
+                pthread_rwlock_wrlock(
+                        &global.client.thread_attr.bufferYUYV_rwlock);
                 memcpy(global.client.bufferingYUYV422, yuyv, length);
-                pthread_rwlock_unlock(&global.client.thread_attr.bufferYUYV_rwlock);
+                pthread_rwlock_unlock(
+                        &global.client.thread_attr.bufferYUYV_rwlock);
 
                 // only notify video thread;
                 notify_video();
             }
 
             // switch off when time elasped exceeds global.video_duration;
+            // which also means current motion stoped;
             if ((now - global.client.lasttime >= global.client.video_duration)
                     && (video_capturing_switch == VIDEO_CAPTURING_ON)) {
-                dmd_log(LOG_INFO, "switch video capture off\n");
+                dmd_log(LOG_INFO, "in function %s, switch video capture off\n",
+                        __func__);
+
                 video_capturing_switch = VIDEO_CAPTURING_OFF;
+
+                if (global_stats->current_motion != NULL) {
+                    // threee things to do:
+                    // 1. set motion end time
+                    // 2. add global_stats->current_motion to
+                    //    global_stats->motion_list
+                    // 3. set global_stats->current_motion to NULL;
+                    dmd_log(LOG_INFO,
+                            "set global_stats->current_motion to NULL\n");
+                    set_motion_end_time(global_stats->current_motion, now);
+                    add_motion(global_stats, global_stats->current_motion);
+                    global_stats->current_motion = NULL;
+                }
+            }
+
+
+
+        } else { // for only capturing picture the current motion is stoped;
+#if defined(DEBUG)
+            assert(global.client.working_mode == CAPTURE_PICTURE);
+#endif
+            if (global_stats->current_motion != NULL) {
+                // threee things to do:
+                // 1. set motion end time
+                // 2. add global_stats->current_motion
+                //    to global_stats->motion_list
+                // 3. set global_stats->current_motion to NULL;
+                dmd_log(LOG_INFO, "in function %s, line %d,"
+                        " set global_stats->current_motion to NULL\n",
+                        __func__, __LINE__);
+                set_motion_end_time(global_stats->current_motion, now);
+                add_motion(global_stats, global_stats->current_motion);
+                global_stats->current_motion = NULL;
             }
         }
     }

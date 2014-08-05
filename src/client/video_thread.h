@@ -54,6 +54,7 @@
 #include "libx264.h"
 #include "image_convert.h"
 #include "global_context.h"
+#include "statistics.h"
 #include "rtp_send.h"
 
 // switch on-off for controlling video capturing status;

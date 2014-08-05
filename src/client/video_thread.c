@@ -75,9 +75,15 @@ void *video_thread(void *arg)
 
                 flv_filepath = client_get_filepath(FLV_FILE);
                 assert(flv_filepath != NULL);
+                
+                // set global_stats->current_motion->videopath;
+#if defined(DEBUG)
+                assert(global_stats->current_motion != NULL);
+#endif
+                set_motion_videopath(global_stats->current_motion,
+                        flv_filepath->path);
 
-                dmd_log(LOG_INFO, "in %s, write a video frame to %s\n",
-                        __func__, flv_filepath->path);
+
                 dmd_log(LOG_INFO, "in function %s, encapsulate flvheader\n",
                         __func__);
                 encapulate_flvheader(flv_filepath->path);
@@ -102,6 +108,18 @@ void *video_thread(void *arg)
             ret = encode_yuv420p(global.client.yuv420pbuffer, width, height,
                     flv_filepath->path);
             assert(ret == 0);
+
+            // increase statistics data;
+            // if global_stats->current_motion is set to NULL already,
+            // it's moved to global_stats->motion_list;
+            // so increase_motion_video_frames at there!
+            // TODO: there may be problems here, check it later!
+            if (global_stats->current_motion == NULL) {
+                assert(global_stats->motion_list != NULL);
+                increase_motion_video_frames(global_stats->motion_list);
+            } else {
+                increase_motion_video_frames(global_stats->current_motion);
+            }
 
         } else if (notify == NOTIFY_EXIT) {
             // signal or main thread told us exit;
