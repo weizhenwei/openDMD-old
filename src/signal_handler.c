@@ -92,8 +92,8 @@ static void sigint_handler(int signal)
         assert(0);
     }
 
-    dmd_log(LOG_INFO, "captured SIGINT (Ctrl + C), program exit\n");
-    exit(EXIT_FAILURE);
+    dmd_log(LOG_INFO, "in function %s, "
+            "captured SIGINT (Ctrl + C), program exit\n", __func__);
 }
 
 static void sighup_handler(int signal)

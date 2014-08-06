@@ -93,15 +93,18 @@ void *picture_thread(void *arg)
             jpeg_filepath->path = NULL;
             free(jpeg_filepath);
             jpeg_filepath = NULL;
+
+            notify = NOTIFY_NONE;
+            pthread_mutex_unlock(&global.client.thread_attr.picture_mutex);
         } else if (notify == NOTIFY_EXIT) {
             // signal or main thread told us exit;
             dmd_log(LOG_INFO, "in %s, thread to exit\n", __func__);
+
+            notify = NOTIFY_NONE;
+            // remember to unlock the picture_mutex;
+            pthread_mutex_unlock(&global.client.thread_attr.picture_mutex);
             break;
         }
-
-        notify = NOTIFY_NONE;
-
-        pthread_mutex_unlock(&global.client.thread_attr.picture_mutex);
     } // for
 
     pthread_exit(NULL);

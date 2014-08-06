@@ -220,6 +220,8 @@ int dmd_image_capture(struct v4l2_device_info *v4l2_info)
     int height = v4l2_info->height;
     struct mmap_buffer *buffers = v4l2_info->buffers;
 
+    // client_running is global switchoff changed when 
+    // Ctrl + C signal generated;
     while (client_running == 1) {
         fd_set fds;
         struct timeval tv;
@@ -232,6 +234,7 @@ int dmd_image_capture(struct v4l2_device_info *v4l2_info)
         tv.tv_sec = 2;
         tv.tv_usec = 0;
 
+        // TODO: replace select with epoll invoking;
         r = select(fd + 1, &fds, NULL, NULL, &tv);
         if ( r == -1) {
             if (errno == EINTR)
@@ -246,6 +249,26 @@ int dmd_image_capture(struct v4l2_device_info *v4l2_info)
         if (read_frame(fd, buffers, width, height) == -1)
             break;
 
+    }
+    
+    dmd_log(LOG_INFO, "in %s, main thread exit\n", __func__);
+
+    // when exiting in main thread, remember to record the last motion info;
+    if (global_stats->current_motion != NULL) {
+        time_t now;
+        now = time(&now);
+        assert(now != -1);
+        // threee things to do:
+        // 1. set motion end time
+        // 2. add global_stats->current_motion
+        //    to global_stats->motion_list
+        // 3. set global_stats->current_motion to NULL;
+        dmd_log(LOG_INFO, "in function %s, line %d,"
+                " set global_stats->current_motion to NULL\n",
+                __func__, __LINE__);
+        set_motion_end_time(global_stats->current_motion, now);
+        add_motion(global_stats, global_stats->current_motion);
+        global_stats->current_motion = NULL;
     }
 
     return 0;

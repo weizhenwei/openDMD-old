@@ -121,15 +121,18 @@ void *video_thread(void *arg)
                 increase_motion_video_frames(global_stats->current_motion);
             }
 
+            notify = NOTIFY_NONE;
+            pthread_mutex_unlock(&global.client.thread_attr.video_mutex);
+
         } else if (notify == NOTIFY_EXIT) {
             // signal or main thread told us exit;
             dmd_log(LOG_INFO, "in %s, thread to exit\n", __func__);
+            notify = NOTIFY_NONE;
+            // remember to unlock the video_mutex;
+            pthread_mutex_unlock(&global.client.thread_attr.video_mutex);
             break;
         }
 
-        notify = NOTIFY_NONE;
-
-        pthread_mutex_unlock(&global.client.thread_attr.video_mutex);
     } // for
 
     if (flv_filepath != NULL) {
