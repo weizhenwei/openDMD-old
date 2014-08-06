@@ -77,11 +77,13 @@ void *video_thread(void *arg)
                 assert(flv_filepath != NULL);
                 
                 // set global_stats->current_motion->videopath;
+                pthread_mutex_lock(&global_stats->mutex);
 #if defined(DEBUG)
                 assert(global_stats->current_motion != NULL);
 #endif
                 set_motion_videopath(global_stats->current_motion,
                         flv_filepath->path);
+                pthread_mutex_unlock(&global_stats->mutex);
 
 
                 dmd_log(LOG_INFO, "in function %s, encapsulate flvheader\n",
@@ -114,12 +116,14 @@ void *video_thread(void *arg)
             // it's moved to global_stats->motion_list;
             // so increase_motion_video_frames at there!
             // TODO: there may be problems here, check it later!
+            pthread_mutex_lock(&global_stats->mutex);
             if (global_stats->current_motion == NULL) {
                 assert(global_stats->motion_list != NULL);
                 increase_motion_video_frames(global_stats->motion_list);
             } else {
                 increase_motion_video_frames(global_stats->current_motion);
             }
+            pthread_mutex_unlock(&global_stats->mutex);
 
             notify = NOTIFY_NONE;
             pthread_mutex_unlock(&global.client.thread_attr.video_mutex);
@@ -141,6 +145,10 @@ void *video_thread(void *arg)
         free(flv_filepath);
         flv_filepath = NULL;
     }
+
+    pthread_mutex_lock(&total_thread_mutex);
+    total_thread--;
+    pthread_mutex_unlock(&total_thread_mutex);
 
     pthread_exit(NULL);
 }

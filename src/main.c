@@ -265,10 +265,19 @@ static void client_create_thread()
                 &global.client.thread_attr.global_attr, picture_thread, &dummy);
         assert(ret == 0);
 
+        pthread_mutex_lock(&total_thread_mutex);
+        total_thread++;
+        pthread_mutex_unlock(&total_thread_mutex);
+
+
         // and create video thread;
         ret = pthread_create(&global.client.thread_attr.video_thread_id,
                 &global.client.thread_attr.global_attr, video_thread, &dummy);
         assert(ret == 0);
+
+        pthread_mutex_lock(&total_thread_mutex);
+        total_thread++;
+        pthread_mutex_unlock(&total_thread_mutex);
 
     } else if (global.client.working_mode == CAPTURE_PICTURE) {
         // only create picture thread;
@@ -276,11 +285,19 @@ static void client_create_thread()
                 &global.client.thread_attr.global_attr, picture_thread, &dummy);
         assert(ret == 0);
 
+        pthread_mutex_lock(&total_thread_mutex);
+        total_thread++;
+        pthread_mutex_unlock(&total_thread_mutex);
+
     } else if (global.client.working_mode == CAPTURE_VIDEO) {
         // only create video thread;
         ret = pthread_create(&global.client.thread_attr.video_thread_id,
                 &global.client.thread_attr.global_attr, video_thread, &dummy);
         assert(ret == 0);
+
+        pthread_mutex_lock(&total_thread_mutex);
+        total_thread++;
+        pthread_mutex_unlock(&total_thread_mutex);
 
     } else {
         dmd_log(LOG_ERR, "impossible reach here!\n");

@@ -35,3 +35,6 @@ autom4te.cache
 
 # reconf.sh sysbol link
 reconf.sh
+
+#for gdb debug the program
+.gdbinit

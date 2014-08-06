@@ -84,10 +84,12 @@ void *picture_thread(void *arg)
             assert(ret == 0);
 
             // increase statistics data;
+            pthread_mutex_lock(&global_stats->mutex);
 #if defined(DEBUG)
             assert(global_stats->current_motion != NULL);
 #endif
             increase_motion_pictures(global_stats->current_motion);
+            pthread_mutex_unlock(&global_stats->mutex);
 
             free(jpeg_filepath->path);
             jpeg_filepath->path = NULL;
@@ -103,9 +105,14 @@ void *picture_thread(void *arg)
             notify = NOTIFY_NONE;
             // remember to unlock the picture_mutex;
             pthread_mutex_unlock(&global.client.thread_attr.picture_mutex);
+
             break;
         }
     } // for
+
+    pthread_mutex_lock(&total_thread_mutex);
+    total_thread--;
+    pthread_mutex_unlock(&total_thread_mutex);
 
     pthread_exit(NULL);
 }

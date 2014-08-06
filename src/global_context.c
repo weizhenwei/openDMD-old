@@ -41,6 +41,11 @@
 
 #include "global_context.h"
 
+
+// for thread synchronization;
+unsigned int total_thread = 0;
+pthread_mutex_t total_thread_mutex = PTHREAD_MUTEX_INITIALIZER;
+
 // define the global variable global to control opendmd running;
 struct global_context global;
 
@@ -419,8 +424,12 @@ void release_default_global()
         release_server();
     }
 
+    pthread_mutex_destroy(&total_thread_mutex);
 
+    dmd_log(LOG_ERR, "in function %s, before dump stats!\n", __func__);
     // dump and release global statistics;
+    pthread_mutex_lock(&global_stats->mutex);
     dump_statistics(global_stats);
+    pthread_mutex_unlock(&global_stats->mutex);
     release_statistics(global_stats);
 }

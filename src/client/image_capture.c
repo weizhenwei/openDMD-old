@@ -77,10 +77,12 @@ int process_image(void *yuyv, int length, int width, int height)
 
         // if this detection is the first capture in current motion,
         // create struct motion_t variable;
+        pthread_mutex_lock(&global_stats->mutex);
         if (global_stats->current_motion == NULL) {
             global_stats->current_motion = new_motion();
             set_motion_start_time(global_stats->current_motion, now);
         }
+        pthread_mutex_unlock(&global_stats->mutex);
 
         // first refresh detection time;
         if (global.client.working_mode == CAPTURE_PICTURE
@@ -144,7 +146,8 @@ int process_image(void *yuyv, int length, int width, int height)
                         __func__);
 
                 video_capturing_switch = VIDEO_CAPTURING_OFF;
-
+                
+                pthread_mutex_lock(&global_stats->mutex);
                 if (global_stats->current_motion != NULL) {
                     // threee things to do:
                     // 1. set motion end time
@@ -157,6 +160,7 @@ int process_image(void *yuyv, int length, int width, int height)
                     add_motion(global_stats, global_stats->current_motion);
                     global_stats->current_motion = NULL;
                 }
+                pthread_mutex_unlock(&global_stats->mutex);
             }
 
 
@@ -165,6 +169,7 @@ int process_image(void *yuyv, int length, int width, int height)
 #if defined(DEBUG)
             assert(global.client.working_mode == CAPTURE_PICTURE);
 #endif
+            pthread_mutex_lock(&global_stats->mutex);
             if (global_stats->current_motion != NULL) {
                 // threee things to do:
                 // 1. set motion end time
@@ -178,6 +183,7 @@ int process_image(void *yuyv, int length, int width, int height)
                 add_motion(global_stats, global_stats->current_motion);
                 global_stats->current_motion = NULL;
             }
+            pthread_mutex_unlock(&global_stats->mutex);
         }
     }
 
@@ -254,6 +260,7 @@ int dmd_image_capture(struct v4l2_device_info *v4l2_info)
     dmd_log(LOG_INFO, "in %s, main thread exit\n", __func__);
 
     // when exiting in main thread, remember to record the last motion info;
+    pthread_mutex_lock(&global_stats->mutex);
     if (global_stats->current_motion != NULL) {
         time_t now;
         now = time(&now);
@@ -269,6 +276,11 @@ int dmd_image_capture(struct v4l2_device_info *v4l2_info)
         set_motion_end_time(global_stats->current_motion, now);
         add_motion(global_stats, global_stats->current_motion);
         global_stats->current_motion = NULL;
+    }
+    pthread_mutex_unlock(&global_stats->mutex);
+
+    while (total_thread != 0) {
+        ;
     }
 
     return 0;

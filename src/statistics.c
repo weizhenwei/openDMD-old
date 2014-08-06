@@ -58,6 +58,7 @@ struct stats *new_statistics()
     assert(stats != NULL);
     bzero(stats, sizeof(stats));
 
+    pthread_mutex_init(&stats->mutex, NULL);
     stats->motion_list = NULL;
     stats->current_motion = NULL;
     stats->num_motions = 0;
@@ -199,6 +200,8 @@ void release_statistics(struct stats *stats)
 
         free(stats->current_motion);
     }
+
+    pthread_mutex_destroy(&stats->mutex);
 
     free(stats);
 }

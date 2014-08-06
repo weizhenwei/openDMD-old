@@ -66,6 +66,7 @@ struct motion_t {
 };
 
 struct stats {
+    pthread_mutex_t mutex;    // for mutiple thread synchronization;
     struct motion_t *motion_list;
     struct motion_t *current_motion;
     uint32_t num_motions;

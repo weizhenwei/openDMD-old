@@ -105,6 +105,10 @@
 
 #define SERVER_REPO "/home/wzw/opendmd/server_repo"
 
+// for thread synchronization;
+extern unsigned int total_thread;
+extern pthread_mutex_t total_thread_mutex;
+
 // declare the global variable global to control opendmd running.
 extern struct global_context global;
 
