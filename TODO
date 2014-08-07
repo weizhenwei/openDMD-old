@@ -5,6 +5,15 @@
     Urgent: add reload config file to project!
     Urgent: continue working on statistics util!
     Urgent: dump statistics to browser, using light web server;
+    Urgent: multiple thread synchronization problem must be solved!
+
+2014.08.05:
+    Urgent: continue working on libx264!
+    Urgent: Avoid unnecessary memory copy when converting YUYV422 
+            to RGB888 or YUV420.
+    Urgent: add reload config file to project!
+    Urgent: continue working on statistics util!
+    Urgent: dump statistics to browser, using light web server;
     Urgent: add email notification mechanism;
 
 2014.08.02:
