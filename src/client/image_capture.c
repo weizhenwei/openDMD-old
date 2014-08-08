@@ -280,7 +280,20 @@ int dmd_image_capture(struct v4l2_device_info *v4l2_info)
     pthread_mutex_unlock(&global_stats->mutex);
 
     while (total_thread != 0) {
-        ;
+        /*
+         * video thread is keep in pace with picture thread,
+         * so when Ctrl + C signal invoked, video thread may not received the
+         * signal; then we notify video thread again at here!
+         *
+         * TODO: check whether picture thread need notify.
+         */
+        if (global.client.working_mode == CAPTURE_VIDEO
+                || global.client.working_mode == CAPTURE_ALL) {
+            pthread_mutex_lock(&global.client.thread_attr.video_mutex);
+            global.client.video_target = NOTIFY_EXIT;
+            pthread_cond_signal(&global.client.thread_attr.video_cond);
+            pthread_mutex_unlock(&global.client.thread_attr.video_mutex);
+        }
     }
 
     return 0;
