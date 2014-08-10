@@ -5619,7 +5619,7 @@ done
 
 
 # set CFLAGS.
-CFLAGS="-Wall -ggdb3 -std=gnu99 "
+CFLAGS="-Wall -ggdb3 -O0 -std=gnu99 "
 # set LDFLAGS.
 LDFLAGS=
 

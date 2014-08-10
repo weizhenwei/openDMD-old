@@ -61,7 +61,7 @@ AC_CHECK_FUNCS([atexit bzero clock_gettime ftime gethostbyname gethrtime \
                 strdup strerror strncasecmp strpbrk strspn strstr strtol])
 
 # set CFLAGS.
-CFLAGS="-Wall -ggdb3 -std=gnu99 "
+CFLAGS="-Wall -ggdb3 -O0 -std=gnu99 "
 # set LDFLAGS.
 LDFLAGS=
 

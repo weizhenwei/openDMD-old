@@ -3,7 +3,7 @@
 # clean gcov info
 rm -f gcov.info
 
-#clean result
+#clean result dir
 rm -rf code-coverage
 
 #clean temprorary files

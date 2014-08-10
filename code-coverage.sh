@@ -9,7 +9,10 @@
 # genhtml gcov.info -o ./code-coverage
 # rm -f tmp.info gcov.info
 
-BASEDIR=`pwd`
-lcov -b ${BASEDIR} -d ${BASEDIR}/src -c -o ${BASEDIR}/gcov.info
-mkdir -p ${BASEDIR}/code-coverage
-genhtml ${BASEDIR}/gcov.info -o ${BASEDIR}/code-coverage
+
+# we only care src directory code coverage
+lcov --directory src -c -o gcov.info --list-full-path
+rm -rf code-coverage
+mkdir -p code-coverage
+genhtml gcov.info -o code-coverage
+
