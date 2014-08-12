@@ -30,19 +30,24 @@ AC_CHECK_LIB([rt], [clock_gettime])
 AC_HEADER_RESOLV
 AC_CHECK_HEADERS([arpa/inet.h fcntl.h inttypes.h limits.h locale.h netdb.h \
                   malloc.h etdb.h netinet/in.h stddef.h stdint.h stdlib.h \
-                  string.h strings.h sys/ioctl.h sys/param.h sys/socket.h \
-                  sys/time.h sys/timeb.h syslog.h unistd.h])
+                  string.h strings.h sys/file.h sys/ioctl.h sys/mount.h \
+                  sys/param.h sys/socket.h sys/statvfs.h sys/time.h \
+                  sys/timeb.h syslog.h unistd.h utime.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
+AC_TYPE_UID_T
 AC_C_INLINE
 AC_TYPE_INT16_T
 AC_TYPE_INT32_T
 AC_TYPE_INT64_T
 AC_TYPE_INT8_T
+AC_TYPE_MODE_T
+AC_TYPE_OFF_T
 AC_TYPE_PID_T
 AC_TYPE_SIZE_T
 AC_TYPE_SSIZE_T
+AC_CHECK_MEMBERS([struct stat.st_blksize])
 AC_TYPE_UINT16_T
 AC_TYPE_UINT32_T
 AC_TYPE_UINT64_T
@@ -54,11 +59,13 @@ AC_FUNC_FORK
 AC_FUNC_MALLOC
 AC_FUNC_MMAP
 AC_FUNC_REALLOC
+AC_FUNC_STRERROR_R
 AC_FUNC_STRTOD
-AC_CHECK_FUNCS([atexit bzero clock_gettime ftime gethostbyname gethrtime \
-                gettimeofday inet_ntoa memmove memset mkdir munmap pow \
-                select setlocale socket sqrt strcasecmp strchr strcspn \
-                strdup strerror strncasecmp strpbrk strspn strstr strtol])
+AC_CHECK_FUNCS([atexit bzero clock_gettime fdatasync ftime gethostbyname \
+                gethrtime gettimeofday inet_ntoa localtime_r memmove memset \
+                mkdir munmap pow select setlocale socket sqrt strcasecmp \
+                strchr strcspn strdup strerror strncasecmp strpbrk strspn \
+                strstr strtol utime])
 
 # set CFLAGS.
 CFLAGS="-Wall -ggdb3 -O0 -std=gnu99 "
@@ -98,6 +105,7 @@ AC_CONFIG_FILES([Makefile
                  libortp/include/ortp/Makefile
                  libortp/src/Makefile
                  libortp/test/Makefile
+                 libsqlite/Makefile
                  libx264/Makefile
                  libx264/common/Makefile
                  libx264/encoder/Makefile

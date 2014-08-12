@@ -1,5 +1,5 @@
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = libjpeg libx264 libortp src 
+SUBDIRS = libjpeg libortp libsqlite libx264 src 
 
 prefix=/usr/local
