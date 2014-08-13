@@ -5922,7 +5922,7 @@ else
 fi
 
 #Attention: this is import, list the Makefile need to generate
-ac_config_files="$ac_config_files Makefile libjpeg/Makefile libortp/Makefile libortp/include/Makefile libortp/include/ortp/Makefile libortp/src/Makefile libortp/test/Makefile libsqlite/Makefile libx264/Makefile libx264/common/Makefile libx264/encoder/Makefile libx264/output/Makefile src/Makefile"
+ac_config_files="$ac_config_files Makefile libjpeg/Makefile libortp/Makefile libortp/include/Makefile libortp/include/ortp/Makefile libortp/src/Makefile libortp/test/Makefile libsqlite/Makefile libsqlite/test/Makefile libx264/Makefile libx264/common/Makefile libx264/encoder/Makefile libx264/output/Makefile src/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -6663,6 +6663,7 @@ do
     "libortp/src/Makefile") CONFIG_FILES="$CONFIG_FILES libortp/src/Makefile" ;;
     "libortp/test/Makefile") CONFIG_FILES="$CONFIG_FILES libortp/test/Makefile" ;;
     "libsqlite/Makefile") CONFIG_FILES="$CONFIG_FILES libsqlite/Makefile" ;;
+    "libsqlite/test/Makefile") CONFIG_FILES="$CONFIG_FILES libsqlite/test/Makefile" ;;
     "libx264/Makefile") CONFIG_FILES="$CONFIG_FILES libx264/Makefile" ;;
     "libx264/common/Makefile") CONFIG_FILES="$CONFIG_FILES libx264/common/Makefile" ;;
     "libx264/encoder/Makefile") CONFIG_FILES="$CONFIG_FILES libx264/encoder/Makefile" ;;

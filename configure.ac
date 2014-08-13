@@ -106,6 +106,7 @@ AC_CONFIG_FILES([Makefile
                  libortp/src/Makefile
                  libortp/test/Makefile
                  libsqlite/Makefile
+                 libsqlite/test/Makefile
                  libx264/Makefile
                  libx264/common/Makefile
                  libx264/encoder/Makefile
