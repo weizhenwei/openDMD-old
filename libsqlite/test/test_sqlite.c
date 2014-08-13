@@ -44,7 +44,7 @@
  
 int main(void)
 {
-    // define an sqlite object;
+    // define an sqlite data connection object;
     sqlite3 *db = NULL;
 
     // open database
