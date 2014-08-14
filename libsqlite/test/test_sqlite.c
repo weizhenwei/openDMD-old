@@ -40,23 +40,70 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
 #include <sqlite3.h>
- 
-int main(void)
+
+static sqlite3 *open_db(const char *database)
 {
     // define an sqlite data connection object;
     sqlite3 *db = NULL;
 
-    // open database
-    int rc = sqlite3_open("sqlite.db", &db);
+    int rc = sqlite3_open(database, &db);
     if (rc != SQLITE_OK) {
-
         fprintf(stderr,"%s\n",sqlite3_errmsg(db));
-        return -1;
+        return NULL;
     }
     printf("connect sucess!\n");
- 
-    sqlite3_close(db);
- 
+
+    return db;
+}
+
+static void close_db(sqlite3 *db)
+{
+    int rc = sqlite3_close(db);
+    if (rc != SQLITE_OK) {
+        printf("can't close the database:%s\n", sqlite3_errmsg(db));
+        exit(EXIT_FAILURE);
+    }
+}
+
+static int exec_SQL(sqlite3 *db, const char *sql)
+{
+    char *errmsg = NULL;
+    int rc = sqlite3_exec(db, sql, NULL, NULL, &errmsg);
+    if (rc != SQLITE_OK) {
+        printf("execute sql \"%s\" error:%s\n", sql, errmsg);
+        return -1;
+    } else {
+        printf("execute sql \"%s\" success\n", sql);
+        return 0;
+    }
+
     return 0;
 }
+
+int main(void)
+{
+    int rc = -1;
+    sqlite3 *db = NULL;
+    db = open_db("sqlite.db");
+    assert(db != NULL);
+
+    char *create_table_SQL = "create table detected_motions "
+        "(id text, start_time int, end_time int, video_path text)";
+
+    rc = exec_SQL(db, create_table_SQL);
+    assert(rc == 0);
+
+    char *insert_item_SQL = "insert into detected_motions "
+        "values(\"first motion\", 12, 14, "
+        "\"/home/wzw/opendmd/video/a.flv\")";
+
+    rc = exec_SQL(db, insert_item_SQL);
+    assert(rc == 0);
+
+    close_db(db);
+    return 0;
+}
+

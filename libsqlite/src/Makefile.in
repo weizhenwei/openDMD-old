@@ -127,6 +127,8 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
+
+# TODO: gcc options when linking with dlopen library: -rdynamic -ldl
 LIBS = -lpthread -ldl -lgcov
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@

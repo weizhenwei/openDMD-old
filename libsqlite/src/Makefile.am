@@ -9,6 +9,8 @@ include_HEADERS = sqlite3.h
 
 noinst_PROGRAMS = sqlite3
 
+# TODO: gcc options when linking with dlopen library: -rdynamic -ldl
+
 LIBS = -lpthread -ldl -lgcov
 
 sqlite3_SOURCES = shell.c  sqlite3.c  sqlite3ext.h  sqlite3.h
