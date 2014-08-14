@@ -96,7 +96,8 @@ int main(void)
     rc = exec_SQL(db, create_table_SQL);
     assert(rc == 0);
 
-    char *insert_item_SQL = "insert into detected_motions "
+    char *insert_item_SQL = "insert into "
+        "detected_motions(id, start_time, end_time, video_path) "
         "values(\"first motion\", 12, 14, "
         "\"/home/wzw/opendmd/video/a.flv\")";
 
