@@ -56,6 +56,24 @@ sqlite3 *open_db(const char *database)
     return db;
 }
 
+
+// TODO: this needs further refactor;
+int exec_SQL(sqlite3 *db, const char *sql)
+{
+    char *errmsg = NULL;
+    int rc = sqlite3_exec(db, sql, NULL, NULL, &errmsg);
+    if (rc != SQLITE_OK) {
+        dmd_log(LOG_ERR, "execute sql \"%s\" error:%s\n", sql, errmsg);
+        return -1;
+    } else {
+        dmd_log(LOG_DEBUG, "execute sql \"%s\" success\n", sql);
+        return 0;
+    }
+
+    return 0;
+}
+
+
 int close_db(sqlite3 *db)
 {
     int rc = sqlite3_close(db);

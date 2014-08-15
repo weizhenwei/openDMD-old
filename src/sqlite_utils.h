@@ -48,6 +48,8 @@
 
 extern sqlite3 *open_db(const char *database);
 
+extern int exec_SQL(sqlite3 *db, const char *sql);
+
 extern int close_db(sqlite3 *db);
 
 
