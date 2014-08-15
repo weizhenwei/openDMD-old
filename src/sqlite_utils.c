@@ -41,3 +41,30 @@
 
 #include "sqlite_utils.h"
 
+sqlite3 *open_db(const char *database)
+{
+    // define the sqlite data connection object;
+    sqlite3 *db = NULL;
+
+    int rc = sqlite3_open(database, &db);
+    if (rc != SQLITE_OK) {
+        dmd_log(LOG_ERR, "can't open the database:%s\n", sqlite3_errmsg(db));
+        return NULL;
+    }
+    dmd_log(LOG_DEBUG, "connect database sucess!\n");
+
+    return db;
+}
+
+int close_db(sqlite3 *db)
+{
+    int rc = sqlite3_close(db);
+    if (rc != SQLITE_OK) {
+        dmd_log(LOG_ERR, "can't close the database:%s\n",
+                sqlite3_errmsg(db));
+        return -1;
+    }
+
+    return 0;
+}
+

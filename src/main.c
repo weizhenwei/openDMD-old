@@ -67,6 +67,7 @@
 #include "picture_thread.h"
 #include "signal_handler.h"
 #include "statistics.h"
+#include "sqlite_utils.h"
 
 #include "rtp_send.h"
 #include "rtp_server.h"
@@ -396,6 +397,12 @@ int main(int argc, char *argv[])
     parse_cmdline(argc, argv);
 
     init();
+
+    // TODO: temporary code
+    sqlite3 *db = open_db("test.db");
+    assert(db != NULL);
+    int rc = close_db(db);
+    assert(rc == 0);
 
     // slave or singleton do the capturing work;
     if (global.cluster_mode == CLUSTER_CLIENT

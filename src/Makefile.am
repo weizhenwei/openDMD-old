@@ -16,7 +16,7 @@ opendmd_LDADD = $(top_srcdir)/libjpeg/libjpeg.a \
 # using opendmd_LDFLAGS at here doesn't work!
 # using LDFLAGS in configure.ac doesn't work, either!
 # -lrt for function clock_gettime()
-LIBS=-lm -lpthread -lrt
+LIBS=-lm -lpthread -lrt -ldl
 
 opendmd_SOURCES = main.c \
           config.h config.c log.h log.c path.h path.c global_context.h \

@@ -44,6 +44,12 @@
 
 #include <sqlite3.h>
 
+#include "log.h"
+
+extern sqlite3 *open_db(const char *database);
+
+extern int close_db(sqlite3 *db);
+
 
 
 #endif
