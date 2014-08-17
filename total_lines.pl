@@ -11,6 +11,10 @@ print "header line in ./libortp/test dir = ".$testhdrline;
 my $testsrcline = `find ./libortp/test -name \*.c | xargs cat | wc -l`;
 print "source line in ./libortp/test dir = ".$testsrcline;
 
-my $totalline = $headerline + $sourceline + $testhdrline + $testsrcline;
+my $sqliteline = `find ./libsqlite/test -name \*.c | xargs cat | wc -l`;
+print "source line in ./libsqlite/test dir = ".$sqliteline;
+
+my $totalline = $headerline + $sourceline + $testhdrline + $testsrcline
+                + $sqliteline;
 print "totalline  in ./src dir = ".$totalline;
 print "\n";

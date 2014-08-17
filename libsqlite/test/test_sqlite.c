@@ -44,6 +44,13 @@
 #include <assert.h>
 #include <sqlite3.h>
 
+
+// array that stores SQL command;
+char sql[1024];
+
+const int first_time = 0;
+
+
 static sqlite3 *open_db(const char *database)
 {
     // define an sqlite data connection object;
@@ -83,6 +90,47 @@ static int exec_SQL(sqlite3 *db, const char *sql)
     return 0;
 }
 
+// test insert cmd and transaction cmd;
+static int insert_values(sqlite3 *db)
+{
+    char *errmsg = NULL;
+
+    sprintf(sql, "%s", "INSERT INTO detected_motions(des, start_time, end_time,"
+        " video_path) VALUES(\"first motion\", 20140817, 20140817, "
+            "\"/home/wzw/opendmd/video/a.flv\")");
+
+    const char *begin_transaction = "BEGIN;";
+    const char *commit_transaction = "COMMIT;";
+    const char *rollback_transaction = "ROLLBACK;";
+
+    int rc = sqlite3_exec(db, begin_transaction, NULL, NULL, &errmsg);
+    if (rc == SQLITE_OK) {
+        printf("execute sql \"%s\" success\n", begin_transaction);
+    } else {
+        printf("execute sql \"%s\" error:%s\n", begin_transaction, errmsg);
+        return -1;
+    }
+
+    rc = sqlite3_exec(db, sql, NULL, NULL, &errmsg);
+    if (rc != SQLITE_OK) {
+        printf("execute sql \"%s\" error:%s\n", sql, errmsg);
+        rc = sqlite3_exec(db, rollback_transaction, NULL, NULL, &errmsg);
+        return -1;
+    } else {
+        printf("execute sql \"%s\" success\n", sql);
+        rc = sqlite3_exec(db, commit_transaction, NULL, NULL, &errmsg);
+        if (rc != SQLITE_OK) {
+            printf("execute sql \"%s\" error:%s\n", commit_transaction, errmsg);
+            return -1;
+        } else {
+            printf("execute sql \"%s\" success\n", commit_transaction);
+        }
+        return 0;
+    }
+
+    return 0;
+}
+
 int main(void)
 {
     int rc = -1;
@@ -90,19 +138,14 @@ int main(void)
     db = open_db("sqlite.db");
     assert(db != NULL);
 
-    char *create_table_SQL = "create table detected_motions "
-        "(id text, start_time int, end_time int, video_path text)";
+    if (first_time != 0) {
+        sprintf(sql, "CREATE TABLE detected_motions(id INT PRIMARY KEY, "
+                "des TEXT, start_time INT, end_time INT, video_path TEXT)");
+        rc = exec_SQL(db, sql);
+        assert(rc == 0);
+    }
 
-    rc = exec_SQL(db, create_table_SQL);
-    assert(rc == 0);
-
-    char *insert_item_SQL = "insert into "
-        "detected_motions(id, start_time, end_time, video_path) "
-        "values(\"first motion\", 12, 14, "
-        "\"/home/wzw/opendmd/video/a.flv\")";
-
-    rc = exec_SQL(db, insert_item_SQL);
-    assert(rc == 0);
+    rc = insert_values(db);
 
     close_db(db);
     return 0;
