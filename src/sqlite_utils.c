@@ -50,11 +50,15 @@ int init_database()
     int ret = test_and_mkdir(global.database_repo);
     assert(ret == 0);
 
-    sprintf(database_file, "%s/opendmd.db", global.database_repo);
+    // open/create default database opendmd.db
+    sprintf(database_file, "%s/%s", global.database_repo, DEFAULT_DATABASE);
     dmd_log(LOG_DEBUG, "database_file is %s\n", database_file);
-
     opendmd_db = open_db(database_file);
     assert(opendmd_db != NULL);
+
+    // create default table opendmd_table
+    int rc = create_table(opendmd_db, DEFAULT_TABLE);
+    assert(rc == 0);
 
     return 0;
 }
@@ -91,8 +95,25 @@ int exec_SQL(sqlite3 *db, const char *sql)
     return 0;
 }
 
-int create_table()
+int create_table(sqlite3 *db, const char *table_name)
 {
+    char create_table_sql[PATH_MAX];
+    // creat table if not exists, "is not exists" is important!
+    sprintf(create_table_sql, "CREATE TABLE IF NOT EXISTS %s "
+            "(start_time INT PRIMARY KEY, end_time INT, duration INT, "
+            "video_frames INT, video_path TEXT)", table_name);
+
+    char *errmsg = NULL;
+    int rc = sqlite3_exec(db, create_table_sql, NULL, NULL, &errmsg);
+    if (rc != SQLITE_OK) {
+        dmd_log(LOG_ERR, "execute sql \"%s\" error:%s\n",
+                create_table_sql, errmsg);
+        return -1;
+    } else {
+        dmd_log(LOG_DEBUG, "execute sql \"%s\" success\n", create_table_sql);
+        return 0;
+    }
+
     return 0;
 }
 

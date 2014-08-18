@@ -42,6 +42,7 @@
 #ifndef SQLITE_UTILS_H
 #define SQLITE_UTILS_H
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <linux/limits.h>
@@ -50,6 +51,9 @@
 
 #include "log.h"
 #include "path.h"
+
+#define DEFAULT_DATABASE "opendmd.db"
+#define DEFAULT_TABLE "opendmd_table"
 
 
 // add an detected motion to sqlite database;
@@ -70,7 +74,7 @@ extern sqlite3 *open_db(const char *database);
 
 extern int exec_SQL(sqlite3 *db, const char *sql);
 
-extern int create_table();
+extern int create_table(sqlite3 *db, const char *table_name);
 
 extern int close_db(sqlite3 *db);
 
