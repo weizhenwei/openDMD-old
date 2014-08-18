@@ -42,6 +42,7 @@
 #ifndef SQLITE_UTILS_H
 #define SQLITE_UTILS_H
 
+#include <stdio.h>
 #include <linux/limits.h>
 
 #include <sqlite3.h>
