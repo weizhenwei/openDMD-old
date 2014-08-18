@@ -223,6 +223,12 @@ void init_default_global()
 
     global.x264_fps = DEFAULT_X264_FPS;
 
+    // database file repository;
+    assert(strlen(DEFAULT_DATABASE_REPO) < PATH_MAX);
+    strncpy(global.database_repo, DEFAULT_DATABASE_REPO,
+            strlen(DEFAULT_DATABASE_REPO));
+    global.database_repo[strlen(DEFAULT_DATABASE_REPO)] = '\0';
+
     // init client/server specific;
     init_default_client();
     init_default_server();
@@ -338,6 +344,8 @@ static int dump_common()
     dmd_log(LOG_INFO, "cfg file:%s\n", global.cfg_file);
 
     dmd_log(LOG_INFO, "x264_fps:%d\n", global.x264_fps);
+
+    dmd_log(LOG_INFO, "database file directory:%s\n", global.database_repo);
 
     return 0;
 }

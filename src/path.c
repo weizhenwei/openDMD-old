@@ -41,7 +41,7 @@
 
 #include "path.h"
 
-static int test_and_mkdir(const char *path)
+int test_and_mkdir(const char *path)
 {
     // first, find parent path;
     const char *ptr = path + strlen(path);

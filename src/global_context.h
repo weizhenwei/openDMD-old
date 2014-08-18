@@ -98,6 +98,8 @@
 
 #define DEFAULT_X264_FPS 25
 
+#define DEFAULT_DATABASE_REPO "/home/wzw/opendmd/database"
+
 
 /////////////////////////////////////////////////////////////
 // Server default settings                                 //
@@ -296,6 +298,9 @@ struct global_context {
 
     // x264 fps setting
     int x264_fps;
+
+    // database file directory;
+    char database_repo[PATH_MAX];         // database file directory;
 
     // client/server settings;
     struct client_context client;

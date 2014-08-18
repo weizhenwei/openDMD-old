@@ -41,6 +41,20 @@
 
 #include "sqlite_utils.h"
 
+// global database file;
+char database_file[PATH_MAX];
+
+int init_database()
+{
+    int ret = test_and_mkdir(global.database_repo);
+    assert(ret == 0);
+
+    sprintf(database_file, "%s/opendmd.db", global.database_repo);
+    dmd_log(LOG_DEBUG, "database_file is %s\n", database_file);
+
+    return 0;
+}
+
 sqlite3 *open_db(const char *database)
 {
     // define the sqlite data connection object;

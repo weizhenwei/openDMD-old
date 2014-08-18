@@ -60,6 +60,7 @@ static void check_path()
 {
     remove_tail_slash(global.client.client_repo);
     remove_tail_slash(global.server.server_repo);
+    remove_tail_slash(global.database_repo);
 }
 
 static int check_config_integrity()
@@ -248,6 +249,15 @@ int parse_config(const char *conf_file)
             int x264_fps = atoi(item->value);
             assert(x264_fps > 0);
             global.x264_fps = x264_fps;
+
+        } else if (strcmp(item->key, "database_repo") == 0) {
+            assert(strlen(item->value) < PATH_MAX);
+            strncpy(global.database_repo, item->value, strlen(item->value));
+            /* Warning:If there is no null byte among the first n bytes of
+             * src, the string placed in dest will not be null-terminated,
+             * remember add null-terminated manually.
+             */
+            global.database_repo[strlen(item->value)] = '\0';
 
         } else if (strcmp(item->key, "working_mode") == 0) {
             if (strcmp(item->value, "picture") == 0) {

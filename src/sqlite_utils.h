@@ -42,9 +42,15 @@
 #ifndef SQLITE_UTILS_H
 #define SQLITE_UTILS_H
 
+#include <linux/limits.h>
+
 #include <sqlite3.h>
 
 #include "log.h"
+
+extern char database_file[];
+
+extern int init_database();
 
 extern sqlite3 *open_db(const char *database);
 

@@ -69,6 +69,8 @@ struct path_t {
     unsigned int len;
 };
 
+extern int test_and_mkdir(const char *path);
+
 // initialize and get client repository dir;
 extern int client_init_repodir();
 // path_type is member of enum path_type;

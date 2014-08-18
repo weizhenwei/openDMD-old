@@ -224,6 +224,9 @@ static void init(void)
     // init statistics global variable;
     global_stats = new_statistics();
 
+    // database file initialize
+    init_database();
+
     // daemonize;
     if (global.daemon_mode == DAEMON_ON) {
         daemonize();
