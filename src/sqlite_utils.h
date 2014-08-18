@@ -48,8 +48,10 @@
 #include <sqlite3.h>
 
 #include "log.h"
+#include "path.h"
 
 extern char database_file[];
+extern sqlite3 *opendmd_db;
 
 extern int init_database();
 

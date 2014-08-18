@@ -58,6 +58,7 @@
 
 #include "log.h"
 #include "statistics.h"
+#include "sqlite_utils.h"
 
 /////////////////////////////////////////////////////////////
 // Common default settings                                 //

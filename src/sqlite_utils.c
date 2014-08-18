@@ -43,6 +43,7 @@
 
 // global database file;
 char database_file[PATH_MAX];
+sqlite3 *opendmd_db = NULL;
 
 int init_database()
 {
@@ -51,6 +52,9 @@ int init_database()
 
     sprintf(database_file, "%s/opendmd.db", global.database_repo);
     dmd_log(LOG_DEBUG, "database_file is %s\n", database_file);
+
+    opendmd_db = open_db(database_file);
+    assert(opendmd_db != NULL);
 
     return 0;
 }

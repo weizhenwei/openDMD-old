@@ -440,4 +440,7 @@ void release_default_global()
     dump_statistics(global_stats);
     pthread_mutex_unlock(&global_stats->mutex);
     release_statistics(global_stats);
+
+    // close database connection;
+    close_db(opendmd_db);
 }
