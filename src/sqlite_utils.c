@@ -91,6 +91,12 @@ int exec_SQL(sqlite3 *db, const char *sql)
     return 0;
 }
 
+int create_table()
+{
+    return 0;
+}
+
+
 
 int close_db(sqlite3 *db)
 {

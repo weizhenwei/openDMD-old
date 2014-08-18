@@ -43,12 +43,23 @@
 #define SQLITE_UTILS_H
 
 #include <stdio.h>
+#include <stdint.h>
 #include <linux/limits.h>
 
 #include <sqlite3.h>
 
 #include "log.h"
 #include "path.h"
+
+
+// add an detected motion to sqlite database;
+struct add_motion_sql_clause {
+    time_t start_time;          // motion start time;
+    time_t end_time;            // motion end time;
+    unsigned int duration;      // motion duration time;
+    uint64_t video_frames;      // total video frames in this motion;
+    char video_path[PATH_MAX];  // video file storage path;
+};
 
 extern char database_file[];
 extern sqlite3 *opendmd_db;
@@ -58,6 +69,8 @@ extern int init_database();
 extern sqlite3 *open_db(const char *database);
 
 extern int exec_SQL(sqlite3 *db, const char *sql);
+
+extern int create_table();
 
 extern int close_db(sqlite3 *db);
 
