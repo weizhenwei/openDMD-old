@@ -52,7 +52,7 @@ int init_database()
 
     // open/create default database opendmd.db
     sprintf(database_file, "%s/%s", global.database_repo, DEFAULT_DATABASE);
-    dmd_log(LOG_DEBUG, "database_file is %s\n", database_file);
+    dmd_log(LOG_INFO, "database_file is %s\n", database_file);
     opendmd_db = open_db(database_file);
     assert(opendmd_db != NULL);
 
@@ -73,7 +73,7 @@ sqlite3 *open_db(const char *database)
         dmd_log(LOG_ERR, "can't open the database:%s\n", sqlite3_errmsg(db));
         return NULL;
     }
-    dmd_log(LOG_DEBUG, "connect database sucess!\n");
+    dmd_log(LOG_INFO, "connect database sucess!\n");
 
     return db;
 }
@@ -88,7 +88,7 @@ int exec_SQL(sqlite3 *db, const char *sql)
         dmd_log(LOG_ERR, "execute sql \"%s\" error:%s\n", sql, errmsg);
         return -1;
     } else {
-        dmd_log(LOG_DEBUG, "execute sql \"%s\" success\n", sql);
+        dmd_log(LOG_INFO, "execute sql \"%s\" success\n", sql);
         return 0;
     }
 
@@ -110,7 +110,7 @@ int create_table(sqlite3 *db, const char *table_name)
                 create_table_sql, errmsg);
         return -1;
     } else {
-        dmd_log(LOG_DEBUG, "execute sql \"%s\" success\n", create_table_sql);
+        dmd_log(LOG_INFO, "execute sql \"%s\" success\n", create_table_sql);
         return 0;
     }
 
@@ -118,15 +118,27 @@ int create_table(sqlite3 *db, const char *table_name)
 }
 
 int insert_item(sqlite3 *db, const char *table_name,
-        struct add_motion_sql_clause *add_motion)
+        const struct motion_t *motion)
 {
-    assert(add_motion != NULL);
+    assert(motion != NULL);
     char insert_item_sql[PATH_MAX];
-    sprintf(insert_item_sql, "INSERT INTO %s VALUES(%s, %s, %ld, %ld, %ld, %s)",
-            table_name, ctime(&add_motion->start_time),
-            ctime(&add_motion->end_time), add_motion->duration,
-            add_motion->pictures, add_motion->video_frames,
-            add_motion->video_path);
+    char start_time[PATH_MAX];
+    char end_time[PATH_MAX];
+    ctime_r(&motion->start, start_time);
+    start_time[strlen(start_time) - 1] = '\0'; // remove the tailing '\n';
+    ctime_r(&motion->end, end_time);
+    end_time[strlen(end_time) - 1] = '\0';     // remove the tailing '\n';
+    if (motion->video_path != NULL) {
+        sprintf(insert_item_sql,
+                "INSERT INTO %s VALUES(\"%s\", \"%s\", %ld, %ld, %ld, \"%s\")",
+                table_name, start_time, end_time, motion->duration,
+                motion->pictures, motion->video_frames, motion->video_path);
+    } else {
+        sprintf(insert_item_sql,
+                "INSERT INTO %s VALUES(\"%s\", \"%s\", %ld, %ld, %ld, \"%s\")",
+                table_name, start_time, end_time, motion->duration,
+                motion->pictures, motion->video_frames, "");
+    }
 
     char *errmsg = NULL;
     int rc = sqlite3_exec(db, insert_item_sql, NULL, NULL, &errmsg);
@@ -135,9 +147,24 @@ int insert_item(sqlite3 *db, const char *table_name,
                 insert_item_sql, errmsg);
         return -1;
     } else {
-        dmd_log(LOG_DEBUG, "execute sql \"%s\" success\n", insert_item_sql);
+        dmd_log(LOG_INFO, "execute sql \"%s\" success\n", insert_item_sql);
         return 0;
     }
+
+    return 0;
+}
+
+int store_motion_to_database(const struct stats *stats)
+{
+    int i = 0;
+    struct motion_t *m = stats->motion_list;
+    while (m != NULL) {
+        i++;
+        dmd_log(LOG_INFO, "Store motion to database %d:\n", i);
+        insert_item(opendmd_db, DEFAULT_TABLE, m);
+        m = m->next;
+    }
+    assert(i == stats->num_motions);
 
     return 0;
 }

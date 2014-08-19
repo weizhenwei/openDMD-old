@@ -52,20 +52,10 @@
 
 #include "log.h"
 #include "path.h"
+#include "statistics.h"
 
 #define DEFAULT_DATABASE "opendmd.db"
 #define DEFAULT_TABLE "opendmd_table"
-
-
-// add an detected motion to sqlite database;
-struct add_motion_sql_clause {
-    time_t start_time;          // motion start time;
-    time_t end_time;            // motion end time;
-    uint64_t duration;          // motion duration time;
-    uint64_t pictures;          // pictures in this motion, if any;
-    uint64_t video_frames;      // total video frames in this motion;
-    char video_path[PATH_MAX];  // video file storage path;
-};
 
 extern char database_file[];
 extern sqlite3 *opendmd_db;
@@ -79,7 +69,9 @@ extern int exec_SQL(sqlite3 *db, const char *sql);
 extern int create_table(sqlite3 *db, const char *table_name);
 
 extern int insert_item(sqlite3 *db, const char *table_name,
-        struct add_motion_sql_clause *add_motion);
+        const struct motion_t *motion);
+
+extern int store_motion_to_database(const struct stats *stats);
 
 extern int close_db(sqlite3 *db);
 

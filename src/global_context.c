@@ -438,6 +438,7 @@ void release_default_global()
     // dump and release global statistics;
     pthread_mutex_lock(&global_stats->mutex);
     dump_statistics(global_stats);
+    store_motion_to_database(global_stats);
     pthread_mutex_unlock(&global_stats->mutex);
     release_statistics(global_stats);
 

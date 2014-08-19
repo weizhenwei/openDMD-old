@@ -1,3 +1,14 @@
+2014.08.20:
+    Urgent: continue working on libx264!
+    Urgent: Avoid unnecessary memory copy when converting YUYV422 
+            to RGB888 or YUV420.
+    Urgent: add reload config file to project!
+    Urgent: dump statistics to browser, using light web server;
+    Urgent: dump statistics to persist storage, using sqlite database;
+    Urgent: add email notification mechanism;
+    Urgent: BUG to fix: when working_mode is not "all",
+            assert violation when running opendmd!
+
 2014.08.15:
     Urgent: continue working on libx264!
     Urgent: Avoid unnecessary memory copy when converting YUYV422 
