@@ -64,6 +64,7 @@
 #include "signal_handler.h"
 #include "video_thread.h"
 #include "statistics.h"
+#include "sqlite_utils.h"
 
 extern int process_image(void *yuyv, int length, int width, int height);
 

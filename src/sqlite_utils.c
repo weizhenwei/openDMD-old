@@ -101,7 +101,7 @@ int create_table(sqlite3 *db, const char *table_name)
     // creat table if not exists, "is not exists" is important!
     sprintf(create_table_sql, "CREATE TABLE IF NOT EXISTS %s "
             "(start_time TEXT PRIMARY KEY, end_time TEXT, duration INT, "
-            "video_frames INT, video_path TEXT)", table_name);
+            "pictures INT, video_frames INT, video_path TEXT)", table_name);
 
     char *errmsg = NULL;
     int rc = sqlite3_exec(db, create_table_sql, NULL, NULL, &errmsg);
@@ -122,10 +122,11 @@ int insert_item(sqlite3 *db, const char *table_name,
 {
     assert(add_motion != NULL);
     char insert_item_sql[PATH_MAX];
-    sprintf(insert_item_sql, "INSERT INTO %s VALUES(%s, %s, %ld, %ld, %s)",
+    sprintf(insert_item_sql, "INSERT INTO %s VALUES(%s, %s, %ld, %ld, %ld, %s)",
             table_name, ctime(&add_motion->start_time),
             ctime(&add_motion->end_time), add_motion->duration,
-            add_motion->video_frames, add_motion->video_path);
+            add_motion->pictures, add_motion->video_frames,
+            add_motion->video_path);
 
     char *errmsg = NULL;
     int rc = sqlite3_exec(db, insert_item_sql, NULL, NULL, &errmsg);

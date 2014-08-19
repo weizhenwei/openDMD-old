@@ -60,7 +60,8 @@
 struct add_motion_sql_clause {
     time_t start_time;          // motion start time;
     time_t end_time;            // motion end time;
-    uint64_t duration;      // motion duration time;
+    uint64_t duration;          // motion duration time;
+    uint64_t pictures;          // pictures in this motion, if any;
     uint64_t video_frames;      // total video frames in this motion;
     char video_path[PATH_MAX];  // video file storage path;
 };
