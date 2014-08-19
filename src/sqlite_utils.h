@@ -60,7 +60,7 @@
 struct add_motion_sql_clause {
     time_t start_time;          // motion start time;
     time_t end_time;            // motion end time;
-    unsigned int duration;      // motion duration time;
+    uint64_t duration;      // motion duration time;
     uint64_t video_frames;      // total video frames in this motion;
     char video_path[PATH_MAX];  // video file storage path;
 };
@@ -75,6 +75,9 @@ extern sqlite3 *open_db(const char *database);
 extern int exec_SQL(sqlite3 *db, const char *sql);
 
 extern int create_table(sqlite3 *db, const char *table_name);
+
+extern int insert_item(sqlite3 *db, const char *table_name,
+        struct add_motion_sql_clause *add_motion);
 
 extern int close_db(sqlite3 *db);
 

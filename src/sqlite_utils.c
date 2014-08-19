@@ -100,7 +100,7 @@ int create_table(sqlite3 *db, const char *table_name)
     char create_table_sql[PATH_MAX];
     // creat table if not exists, "is not exists" is important!
     sprintf(create_table_sql, "CREATE TABLE IF NOT EXISTS %s "
-            "(start_time INT PRIMARY KEY, end_time INT, duration INT, "
+            "(start_time TEXT PRIMARY KEY, end_time TEXT, duration INT, "
             "video_frames INT, video_path TEXT)", table_name);
 
     char *errmsg = NULL;
@@ -117,7 +117,29 @@ int create_table(sqlite3 *db, const char *table_name)
     return 0;
 }
 
+int insert_item(sqlite3 *db, const char *table_name,
+        struct add_motion_sql_clause *add_motion)
+{
+    assert(add_motion != NULL);
+    char insert_item_sql[PATH_MAX];
+    sprintf(insert_item_sql, "INSERT INTO %s VALUES(%s, %s, %ld, %ld, %s)",
+            table_name, ctime(&add_motion->start_time),
+            ctime(&add_motion->end_time), add_motion->duration,
+            add_motion->video_frames, add_motion->video_path);
 
+    char *errmsg = NULL;
+    int rc = sqlite3_exec(db, insert_item_sql, NULL, NULL, &errmsg);
+    if (rc != SQLITE_OK) {
+        dmd_log(LOG_ERR, "execute sql \"%s\" error:%s\n",
+                insert_item_sql, errmsg);
+        return -1;
+    } else {
+        dmd_log(LOG_DEBUG, "execute sql \"%s\" success\n", insert_item_sql);
+        return 0;
+    }
+
+    return 0;
+}
 
 int close_db(sqlite3 *db)
 {
