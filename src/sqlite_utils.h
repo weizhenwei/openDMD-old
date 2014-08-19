@@ -45,6 +45,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <time.h>
 #include <linux/limits.h>
 
 #include <sqlite3.h>

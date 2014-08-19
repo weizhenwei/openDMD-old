@@ -56,6 +56,7 @@ struct motion_t {
     // public
     time_t start;  // start time of motion;
     time_t end;    // end time of motion;
+    uint64_t duration; // detected motion duration;
     uint64_t pictures; // for picture_thread use;
     uint64_t video_frames; // for video_thread use;
 
@@ -83,6 +84,7 @@ extern void set_motion_start_time(struct motion_t *motion,
         const time_t start_time);
 extern void set_motion_end_time(struct motion_t *motion,
         const time_t end_time);
+extern void set_motion_duration(struct motion_t *motion);
 extern void increase_motion_pictures(struct motion_t *motion);
 extern void increase_motion_video_frames(struct motion_t *motion);
 extern void set_motion_videopath(struct motion_t *motion,
@@ -97,6 +99,5 @@ extern void dump_statistics(const struct stats *stats);
 
 // release memory
 extern void release_statistics(struct stats *stats);
-
 
 #endif

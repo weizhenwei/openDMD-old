@@ -94,6 +94,12 @@ void set_motion_end_time(struct motion_t *motion, const time_t end_time)
 {
     motion->end = end_time;
 }
+void set_motion_duration(struct motion_t *motion)
+{
+    motion->duration = motion->end - motion->start;
+    assert(motion->duration >= 0);
+}
+
 void increase_motion_pictures(struct motion_t *motion)
 {
     motion->pictures++;
@@ -137,6 +143,7 @@ static void dump_motion(const struct motion_t *motion)
             ctime((const time_t *) &motion->start));
     dmd_log(LOG_INFO, "motion end time:%s",
             ctime((const time_t *) &motion->end));
+    dmd_log(LOG_INFO, "motion duration time:%d seconds\n", motion->duration);
     dmd_log(LOG_INFO, "motion with %d pictures captured\n",
             motion->pictures);
     dmd_log(LOG_INFO, "motion with %d video frames captured\n",

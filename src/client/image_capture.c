@@ -149,14 +149,16 @@ int process_image(void *yuyv, int length, int width, int height)
                 
                 pthread_mutex_lock(&global_stats->mutex);
                 if (global_stats->current_motion != NULL) {
-                    // threee things to do:
+                    // four things to do:
                     // 1. set motion end time
-                    // 2. add global_stats->current_motion to
+                    // 2. set motion duration;
+                    // 3. add global_stats->current_motion to
                     //    global_stats->motion_list
-                    // 3. set global_stats->current_motion to NULL;
+                    // 4. set global_stats->current_motion to NULL;
                     dmd_log(LOG_INFO,
                             "set global_stats->current_motion to NULL\n");
                     set_motion_end_time(global_stats->current_motion, now);
+                    set_motion_duration(global_stats->current_motion);
                     add_motion(global_stats, global_stats->current_motion);
                     global_stats->current_motion = NULL;
                 }
@@ -171,15 +173,17 @@ int process_image(void *yuyv, int length, int width, int height)
 #endif
             pthread_mutex_lock(&global_stats->mutex);
             if (global_stats->current_motion != NULL) {
-                // threee things to do:
+                // four things to do:
                 // 1. set motion end time
-                // 2. add global_stats->current_motion
+                // 2. set motion duration;
+                // 3. add global_stats->current_motion
                 //    to global_stats->motion_list
-                // 3. set global_stats->current_motion to NULL;
+                // 4. set global_stats->current_motion to NULL;
                 dmd_log(LOG_INFO, "in function %s, line %d,"
                         " set global_stats->current_motion to NULL\n",
                         __func__, __LINE__);
                 set_motion_end_time(global_stats->current_motion, now);
+                set_motion_duration(global_stats->current_motion);
                 add_motion(global_stats, global_stats->current_motion);
                 global_stats->current_motion = NULL;
             }
@@ -267,6 +271,7 @@ int dmd_image_capture(struct v4l2_device_info *v4l2_info)
         assert(now != -1);
         // threee things to do:
         // 1. set motion end time
+        // 2. set motion duration;
         // 2. add global_stats->current_motion
         //    to global_stats->motion_list
         // 3. set global_stats->current_motion to NULL;
@@ -274,6 +279,7 @@ int dmd_image_capture(struct v4l2_device_info *v4l2_info)
                 " set global_stats->current_motion to NULL\n",
                 __func__, __LINE__);
         set_motion_end_time(global_stats->current_motion, now);
+        set_motion_duration(global_stats->current_motion);
         add_motion(global_stats, global_stats->current_motion);
         global_stats->current_motion = NULL;
     }
