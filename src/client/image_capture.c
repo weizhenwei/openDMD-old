@@ -176,6 +176,9 @@ int process_image(void *yuyv, int length, int width, int height)
 #endif
             pthread_mutex_lock(&global_stats->mutex);
             if (global_stats->current_motion != NULL) {
+                // TODO: there is statistics unaccuracy here,
+                //       may be we should not counting picture data here!
+
                 // five things to do:
                 // 1. set motion end time
                 // 2. set motion duration;
@@ -189,8 +192,8 @@ int process_image(void *yuyv, int length, int width, int height)
                 set_motion_end_time(global_stats->current_motion, now);
                 set_motion_duration(global_stats->current_motion);
                 add_motion(global_stats, global_stats->current_motion);
-                insert_item(opendmd_db, DEFAULT_TABLE,
-                        global_stats->current_motion);
+                // insert_item(opendmd_db, DEFAULT_TABLE,
+                //         global_stats->current_motion);
                 global_stats->current_motion = NULL;
             }
             pthread_mutex_unlock(&global_stats->mutex);
@@ -298,15 +301,29 @@ int dmd_image_capture(struct v4l2_device_info *v4l2_info)
          * video thread is keep in pace with picture thread,
          * so when Ctrl + C signal invoked, video thread may not received the
          * signal; then we notify video thread again at here!
-         *
-         * TODO: check whether picture thread need notify.
          */
-        if (global.client.working_mode == CAPTURE_VIDEO
-                || global.client.working_mode == CAPTURE_ALL) {
+        if (global.client.working_mode == CAPTURE_ALL) {
             pthread_mutex_lock(&global.client.thread_attr.video_mutex);
             global.client.video_target = NOTIFY_EXIT;
             pthread_cond_signal(&global.client.thread_attr.video_cond);
             pthread_mutex_unlock(&global.client.thread_attr.video_mutex);
+
+            pthread_mutex_lock(&global.client.thread_attr.picture_mutex);
+            global.client.picture_target = NOTIFY_EXIT;
+            pthread_cond_signal(&global.client.thread_attr.picture_cond);
+            pthread_mutex_unlock(&global.client.thread_attr.picture_mutex);
+
+        } else if (global.client.working_mode == CAPTURE_VIDEO) {
+            pthread_mutex_lock(&global.client.thread_attr.video_mutex);
+            global.client.video_target = NOTIFY_EXIT;
+            pthread_cond_signal(&global.client.thread_attr.video_cond);
+            pthread_mutex_unlock(&global.client.thread_attr.video_mutex);
+
+        } else if (global.client.working_mode == CAPTURE_PICTURE) {
+            pthread_mutex_lock(&global.client.thread_attr.picture_mutex);
+            global.client.picture_target = NOTIFY_EXIT;
+            pthread_cond_signal(&global.client.thread_attr.picture_cond);
+            pthread_mutex_unlock(&global.client.thread_attr.picture_mutex);
         }
     }
 

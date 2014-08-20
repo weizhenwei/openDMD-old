@@ -84,11 +84,12 @@ void *picture_thread(void *arg)
             assert(ret == 0);
 
             // increase statistics data;
+            // TODO: this may caused problem here!
+            //       counting number is unaccuracy!
             pthread_mutex_lock(&global_stats->mutex);
-#if defined(DEBUG)
-            assert(global_stats->current_motion != NULL);
-#endif
-            increase_motion_pictures(global_stats->current_motion);
+            if (global_stats->current_motion != NULL) {
+                increase_motion_pictures(global_stats->current_motion);
+            }
             pthread_mutex_unlock(&global_stats->mutex);
 
             free(jpeg_filepath->path);
