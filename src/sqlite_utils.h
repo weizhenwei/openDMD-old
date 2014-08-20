@@ -57,6 +57,12 @@
 #define DEFAULT_DATABASE "opendmd.db"
 #define DEFAULT_TABLE "opendmd_table"
 
+// this two struct shold be declared first,
+// or the gcc warning "struct XX declared inside parameter list"
+// will occur.
+struct motion_t;
+struct stats;
+
 extern char database_file[];
 extern sqlite3 *opendmd_db;
 
