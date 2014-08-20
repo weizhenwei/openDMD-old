@@ -130,12 +130,14 @@ int insert_item(sqlite3 *db, const char *table_name,
     end_time[strlen(end_time) - 1] = '\0';     // remove the tailing '\n';
     if (motion->video_path != NULL) {
         sprintf(insert_item_sql,
-                "INSERT INTO %s VALUES(\"%s\", \"%s\", %ld, %ld, %ld, \"%s\")",
+                "INSERT INTO %s VALUES(\"%s\", \"%s\", "
+                "%05ld, %05ld, %05ld, \"%s\")",
                 table_name, start_time, end_time, motion->duration,
                 motion->pictures, motion->video_frames, motion->video_path);
     } else {
         sprintf(insert_item_sql,
-                "INSERT INTO %s VALUES(\"%s\", \"%s\", %ld, %ld, %ld, \"%s\")",
+                "INSERT INTO %s VALUES(\"%s\", \"%s\", "
+                "%05ld, %05ld, %05ld, \"%s\")",
                 table_name, start_time, end_time, motion->duration,
                 motion->pictures, motion->video_frames, "");
     }
