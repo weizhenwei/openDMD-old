@@ -171,6 +171,18 @@ int store_motion_to_database(const struct stats *stats)
     return 0;
 }
 
+int dump_database_table(sqlite3 *db, const char *table_name)
+{
+    return 0;
+}
+
+
+int clean_database_table(sqlite3 *db, const char *table_name)
+{
+    return 0;
+}
+
+
 int close_db(sqlite3 *db)
 {
     int rc = sqlite3_close(db);

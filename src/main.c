@@ -72,6 +72,10 @@
 #include "rtp_send.h"
 #include "rtp_server.h"
 
+// for cmd line control
+static unsigned int show_statistics = 0;
+static unsigned int clean_statistics = 0;
+
 static void clean(void)
 {
     dmd_closelog();
@@ -313,32 +317,42 @@ static void client_create_thread()
 static void usage(const char *progname)
 {
     fprintf(stdout, "Usage:%s [OPTION...]\n", progname);
-    fprintf(stdout, "   -p, --pid-file=FILE,    Use specified pid file\n");  
-    fprintf(stdout, "   -f, --cfg-file=FILE,    Use specified config file\n");  
-    fprintf(stdout, "   -d, --daemonize,        Run opendmd in daemon mode\n");  
-    fprintf(stdout, "   -v, --version,          Display the version number\n");  
-    fprintf(stdout, "   -h, --help,             Display this help message\n");  
+    fprintf(stdout, "  -p, --pid-file=FILE,    Use specified pid file\n");  
+    fprintf(stdout, "  -f, --cfg-file=FILE,    Use specified config file\n");  
+    fprintf(stdout, "  -d, --daemonize,        Run opendmd in daemon mode\n");  
+    fprintf(stdout, "  -v, --version,          Display the version number\n");  
+    fprintf(stdout, "  -s, --show-statistics,  Show historical statistics\n");  
+    fprintf(stdout, "  -c, --clean-statistics, Clean historical statistics\n");  
+    fprintf(stdout, "  -h, --help,             Display this help message\n");  
 }
 
 static int parse_cmdline(int argc, char *argv[])
 {
     int c;
     struct option long_options[] = {
-        {"pid-file", required_argument, 0, 'p'},
-        {"cfg-file", required_argument, 0, 'f'},
-        {"daemonize", no_argument,      0, 'd'},
-        {"version",  no_argument,       0, 'v'},
-        {"help",     no_argument,       0, 'h'},
+        {"pid-file",           required_argument,  0, 'p'},
+        {"cfg-file",           required_argument,  0, 'f'},
+        {"daemonize",          no_argument,        0, 'd'},
+        {"version",            no_argument,        0, 'v'},
+        {"show-statistics",    no_argument,        0, 's'},
+        {"clean-statistics",   no_argument,        0, 'c'},
+        {"help",               no_argument,        0, 'h'},
         {0, 0, 0, 0},
     };
 
     // man 3 getopt_long for more information about getopt_long;
-    while ((c = getopt_long(argc, argv, "p:f:dvh", long_options, NULL))
+    while ((c = getopt_long(argc, argv, "p:f:dvsch", long_options, NULL))
             != EOF) {
         switch (c) {
             case 'v':
                 fprintf(stdout, "%s\n", "opendmd 0.0.1");
                 exit(EXIT_SUCCESS);
+                break;
+            case 's':
+                show_statistics = 1;
+                break;
+            case 'c':
+                clean_statistics = 1;
                 break;
             case 'h':
                 usage(argv[0]);
@@ -384,6 +398,26 @@ static int parse_cmdline(int argc, char *argv[])
     return 0;
 }
 
+static void manage_cmdline()
+{
+    if (show_statistics == 1 && clean_statistics == 1) {
+        fprintf(stderr, "ERROR: show statistics and clean statistics "
+                "can't be specified at same time.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    if (show_statistics == 1) {
+        dump_database_table(opendmd_db, DEFAULT_TABLE);
+        exit(EXIT_SUCCESS);
+    }
+
+    if (clean_statistics == 1) {
+        clean_database_table(opendmd_db, DEFAULT_TABLE);
+        exit(EXIT_SUCCESS);
+    }
+
+}
+
 int main(int argc, char *argv[])
 {
     // set locale according current environment;
@@ -400,6 +434,9 @@ int main(int argc, char *argv[])
     parse_cmdline(argc, argv);
 
     init();
+
+    // manage cmd line options;
+    manage_cmdline();
 
     // slave or singleton do the capturing work;
     if (global.cluster_mode == CLUSTER_CLIENT

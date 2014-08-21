@@ -79,6 +79,10 @@ extern int insert_item(sqlite3 *db, const char *table_name,
 
 extern int store_motion_to_database(const struct stats *stats);
 
+extern int dump_database_table(sqlite3 *db, const char *table_name);
+
+extern int clean_database_table(sqlite3 *db, const char *table_name);
+
 extern int close_db(sqlite3 *db);
 
 
