@@ -198,14 +198,6 @@ static void daemonize()
 
 }
 
-static void register_clean_memory()
-{
-    if (atexit(release_default_global) != 0) {
-        dmd_log(LOG_ERR, "%s\n", "register function "
-                "release_default_global at atexit error");
-    }
-}
-
 static void init(void)
 {
     int ret = -1;
@@ -221,9 +213,6 @@ static void init(void)
     ret = dump_global_config();
     assert(ret == 0);
 #endif
-
-    // reigister clean memory function;
-    register_clean_memory();
 
     // init statistics global variable;
     global_stats = new_statistics();
@@ -407,12 +396,18 @@ static void manage_cmdline()
     }
 
     if (show_statistics == 1) {
+        init_database();
         dump_database_table(opendmd_db, DEFAULT_TABLE);
+        close_db(opendmd_db);
+
         exit(EXIT_SUCCESS);
     }
 
     if (clean_statistics == 1) {
+        init_database();
         clean_database_table(opendmd_db, DEFAULT_TABLE);
+        close_db(opendmd_db);
+
         exit(EXIT_SUCCESS);
     }
 
@@ -423,20 +418,19 @@ int main(int argc, char *argv[])
     // set locale according current environment;
     setlocale(LC_ALL, "");
 
+
     // open log first;
     dmd_openlog(DMD_IDENT, DMD_LOGOPT, DMD_FACILITY);
-
 
     // initialize struct global_context global to default value;
     init_default_global();
 
     // parse command line parameters
     parse_cmdline(argc, argv);
-
-    init();
-
     // manage cmd line options;
     manage_cmdline();
+
+    init();
 
     // slave or singleton do the capturing work;
     if (global.cluster_mode == CLUSTER_CLIENT
@@ -469,6 +463,7 @@ int main(int argc, char *argv[])
 
 end:
 
+    release_default_global();
     clean();
 
     return 0;

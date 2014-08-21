@@ -52,7 +52,7 @@ int init_database()
 
     // open/create default database opendmd.db
     sprintf(database_file, "%s/%s", global.database_repo, DEFAULT_DATABASE);
-    dmd_log(LOG_INFO, "database_file is %s\n", database_file);
+    dmd_log(LOG_DEBUG, "database_file is %s\n", database_file);
     opendmd_db = open_db(database_file);
     assert(opendmd_db != NULL);
 
@@ -73,7 +73,7 @@ sqlite3 *open_db(const char *database)
         dmd_log(LOG_ERR, "can't open the database:%s\n", sqlite3_errmsg(db));
         return NULL;
     }
-    dmd_log(LOG_INFO, "connect database sucess!\n");
+    dmd_log(LOG_DEBUG, "connect database sucess!\n");
 
     return db;
 }
@@ -88,7 +88,7 @@ int exec_SQL(sqlite3 *db, const char *sql)
         dmd_log(LOG_ERR, "execute sql \"%s\" error:%s\n", sql, errmsg);
         return -1;
     } else {
-        dmd_log(LOG_INFO, "execute sql \"%s\" success\n", sql);
+        dmd_log(LOG_DEBUG, "execute sql \"%s\" success\n", sql);
         return 0;
     }
 
@@ -110,7 +110,7 @@ int create_table(sqlite3 *db, const char *table_name)
                 create_table_sql, errmsg);
         return -1;
     } else {
-        dmd_log(LOG_INFO, "execute sql \"%s\" success\n", create_table_sql);
+        dmd_log(LOG_DEBUG, "execute sql \"%s\" success\n", create_table_sql);
         return 0;
     }
 
@@ -149,7 +149,7 @@ int insert_item(sqlite3 *db, const char *table_name,
                 insert_item_sql, errmsg);
         return -1;
     } else {
-        dmd_log(LOG_INFO, "execute sql \"%s\" success\n", insert_item_sql);
+        dmd_log(LOG_DEBUG, "execute sql \"%s\" success\n", insert_item_sql);
         return 0;
     }
 
@@ -162,7 +162,7 @@ int store_motion_to_database(const struct stats *stats)
     struct motion_t *m = stats->motion_list;
     while (m != NULL) {
         i++;
-        dmd_log(LOG_INFO, "Store motion to database %d:\n", i);
+        dmd_log(LOG_DEBUG, "Store motion to database %d:\n", i);
         insert_item(opendmd_db, DEFAULT_TABLE, m);
         m = m->next;
     }
