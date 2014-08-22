@@ -179,6 +179,21 @@ int dump_database_table(sqlite3 *db, const char *table_name)
 
 int clean_database_table(sqlite3 *db, const char *table_name)
 {
+    char delete_table_sql[PATH_MAX];
+    // creat table if not exists, "is not exists" is important!
+    sprintf(delete_table_sql, "DELETE FROM %s ", table_name);
+
+    char *errmsg = NULL;
+    int rc = sqlite3_exec(db, delete_table_sql, NULL, NULL, &errmsg);
+    if (rc != SQLITE_OK) {
+        dmd_log(LOG_ERR, "execute sql \"%s\" error:%s\n",
+                delete_table_sql, errmsg);
+        return -1;
+    } else {
+        dmd_log(LOG_INFO, "execute sql \"%s\" success\n", delete_table_sql);
+        return 0;
+    }
+
     return 0;
 }
 
