@@ -97,7 +97,7 @@ int exec_SQL(sqlite3 *db, const char *sql)
 
 int create_table(sqlite3 *db, const char *table_name)
 {
-    char create_table_sql[PATH_MAX];
+    char create_table_sql[1024];
     // creat table if not exists, "is not exists" is important!
     sprintf(create_table_sql, "CREATE TABLE IF NOT EXISTS %s "
             "(start_time TEXT PRIMARY KEY, end_time TEXT, duration INT, "
@@ -121,9 +121,9 @@ int insert_item(sqlite3 *db, const char *table_name,
         const struct motion_t *motion)
 {
     assert(motion != NULL);
-    char insert_item_sql[PATH_MAX];
-    char start_time[PATH_MAX];
-    char end_time[PATH_MAX];
+    char insert_item_sql[1024];
+    char start_time[1024];
+    char end_time[1024];
     ctime_r(&motion->start, start_time);
     start_time[strlen(start_time) - 1] = '\0'; // remove the tailing '\n';
     ctime_r(&motion->end, end_time);
@@ -171,16 +171,43 @@ int store_motion_to_database(const struct stats *stats)
     return 0;
 }
 
+
+static int dump_callback(void *prefix, int argc, char **argv, char **azColName)
+{
+   int i;
+   dmd_log(LOG_INFO, "%s\n", (const char *)prefix);
+   for (i = 0; i < argc; i++) {
+      dmd_log(LOG_INFO, "%s:%s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+   }
+   dmd_log(LOG_INFO, "\n");
+
+   return 0;
+}
+
 int dump_database_table(sqlite3 *db, const char *table_name)
 {
+    char dump_table_sql[1024];
+    sprintf(dump_table_sql, "SELECT * FROM %s ", table_name);
+
+    char *errmsg = NULL;
+    const char *prefix = "motion detected:";
+    int rc = sqlite3_exec(db, dump_table_sql, dump_callback,
+            (void *)prefix, &errmsg);
+    if (rc != SQLITE_OK) {
+        dmd_log(LOG_ERR, "execute sql \"%s\" error:%s\n",
+                dump_table_sql, errmsg);
+        return -1;
+    } else {
+        dmd_log(LOG_INFO, "execute sql \"%s\" success\n", dump_table_sql);
+        return 0;
+    }
+
     return 0;
 }
 
-
 int clean_database_table(sqlite3 *db, const char *table_name)
 {
-    char delete_table_sql[PATH_MAX];
-    // creat table if not exists, "is not exists" is important!
+    char delete_table_sql[1024];
     sprintf(delete_table_sql, "DELETE FROM %s ", table_name);
 
     char *errmsg = NULL;
