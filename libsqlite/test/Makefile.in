@@ -32,7 +32,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-noinst_PROGRAMS = test_sqlite$(EXEEXT)
+noinst_PROGRAMS = test_basic$(EXEEXT) test_select$(EXEEXT)
 subdir = libsqlite/test
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -44,9 +44,12 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
-am_test_sqlite_OBJECTS = test_sqlite.$(OBJEXT)
-test_sqlite_OBJECTS = $(am_test_sqlite_OBJECTS)
-test_sqlite_DEPENDENCIES = $(top_srcdir)/libsqlite/src/libsqlite3.a
+am_test_basic_OBJECTS = test_basic.$(OBJEXT)
+test_basic_OBJECTS = $(am_test_basic_OBJECTS)
+test_basic_DEPENDENCIES = $(top_srcdir)/libsqlite/src/libsqlite3.a
+am_test_select_OBJECTS = test_select.$(OBJEXT)
+test_select_OBJECTS = $(am_test_select_OBJECTS)
+test_select_DEPENDENCIES = $(top_srcdir)/libsqlite/src/libsqlite3.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -55,8 +58,8 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(test_sqlite_SOURCES)
-DIST_SOURCES = $(test_sqlite_SOURCES)
+SOURCES = $(test_basic_SOURCES) $(test_select_SOURCES)
+DIST_SOURCES = $(test_basic_SOURCES) $(test_select_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -151,8 +154,10 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
 INCLUDES = -I$(top_srcdir)/libsqlite/src
-test_sqlite_LDADD = $(top_srcdir)/libsqlite/src/libsqlite3.a
-test_sqlite_SOURCES = test_sqlite.c
+test_basic_LDADD = $(top_srcdir)/libsqlite/src/libsqlite3.a
+test_basic_SOURCES = test_basic.c
+test_select_LDADD = $(top_srcdir)/libsqlite/src/libsqlite3.a
+test_select_SOURCES = test_select.c
 all: all-am
 
 .SUFFIXES:
@@ -190,9 +195,12 @@ $(am__aclocal_m4_deps):
 
 clean-noinstPROGRAMS:
 	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
-test_sqlite$(EXEEXT): $(test_sqlite_OBJECTS) $(test_sqlite_DEPENDENCIES) $(EXTRA_test_sqlite_DEPENDENCIES) 
-	@rm -f test_sqlite$(EXEEXT)
-	$(LINK) $(test_sqlite_OBJECTS) $(test_sqlite_LDADD) $(LIBS)
+test_basic$(EXEEXT): $(test_basic_OBJECTS) $(test_basic_DEPENDENCIES) $(EXTRA_test_basic_DEPENDENCIES) 
+	@rm -f test_basic$(EXEEXT)
+	$(LINK) $(test_basic_OBJECTS) $(test_basic_LDADD) $(LIBS)
+test_select$(EXEEXT): $(test_select_OBJECTS) $(test_select_DEPENDENCIES) $(EXTRA_test_select_DEPENDENCIES) 
+	@rm -f test_select$(EXEEXT)
+	$(LINK) $(test_select_OBJECTS) $(test_select_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -200,7 +208,8 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_sqlite.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_basic.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_select.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

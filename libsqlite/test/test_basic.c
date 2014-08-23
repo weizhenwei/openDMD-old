@@ -28,7 +28,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: test_sqlite.c
+ * File: test_basic.c
  *
  * Brief: test sqlite C API
  *
@@ -47,9 +47,6 @@
 
 // array that stores SQL command;
 char sql[1024];
-
-const int first_time = 0;
-
 
 static sqlite3 *open_db(const char *database)
 {
@@ -95,9 +92,9 @@ static int insert_values(sqlite3 *db)
 {
     char *errmsg = NULL;
 
-    sprintf(sql, "%s", "INSERT INTO detected_motions(des, start_time, end_time,"
-        " video_path) VALUES(\"first motion\", 20140817, 20140817, "
-            "\"/home/wzw/opendmd/video/a.flv\")");
+    sprintf(sql, "%s", "INSERT INTO detected_motions(id, des, start_time, "
+            "end_time, video_path) VALUES(20140823, \"first motion\", "
+            "20140817, 20140817, \"/home/wzw/opendmd/video/a.flv\")");
 
     const char *begin_transaction = "BEGIN;";
     const char *commit_transaction = "COMMIT;";
@@ -138,12 +135,11 @@ int main(void)
     db = open_db("sqlite.db");
     assert(db != NULL);
 
-    if (first_time != 0) {
-        sprintf(sql, "CREATE TABLE detected_motions(id INT PRIMARY KEY, "
-                "des TEXT, start_time INT, end_time INT, video_path TEXT)");
-        rc = exec_SQL(db, sql);
-        assert(rc == 0);
-    }
+    sprintf(sql, "CREATE TABLE IF NOT EXISTS detected_motions"
+            "(id INT, des TEXT, start_time INT, "
+            "end_time INT, video_path TEXT)");
+    rc = exec_SQL(db, sql);
+    assert(rc == 0);
 
     rc = insert_values(db);
 
