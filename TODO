@@ -4,6 +4,7 @@
             to RGB888 or YUV420.
     Urgent: add reload config file to project!
     Urgent: dump statistics to browser, using light web server;
+    Urgent: write web server from scratch or use lighttpd/thttpd;
     Urgent: add email notification mechanism;
 
 2014.08.20:
