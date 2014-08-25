@@ -60,14 +60,16 @@
 #include "config.h"
 #include "parser.h"
 #include "v4l2_utils.h"
-#include "video_thread.h"
 #include "image_capture.h"
 #include "image_convert.h"
 #include "global_context.h"
-#include "picture_thread.h"
 #include "signal_handler.h"
 #include "statistics.h"
 #include "sqlite_utils.h"
+
+#include "video_thread.h"
+#include "picture_thread.h"
+#include "webserver_thread.h"
 
 #include "rtp_send.h"
 #include "rtp_server.h"
@@ -255,6 +257,15 @@ static void client_create_thread()
 {
     int dummy = 0;
     int ret;
+
+    // create webserver thread;
+    // TODO: refactor here!
+    pthread_t ws_thread;
+    ret = pthread_create(&ws_thread, NULL, webserver_thread, &dummy);
+    assert(ret == 0);
+    pthread_mutex_lock(&total_thread_mutex);
+    total_thread++;
+    pthread_mutex_unlock(&total_thread_mutex);
 
     if (global.client.working_mode == CAPTURE_ALL) {
         // create picture thread;

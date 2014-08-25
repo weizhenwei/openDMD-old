@@ -28,68 +28,46 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: socket_utils.h
+ * File: webserver_thread.h
  *
- * Brief: socket operation for webserver
+ * Brief: webserver thread interface for opendmd
  *
- * Date: 2014.08.25
+ * Date: 2014.08.26
  *
  * Author: weizhenwei <weizhenwei1988@gmail.com>
  *
  * *****************************************************************************
  */
 
-#ifndef SOCKET_UTILS_H
-#define SOCKET_UTILS_H
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <sys/epoll.h>
-#include <unistd.h>
-#include <strings.h>
-#include <string.h>
-#include <errno.h>
-
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <fcntl.h>
-
-#include "http_utils.h"
-#include "log.h"
-
-#define BIND_PORT 8082
-#define BIND_ADDR "127.0.0.1"
-
-#define LISTEN_BACKLOG 10
-#define SENDBUF 32768
-#define RECVBUF 32768
-
-#define MAX_EPOLL_EVENT 1024
-
-#define BUFFSIZE 1024
-
-struct sockaddr *serverAddr;
-struct sockaddr *clientAddr;
+#include "webserver_thread.h"
 
 
-extern int newSocket(void);
-extern void closeSocket(int sockfd);
+void *webserver_thread(void *arg)
+{
+    dmd_log(LOG_INFO, "in function %s, starting webserver thread.", __func__);
 
-extern struct sockaddr *newAddress();
-extern void releaseAddress(struct sockaddr *addr);
-extern int bindAddress(int sockfd, struct sockaddr *addr);
-extern int listenAddress(int sockfd);
+    int serverfd = newSocket();
+    serverAddr = newAddress();
+    bindAddress(serverfd, serverAddr);
+    listenAddress(serverfd);
 
-extern int acceptConnection(int sockfd, struct sockaddr *clientAddress);
+    struct epoll_event events[MAX_EPOLL_EVENT];
+    int epollfd = newEpollSocket();
 
-extern int newEpollSocket(void);
-extern int addSockfd(int epollfd, int fd);
-extern void handleEvent(int epollfd, int sockfd, struct epoll_event *events, int nevents, int *count);
+    dmd_log(LOG_INFO, "in function %s, begin to work\n", __func__);
+    int count = 0;
+    addSockfd(epollfd, serverfd);
+    while (1) {
+        int ret = epoll_wait(epollfd, events, MAX_EPOLL_EVENT, -1);
+        dmd_log(LOG_INFO, "in function %s, after epoll wait\n", __func__);
+        if (ret < 0) {
+            dmd_log(LOG_ERR, "in function %s, epoll failure\n", __func__);
+        } else {
+            handleEvent(epollfd, serverfd, events, ret, &count);
+        }
+    } // while
 
-extern int mainLoop();
+    closeSocket(serverfd);
+    releaseAddress(serverAddr);
+}
 
-
-
-#endif

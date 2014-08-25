@@ -5,7 +5,8 @@ bin_PROGRAMS = opendmd
 INCLUDES = -I$(top_srcdir)/libjpeg -I$(top_srcdir)/libsqlite/src \
        -I$(top_srcdir)/libortp/include -I$(top_srcdir)/libortp \
        -I$(top_srcdir)/libx264 -I$(top_srcdir)/libx264/output \
-       -I$(top_srcdir)/src/client -I$(top_srcdir)/src/server
+       -I$(top_srcdir)/src/client -I$(top_srcdir)/src/server \
+       -I$(top_srcdir)/src/webserver
 
 opendmd_LDADD = $(top_srcdir)/libjpeg/libjpeg.a \
         $(top_srcdir)/libortp/src/libortp.a \
@@ -33,5 +34,6 @@ opendmd_SOURCES = main.c \
           server/rtp_recv.h server/rtp_recv.c \
           server/rtp_server.h server/rtp_server.c \
 		  webserver/socket_utils.h webserver/socket_utils.c \
-		  webserver/http_utils.h webserver/http_utils.c
+		  webserver/http_utils.h webserver/http_utils.c \
+		  webserver/webserver_thread.h webserver/webserver_thread.c
 

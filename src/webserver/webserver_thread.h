@@ -28,19 +28,19 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: socket_utils.h
+ * File: webserver_thread.h
  *
- * Brief: socket operation for webserver
+ * Brief: webserver thread interface for opendmd
  *
- * Date: 2014.08.25
+ * Date: 2014.08.26
  *
  * Author: weizhenwei <weizhenwei1988@gmail.com>
  *
  * *****************************************************************************
  */
 
-#ifndef SOCKET_UTILS_H
-#define SOCKET_UTILS_H
+#ifndef WEBSERVER_THREAD_H
+#define WEBSERVER_THREAD_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -57,38 +57,10 @@
 #include <fcntl.h>
 
 #include "http_utils.h"
+#include "socket_utils.h"
 #include "log.h"
 
-#define BIND_PORT 8082
-#define BIND_ADDR "127.0.0.1"
-
-#define LISTEN_BACKLOG 10
-#define SENDBUF 32768
-#define RECVBUF 32768
-
-#define MAX_EPOLL_EVENT 1024
-
-#define BUFFSIZE 1024
-
-struct sockaddr *serverAddr;
-struct sockaddr *clientAddr;
-
-
-extern int newSocket(void);
-extern void closeSocket(int sockfd);
-
-extern struct sockaddr *newAddress();
-extern void releaseAddress(struct sockaddr *addr);
-extern int bindAddress(int sockfd, struct sockaddr *addr);
-extern int listenAddress(int sockfd);
-
-extern int acceptConnection(int sockfd, struct sockaddr *clientAddress);
-
-extern int newEpollSocket(void);
-extern int addSockfd(int epollfd, int fd);
-extern void handleEvent(int epollfd, int sockfd, struct epoll_event *events, int nevents, int *count);
-
-extern int mainLoop();
+extern void *webserver_thread(void *arg);
 
 
 

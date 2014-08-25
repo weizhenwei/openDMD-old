@@ -42,7 +42,7 @@
 
 #include "socket_utils.h"
 
-static int newSocket(void)
+int newSocket(void)
 {
     int reuse = 1;
     int sendbuffer = SENDBUF;
@@ -67,13 +67,12 @@ static int newSocket(void)
     return sockfd;
 }
 
-static void closeSocket(int sockfd)
+void closeSocket(int sockfd)
 {
     close(sockfd);
 }
 
-
-static struct sockaddr *newAddress()
+struct sockaddr *newAddress()
 {
     struct sockaddr_in *addr =
         (struct sockaddr_in *)malloc(sizeof(struct sockaddr_in));
@@ -92,7 +91,7 @@ static struct sockaddr *newAddress()
     return (struct sockaddr *) addr;
 }
 
-static void releaseAddress(struct sockaddr *addr)
+void releaseAddress(struct sockaddr *addr)
 {
     if (addr) {
         free(addr);
@@ -101,8 +100,7 @@ static void releaseAddress(struct sockaddr *addr)
     }
 }
 
-
-static int bindAddress(int sockfd, struct sockaddr *addr)
+int bindAddress(int sockfd, struct sockaddr *addr)
 {
     int ret = bind(sockfd, addr, sizeof(struct sockaddr));
     if (ret == -1) {
@@ -113,7 +111,7 @@ static int bindAddress(int sockfd, struct sockaddr *addr)
     return 0;
 }
 
-static int listenAddress(int sockfd)
+int listenAddress(int sockfd)
 {
     int ret = listen(sockfd, LISTEN_BACKLOG);
     if (ret == -1) {
@@ -124,7 +122,7 @@ static int listenAddress(int sockfd)
     return 0;
 }
 
-static int acceptConnection(int sockfd, struct sockaddr *clientAddress)
+int acceptConnection(int sockfd, struct sockaddr *clientAddress)
 {
     int addrlen = sizeof(*clientAddress);
     int clientfd = accept(sockfd, clientAddress,
@@ -137,7 +135,7 @@ static int acceptConnection(int sockfd, struct sockaddr *clientAddress)
     return clientfd;
 }
 
-static int newEpollSocket(void)
+int newEpollSocket(void)
 {
     int epollfd = epoll_create(5);
 
@@ -149,7 +147,7 @@ static int newEpollSocket(void)
     return epollfd;
 }
 
-static int addSockfd(int epollfd, int fd)
+int addSockfd(int epollfd, int fd)
 {
     struct epoll_event event;
     // if we don't empty struct event, 
@@ -164,7 +162,7 @@ static int addSockfd(int epollfd, int fd)
     return 0;
 }
 
-static void handleEvent(int epollfd, int sockfd, struct epoll_event *events,
+void handleEvent(int epollfd, int sockfd, struct epoll_event *events,
         int nevents, int *count)
 {
     char buffer[BUFFSIZE];
