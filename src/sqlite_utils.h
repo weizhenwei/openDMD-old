@@ -70,7 +70,9 @@ extern int init_database();
 
 extern sqlite3 *open_db(const char *database);
 
-extern int exec_SQL(sqlite3 *db, const char *sql);
+extern int exec_SQL(sqlite3 *db, const char *sql,
+        int (*callback)(void *, int, char **, char **),
+        void *firstarg);
 
 extern int create_table(sqlite3 *db, const char *table_name);
 

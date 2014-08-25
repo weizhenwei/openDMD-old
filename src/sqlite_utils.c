@@ -79,20 +79,19 @@ sqlite3 *open_db(const char *database)
 }
 
 
-// TODO: this needs further refactor;
-int exec_SQL(sqlite3 *db, const char *sql)
+int exec_SQL(sqlite3 *db, const char *sql,
+        int (*callback)(void *, int, char **, char **),
+        void *firstarg)
 {
     char *errmsg = NULL;
-    int rc = sqlite3_exec(db, sql, NULL, NULL, &errmsg);
+    int rc = sqlite3_exec(db, sql, callback, firstarg, &errmsg);
     if (rc != SQLITE_OK) {
         dmd_log(LOG_ERR, "execute sql \"%s\" error:%s\n", sql, errmsg);
-        return -1;
     } else {
         dmd_log(LOG_DEBUG, "execute sql \"%s\" success\n", sql);
-        return 0;
     }
 
-    return 0;
+    return rc;
 }
 
 int create_table(sqlite3 *db, const char *table_name)
@@ -103,14 +102,10 @@ int create_table(sqlite3 *db, const char *table_name)
             "(start_time TEXT PRIMARY KEY, end_time TEXT, duration INT, "
             "pictures INT, video_frames INT, video_path TEXT)", table_name);
 
-    char *errmsg = NULL;
-    int rc = sqlite3_exec(db, create_table_sql, NULL, NULL, &errmsg);
+    int rc = exec_SQL(db, create_table_sql, NULL, NULL);
     if (rc != SQLITE_OK) {
-        dmd_log(LOG_ERR, "execute sql \"%s\" error:%s\n",
-                create_table_sql, errmsg);
         return -1;
     } else {
-        dmd_log(LOG_DEBUG, "execute sql \"%s\" success\n", create_table_sql);
         return 0;
     }
 
@@ -142,14 +137,10 @@ int insert_item(sqlite3 *db, const char *table_name,
                 motion->pictures, motion->video_frames, "");
     }
 
-    char *errmsg = NULL;
-    int rc = sqlite3_exec(db, insert_item_sql, NULL, NULL, &errmsg);
+    int rc = exec_SQL(db, insert_item_sql, NULL, NULL);
     if (rc != SQLITE_OK) {
-        dmd_log(LOG_ERR, "execute sql \"%s\" error:%s\n",
-                insert_item_sql, errmsg);
         return -1;
     } else {
-        dmd_log(LOG_DEBUG, "execute sql \"%s\" success\n", insert_item_sql);
         return 0;
     }
 
@@ -171,7 +162,6 @@ int store_motion_to_database(const struct stats *stats)
     return 0;
 }
 
-
 static int dump_callback(void *prefix, int argc, char **argv, char **azColName)
 {
    int i;
@@ -189,16 +179,11 @@ int dump_database_table(sqlite3 *db, const char *table_name)
     char dump_table_sql[1024];
     sprintf(dump_table_sql, "SELECT * FROM %s ", table_name);
 
-    char *errmsg = NULL;
     const char *prefix = "motion detected:";
-    int rc = sqlite3_exec(db, dump_table_sql, dump_callback,
-            (void *)prefix, &errmsg);
+    int rc = exec_SQL(db, dump_table_sql, dump_callback, (void *)prefix);
     if (rc != SQLITE_OK) {
-        dmd_log(LOG_ERR, "execute sql \"%s\" error:%s\n",
-                dump_table_sql, errmsg);
         return -1;
     } else {
-        dmd_log(LOG_INFO, "execute sql \"%s\" success\n", dump_table_sql);
         return 0;
     }
 
@@ -210,14 +195,10 @@ int clean_database_table(sqlite3 *db, const char *table_name)
     char delete_table_sql[1024];
     sprintf(delete_table_sql, "DELETE FROM %s ", table_name);
 
-    char *errmsg = NULL;
-    int rc = sqlite3_exec(db, delete_table_sql, NULL, NULL, &errmsg);
+    int rc = exec_SQL(db, delete_table_sql, NULL, NULL);
     if (rc != SQLITE_OK) {
-        dmd_log(LOG_ERR, "execute sql \"%s\" error:%s\n",
-                delete_table_sql, errmsg);
         return -1;
     } else {
-        dmd_log(LOG_INFO, "execute sql \"%s\" success\n", delete_table_sql);
         return 0;
     }
 
