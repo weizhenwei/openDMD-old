@@ -52,7 +52,8 @@ am_opendmd_OBJECTS = main.$(OBJEXT) config.$(OBJEXT) log.$(OBJEXT) \
 	image_convert.$(OBJEXT) image_capture.$(OBJEXT) \
 	picture_thread.$(OBJEXT) flv_muxer.$(OBJEXT) libx264.$(OBJEXT) \
 	video_thread.$(OBJEXT) rtp_send.$(OBJEXT) rtp_recv.$(OBJEXT) \
-	rtp_server.$(OBJEXT)
+	rtp_server.$(OBJEXT) socket_utils.$(OBJEXT) \
+	http_utils.$(OBJEXT)
 opendmd_OBJECTS = $(am_opendmd_OBJECTS)
 opendmd_DEPENDENCIES = $(top_srcdir)/libjpeg/libjpeg.a \
 	$(top_srcdir)/libortp/src/libortp.a \
@@ -189,7 +190,9 @@ opendmd_SOURCES = main.c \
           client/video_thread.h client/video_thread.c \
           client/rtp_send.h client/rtp_send.c \
           server/rtp_recv.h server/rtp_recv.c \
-          server/rtp_server.h server/rtp_server.c
+          server/rtp_server.h server/rtp_server.c \
+		  webserver/socket_utils.h webserver/socket_utils.c \
+		  webserver/http_utils.h webserver/http_utils.c
 
 all: all-am
 
@@ -275,6 +278,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/config.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flv_muxer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/global_context.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/http_utils.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/image_capture.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/image_convert.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libx264.Po@am__quote@
@@ -287,6 +291,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtp_send.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtp_server.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/signal_handler.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/socket_utils.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sqlite_utils.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/statistics.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/v4l2_utils.Po@am__quote@
@@ -446,6 +451,34 @@ rtp_server.obj: server/rtp_server.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='server/rtp_server.c' object='rtp_server.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rtp_server.obj `if test -f 'server/rtp_server.c'; then $(CYGPATH_W) 'server/rtp_server.c'; else $(CYGPATH_W) '$(srcdir)/server/rtp_server.c'; fi`
+
+socket_utils.o: webserver/socket_utils.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT socket_utils.o -MD -MP -MF $(DEPDIR)/socket_utils.Tpo -c -o socket_utils.o `test -f 'webserver/socket_utils.c' || echo '$(srcdir)/'`webserver/socket_utils.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/socket_utils.Tpo $(DEPDIR)/socket_utils.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='webserver/socket_utils.c' object='socket_utils.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o socket_utils.o `test -f 'webserver/socket_utils.c' || echo '$(srcdir)/'`webserver/socket_utils.c
+
+socket_utils.obj: webserver/socket_utils.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT socket_utils.obj -MD -MP -MF $(DEPDIR)/socket_utils.Tpo -c -o socket_utils.obj `if test -f 'webserver/socket_utils.c'; then $(CYGPATH_W) 'webserver/socket_utils.c'; else $(CYGPATH_W) '$(srcdir)/webserver/socket_utils.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/socket_utils.Tpo $(DEPDIR)/socket_utils.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='webserver/socket_utils.c' object='socket_utils.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o socket_utils.obj `if test -f 'webserver/socket_utils.c'; then $(CYGPATH_W) 'webserver/socket_utils.c'; else $(CYGPATH_W) '$(srcdir)/webserver/socket_utils.c'; fi`
+
+http_utils.o: webserver/http_utils.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT http_utils.o -MD -MP -MF $(DEPDIR)/http_utils.Tpo -c -o http_utils.o `test -f 'webserver/http_utils.c' || echo '$(srcdir)/'`webserver/http_utils.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/http_utils.Tpo $(DEPDIR)/http_utils.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='webserver/http_utils.c' object='http_utils.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o http_utils.o `test -f 'webserver/http_utils.c' || echo '$(srcdir)/'`webserver/http_utils.c
+
+http_utils.obj: webserver/http_utils.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT http_utils.obj -MD -MP -MF $(DEPDIR)/http_utils.Tpo -c -o http_utils.obj `if test -f 'webserver/http_utils.c'; then $(CYGPATH_W) 'webserver/http_utils.c'; else $(CYGPATH_W) '$(srcdir)/webserver/http_utils.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/http_utils.Tpo $(DEPDIR)/http_utils.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='webserver/http_utils.c' object='http_utils.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o http_utils.obj `if test -f 'webserver/http_utils.c'; then $(CYGPATH_W) 'webserver/http_utils.c'; else $(CYGPATH_W) '$(srcdir)/webserver/http_utils.c'; fi`
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \

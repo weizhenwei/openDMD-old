@@ -31,5 +31,7 @@ opendmd_SOURCES = main.c \
           client/video_thread.h client/video_thread.c \
           client/rtp_send.h client/rtp_send.c \
           server/rtp_recv.h server/rtp_recv.c \
-          server/rtp_server.h server/rtp_server.c
+          server/rtp_server.h server/rtp_server.c \
+		  webserver/socket_utils.h webserver/socket_utils.c \
+		  webserver/http_utils.h webserver/http_utils.c
 
