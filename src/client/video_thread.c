@@ -77,12 +77,13 @@ void *video_thread(void *arg)
                 assert(flv_filepath != NULL);
                 
                 // set global_stats->current_motion->videopath;
+                // TODO: this may caused problem here!
+                //       counting number is unaccuracy!
                 pthread_mutex_lock(&global_stats->mutex);
-#if defined(DEBUG)
-                assert(global_stats->current_motion != NULL);
-#endif
-                set_motion_videopath(global_stats->current_motion,
-                        flv_filepath->path);
+                if (global_stats->current_motion != NULL) {
+                    set_motion_videopath(global_stats->current_motion,
+                            flv_filepath->path);
+                }
                 pthread_mutex_unlock(&global_stats->mutex);
 
 
