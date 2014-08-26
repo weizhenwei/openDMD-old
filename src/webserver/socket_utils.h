@@ -73,7 +73,6 @@
 struct sockaddr *serverAddr;
 struct sockaddr *clientAddr;
 
-
 extern int newSocket(void);
 extern void closeSocket(int sockfd);
 
@@ -86,10 +85,9 @@ extern int acceptConnection(int sockfd, struct sockaddr *clientAddress);
 
 extern int newEpollSocket(void);
 extern int addSockfd(int epollfd, int fd);
-extern void handleEvent(int epollfd, int sockfd, struct epoll_event *events, int nevents, int *count);
+extern void handleEvent(int epollfd, int sockfd, struct epoll_event *events,
+        int nevents, int *count);
 
 extern int mainLoop();
-
-
 
 #endif

@@ -49,6 +49,8 @@
 #include <string.h>
 #include <errno.h>
 
+#include "log.h"
+
 extern const char *hellowHTML;
 extern const char *hellowWorld;
 

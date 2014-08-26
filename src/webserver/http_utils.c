@@ -84,13 +84,12 @@ void sendHello(int fd, const char *msg)
     sprintf(reply, msg, len);
     reply[len] = '\0';
 
-    printf("reply to send:\n%s\n", reply);
+    dmd_log(LOG_DEBUG, "reply to send:\n%s\n", reply);
     int sendlen = write(fd, reply, len);
     if (sendlen != len) {
-        printf("send length not match\n");
-        printf("expected send length:%d, actual send length:%d\n",
-                len, (int)sendlen);
+        dmd_log(LOG_ERR, "send length not match: expected send length:%d, "
+                "actual send length:%d\n", len, (int)sendlen);
     } else {
-        printf("send succeed client\n\n");
+        dmd_log(LOG_INFO, "send succeed client\n\n");
     }
 }

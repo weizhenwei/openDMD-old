@@ -50,7 +50,7 @@ int newSocket(void)
 
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd == -1) {
-        perror("can not create socket:");
+        dmd_log(LOG_ERR, "can not create socket:%s\n", strerror(errno));
         return -1;
     }
 
@@ -77,7 +77,7 @@ struct sockaddr *newAddress()
     struct sockaddr_in *addr =
         (struct sockaddr_in *)malloc(sizeof(struct sockaddr_in));
     if (addr == NULL) {
-        printf("malloc struct sockaddr_in error!\n");
+        dmd_log(LOG_ERR, "malloc struct sockaddr_in error!\n");
         return NULL;
     }
 
@@ -96,7 +96,7 @@ void releaseAddress(struct sockaddr *addr)
     if (addr) {
         free(addr);
     } else {
-        printf("Error: An NULL address to free!\n");
+        dmd_log(LOG_ERR, "Error: An NULL address to free!\n");
     }
 }
 
@@ -104,7 +104,7 @@ int bindAddress(int sockfd, struct sockaddr *addr)
 {
     int ret = bind(sockfd, addr, sizeof(struct sockaddr));
     if (ret == -1) {
-        perror("bind sock addr error:");
+        dmd_log(LOG_ERR, "bind sock addr error:%s\n", strerror(errno));
         return -1;
     }
 
@@ -115,7 +115,7 @@ int listenAddress(int sockfd)
 {
     int ret = listen(sockfd, LISTEN_BACKLOG);
     if (ret == -1) {
-        perror("listen sock error:");
+        dmd_log(LOG_ERR, "listen sock error:%s\n", strerror(errno));
         return -1;
     }
 
@@ -128,7 +128,7 @@ int acceptConnection(int sockfd, struct sockaddr *clientAddress)
     int clientfd = accept(sockfd, clientAddress,
             (socklen_t * restrict)&addrlen);
     if (clientfd == -1) {
-        perror("accept client sock error:");
+        dmd_log(LOG_ERR, "accept client sock error:%s\n", strerror(errno));
         return -1;
     }
 
@@ -140,7 +140,7 @@ int newEpollSocket(void)
     int epollfd = epoll_create(5);
 
     if (epollfd == -1) {
-        perror("can not create epoll socket:");
+        dmd_log(LOG_ERR, "create epoll socket error:%s\n", strerror(errno));
         return -1;
     }
 
@@ -173,12 +173,14 @@ void handleEvent(int epollfd, int sockfd, struct epoll_event *events,
 
         if(fd == sockfd) { //new client arrival
 
-            printf("new client arrival\n");
+            dmd_log(LOG_DEBUG, "in function %s, new client arrival\n",
+                    __func__);
 
             struct sockaddr_in *clientAddr = (struct sockaddr_in *)
                 malloc(sizeof(struct sockaddr_in));
             if (clientAddr == NULL) {
-                printf("malloc client address error!\n");
+                dmd_log(LOG_ERR, "in function %s, "
+                        "malloc client address error!\n", __func__);
                 return;
             }
             bzero(clientAddr, sizeof(*clientAddr));
@@ -189,13 +191,13 @@ void handleEvent(int epollfd, int sockfd, struct epoll_event *events,
             free(clientAddr);
         } else if (events[i].events & EPOLLIN) { // read events happened
 
-            printf("EPOLLIN happened\n");
+            dmd_log(LOG_DEBUG, "EPOLLIN happened\n");
             while (1) {
                 memset(buffer, '\0', BUFFSIZE);
                 int ret = recv(fd, buffer, BUFFSIZE, 0);
                 if (ret == -1) {
                     if ((errno = EAGAIN) || (errno == EWOULDBLOCK)) {
-                        printf("epoll read later\n");
+                        dmd_log(LOG_DEBUG, "epoll read later\n");
                         break;
                     }
                     closeSocket(fd);
@@ -203,7 +205,7 @@ void handleEvent(int epollfd, int sockfd, struct epoll_event *events,
                 } else if (ret == 0) {
                     closeSocket(fd);
                 } else {
-                    printf("read from client:\n%s\n", buffer);
+                    dmd_log(LOG_INFO, "read from client:\n%s\n", buffer);
 
                     if (*count % 2 == 0) {
                         sendHello(fd, hellowHTML);
@@ -217,8 +219,7 @@ void handleEvent(int epollfd, int sockfd, struct epoll_event *events,
 
             } // while
         } else {
-            printf("something unknown happend!\n");
-
+            dmd_log(LOG_ERR, "something unknown happend!\n");
         }
     } // for
 
@@ -226,7 +227,7 @@ void handleEvent(int epollfd, int sockfd, struct epoll_event *events,
 
 int mainLoop()
 {
-    syslog(LOG_INFO, "Starting main loop.");
+    dmd_log(LOG_INFO, "Starting main loop.");
 
     int serverfd = newSocket();
     serverAddr = newAddress();
@@ -236,14 +237,14 @@ int mainLoop()
     struct epoll_event events[MAX_EPOLL_EVENT];
     int epollfd = newEpollSocket();
 
-    printf("begin to work\n");
+    dmd_log(LOG_DEBUG, "begin to work\n");
     int count = 0;
     addSockfd(epollfd, serverfd);
     while (1) {
         int ret = epoll_wait(epollfd, events, MAX_EPOLL_EVENT, -1);
-        printf("after epoll wait\n");
+        dmd_log(LOG_DEBUG, "after epoll wait\n");
         if (ret < 0) {
-            printf("epoll failure\n");
+            dmd_log(LOG_ERR, "epoll failure\n");
         } else {
             handleEvent(epollfd, serverfd, events, ret, &count);
         }
