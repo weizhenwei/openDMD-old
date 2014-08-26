@@ -28,9 +28,9 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: webserver_thread.h
+ * File: webserver_process.h
  *
- * Brief: webserver thread interface for opendmd
+ * Brief: webserver process interface for opendmd
  *
  * Date: 2014.08.26
  *
@@ -39,8 +39,8 @@
  * *****************************************************************************
  */
 
-#ifndef WEBSERVER_THREAD_H
-#define WEBSERVER_THREAD_H
+#ifndef WEBSERVER_PROCESS_H
+#define WEBSERVER_PROCESS_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -56,12 +56,13 @@
 #include <arpa/inet.h>
 #include <fcntl.h>
 
+#include "global_context.h"
 #include "http_utils.h"
 #include "socket_utils.h"
 #include "log.h"
 
-extern void *webserver_thread(void *arg);
+extern int webserver_fork();
 
-
+extern void webserver_loop();
 
 #endif

@@ -53,7 +53,7 @@ am_opendmd_OBJECTS = main.$(OBJEXT) config.$(OBJEXT) log.$(OBJEXT) \
 	picture_thread.$(OBJEXT) flv_muxer.$(OBJEXT) libx264.$(OBJEXT) \
 	video_thread.$(OBJEXT) rtp_send.$(OBJEXT) rtp_recv.$(OBJEXT) \
 	rtp_server.$(OBJEXT) socket_utils.$(OBJEXT) \
-	http_utils.$(OBJEXT) webserver_thread.$(OBJEXT)
+	http_utils.$(OBJEXT) webserver_process.$(OBJEXT)
 opendmd_OBJECTS = $(am_opendmd_OBJECTS)
 opendmd_DEPENDENCIES = $(top_srcdir)/libjpeg/libjpeg.a \
 	$(top_srcdir)/libortp/src/libortp.a \
@@ -194,7 +194,7 @@ opendmd_SOURCES = main.c \
           server/rtp_server.h server/rtp_server.c \
 		  webserver/socket_utils.h webserver/socket_utils.c \
 		  webserver/http_utils.h webserver/http_utils.c \
-		  webserver/webserver_thread.h webserver/webserver_thread.c
+		  webserver/webserver_process.h webserver/webserver_process.c
 
 all: all-am
 
@@ -299,7 +299,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/v4l2_utils.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/video.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/video_thread.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/webserver_thread.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/webserver_process.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -483,19 +483,19 @@ http_utils.obj: webserver/http_utils.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o http_utils.obj `if test -f 'webserver/http_utils.c'; then $(CYGPATH_W) 'webserver/http_utils.c'; else $(CYGPATH_W) '$(srcdir)/webserver/http_utils.c'; fi`
 
-webserver_thread.o: webserver/webserver_thread.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT webserver_thread.o -MD -MP -MF $(DEPDIR)/webserver_thread.Tpo -c -o webserver_thread.o `test -f 'webserver/webserver_thread.c' || echo '$(srcdir)/'`webserver/webserver_thread.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/webserver_thread.Tpo $(DEPDIR)/webserver_thread.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='webserver/webserver_thread.c' object='webserver_thread.o' libtool=no @AMDEPBACKSLASH@
+webserver_process.o: webserver/webserver_process.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT webserver_process.o -MD -MP -MF $(DEPDIR)/webserver_process.Tpo -c -o webserver_process.o `test -f 'webserver/webserver_process.c' || echo '$(srcdir)/'`webserver/webserver_process.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/webserver_process.Tpo $(DEPDIR)/webserver_process.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='webserver/webserver_process.c' object='webserver_process.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o webserver_thread.o `test -f 'webserver/webserver_thread.c' || echo '$(srcdir)/'`webserver/webserver_thread.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o webserver_process.o `test -f 'webserver/webserver_process.c' || echo '$(srcdir)/'`webserver/webserver_process.c
 
-webserver_thread.obj: webserver/webserver_thread.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT webserver_thread.obj -MD -MP -MF $(DEPDIR)/webserver_thread.Tpo -c -o webserver_thread.obj `if test -f 'webserver/webserver_thread.c'; then $(CYGPATH_W) 'webserver/webserver_thread.c'; else $(CYGPATH_W) '$(srcdir)/webserver/webserver_thread.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/webserver_thread.Tpo $(DEPDIR)/webserver_thread.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='webserver/webserver_thread.c' object='webserver_thread.obj' libtool=no @AMDEPBACKSLASH@
+webserver_process.obj: webserver/webserver_process.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT webserver_process.obj -MD -MP -MF $(DEPDIR)/webserver_process.Tpo -c -o webserver_process.obj `if test -f 'webserver/webserver_process.c'; then $(CYGPATH_W) 'webserver/webserver_process.c'; else $(CYGPATH_W) '$(srcdir)/webserver/webserver_process.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/webserver_process.Tpo $(DEPDIR)/webserver_process.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='webserver/webserver_process.c' object='webserver_process.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o webserver_thread.obj `if test -f 'webserver/webserver_thread.c'; then $(CYGPATH_W) 'webserver/webserver_thread.c'; else $(CYGPATH_W) '$(srcdir)/webserver/webserver_thread.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o webserver_process.obj `if test -f 'webserver/webserver_process.c'; then $(CYGPATH_W) 'webserver/webserver_process.c'; else $(CYGPATH_W) '$(srcdir)/webserver/webserver_process.c'; fi`
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \

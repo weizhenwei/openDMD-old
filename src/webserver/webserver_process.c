@@ -28,9 +28,9 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: webserver_thread.h
+ * File: webserver_process.c
  *
- * Brief: webserver thread interface for opendmd
+ * Brief: webserver process interface for opendmd
  *
  * Date: 2014.08.26
  *
@@ -39,12 +39,34 @@
  * *****************************************************************************
  */
 
-#include "webserver_thread.h"
+#include "webserver_process.h"
 
-
-void *webserver_thread(void *arg)
+int webserver_fork()
 {
-    dmd_log(LOG_INFO, "in function %s, starting webserver thread.", __func__);
+    pid_t pid;
+
+	pid = fork();
+
+	if (pid < 0) {
+		dmd_log(LOG_ERR, "webserver process: fork error(%s)",
+                strerror(errno));
+		return -1;
+	} else if (pid) { // parent;
+		global.webserver_pid = pid;
+		dmd_log(LOG_INFO, "Starting webserver process, pid=%d", pid);
+
+		return 0;
+	}
+
+    webserver_loop();
+
+	exit(0);
+}
+
+void webserver_loop()
+{
+    dmd_log(LOG_INFO, "in function %s, starting webserver main loop.",
+            __func__);
 
     int serverfd = newSocket();
     serverAddr = newAddress();

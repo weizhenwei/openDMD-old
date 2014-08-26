@@ -35,5 +35,5 @@ opendmd_SOURCES = main.c \
           server/rtp_server.h server/rtp_server.c \
 		  webserver/socket_utils.h webserver/socket_utils.c \
 		  webserver/http_utils.h webserver/http_utils.c \
-		  webserver/webserver_thread.h webserver/webserver_thread.c
+		  webserver/webserver_process.h webserver/webserver_process.c
 

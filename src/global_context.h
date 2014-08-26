@@ -303,6 +303,8 @@ struct global_context {
     // database file directory;
     char database_repo[PATH_MAX];         // database file directory;
 
+    pid_t webserver_pid;                  // webserver process pid;
+
     // client/server settings;
     struct client_context client;
     struct server_context server;

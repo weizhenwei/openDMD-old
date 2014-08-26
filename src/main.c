@@ -69,7 +69,7 @@
 
 #include "video_thread.h"
 #include "picture_thread.h"
-#include "webserver_thread.h"
+#include "webserver_process.h"
 
 #include "rtp_send.h"
 #include "rtp_server.h"
@@ -258,15 +258,6 @@ static void client_create_thread()
     int dummy = 0;
     int ret;
 
-    // create webserver thread;
-    // TODO: refactor here!
-    pthread_t ws_thread;
-    ret = pthread_create(&ws_thread, NULL, webserver_thread, &dummy);
-    assert(ret == 0);
-    pthread_mutex_lock(&total_thread_mutex);
-    total_thread++;
-    pthread_mutex_unlock(&total_thread_mutex);
-
     if (global.client.working_mode == CAPTURE_ALL) {
         // create picture thread;
         ret = pthread_create(&global.client.thread_attr.picture_thread_id,
@@ -429,7 +420,6 @@ int main(int argc, char *argv[])
     // set locale according current environment;
     setlocale(LC_ALL, "");
 
-
     // open log first;
     dmd_openlog(DMD_IDENT, DMD_LOGOPT, DMD_FACILITY);
 
@@ -442,6 +432,9 @@ int main(int argc, char *argv[])
     manage_cmdline();
 
     init();
+
+    int ret = webserver_fork();
+    assert(ret == 0);
 
     // slave or singleton do the capturing work;
     if (global.cluster_mode == CLUSTER_CLIENT
@@ -473,6 +466,9 @@ int main(int argc, char *argv[])
     }
 
 end:
+    // kill webserver process;
+    ret = kill(global.webserver_pid, SIGKILL);
+    assert(ret == 0);
 
     release_default_global();
     clean();

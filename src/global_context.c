@@ -229,6 +229,8 @@ void init_default_global()
             strlen(DEFAULT_DATABASE_REPO));
     global.database_repo[strlen(DEFAULT_DATABASE_REPO)] = '\0';
 
+    global.webserver_pid = -1;
+
     // init client/server specific;
     init_default_client();
     init_default_server();
