@@ -79,6 +79,10 @@
 #define SERVER_PORT_BASE 5000
 #define CLIENT_SCALE 5
 
+// for webserver
+#define DEFAULT_WEBSERVER_IP "127.0.0.1"
+#define DEFAULT_WEBSERVER_port 8080
+
 
 /////////////////////////////////////////////////////////////
 // Client default settings                                 //
@@ -304,6 +308,8 @@ struct global_context {
     char database_repo[PATH_MAX];         // database file directory;
 
     pid_t webserver_pid;                  // webserver process pid;
+    char webserver_ip[PATH_MAX];          // for webserver binding ip;
+    int webserver_port;                   // for webserver binding port;
 
     // client/server settings;
     struct client_context client;

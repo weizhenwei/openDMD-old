@@ -230,6 +230,11 @@ void init_default_global()
     global.database_repo[strlen(DEFAULT_DATABASE_REPO)] = '\0';
 
     global.webserver_pid = -1;
+    assert(strlen(DEFAULT_WEBSERVER_IP) < PATH_MAX);
+    strncpy(global.webserver_ip, DEFAULT_WEBSERVER_IP,
+            strlen(DEFAULT_WEBSERVER_IP));
+    global.cfg_file[strlen(DEFAULT_WEBSERVER_IP)] = '\0';
+    global.webserver_port = DEFAULT_WEBSERVER_port;
 
     // init client/server specific;
     init_default_client();
@@ -348,6 +353,9 @@ static int dump_common()
     dmd_log(LOG_INFO, "x264_fps:%d\n", global.x264_fps);
 
     dmd_log(LOG_INFO, "database file directory:%s\n", global.database_repo);
+
+    dmd_log(LOG_INFO, "webserver ip:%s\n", global.webserver_ip);
+    dmd_log(LOG_INFO, "webserver port:%d\n", global.webserver_port);
 
     return 0;
 }

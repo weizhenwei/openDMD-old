@@ -85,8 +85,12 @@ struct sockaddr *newAddress()
     //in_addr_t bind_addr = inet_addr(BIND_ADDR);
     //network byte order
     addr->sin_family = AF_INET;
-    addr->sin_port = htons(BIND_PORT);
-    addr->sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+    addr->sin_port = htons(global.webserver_port);
+    addr->sin_addr.s_addr = htonl(INADDR_ANY);
+    // addr->sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+    // addr->sin_addr.s_addr = htonl(global.webserver_ip);
+    // TODO: why this code doesn't work ?
+    // inet_pton(AF_INET, global.webserver_ip, &addr->sin_addr);
 
     return (struct sockaddr *) addr;
 }

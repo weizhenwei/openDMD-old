@@ -259,6 +259,20 @@ int parse_config(const char *conf_file)
              */
             global.database_repo[strlen(item->value)] = '\0';
 
+        } else if (strcmp(item->key, "webserver_ip") == 0) {
+            assert(strlen(item->value) < PATH_MAX);
+            strncpy(global.webserver_ip, item->value, strlen(item->value));
+            /* Warning:If there is no null byte among the first n bytes of
+             * src, the string placed in dest will not be null-terminated,
+             * remember add null-terminated manually.
+             */
+            global.webserver_ip[strlen(item->value)] = '\0';
+
+        } else if (strcmp(item->key, "webserver_port") == 0) {
+            int port = atoi(item->value);
+            assert(port >= 0 && port <= 65535);
+            global.webserver_port = port;
+
         } else if (strcmp(item->key, "working_mode") == 0) {
             if (strcmp(item->value, "picture") == 0) {
                 global.client.working_mode = CAPTURE_PICTURE;

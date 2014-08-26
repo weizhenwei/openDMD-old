@@ -65,7 +65,7 @@ int webserver_fork()
 
 void webserver_loop()
 {
-    dmd_log(LOG_INFO, "in function %s, starting webserver main loop.",
+    dmd_log(LOG_INFO, "in function %s, starting webserver main loop.\n",
             __func__);
 
     int serverfd = newSocket();
