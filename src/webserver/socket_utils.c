@@ -211,13 +211,14 @@ void handleEvent(int epollfd, int sockfd, struct epoll_event *events,
                 } else {
                     dmd_log(LOG_INFO, "read from client:\n%s\n", buffer);
 
-                    if (*count % 2 == 0) {
+                    int c = *count;
+                    if (c % 2 == 0) {
                         sendHello(fd, hellowHTML);
                     } else {
                         sendHello(fd, hellowWorld);
                     }
 
-                    (*count)++;
+                    *count = c + 1;
                     closeSocket(fd); //remember to close client fd!
                 }
 

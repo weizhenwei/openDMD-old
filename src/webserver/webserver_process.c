@@ -77,7 +77,7 @@ void webserver_loop()
     int epollfd = newEpollSocket();
 
     dmd_log(LOG_INFO, "in function %s, begin to work\n", __func__);
-    int count = 0;
+    static int count = 0;
     addSockfd(epollfd, serverfd);
     while (1) {
         int ret = epoll_wait(epollfd, events, MAX_EPOLL_EVENT, -1);
