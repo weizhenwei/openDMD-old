@@ -44,6 +44,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/epoll.h>
@@ -51,7 +52,6 @@
 #include <strings.h>
 #include <string.h>
 #include <errno.h>
-
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <fcntl.h>
@@ -70,10 +70,12 @@
 
 #define BUFFSIZE 1024
 
-struct sockaddr *serverAddr;
-struct sockaddr *clientAddr;
+extern uint64_t request_count;
 
-extern int newSocket(void);
+extern struct sockaddr *webserver_serverAddr;
+extern struct sockaddr *webserver_clientAddr;
+
+extern int newSocket();
 extern void closeSocket(int sockfd);
 
 extern struct sockaddr *newAddress();
@@ -83,11 +85,9 @@ extern int listenAddress(int sockfd);
 
 extern int acceptConnection(int sockfd, struct sockaddr *clientAddress);
 
-extern int newEpollSocket(void);
+extern int newEpollSocket();
 extern int addSockfd(int epollfd, int fd);
 extern void handleEvent(int epollfd, int sockfd, struct epoll_event *events,
-        int nevents, int *count);
-
-extern int mainLoop();
+        int nevents);
 
 #endif

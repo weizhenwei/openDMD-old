@@ -42,6 +42,10 @@
 
 #include "socket_utils.h"
 
+uint64_t request_count = 0;
+struct sockaddr *webserver_serverAddr = NULL;
+struct sockaddr *webserver_clientAddr = NULL;
+
 int newSocket(void)
 {
     int reuse = 1;
@@ -99,8 +103,6 @@ void releaseAddress(struct sockaddr *addr)
 {
     if (addr) {
         free(addr);
-    } else {
-        dmd_log(LOG_ERR, "Error: An NULL address to free!\n");
     }
 }
 
@@ -108,7 +110,7 @@ int bindAddress(int sockfd, struct sockaddr *addr)
 {
     int ret = bind(sockfd, addr, sizeof(struct sockaddr));
     if (ret == -1) {
-        dmd_log(LOG_ERR, "bind sock addr error:%s\n", strerror(errno));
+        dmd_log(LOG_ERR, "bind socket addr error:%s\n", strerror(errno));
         return -1;
     }
 
@@ -119,7 +121,7 @@ int listenAddress(int sockfd)
 {
     int ret = listen(sockfd, LISTEN_BACKLOG);
     if (ret == -1) {
-        dmd_log(LOG_ERR, "listen sock error:%s\n", strerror(errno));
+        dmd_log(LOG_ERR, "listen socket error:%s\n", strerror(errno));
         return -1;
     }
 
@@ -132,7 +134,7 @@ int acceptConnection(int sockfd, struct sockaddr *clientAddress)
     int clientfd = accept(sockfd, clientAddress,
             (socklen_t * restrict)&addrlen);
     if (clientfd == -1) {
-        dmd_log(LOG_ERR, "accept client sock error:%s\n", strerror(errno));
+        dmd_log(LOG_ERR, "accept client socket error:%s\n", strerror(errno));
         return -1;
     }
 
@@ -154,8 +156,8 @@ int newEpollSocket(void)
 int addSockfd(int epollfd, int fd)
 {
     struct epoll_event event;
-    // if we don't empty struct event, 
-    // valgrind will report an error of uninitialised byte.
+    // WARNING: if we don't empty struct event, 
+    //          valgrind will report an error of uninitialised byte.
     bzero(&event, sizeof(event)); 
 
     event.data.fd = fd;
@@ -167,7 +169,7 @@ int addSockfd(int epollfd, int fd)
 }
 
 void handleEvent(int epollfd, int sockfd, struct epoll_event *events,
-        int nevents, int *count)
+        int nevents)
 {
     char buffer[BUFFSIZE];
     int i = 0;
@@ -211,14 +213,14 @@ void handleEvent(int epollfd, int sockfd, struct epoll_event *events,
                 } else {
                     dmd_log(LOG_INFO, "read from client:\n%s\n", buffer);
 
-                    int c = *count;
-                    if (c % 2 == 0) {
-                        sendHello(fd, hellowHTML);
-                    } else {
-                        sendHello(fd, hellowWorld);
-                    }
+                    // if (request_count % 2 == 0) {
+                    //     sendHello(fd, hellowHTML);
+                    // } else {
+                    //     sendHello(fd, hellowWorld);
+                    // }
+                    // request_count++;
 
-                    *count = c + 1;
+                    sendHello(fd, hellowHTML);
                     closeSocket(fd); //remember to close client fd!
                 }
 
@@ -228,34 +230,5 @@ void handleEvent(int epollfd, int sockfd, struct epoll_event *events,
         }
     } // for
 
-}
-
-int mainLoop()
-{
-    dmd_log(LOG_INFO, "Starting main loop.");
-
-    int serverfd = newSocket();
-    serverAddr = newAddress();
-    bindAddress(serverfd, serverAddr);
-    listenAddress(serverfd);
-
-    struct epoll_event events[MAX_EPOLL_EVENT];
-    int epollfd = newEpollSocket();
-
-    dmd_log(LOG_DEBUG, "begin to work\n");
-    int count = 0;
-    addSockfd(epollfd, serverfd);
-    while (1) {
-        int ret = epoll_wait(epollfd, events, MAX_EPOLL_EVENT, -1);
-        dmd_log(LOG_DEBUG, "after epoll wait\n");
-        if (ret < 0) {
-            dmd_log(LOG_ERR, "epoll failure\n");
-        } else {
-            handleEvent(epollfd, serverfd, events, ret, &count);
-        }
-    } // while
-
-    closeSocket(serverfd);
-    releaseAddress(serverAddr);
 }
 

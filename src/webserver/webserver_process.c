@@ -51,15 +51,16 @@ int webserver_fork()
 		dmd_log(LOG_ERR, "webserver process: fork error(%s)",
                 strerror(errno));
 		return -1;
-	} else if (pid) { // parent;
+	} else if (pid > 0) { // parent, just return;
 		global.webserver_pid = pid;
-		dmd_log(LOG_INFO, "Starting webserver process, pid=%d", pid);
+		dmd_log(LOG_INFO, "Starting webserver process, pid = %d", pid);
 
 		return 0;
 	}
 
     webserver_loop();
 
+    // Obviously, after main loop, webserver process exit directly.
 	exit(0);
 }
 
@@ -69,15 +70,14 @@ void webserver_loop()
             __func__);
 
     int serverfd = newSocket();
-    serverAddr = newAddress();
-    bindAddress(serverfd, serverAddr);
+    webserver_serverAddr = newAddress();
+    bindAddress(serverfd, webserver_serverAddr);
     listenAddress(serverfd);
 
     struct epoll_event events[MAX_EPOLL_EVENT];
     int epollfd = newEpollSocket();
 
     dmd_log(LOG_INFO, "in function %s, begin to work\n", __func__);
-    static int count = 0;
     addSockfd(epollfd, serverfd);
     while (1) {
         int ret = epoll_wait(epollfd, events, MAX_EPOLL_EVENT, -1);
@@ -85,11 +85,12 @@ void webserver_loop()
         if (ret < 0) {
             dmd_log(LOG_ERR, "in function %s, epoll failure\n", __func__);
         } else {
-            handleEvent(epollfd, serverfd, events, ret, &count);
+            handleEvent(epollfd, serverfd, events, ret);
         }
     } // while
 
     closeSocket(serverfd);
-    releaseAddress(serverAddr);
+    releaseAddress(webserver_serverAddr);
+
 }
 
