@@ -1,0 +1,22 @@
+How to add an config item to config file;
+
+1. add comment/annotation and key, value to config file, eg,
+   # webserver root to place static webserver file such as html, css, etc.
+   webserver_root /var/www/opendmd
+
+2. add config item at struct global_context, eg,
+   struct global_context {
+      ...
+      char webserver_root[PATH_MAX];
+      ...
+   };
+
+3. add init and dump of the new config item at function init_default_global()
+   and dump_global_config() at src/global_context.c;
+
+4. add parsing section of the new config item at function parse_config
+   at file src/config.c;
+
+5. do the unit test, integration test and regression testing;
+
+6. commit patch to repository.
