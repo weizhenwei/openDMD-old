@@ -55,13 +55,18 @@ int webserver_fork()
 		global.webserver_pid = pid;
 		dmd_log(LOG_INFO, "Starting webserver process, pid = %d", pid);
 
+        if (global.client.working_mode == WEBSERVER_ONLY) {
+            dmd_log(LOG_INFO, "working_mode = webserver, main process exit.\n");
+            exit(EXIT_SUCCESS);
+        }
+
 		return 0;
 	}
 
     webserver_loop();
 
     // Obviously, after main loop, webserver process exit directly.
-	exit(0);
+    exit(EXIT_SUCCESS);
 }
 
 void webserver_loop()

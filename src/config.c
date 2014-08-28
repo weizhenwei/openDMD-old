@@ -288,6 +288,8 @@ int parse_config(const char *conf_file)
                 global.client.working_mode = CAPTURE_PICTURE;
             } else if (strcmp(item->value, "video") == 0) {
                 global.client.working_mode = CAPTURE_VIDEO;
+            } else if (strcmp(item->value, "webserver") == 0) {
+                global.client.working_mode = WEBSERVER_ONLY;
             } else if (strcmp(item->value, "all") == 0) {
                 global.client.working_mode = CAPTURE_ALL;
             } else {

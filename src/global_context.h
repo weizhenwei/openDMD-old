@@ -130,7 +130,8 @@ enum daemon_mode_type {
 enum working_type {
     CAPTURE_PICTURE = 1,
     CAPTURE_VIDEO = 2,
-    CAPTURE_ALL = 3,
+    WEBSERVER_ONLY = 3, // just for webserver debug purpose;
+    CAPTURE_ALL = 4,
 };
 
 // captured picture format, valid value: bmp, jpeg, png;

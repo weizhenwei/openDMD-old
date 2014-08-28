@@ -275,6 +275,8 @@ static int dump_client()
         dmd_log(LOG_INFO, "working_mode: capture video\n");
     } else if (global.client.working_mode == CAPTURE_PICTURE) {
         dmd_log(LOG_INFO, "working_mode: capture picture\n");
+    } else if (global.client.working_mode == WEBSERVER_ONLY) { // for debug 
+        dmd_log(LOG_INFO, "working_mode: webserver only\n");
     } else if (global.client.working_mode == CAPTURE_ALL) {
         dmd_log(LOG_INFO, "working_mode: capture video and picture\n");
     } else {
