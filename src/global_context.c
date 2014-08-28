@@ -229,12 +229,20 @@ void init_default_global()
             strlen(DEFAULT_DATABASE_REPO));
     global.database_repo[strlen(DEFAULT_DATABASE_REPO)] = '\0';
 
+    // webserver associated;
     global.webserver_pid = -1;
     assert(strlen(DEFAULT_WEBSERVER_IP) < PATH_MAX);
     strncpy(global.webserver_ip, DEFAULT_WEBSERVER_IP,
             strlen(DEFAULT_WEBSERVER_IP));
-    global.cfg_file[strlen(DEFAULT_WEBSERVER_IP)] = '\0';
-    global.webserver_port = DEFAULT_WEBSERVER_port;
+    global.webserver_ip[strlen(DEFAULT_WEBSERVER_IP)] = '\0';
+
+    global.webserver_port = DEFAULT_WEBSERVER_PORT;
+
+    assert(strlen(DEFAULT_WEBSERVER_ROOT) < PATH_MAX);
+    strncpy(global.webserver_root, DEFAULT_WEBSERVER_ROOT,
+            strlen(DEFAULT_WEBSERVER_ROOT));
+    global.webserver_root[strlen(DEFAULT_WEBSERVER_ROOT)] = '\0';
+
 
     // init client/server specific;
     init_default_client();
@@ -356,6 +364,7 @@ static int dump_common()
 
     dmd_log(LOG_INFO, "webserver ip:%s\n", global.webserver_ip);
     dmd_log(LOG_INFO, "webserver port:%d\n", global.webserver_port);
+    dmd_log(LOG_INFO, "webserver port:%d\n", global.webserver_root);
 
     return 0;
 }

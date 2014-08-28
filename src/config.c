@@ -61,6 +61,7 @@ static void check_path()
     remove_tail_slash(global.client.client_repo);
     remove_tail_slash(global.server.server_repo);
     remove_tail_slash(global.database_repo);
+    remove_tail_slash(global.webserver_root);
 }
 
 static int check_config_integrity()
@@ -272,6 +273,15 @@ int parse_config(const char *conf_file)
             int port = atoi(item->value);
             assert(port >= 0 && port <= 65535);
             global.webserver_port = port;
+
+        } else if (strcmp(item->key, "webserver_root") == 0) {
+            assert(strlen(item->value) < PATH_MAX);
+            strncpy(global.webserver_root, item->value, strlen(item->value));
+            /* Warning:If there is no null byte among the first n bytes of
+             * src, the string placed in dest will not be null-terminated,
+             * remember add null-terminated manually.
+             */
+            global.webserver_root[strlen(item->value)] = '\0';
 
         } else if (strcmp(item->key, "working_mode") == 0) {
             if (strcmp(item->value, "picture") == 0) {

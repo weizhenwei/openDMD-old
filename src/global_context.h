@@ -81,7 +81,8 @@
 
 // for webserver
 #define DEFAULT_WEBSERVER_IP "127.0.0.1"
-#define DEFAULT_WEBSERVER_port 8080
+#define DEFAULT_WEBSERVER_PORT 8080
+#define DEFAULT_WEBSERVER_ROOT "/var/www/opendmd"
 
 
 /////////////////////////////////////////////////////////////
@@ -310,6 +311,7 @@ struct global_context {
     pid_t webserver_pid;                  // webserver process pid;
     char webserver_ip[PATH_MAX];          // for webserver binding ip;
     int webserver_port;                   // for webserver binding port;
+    char webserver_root[PATH_MAX];        // dir to place webserver file;
 
     // client/server settings;
     struct client_context client;
