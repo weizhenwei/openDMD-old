@@ -198,33 +198,32 @@ void handleEvent(int epollfd, int sockfd, struct epoll_event *events,
         } else if (events[i].events & EPOLLIN) { // read events happened
 
             dmd_log(LOG_DEBUG, "EPOLLIN happened\n");
-            while (1) {
-                memset(buffer, '\0', BUFFSIZE);
-                int ret = recv(fd, buffer, BUFFSIZE, 0);
-                if (ret == -1) {
-                    if ((errno = EAGAIN) || (errno == EWOULDBLOCK)) {
-                        dmd_log(LOG_DEBUG, "epoll read later\n");
-                        break;
-                    }
-                    closeSocket(fd);
+            memset(buffer, '\0', BUFFSIZE);
+            int ret = recv(fd, buffer, BUFFSIZE, 0);
+            if (ret == -1) {
+                if ((errno = EAGAIN) || (errno == EWOULDBLOCK)) {
+                    dmd_log(LOG_DEBUG, "epoll read later\n");
                     break;
-                } else if (ret == 0) {
-                    closeSocket(fd);
-                } else {
-                    dmd_log(LOG_INFO, "read from client:\n%s\n", buffer);
-
-                    // if (request_count % 2 == 0) {
-                    //     sendHello(fd, hellowHTML);
-                    // } else {
-                    //     sendHello(fd, hellowWorld);
-                    // }
-                    // request_count++;
-
-                    sendHello(fd, hellowHTML);
-                    closeSocket(fd); //remember to close client fd!
                 }
+                closeSocket(fd);
+                break;
+            } else if (ret == 0) {
+                closeSocket(fd);
+            } else {
+                dmd_log(LOG_INFO, "read from client:\n%s\n", buffer);
 
-            } // while
+                if (request_count % 3 == 0) {
+                    sendHello(fd, hellowHTML);
+                } else if (request_count % 3 == 1) {
+                    sendHello(fd, hellowWorld);
+                } else {
+                    sendHello(fd, hellowChrome);
+                }
+                request_count++;
+
+                closeSocket(fd); //remember to close client fd!
+            }
+
         } else {
             dmd_log(LOG_ERR, "something unknown happend!\n");
         }

@@ -53,6 +53,7 @@
 
 extern const char *hellowHTML;
 extern const char *hellowWorld;
+extern const char *hellowChrome;
 
 void sendHello(int fd, const char *msg);
 

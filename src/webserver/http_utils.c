@@ -42,7 +42,7 @@
 #include "http_utils.h"
 
 const char *hellowHTML = "HTTP/1.1 200 ok\r\n"
-                                "Server: wzwWebServer0.01\r\n"
+                                "Server: openDMD-0.01\r\n"
                                 "Connection: close\r\n"
                                 "Max-Age: 0\r\n"
                                 "Expires: 0\r\n"
@@ -60,7 +60,7 @@ const char *hellowHTML = "HTTP/1.1 200 ok\r\n"
                                 "</html>\n";
 
 const char *hellowWorld = "HTTP/1.1 200 ok\r\n"
-                                "Server: wzwWebServer0.01\r\n"
+                                "Server: openDMD-0.01\r\n"
                                 "Connection: close\r\n"
                                 "Max-Age: 0\r\n"
                                 "Expires: 0\r\n"
@@ -74,6 +74,24 @@ const char *hellowWorld = "HTTP/1.1 200 ok\r\n"
                                 "</head>"
                                 "<body>\n"
                                 "Hello, world!\n"
+                                "</body>\n"
+                                "</html>\n";
+
+const char *hellowChrome = "HTTP/1.1 200 ok\r\n"
+                                "Server: openDMD-0.01\r\n"
+                                "Connection: close\r\n"
+                                "Max-Age: 0\r\n"
+                                "Expires: 0\r\n"
+                                "Cache-Control: no-cache\r\n"
+                                "Cache-Control: private\r\n"
+                                "Pragma: no-cache\r\n"
+                                "Content-type: text/html\r\n\r\n"
+                                "<html>\n"
+                                "<head>\n"
+                                "<title>Hello Chrome</title>\n"
+                                "</head>"
+                                "<body>\n"
+                                "Hello, chrome web browser!\n"
                                 "</body>\n"
                                 "</html>\n";
 
