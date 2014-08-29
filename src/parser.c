@@ -41,7 +41,14 @@
 
 #include "parser.h"
 
+#include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+
+#include "log.h"
+
 
 struct config *new_config(const char comment_char,
         const char separator_char)

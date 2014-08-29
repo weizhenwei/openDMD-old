@@ -39,40 +39,39 @@
  * *****************************************************************************
  */
 
-#include <stdio.h>
-#include <fcntl.h>
 #include <assert.h>
-#include <unistd.h>
+#include <errno.h>
 #include <getopt.h>
+#include <fcntl.h>
 #include <locale.h>
+#include <linux/limits.h>
+#include <pthread.h>
 #include <signal.h>
 #include <string.h>
-#include <errno.h>
+#include <stdio.h>
+#include <sys/resource.h>
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <sys/types.h>
-#include <sys/resource.h>
-#include <linux/limits.h>
-#include <pthread.h>
+#include <unistd.h>
 
-#include "log.h"
-#include "video.h"
 #include "config.h"
-#include "parser.h"
-#include "v4l2_utils.h"
+#include "global_context.h"
 #include "image_capture.h"
 #include "image_convert.h"
-#include "global_context.h"
-#include "signal_handler.h"
-#include "statistics.h"
-#include "sqlite_utils.h"
-
-#include "video_thread.h"
+#include "log.h"
+#include "parser.h"
 #include "picture_thread.h"
-#include "webserver_process.h"
-
 #include "rtp_send.h"
 #include "rtp_server.h"
+#include "signal_handler.h"
+#include "sqlite_utils.h"
+#include "statistics.h"
+#include "v4l2_utils.h"
+#include "video.h"
+#include "video_thread.h"
+#include "webserver_process.h"
+
 
 // for cmd line control
 static unsigned int show_statistics = 0;

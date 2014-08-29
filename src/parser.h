@@ -42,13 +42,6 @@
 #ifndef PARSER_H
 #define PARSER_H
 
-#include <assert.h>
-#include <stdlib.h>
-#include <strings.h>
-#include <string.h>
-
-#include "log.h"
-
 struct config_item {
     struct config_item *next;
     char *key;
