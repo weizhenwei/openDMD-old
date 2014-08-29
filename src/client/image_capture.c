@@ -41,6 +41,8 @@
 
 #include "image_capture.h"
 
+#include <sys/ioctl.h>
+
 static void notify_picture()
 {
     dmd_log(LOG_DEBUG, "in %s, notify to picture thread\n", __func__);

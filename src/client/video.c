@@ -41,6 +41,9 @@
 
 #include "video.h"
 
+#include <sys/ioctl.h>
+#include <sys/mman.h>
+
 // define global variable dmd_video;
 struct v4l2_device_info *dmd_video = NULL;
 

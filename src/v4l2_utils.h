@@ -42,28 +42,7 @@
 #ifndef V4L2_UTILS_H
 #define V4L2_UTILS_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/ioctl.h>
-#include <sys/mman.h>
-#include <sys/stat.h>
-#include <sys/time.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <linux/types.h>
 #include <linux/videodev2.h>
-#include <malloc.h>
-#include <assert.h>
-#include <errno.h>
-#include <string.h>
-
-#include <sys/select.h>
-#include <time.h>
-#include <string.h>
-#include <sys/time.h>
-
-#include "log.h"
 
 struct mmap_buffer {
     void *start;
