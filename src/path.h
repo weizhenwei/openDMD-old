@@ -42,20 +42,6 @@
 #ifndef PATH_H
 #define PATH_H
 
-#define _GNU_SOURCE  // for strndupa() function;
-
-#include <time.h>
-#include <stdio.h>
-#include <assert.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <linux/limits.h>
-#include <sys/stat.h>
-#include <string.h>
-#include <errno.h>
-
-#include "log.h"
-#include "global_context.h"
 
 // what type of this node, jpeg file, h264 file, or flv file;
 enum path_type {
@@ -75,7 +61,6 @@ extern int test_and_mkdir(const char *path);
 extern int client_init_repodir();
 // path_type is member of enum path_type;
 extern struct path_t *client_get_filepath(int path_type);
-
 
 // initialize and get client repository dir;
 extern int server_init_repodir();

@@ -41,6 +41,22 @@
 
 #include "path.h"
 
+#define _GNU_SOURCE  // for strndupa() function;
+
+#include <assert.h>
+#include <errno.h>
+#include <linux/limits.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <time.h>
+#include <unistd.h>
+
+#include "global_context.h"
+#include "log.h"
+
+
 int test_and_mkdir(const char *path)
 {
     // first, find parent path;
