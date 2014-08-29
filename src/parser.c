@@ -41,6 +41,7 @@
 
 #include "parser.h"
 
+#include <stdio.h>
 
 struct config *new_config(const char comment_char,
         const char separator_char)

@@ -42,11 +42,7 @@
 #ifndef LOG_H
 #define LOG_H
 
-#include <stdio.h>
 #include <syslog.h>
-#include <stdarg.h>
-
-#include "global_context.h"
 
 #define DMD_IDENT "opendmd"
 #define DMD_LOGOPT LOG_PID

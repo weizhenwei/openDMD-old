@@ -56,6 +56,7 @@
 #include <arpa/inet.h>
 #include <fcntl.h>
 
+#include "global_context.h"
 #include "http_utils.h"
 #include "log.h"
 

@@ -41,6 +41,12 @@
 
 #include "log.h"
 
+#include <stdio.h>
+#include <stdarg.h>
+#include <syslog.h>
+
+#include "global_context.h"
+
 void dmd_openlog(const char *ident, int logopt, int facility)
 {
     openlog(ident, logopt, facility);
