@@ -42,13 +42,6 @@
 #ifndef SIGNAL_HANDLER_H
 #define SIGNAL_HANDLER_H
 
-#include <assert.h>
-#include <stdlib.h>
-#include <signal.h>
-#include <bits/signum.h>
-
-#include "log.h"
-#include "global_context.h"
 
 // for controlling server running;
 extern int client_running;
@@ -57,8 +50,5 @@ extern int server_running;
 extern void signal_init();
 
 extern void signal_register(int sig, void (*sighandler)(int));
-
-
-
 
 #endif

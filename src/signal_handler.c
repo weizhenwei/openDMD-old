@@ -41,6 +41,14 @@
 
 #include "signal_handler.h"
 
+#include <assert.h>
+#include <bits/signum.h>
+#include <stdlib.h>
+#include <signal.h>
+
+#include "global_context.h"
+#include "log.h"
+
 int client_running = 1;
 int server_running = 1;
 static void sigint_handler(int signal)
