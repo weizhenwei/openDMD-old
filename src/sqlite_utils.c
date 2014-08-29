@@ -47,6 +47,7 @@
 #include <stdint.h>
 #include <time.h>
 
+#include "global_context.h"
 #include "log.h"
 #include "path.h"
 #include "statistics.h"

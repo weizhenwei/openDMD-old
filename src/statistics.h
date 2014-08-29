@@ -42,15 +42,9 @@
 #ifndef STATISTICS_H
 #define STATISTICS_H
 
-#include <stdlib.h>
-#include <time.h>
-#include <assert.h>
+#include <pthread.h>
 #include <stdint.h>
-#include <string.h>
-#include <strings.h>
-
-#include "global_context.h"
-#include "log.h"
+#include <time.h>
 
 struct motion_t {
     // public

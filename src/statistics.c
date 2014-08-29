@@ -41,6 +41,15 @@
 
 #include "statistics.h"
 
+#include <assert.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+
+#include "global_context.h"
+#include "log.h"
+
+
 #if 0
 struct stats global_stats = {
     .motion_list = NULL,
@@ -49,6 +58,7 @@ struct stats global_stats = {
     .total_video_frames = 0
 };
 #endif
+
 // global statistics variable;
 struct stats *global_stats = NULL;
 
