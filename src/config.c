@@ -41,6 +41,14 @@
 
 #include "config.h"
 
+#include <assert.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+
+#include "global_context.h"
+#include "log.h"
+#include "parser.h"
 
 static void remove_tail_slash(char *path)
 {
@@ -395,7 +403,6 @@ int parse_config(const char *conf_file)
 
         item = item->next;
     } // while
-
 
     // clean the config parser;
     release_config(conf);

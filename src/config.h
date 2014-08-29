@@ -42,15 +42,6 @@
 #ifndef DMD_CONFIG_H
 #define DMD_CONFIG_H
 
-#include <stdlib.h>
-#include <assert.h>
-#include <string.h>
-#include <strings.h>
-
-#include "log.h"
-#include "parser.h"
-#include "global_context.h"
-
 extern int parse_config(const char *conf_file);
 
 #endif
