@@ -42,6 +42,7 @@
 #ifndef PARSER_H
 #define PARSER_H
 
+#include <assert.h>
 #include <stdlib.h>
 #include <strings.h>
 #include <string.h>

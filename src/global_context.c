@@ -41,6 +41,21 @@
 
 #include "global_context.h"
 
+#include <time.h>
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+#include <pthread.h>
+#include <unistd.h>
+#include <syslog.h>
+
+
+#include "log.h"
+#include "statistics.h"
+#include "sqlite_utils.h"
+
 
 // for thread synchronization;
 unsigned int total_thread = 0;

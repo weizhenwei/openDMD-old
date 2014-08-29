@@ -38,3 +38,9 @@ reconf.sh
 
 #for gdb debug the program
 .gdbinit
+
+#for generated Makefile
+Makefile
+
+#for debs
+*.deps

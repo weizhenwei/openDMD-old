@@ -42,23 +42,10 @@
 #ifndef GLOBAL_CONTEXT_H
 #define GLOBAL_CONTEXT_H
 
-#include <time.h>
-#include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <linux/limits.h>   // for PATH_MAX
 #include <stdint.h>
-#include <string.h>
-#include <strings.h>
-#include <linux/limits.h>
-#include <pthread.h>
-#include <unistd.h>
-#include <syslog.h>
 
 #include <ortp/ortp.h>
-
-#include "log.h"
-#include "statistics.h"
-#include "sqlite_utils.h"
 
 /////////////////////////////////////////////////////////////
 // Common default settings                                 //
