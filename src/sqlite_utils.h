@@ -42,17 +42,7 @@
 #ifndef SQLITE_UTILS_H
 #define SQLITE_UTILS_H
 
-#include <assert.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <time.h>
-#include <linux/limits.h>
-
 #include <sqlite3.h>
-
-#include "log.h"
-#include "path.h"
-#include "statistics.h"
 
 #define DEFAULT_DATABASE "opendmd.db"
 #define DEFAULT_TABLE "opendmd_table"

@@ -41,6 +41,16 @@
 
 #include "sqlite_utils.h"
 
+#include <assert.h>
+#include <linux/limits.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <time.h>
+
+#include "log.h"
+#include "path.h"
+#include "statistics.h"
+
 // global database file;
 char database_file[PATH_MAX];
 sqlite3 *opendmd_db = NULL;
