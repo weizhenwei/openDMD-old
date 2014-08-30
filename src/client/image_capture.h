@@ -42,29 +42,8 @@
 #ifndef IMAGE_CAPTURE_H
 #define IMAGE_CAPTURE_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <signal.h>
-#include <sys/select.h>
-#include <linux/limits.h>
-#include <pthread.h>
-#include <unistd.h>
-#include <assert.h>
-#include <string.h>
-#include <errno.h>
-#include <time.h>
-
-#include "log.h"
 #include "v4l2_utils.h"
-#include "global_context.h"
-#include "picture_thread.h"
-#include "signal_handler.h"
-#include "video_thread.h"
-#include "statistics.h"
-#include "sqlite_utils.h"
+
 
 extern int process_image(void *yuyv, int length, int width, int height);
 

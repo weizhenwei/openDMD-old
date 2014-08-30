@@ -41,6 +41,17 @@
 
 #include "flv_muxer.h"
 
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include <x264.h>
+
+#include "global_context.h"
+#include "log.h"
+
+
 // 9 bytes header + 4 bytes previous tag size;
 uint8_t flv_header[13] = {
     0x46, 0x4c, 0x56, /* file type, namely string "FLV" */

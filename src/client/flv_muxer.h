@@ -42,17 +42,7 @@
 #ifndef FLV_MUXER_H
 #define FLV_MUXER_H
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <stdint.h>
-#include <assert.h>
-#include <string.h>
-
-#include <x264.h>
-
-#include "log.h"
-#include "global_context.h"
-
 
 /*
  * an flv file format:

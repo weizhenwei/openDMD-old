@@ -41,7 +41,30 @@
 
 #include "image_capture.h"
 
+#include <assert.h>
+#include <errno.h>
+#include <linux/limits.h>
+#include <pthread.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <sys/ioctl.h>
+#include <sys/select.h>
+#include <time.h>
+#include <unistd.h>
+
+#include "global_context.h"
+#include "log.h"
+#include "picture_thread.h"
+#include "signal_handler.h"
+#include "sqlite_utils.h"
+#include "statistics.h"
+#include "video_thread.h"
+
 
 static void notify_picture()
 {

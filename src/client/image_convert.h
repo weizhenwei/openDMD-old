@@ -42,14 +42,7 @@
 #ifndef IMAGE_CONVERT_H
 #define IMAGE_CONVERT_H
 
-#include <assert.h>
-#include <stdlib.h>
 #include <stdint.h>
-#include <string.h>
-
-#include "log.h"
-#include "image_capture.h"
-#include "global_context.h"
 
 // diff with referenceYUYV422 to detect whether motion occured;
 extern int YUYV422_motion_detect(uint8_t *yuyv, int width,
