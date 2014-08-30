@@ -42,14 +42,6 @@
 #ifndef VIDEO_H
 #define VIDEO_H
 
-#include <strings.h>
-#include <assert.h>
-#include <assert.h>
-#include <string.h>
-
-#include "log.h"
-#include "v4l2_utils.h"
-#include "global_context.h"
 
 // declare global variable
 extern struct v4l2_device_info *dmd_video;

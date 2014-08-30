@@ -39,8 +39,24 @@
  * *****************************************************************************
  */
 
-#include "flv_muxer.h"
 #include "video_thread.h"
+
+#include <assert.h>
+#include <pthread.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+
+#include "flv_muxer.h"
+#include "global_context.h"
+#include "image_convert.h"
+#include "libx264.h"
+#include "log.h"
+#include "path.h"
+#include "rtp_send.h"
+#include "statistics.h"
+
 
 enum video_capturing_type video_capturing_switch = VIDEO_CAPTURING_OFF;
 

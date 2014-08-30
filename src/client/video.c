@@ -41,8 +41,15 @@
 
 #include "video.h"
 
+#include <assert.h>
+#include <string.h>
+#include <strings.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
+
+#include "global_context.h"
+#include "log.h"
+#include "v4l2_utils.h"
 
 
 // define global variable dmd_video;

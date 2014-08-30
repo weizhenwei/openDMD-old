@@ -58,6 +58,7 @@
 #include <unistd.h>
 
 #include "global_context.h"
+#include "image_convert.h"
 #include "log.h"
 #include "picture_thread.h"
 #include "signal_handler.h"
