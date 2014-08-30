@@ -42,6 +42,7 @@
 #include "socket_utils.h"
 
 #include <arpa/inet.h>
+#include <assert.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <netinet/in.h>
@@ -216,18 +217,26 @@ void handleEvent(int epollfd, int sockfd, struct epoll_event *events,
 
             dmd_log(LOG_DEBUG, "EPOLLIN happened\n");
             memset(buffer, '\0', BUFFSIZE);
-            int ret = recv(fd, buffer, BUFFSIZE, 0);
-            if (ret == -1) {
+            int readlen = read(fd, buffer, BUFFSIZE);
+            if (readlen == -1) {
                 if ((errno = EAGAIN) || (errno == EWOULDBLOCK)) {
                     dmd_log(LOG_DEBUG, "epoll read later\n");
                     break;
                 }
                 closeSocket(fd);
                 break;
-            } else if (ret == 0) {
+            } else if (readlen == 0) {
                 closeSocket(fd);
             } else {
+                if (readlen == BUFFSIZE) {
+                    // TODO: there maybe more but we didn't read it,
+                    //       deal this situation later!
+                    assert(0);
+                }
+                buffer[readlen] = '\0';
+
                 dmd_log(LOG_INFO, "read from client:\n%s\n", buffer);
+                deal_request(fd, buffer, readlen);
 
                 if (request_count % 3 == 0) {
                     sendHello(fd, hellowHTML);

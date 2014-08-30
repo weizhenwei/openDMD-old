@@ -46,6 +46,10 @@ extern const char *hellowHTML;
 extern const char *hellowWorld;
 extern const char *hellowChrome;
 
-void sendHello(int fd, const char *msg);
+extern void sendHello(int fd, const char *msg);
+
+extern int deal_request(int client_fd, const char *client_request,
+        int client_len);
+
 
 #endif
