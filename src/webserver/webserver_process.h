@@ -42,25 +42,6 @@
 #ifndef WEBSERVER_PROCESS_H
 #define WEBSERVER_PROCESS_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <sys/epoll.h>
-#include <unistd.h>
-#include <strings.h>
-#include <string.h>
-#include <errno.h>
-
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <fcntl.h>
-
-#include "global_context.h"
-#include "http_utils.h"
-#include "socket_utils.h"
-#include "log.h"
-
 extern int webserver_fork();
 
 extern void webserver_loop();

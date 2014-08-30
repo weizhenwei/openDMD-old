@@ -41,6 +41,15 @@
 
 #include "http_utils.h"
 
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+#include <unistd.h>
+
+#include "log.h"
+
 const char *hellowHTML = "HTTP/1.1 200 ok\r\n"
                                 "Server: openDMD-0.01\r\n"
                                 "Connection: close\r\n"

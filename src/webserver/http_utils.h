@@ -42,15 +42,6 @@
 #ifndef HTTP_UTILS_H
 #define HTTP_UTILS_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <strings.h>
-#include <string.h>
-#include <errno.h>
-
-#include "log.h"
-
 extern const char *hellowHTML;
 extern const char *hellowWorld;
 extern const char *hellowChrome;

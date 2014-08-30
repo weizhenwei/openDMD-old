@@ -41,6 +41,25 @@
 
 #include "webserver_process.h"
 
+#include <arpa/inet.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <netinet/in.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/epoll.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <string.h>
+#include <strings.h>
+#include <unistd.h>
+
+#include "global_context.h"
+#include "http_utils.h"
+#include "log.h"
+#include "socket_utils.h"
+
+
 int webserver_fork()
 {
     pid_t pid;

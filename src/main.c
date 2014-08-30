@@ -61,6 +61,7 @@
 #include "image_convert.h"
 #include "log.h"
 #include "parser.h"
+#include "path.h"
 #include "picture_thread.h"
 #include "rtp_send.h"
 #include "rtp_server.h"

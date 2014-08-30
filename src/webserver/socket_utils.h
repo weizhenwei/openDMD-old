@@ -42,23 +42,9 @@
 #ifndef SOCKET_UTILS_H
 #define SOCKET_UTILS_H
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <stdint.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <sys/epoll.h>
-#include <unistd.h>
-#include <strings.h>
-#include <string.h>
-#include <errno.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <fcntl.h>
 
-#include "global_context.h"
-#include "http_utils.h"
-#include "log.h"
+struct epoll_event;
 
 #define BIND_PORT 8082
 #define BIND_ADDR "127.0.0.1"
