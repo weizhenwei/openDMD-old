@@ -41,6 +41,15 @@
 
 #include "rtp_recv.h"
 
+#include <assert.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "global_context.h"
+#include "log.h"
+
 void rtp_recv_init()
 {
 	ortp_init();
