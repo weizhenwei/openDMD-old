@@ -40,6 +40,21 @@
  */
 #include "libx264.h"
 
+#include <assert.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+#include <x264.h>
+#include <output/output.h>
+
+#include "flv_muxer.h"
+#include "global_context.h"
+#include "log.h"
+#include "rtp_send.h"
 
 // global time stamp;
 uint32_t ts = 0;

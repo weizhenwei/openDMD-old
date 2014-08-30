@@ -42,22 +42,6 @@
 #ifndef PICTURE_THREAD_H
 #define PICTURE_THREAD_H
 
-#include <pthread.h>
-#include <stdlib.h>
-#include <assert.h>
-#include <signal.h>
-#include <string.h>
-#include <strings.h>
-
-#include "log.h"
-#include "path.h"
-#include "image_convert.h"
-#include "global_context.h"
-#include "statistics.h"
-
-// from libjpeg library
-#include "jpeglib.h"
-#include "jerror.h"
 
 extern int picture_flag;
 

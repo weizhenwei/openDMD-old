@@ -43,22 +43,6 @@
 #define LIBX264_H
 
 #include <stdint.h>
-#include <stdlib.h>
-#include <assert.h>
-#include <string.h>
-#include <errno.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <fcntl.h>
-#include <unistd.h>
-
-#include <x264.h>
-#include <output/output.h>
-
-#include "global_context.h"
-#include "rtp_send.h"
-#include "log.h"
-#include "flv_muxer.h"
 
 // global time stamp;
 extern uint32_t ts;

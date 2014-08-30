@@ -42,14 +42,7 @@
 #ifndef RTP_SEND_H
 #define RTP_SEND_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
-
 #include <ortp/ortp.h>
-
-#include "global_context.h"
-#include "log.h"
 
 // the h264 video payload_type
 #define PAYLOAD_TYPE_H264 96

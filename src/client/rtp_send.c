@@ -41,6 +41,15 @@
 
 #include "rtp_send.h"
 
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <ortp/ortp.h>
+
+#include "global_context.h"
+#include "log.h"
+
 void rtp_send_init()
 {
 	ortp_init();

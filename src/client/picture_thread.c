@@ -41,6 +41,23 @@
 
 #include "picture_thread.h"
 
+#include <assert.h>
+#include <pthread.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+
+#include "global_context.h"
+#include "image_convert.h"
+#include "log.h"
+#include "path.h"
+#include "statistics.h"
+
+// from libjpeg library
+#include "jerror.h"
+#include "jpeglib.h"
+
 void *picture_thread(void *arg)
 {
     int ret = -1;

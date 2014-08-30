@@ -39,6 +39,7 @@
  * *****************************************************************************
  */
 
+#include "flv_muxer.h"
 #include "video_thread.h"
 
 enum video_capturing_type video_capturing_switch = VIDEO_CAPTURING_OFF;
