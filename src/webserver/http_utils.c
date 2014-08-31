@@ -180,12 +180,6 @@ int response_url(int client_fd, const char *url)
         return 0;
     }
 
-    // first send http header to client
-    int ok_len = strlen(http_ok_response_header);
-    int sendlen = send(client_fd, http_ok_response_header, ok_len, 0);
-    assert(sendlen == ok_len);
-
-    
     fd = open(response_file, O_RDONLY);
     if (fd == -1) {
         dmd_log(LOG_ERR, "open response file %s error:%s\n",
@@ -200,16 +194,25 @@ int response_url(int client_fd, const char *url)
         return 0;
     }
 
-    int readlen = read(fd, buffer, BUFFSIZE);
+    // first send http header to client
+    int ok_len = strlen(http_ok_response_header);
+    int sendlen = send(client_fd, http_ok_response_header, ok_len, 0);
+    assert(sendlen == ok_len);
+    
+    int readlen = read(fd, buffer, BUFFSIZE - 1);
     if (readlen > 0) {
         dmd_log(LOG_DEBUG, "response to send:\n");
     }
+    buffer[readlen] = '\0';
     while (readlen > 0) {
         sendlen = send(client_fd, buffer, readlen, 0);
         assert(sendlen == readlen);
         dmd_log(LOG_DEBUG, "%s", buffer);
 
-        readlen = read(fd, buffer, BUFFSIZE);
+        readlen = read(fd, buffer, BUFFSIZE - 1);
+        if (readlen >= 0) {
+            buffer[readlen] = '\0';
+        }
     }
     dmd_log(LOG_INFO, "send succeed client\n\n");
 
