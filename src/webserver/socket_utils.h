@@ -57,8 +57,6 @@ struct epoll_event;
 
 #define BUFFSIZE 1024
 
-extern uint64_t request_count;
-
 extern struct sockaddr *webserver_serverAddr;
 extern struct sockaddr *webserver_clientAddr;
 

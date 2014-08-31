@@ -42,14 +42,19 @@
 #ifndef HTTP_UTILS_H
 #define HTTP_UTILS_H
 
+#include <stdint.h>
+
+extern uint64_t request_count;
+
 extern const char *hellowHTML;
 extern const char *hellowWorld;
 extern const char *hellowChrome;
 
 extern void sendHello(int fd, const char *msg);
 
-extern int deal_request(int client_fd, const char *client_request,
+extern int parse_http(int client_fd, const char *client_request,
         int client_len);
 
+extern int handle_request(int client_fd);
 
 #endif

@@ -101,11 +101,11 @@ void webserver_loop()
     struct epoll_event events[MAX_EPOLL_EVENT];
     int epollfd = newEpollSocket();
 
-    dmd_log(LOG_INFO, "in function %s, begin to work\n", __func__);
+    dmd_log(LOG_DEBUG, "in function %s, begin to work\n", __func__);
     addSockfd(epollfd, serverfd);
     while (1) {
         int ret = epoll_wait(epollfd, events, MAX_EPOLL_EVENT, -1);
-        dmd_log(LOG_INFO, "in function %s, after epoll wait\n", __func__);
+        dmd_log(LOG_DEBUG, "in function %s, after epoll wait\n", __func__);
         if (ret < 0) {
             dmd_log(LOG_ERR, "in function %s, epoll failure\n", __func__);
         } else {

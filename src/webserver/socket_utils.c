@@ -60,7 +60,6 @@
 #include "log.h"
 
 
-uint64_t request_count = 0;
 struct sockaddr *webserver_serverAddr = NULL;
 struct sockaddr *webserver_clientAddr = NULL;
 
@@ -189,9 +188,7 @@ int addSockfd(int epollfd, int fd)
 void handleEvent(int epollfd, int sockfd, struct epoll_event *events,
         int nevents)
 {
-    char buffer[BUFFSIZE];
     int i = 0;
-
     for (i = 0; i < nevents; i++) {
         int fd = events[i].data.fd;
 
@@ -214,42 +211,9 @@ void handleEvent(int epollfd, int sockfd, struct epoll_event *events,
             addSockfd(epollfd, clientfd);
             free(clientAddr);
         } else if (events[i].events & EPOLLIN) { // read events happened
-
             dmd_log(LOG_DEBUG, "EPOLLIN happened\n");
-            memset(buffer, '\0', BUFFSIZE);
-            int readlen = read(fd, buffer, BUFFSIZE);
-            if (readlen == -1) {
-                if ((errno = EAGAIN) || (errno == EWOULDBLOCK)) {
-                    dmd_log(LOG_DEBUG, "epoll read later\n");
-                    break;
-                }
-                closeSocket(fd);
-                break;
-            } else if (readlen == 0) {
-                closeSocket(fd);
-            } else {
-                if (readlen == BUFFSIZE) {
-                    // TODO: there maybe more but we didn't read it,
-                    //       deal this situation later!
-                    assert(0);
-                }
-                buffer[readlen] = '\0';
 
-                dmd_log(LOG_INFO, "read from client:\n%s\n", buffer);
-                deal_request(fd, buffer, readlen);
-
-                if (request_count % 3 == 0) {
-                    sendHello(fd, hellowHTML);
-                } else if (request_count % 3 == 1) {
-                    sendHello(fd, hellowWorld);
-                } else {
-                    sendHello(fd, hellowChrome);
-                }
-                request_count++;
-
-                closeSocket(fd); //remember to close client fd!
-            }
-
+            handle_request(fd);
         } else {
             dmd_log(LOG_ERR, "something unknown happend!\n");
         }

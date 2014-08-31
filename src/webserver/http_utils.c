@@ -51,6 +51,8 @@
 
 #include "log.h"
 
+uint64_t request_count = 0;
+
 const char *hellowHTML = "HTTP/1.1 200 ok\r\n"
                                 "Server: openDMD-0.01\r\n"
                                 "Connection: close\r\n"
@@ -122,7 +124,7 @@ void sendHello(int fd, const char *msg)
     }
 }
 
-int deal_request(int client_fd, const char *client_request, int client_len)
+int parse_http(int client_fd, const char *client_request, int client_len)
 {
     unsigned short int alive = 1;
     unsigned short int ret = 0;
@@ -195,5 +197,52 @@ int deal_request(int client_fd, const char *client_request, int client_len)
     }
 
     return ret;
+}
+
+int handle_request(int client_fd)
+{
+#define BUFFSIZE 1024
+
+    char buffer[BUFFSIZE];
+    memset(buffer, '\0', BUFFSIZE);
+
+    int readlen = read(client_fd, buffer, BUFFSIZE);
+    if (readlen == -1) {
+        if ((errno = EAGAIN) || (errno == EWOULDBLOCK)) {
+            dmd_log(LOG_DEBUG, "epoll read later\n");
+            return 0;
+        }
+        close(client_fd);
+        return -1;
+    } else if (readlen == 0) {
+        close(client_fd);
+        return 0;
+    } else {
+        if (readlen == BUFFSIZE) {
+            // TODO: there maybe more but we didn't read it,
+            //       deal this situation later!
+            assert(0);
+        }
+        buffer[readlen] = '\0';
+
+        dmd_log(LOG_INFO, "read from client:\n%s\n", buffer);
+
+        parse_http(client_fd, buffer, readlen);
+
+        if (request_count % 3 == 0) {
+            sendHello(client_fd, hellowHTML);
+        } else if (request_count % 3 == 1) {
+            sendHello(client_fd, hellowWorld);
+        } else {
+            sendHello(client_fd, hellowChrome);
+        }
+        request_count++;
+
+        close(client_fd); //remember to close client fd!
+    }
+
+#undef BUFFSIZE
+
+    return 0;
 }
 
