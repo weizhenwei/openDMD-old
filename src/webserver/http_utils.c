@@ -54,6 +54,7 @@
 #include <unistd.h>
 
 #include "global_context.h"
+#include "http_response-inl.h"
 #include "log.h"
 
 uint64_t request_count = 0;
@@ -112,26 +113,6 @@ const char *hellowChrome = "HTTP/1.0 200 ok\r\n"
                                 "</body>\n"
                                 "</html>\n";
 
-static const char *http_ok_response_header = "HTTP/1.1 200 ok\r\n"
-                                         "Server: openDMD-0.01\r\n"
-                                         "Connection: close\r\n"
-                                         "Max-Age: 0\r\n"
-                                         "Expires: 0\r\n"
-                                         "Cache-Control: no-cache\r\n"
-                                         "Cache-Control: private\r\n"
-                                         "Pragma: no-cache\r\n"
-                                         "Content-type: text/html\r\n\r\n";
-
-static const char *http_404_response_header = "HTTP/1.1 404 Not Found\r\n"
-                                         "Content-type: text/html\r\n\r\n"
-                                          "<html>\n"
-                                          "<head>\n"
-                                          "<title>Not Found</title>\n"
-                                          "</head>"
-                                          "<body>\n"
-                                          "The request url is not found!\n"
-                                          "</body>\n"
-                                          "</html>\n";
 
 void sendHello(int fd, const char *msg)
 {
@@ -170,40 +151,40 @@ int response_url(int client_fd, const char *url)
     } else if (strcmp(url, "/login.html") == 0) {
         sprintf(response_file, "%s/login.html", webserver_root);
     } else { // 404 not fond;
-        int http_404_len = strlen(http_404_response_header);
-        int sendlen = send(client_fd, http_404_response_header,
-                http_404_len, 0);
+        int not_found_len = strlen(not_found_response);
+        int sendlen = send(client_fd, not_found_response, not_found_len, 0);
+        assert(sendlen == not_found_len);
         dmd_log(LOG_DEBUG, "response to send:\n%s\n",
-                http_404_response_header); 
+                not_found_response); 
         dmd_log(LOG_INFO, "send succeed client\n\n");
-        assert(sendlen == http_404_len);
         return 0;
     }
 
     fd = open(response_file, O_RDONLY);
-    if (fd == -1) {
+    if (fd == -1) { // response file not found
+        // TODO, may reasons file open failure, parse them.
         dmd_log(LOG_ERR, "open response file %s error:%s\n",
                 response_file, strerror(errno));
-        int http_404_len = strlen(http_404_response_header);
-        int sendlen = send(client_fd, http_404_response_header,
-                http_404_len, 0);
+        int not_found_len = strlen(not_found_response);
+        int sendlen = send(client_fd, not_found_response, not_found_len, 0);
+        assert(sendlen == not_found_len);
         dmd_log(LOG_DEBUG, "response to send:\n%s\n",
-                http_404_response_header); 
+                not_found_response); 
         dmd_log(LOG_INFO, "send succeed client\n\n");
-        assert(sendlen == http_404_len);
         return 0;
     }
 
     // first send http header to client
-    int ok_len = strlen(http_ok_response_header);
-    int sendlen = send(client_fd, http_ok_response_header, ok_len, 0);
+    int ok_len = strlen(ok_response_header);
+    // we can sure that ok_len is short, so just send once.
+    int sendlen = send(client_fd, ok_response_header, ok_len, 0);
     assert(sendlen == ok_len);
     
     int readlen = read(fd, buffer, BUFFSIZE - 1);
     if (readlen > 0) {
         dmd_log(LOG_DEBUG, "response to send:\n");
+        buffer[readlen] = '\0';
     }
-    buffer[readlen] = '\0';
     while (readlen > 0) {
         sendlen = send(client_fd, buffer, readlen, 0);
         assert(sendlen == readlen);
@@ -237,21 +218,29 @@ int parse_http(int client_fd, const char *client_request, int client_len)
     if (strstr(client_request, "\r\n\r\n") == NULL) {
         // TODO deal this later!
         dmd_log(LOG_ERR, "Bad HTTP request!\n");
-        assert(0);
-        return -1;
+        int bad_request_len = strlen(bad_request_response);
+        int sendlen = send(client_fd, bad_request_response, bad_request_len, 0);
+        assert(sendlen == bad_request_len);
+        dmd_log(LOG_DEBUG, "response to send:\n%s\n", bad_request_response);
+        dmd_log(LOG_INFO, "send succeed client\n\n");
+        return 0;
     }
 
     // Check Protocol
     if (strcmp(protocol, "HTTP/1.0") != 0
             && strcmp(protocol, "HTTP/1.1") != 0) {
+        // TODO: Unsupported HTTP protocol.
         dmd_log(LOG_ERR, "Bad HTTP Protocol:%s\n", protocol);
         return  -1;
     }
 
     if (strcmp (method, "GET") != 0) {
-        // TODO: Only GET method is supported at present.
-        dmd_log(LOG_ERR, "Didn't support method %s\n", method);
-        return -1;
+        int bad_method_len = strlen(bad_method_response);
+        int sendlen = send(client_fd, bad_method_response, bad_method_len, 0);
+        assert(sendlen == bad_method_len);
+        dmd_log(LOG_DEBUG, "response to send:\n%s\n", bad_method_response);
+        dmd_log(LOG_INFO, "send succeed client\n\n");
+        return 0;
     }
 
     dmd_log(LOG_INFO, "method: %s, url:%s, protocol:%s\n",
