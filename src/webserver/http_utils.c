@@ -141,33 +141,10 @@ int parse_http(int client_fd, const char *client_request, int client_len)
         sscanf((const char * restrict)client_request,
                 "%9s %511s %9s", method, url, protocol);
 
-        while ((strstr (client_request, "\r\n\r\n") == NULL) && (readb != 0)
-                && (nread < length)) {
+        if (strstr(client_request, "\r\n\r\n") == NULL) {
             // TODO deal this later!
+            dmd_log(LOG_ERR, "Bad HTTP request!\n");
             assert(0);
-
-            // there is more to read!
-            // readb = read (client_fd, client_request + nread,
-            //         sizeof (client_request) - nread);
-
-            // if (readb == -1) {
-            //     nread = -1;
-            //     break;
-            // }
-
-            // nread +=readb;
-            // if (nread > length) {
-            //     dmd_log(LOG_ERR,
-            //             "httpd End buffer reached waiting for buffer ending");
-            //     break;
-            // }
-            // client_request[nread] = '\0';
-        }
-
-        /* Make sure the last read didn't fail.  If it did, there's a
-        problem with the connection, so give up.  */
-        if (nread == -1) {
-            dmd_log(LOG_ERR, "httpd READ error");
             return -1;
         }
 
@@ -185,6 +162,7 @@ int parse_http(int client_fd, const char *client_request, int client_len)
             // TODO
             // char response[1024];
             // warningkill = write (client_socket, response, strlen (response));
+            dmd_log(LOG_ERR, "Didn't support method %s\n", method);
             return -1;
         }
 
@@ -224,7 +202,6 @@ int handle_request(int client_fd)
             assert(0);
         }
         buffer[readlen] = '\0';
-
         dmd_log(LOG_INFO, "read from client:\n%s\n", buffer);
 
         parse_http(client_fd, buffer, readlen);
