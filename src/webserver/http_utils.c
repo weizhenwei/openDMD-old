@@ -43,17 +43,22 @@
 
 #include <assert.h>
 #include <errno.h>
+#include <fcntl.h>
+#include <linux/limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
+#include "global_context.h"
 #include "log.h"
 
 uint64_t request_count = 0;
 
-const char *hellowHTML = "HTTP/1.1 200 ok\r\n"
+const char *hellowHTML = "HTTP/1.0 200 ok\r\n"
                                 "Server: openDMD-0.01\r\n"
                                 "Connection: close\r\n"
                                 "Max-Age: 0\r\n"
@@ -71,7 +76,7 @@ const char *hellowHTML = "HTTP/1.1 200 ok\r\n"
                                 "</body>\n"
                                 "</html>\n";
 
-const char *hellowWorld = "HTTP/1.1 200 ok\r\n"
+const char *hellowWorld = "HTTP/1.0 200 ok\r\n"
                                 "Server: openDMD-0.01\r\n"
                                 "Connection: close\r\n"
                                 "Max-Age: 0\r\n"
@@ -89,7 +94,7 @@ const char *hellowWorld = "HTTP/1.1 200 ok\r\n"
                                 "</body>\n"
                                 "</html>\n";
 
-const char *hellowChrome = "HTTP/1.1 200 ok\r\n"
+const char *hellowChrome = "HTTP/1.0 200 ok\r\n"
                                 "Server: openDMD-0.01\r\n"
                                 "Connection: close\r\n"
                                 "Max-Age: 0\r\n"
@@ -106,6 +111,27 @@ const char *hellowChrome = "HTTP/1.1 200 ok\r\n"
                                 "Hello, chrome web browser!\n"
                                 "</body>\n"
                                 "</html>\n";
+
+static const char *http_ok_response_header = "HTTP/1.1 200 ok\r\n"
+                                         "Server: openDMD-0.01\r\n"
+                                         "Connection: close\r\n"
+                                         "Max-Age: 0\r\n"
+                                         "Expires: 0\r\n"
+                                         "Cache-Control: no-cache\r\n"
+                                         "Cache-Control: private\r\n"
+                                         "Pragma: no-cache\r\n"
+                                         "Content-type: text/html\r\n\r\n";
+
+static const char *http_404_response_header = "HTTP/1.1 404 Not Found\r\n"
+                                         "Content-type: text/html\r\n\r\n"
+                                          "<html>\n"
+                                          "<head>\n"
+                                          "<title>Not Found</title>\n"
+                                          "</head>"
+                                          "<body>\n"
+                                          "The request url is not found!\n"
+                                          "</body>\n"
+                                          "</html>\n";
 
 void sendHello(int fd, const char *msg)
 {
@@ -124,55 +150,111 @@ void sendHello(int fd, const char *msg)
     }
 }
 
+int response_url(int client_fd, const char *url)
+{
+#define BUFFSIZE 1024
+
+    int fd = -1;
+    char *webserver_root = global.webserver_root;
+    char response_file[PATH_MAX];
+    char buffer[BUFFSIZE];
+    bzero(buffer, BUFFSIZE);
+
+    if (strcmp(url, "/") == 0
+            || strcmp(url, "/index.html") == 0) { // redirect to index.html;
+        sprintf(response_file, "%s/index.html", webserver_root);
+
+    } else if (strcmp(url, "/favicon.ico") == 0) { // chrome browser specific
+        sprintf(response_file, "%s/favicon.ico", webserver_root);
+
+    } else if (strcmp(url, "/login.html") == 0) {
+        sprintf(response_file, "%s/login.html", webserver_root);
+    } else { // 404 not fond;
+        int http_404_len = strlen(http_404_response_header);
+        int sendlen = send(client_fd, http_404_response_header,
+                http_404_len, 0);
+        dmd_log(LOG_DEBUG, "response to send:\n%s\n",
+                http_404_response_header); 
+        dmd_log(LOG_INFO, "send succeed client\n\n");
+        assert(sendlen == http_404_len);
+        return 0;
+    }
+
+    // first send http header to client
+    int ok_len = strlen(http_ok_response_header);
+    int sendlen = send(client_fd, http_ok_response_header, ok_len, 0);
+    assert(sendlen == ok_len);
+
+    
+    fd = open(response_file, O_RDONLY);
+    if (fd == -1) {
+        dmd_log(LOG_ERR, "open response file %s error:%s\n",
+                response_file, strerror(errno));
+        int http_404_len = strlen(http_404_response_header);
+        int sendlen = send(client_fd, http_404_response_header,
+                http_404_len, 0);
+        dmd_log(LOG_DEBUG, "response to send:\n%s\n",
+                http_404_response_header); 
+        dmd_log(LOG_INFO, "send succeed client\n\n");
+        assert(sendlen == http_404_len);
+        return 0;
+    }
+
+    int readlen = read(fd, buffer, BUFFSIZE);
+    if (readlen > 0) {
+        dmd_log(LOG_DEBUG, "response to send:\n");
+    }
+    while (readlen > 0) {
+        sendlen = send(client_fd, buffer, readlen, 0);
+        assert(sendlen == readlen);
+        dmd_log(LOG_DEBUG, "%s", buffer);
+
+        readlen = read(fd, buffer, BUFFSIZE);
+    }
+    dmd_log(LOG_INFO, "send succeed client\n\n");
+
+    close(fd);
+#undef BUFFSIZE
+
+    // send response ok!
+    return 0;
+}
+
 int parse_http(int client_fd, const char *client_request, int client_len)
 {
-    unsigned short int alive = 1;
-    unsigned short int ret = 0;
-    unsigned short int length = 1023;
+    int ret = 0;
+    char method[10], url[512], protocol[10];
+    bzero(method, 10);
+    bzero(url, 512);
+    bzero(protocol, 10);
 
-    while (alive) {
-        ssize_t nread = client_len, readb = -1;
+    sscanf((const char * restrict)client_request,
+            "%9s %511s %9s", method, url, protocol);
 
-        char method[10], url[512], protocol[10];
-        bzero(method, 10);
-        bzero(url, 512);
-        bzero(protocol, 10);
-
-        sscanf((const char * restrict)client_request,
-                "%9s %511s %9s", method, url, protocol);
-
-        if (strstr(client_request, "\r\n\r\n") == NULL) {
-            // TODO deal this later!
-            dmd_log(LOG_ERR, "Bad HTTP request!\n");
-            assert(0);
-            return -1;
-        }
-
-        alive = 0;
-
-        // Check Protocol
-        if (strcmp(protocol, "HTTP/1.0") != 0
-                && strcmp(protocol, "HTTP/1.1") != 0) {
-            dmd_log(LOG_ERR, "Bad HTTP Protocol:%s\n", protocol);
-            return  -1;
-        }
-
-        if (strcmp (method, "GET") != 0) {
-            // Only GET method is supported at present.
-            // TODO
-            // char response[1024];
-            // warningkill = write (client_socket, response, strlen (response));
-            dmd_log(LOG_ERR, "Didn't support method %s\n", method);
-            return -1;
-        }
-
-        dmd_log(LOG_INFO, "method: %s, url:%s, protocol:%s\n",
-                method, url, protocol);
-        
-        // handle the get request
-        // TODO
-        // ret = handle_get(client_socket, url, cnt);
+    if (strstr(client_request, "\r\n\r\n") == NULL) {
+        // TODO deal this later!
+        dmd_log(LOG_ERR, "Bad HTTP request!\n");
+        assert(0);
+        return -1;
     }
+
+    // Check Protocol
+    if (strcmp(protocol, "HTTP/1.0") != 0
+            && strcmp(protocol, "HTTP/1.1") != 0) {
+        dmd_log(LOG_ERR, "Bad HTTP Protocol:%s\n", protocol);
+        return  -1;
+    }
+
+    if (strcmp (method, "GET") != 0) {
+        // TODO: Only GET method is supported at present.
+        dmd_log(LOG_ERR, "Didn't support method %s\n", method);
+        return -1;
+    }
+
+    dmd_log(LOG_INFO, "method: %s, url:%s, protocol:%s\n",
+            method, url, protocol);
+    
+    ret = response_url(client_fd, url);
 
     return ret;
 }
@@ -206,14 +288,14 @@ int handle_request(int client_fd)
 
         parse_http(client_fd, buffer, readlen);
 
-        if (request_count % 3 == 0) {
-            sendHello(client_fd, hellowHTML);
-        } else if (request_count % 3 == 1) {
-            sendHello(client_fd, hellowWorld);
-        } else {
-            sendHello(client_fd, hellowChrome);
-        }
-        request_count++;
+        // if (request_count % 3 == 0) {
+        //     sendHello(client_fd, hellowHTML);
+        // } else if (request_count % 3 == 1) {
+        //     sendHello(client_fd, hellowWorld);
+        // } else {
+        //     sendHello(client_fd, hellowChrome);
+        // }
+        // request_count++;
 
         close(client_fd); //remember to close client fd!
     }

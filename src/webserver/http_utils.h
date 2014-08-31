@@ -52,6 +52,8 @@ extern const char *hellowChrome;
 
 extern void sendHello(int fd, const char *msg);
 
+extern int response_url(int client_fd, const char *url);
+
 extern int parse_http(int client_fd, const char *client_request,
         int client_len);
 
