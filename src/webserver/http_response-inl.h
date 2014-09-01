@@ -123,6 +123,10 @@ static const char *not_valid_response =
     "</body>\n"
     "</html>\n";
 
+static const char *auth_response =
+    "HTTP/1.0 401 Authorization Required\r\n"
+    "WWW-Authenticate: Basic realm=\"openDMD Security Access\"\r\n";
+
 #if 0
 static const char *not_valid_syntax =
     "HTTP/1.0 404 Not Valid Syntax\r\n"
@@ -192,5 +196,14 @@ static inline void send_method_not_implemented_response(int client_fd)
     dmd_log(LOG_DEBUG, "send method_not_implemented_response to client:\n%s\n",
             method_not_implemented_response);
 }
+
+static void send_authentication(int client_fd)
+{
+    int auth_response_len = strlen(auth_response);
+    int sendlen = send(client_fd, auth_response, auth_response_len, 0);
+    assert(sendlen == auth_response_len);
+    dmd_log(LOG_DEBUG, "send auth_response to client:\n%s\n", auth_response);
+}
+
 
 #endif

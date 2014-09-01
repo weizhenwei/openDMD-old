@@ -166,7 +166,9 @@ int response_url(int client_fd, const char *url)
         sprintf(response_file, "%s/favicon.ico", webserver_root);
 
     } else if (strcmp(url, "/login.html") == 0) {
-        sprintf(response_file, "%s/login.html", webserver_root);
+        // sprintf(response_file, "%s/login.html", webserver_root);
+        send_authentication(client_fd);
+        return 0;
     } else { // 404 not fond;
         send_not_found_response(client_fd);
         return 0;
