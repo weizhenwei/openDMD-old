@@ -42,6 +42,14 @@
 #ifndef HTTP_RESPONSE_INL_H
 #define HTTP_RESPONSE_INL_H
 
+#include <assert.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+
+#include "log.h"
+
+
 static const char *ok_response_header =
     "HTTP/1.1 200 ok\r\n"
     "Server: openDMD-0.01\r\n"
@@ -63,40 +71,59 @@ static const char *bad_request_response =
     "</body>\n"
     "</html>\n";
 
+static const char * forbidden_response =
+    "HTTP/1.1 403 Forbidden\r\n"
+    "Content-type: text/html\r\n\r\n"
+    "<html>\n"
+    "<head>\n"
+    "<title>Forbidden</title>\n"
+    "</head>"
+    "<body>\n"
+    "<h1>Forbidden</h1>\n"
+    "<p>The requested URL was forbidden to access.</p>\n"
+    "</body>\n"
+    "</html>\n";
+
 static const char * not_found_response =
     "HTTP/1.1 404 Not Found\r\n"
     "Content-type: text/html\r\n\r\n"
     "<html>\n"
     "<head>\n"
     "<title>Not Found</title>\n"
-    "</head>"
+    "</head>\n"
     "<body>\n"
     "<h1>Not Found</h1>\n"
     "<p>The requested URL was not found on the server.</p>\n"
     "</body>\n"
     "</html>\n";
 
-static const char *bad_method_response =
+static const char *method_not_implemented_response =
     "HTTP/1.0 501 Method Not Implemented\r\n"
     "Content-type: text/html\r\n\r\n"
     "<html>\n"
+    "<head>\n"
+    "<title>Method Not Implemented</title>\n"
+    "</head>\n"
     "<body>\n"
     "<h1>Method Not Implemented</h1>\n"
     "<p>The method is not implemented by this server.</p>\n"
     "</body>\n"
     "</html>\n";
 
-#if 0
 static const char *not_valid_response =
     "HTTP/1.0 404 Not Valid\r\n"
     "Content-type: text/html\r\n\r\n"
     "<html>\n"
+    "<head>\n"
+    "<title>Not Valid</title>\n"
+    "</head>\n"
     "<body>\n"
     "<h1>Not Valid</h1>\n"
     "<p>The requested URL is not valid.</p>\n"
     "</body>\n"
     "</html>\n";
 
+#if 0
 static const char *not_valid_syntax =
     "HTTP/1.0 404 Not Valid Syntax\r\n"
     "Content-type: text/html\r\n\r\n"
@@ -110,5 +137,60 @@ static const char *request_auth_response=
     "HTTP/1.0 401 Authorization Required\r\n"
     "WWW-Authenticate: Basic realm=\"openDMD Security Access\"\r\n";
 #endif
+
+static inline void send_not_found_response(int client_fd)
+{
+    int not_found_len = strlen(not_found_response);
+    int sendlen = send(client_fd, not_found_response, not_found_len, 0);
+    assert(sendlen == not_found_len);
+    dmd_log(LOG_DEBUG, "send not_found_response to client:\n%s\n",
+            not_found_response);
+}
+
+static inline void send_bad_request_response(int client_fd)
+{
+    int bad_request_len = strlen(bad_request_response);
+    int sendlen = send(client_fd, bad_request_response, bad_request_len, 0);
+    assert(sendlen == bad_request_len);
+    dmd_log(LOG_DEBUG, "send bad_request_response to client:\n%s\n",
+            bad_request_response);
+}
+
+static inline void send_ok_response_header(int client_fd)
+{
+    int ok_len = strlen(ok_response_header);
+    int sendlen = send(client_fd, ok_response_header, ok_len, 0);
+    assert(sendlen == ok_len);
+    dmd_log(LOG_DEBUG, "send ok_response_header to client:\n%s\n",
+            ok_response_header);
+}
+
+static inline void send_forbidden_response(int client_fd)
+{
+    int forbidden_len = strlen(forbidden_response);
+    int sendlen = send(client_fd, forbidden_response, forbidden_len, 0);
+    assert(sendlen == forbidden_len);
+    dmd_log(LOG_DEBUG, "send forbidden_response to client:\n%s\n",
+            forbidden_response);
+}
+
+static inline void send_not_valid_response(int client_fd)
+{
+    int not_valid_len = strlen(not_valid_response);
+    int sendlen = send(client_fd, not_valid_response, not_valid_len, 0);
+    assert(sendlen == not_valid_len);
+    dmd_log(LOG_DEBUG, "send not_valid_response to client:\n%s\n",
+            not_valid_response);
+}
+
+static inline void send_method_not_implemented_response(int client_fd)
+{
+    int not_implemented_len = strlen(method_not_implemented_response);
+    int sendlen = send(client_fd, method_not_implemented_response,
+            not_implemented_len, 0);
+    assert(sendlen == not_implemented_len);
+    dmd_log(LOG_DEBUG, "send method_not_implemented_response to client:\n%s\n",
+            method_not_implemented_response);
+}
 
 #endif

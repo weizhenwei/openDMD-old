@@ -131,6 +131,23 @@ void sendHello(int fd, const char *msg)
     }
 }
 
+static void send_open_error_response(int client_fd)
+{
+    // TODO, may reasons file open failure, parse them.
+    switch (errno) {
+        case EACCES:
+            send_forbidden_response(client_fd);
+            break;
+        case EISDIR:
+            send_not_valid_response(client_fd);
+            break;
+        default:
+            send_not_found_response(client_fd);
+            break;
+    } // switch
+    dmd_log(LOG_INFO, "send succeed client\n\n");
+}
+
 int response_url(int client_fd, const char *url)
 {
 #define BUFFSIZE 1024
@@ -151,42 +168,29 @@ int response_url(int client_fd, const char *url)
     } else if (strcmp(url, "/login.html") == 0) {
         sprintf(response_file, "%s/login.html", webserver_root);
     } else { // 404 not fond;
-        int not_found_len = strlen(not_found_response);
-        int sendlen = send(client_fd, not_found_response, not_found_len, 0);
-        assert(sendlen == not_found_len);
-        dmd_log(LOG_DEBUG, "response to send:\n%s\n",
-                not_found_response); 
-        dmd_log(LOG_INFO, "send succeed client\n\n");
+        send_not_found_response(client_fd);
         return 0;
     }
 
+    // TODO: what if response_file is not a regular file?
+    //       using fstat to check it later!
     fd = open(response_file, O_RDONLY);
     if (fd == -1) { // response file not found
-        // TODO, may reasons file open failure, parse them.
-        dmd_log(LOG_ERR, "open response file %s error:%s\n",
-                response_file, strerror(errno));
-        int not_found_len = strlen(not_found_response);
-        int sendlen = send(client_fd, not_found_response, not_found_len, 0);
-        assert(sendlen == not_found_len);
-        dmd_log(LOG_DEBUG, "response to send:\n%s\n",
-                not_found_response); 
-        dmd_log(LOG_INFO, "send succeed client\n\n");
+        send_open_error_response(client_fd);
         return 0;
     }
 
-    // first send http header to client
-    int ok_len = strlen(ok_response_header);
-    // we can sure that ok_len is short, so just send once.
-    int sendlen = send(client_fd, ok_response_header, ok_len, 0);
-    assert(sendlen == ok_len);
+    // first send http ok header
+    send_ok_response_header(client_fd);
     
+    // then send http body;
     int readlen = read(fd, buffer, BUFFSIZE - 1);
     if (readlen > 0) {
-        dmd_log(LOG_DEBUG, "response to send:\n");
+        dmd_log(LOG_DEBUG, "response body to send:\n");
         buffer[readlen] = '\0';
     }
     while (readlen > 0) {
-        sendlen = send(client_fd, buffer, readlen, 0);
+        int sendlen = send(client_fd, buffer, readlen, 0);
         assert(sendlen == readlen);
         dmd_log(LOG_DEBUG, "%s", buffer);
 
@@ -216,12 +220,7 @@ int parse_http(int client_fd, const char *client_request, int client_len)
             "%9s %511s %9s", method, url, protocol);
 
     if (strstr(client_request, "\r\n\r\n") == NULL) {
-        // TODO deal this later!
-        dmd_log(LOG_ERR, "Bad HTTP request!\n");
-        int bad_request_len = strlen(bad_request_response);
-        int sendlen = send(client_fd, bad_request_response, bad_request_len, 0);
-        assert(sendlen == bad_request_len);
-        dmd_log(LOG_DEBUG, "response to send:\n%s\n", bad_request_response);
+        send_bad_request_response(client_fd);
         dmd_log(LOG_INFO, "send succeed client\n\n");
         return 0;
     }
@@ -230,15 +229,13 @@ int parse_http(int client_fd, const char *client_request, int client_len)
     if (strcmp(protocol, "HTTP/1.0") != 0
             && strcmp(protocol, "HTTP/1.1") != 0) {
         // TODO: Unsupported HTTP protocol.
+        send_bad_request_response(client_fd);
         dmd_log(LOG_ERR, "Bad HTTP Protocol:%s\n", protocol);
-        return  -1;
+        return 0;
     }
 
     if (strcmp (method, "GET") != 0) {
-        int bad_method_len = strlen(bad_method_response);
-        int sendlen = send(client_fd, bad_method_response, bad_method_len, 0);
-        assert(sendlen == bad_method_len);
-        dmd_log(LOG_DEBUG, "response to send:\n%s\n", bad_method_response);
+        send_method_not_implemented_response(client_fd);
         dmd_log(LOG_INFO, "send succeed client\n\n");
         return 0;
     }
