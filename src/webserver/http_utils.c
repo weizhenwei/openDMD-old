@@ -148,6 +148,36 @@ static void send_open_error_response(int client_fd)
     dmd_log(LOG_INFO, "send succeed client\n\n");
 }
 
+static int handle_auth(int client_fd, const char *buffer, int buffer_len)
+{
+    char *auth = "username:password";
+    char *authentication = NULL;
+
+    if ((authentication = strstr(buffer,"Basic")) != NULL) {
+        char *end_auth = NULL;
+        authentication = authentication + 6;
+
+        if ((end_auth  = strstr(authentication,"\r\n")) ) {
+            authentication[end_auth - authentication] = '\0';
+        } else {
+            send_authentication(client_fd);
+            return 1;
+        }
+
+        if (strcmp(auth, authentication) != 0) {
+            send_authentication(client_fd);
+            return 1;
+        } else {
+            send_bad_request_response(client_fd);
+        }
+    } else {
+        send_authentication(client_fd);
+        return 1;
+    }
+
+    return 1;
+}
+
 int response_url(int client_fd, const char *url)
 {
 #define BUFFSIZE 1024
