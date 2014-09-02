@@ -150,32 +150,33 @@ static void send_open_error_response(int client_fd)
 
 static int handle_auth(int client_fd, const char *buffer, int buffer_len)
 {
-    char *auth = "username:password";
+    // TODO: encoding auth here.
+    char *auth = "dXNlcm5hbWU6cGFzc3dvcmQ="; // for "username:password";
     char *authentication = NULL;
 
     if ((authentication = strstr(buffer,"Basic")) != NULL) {
         char *end_auth = NULL;
         authentication = authentication + 6;
 
-        if ((end_auth  = strstr(authentication,"\r\n")) ) {
+        if ((end_auth  = strstr(authentication,"\r\n")) != NULL) {
             authentication[end_auth - authentication] = '\0';
         } else {
             send_authentication(client_fd);
-            return 1;
+            return -1;
         }
 
         if (strcmp(auth, authentication) != 0) {
             send_authentication(client_fd);
-            return 1;
-        } else {
-            send_bad_request_response(client_fd);
+            return -1;
+        } else { // authentication ok!
+            return 0;
         }
     } else {
         send_authentication(client_fd);
-        return 1;
+        return -1;
     }
 
-    return 1;
+    return 0;
 }
 
 int response_url(int client_fd, const char *url)
@@ -196,9 +197,8 @@ int response_url(int client_fd, const char *url)
         sprintf(response_file, "%s/favicon.ico", webserver_root);
 
     } else if (strcmp(url, "/login.html") == 0) {
-        // sprintf(response_file, "%s/login.html", webserver_root);
-        send_authentication(client_fd);
-        return 0;
+        sprintf(response_file, "%s/login.html", webserver_root);
+
     } else { // 404 not fond;
         send_not_found_response(client_fd);
         return 0;
@@ -274,8 +274,12 @@ int parse_http(int client_fd, const char *client_request, int client_len)
 
     dmd_log(LOG_INFO, "method: %s, url:%s, protocol:%s\n",
             method, url, protocol);
-    
-    ret = response_url(client_fd, url);
+
+
+    ret = handle_auth(client_fd, client_request, client_len);
+    if (ret == 0) { // authentication ok, do response
+        ret = response_url(client_fd, url);
+    }
 
     return ret;
 }

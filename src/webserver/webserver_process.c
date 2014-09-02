@@ -72,7 +72,7 @@ int webserver_fork()
 		return -1;
 	} else if (pid > 0) { // parent, just return;
 		global.webserver_pid = pid;
-		dmd_log(LOG_INFO, "Starting webserver process, pid = %d", pid);
+		dmd_log(LOG_INFO, "Starting webserver process, pid = %d\n", pid);
 
         if (global.client.working_mode == WEBSERVER_ONLY) {
             dmd_log(LOG_INFO, "working_mode = webserver, main process exit.\n");
