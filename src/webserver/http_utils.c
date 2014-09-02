@@ -194,7 +194,7 @@ static void base64_encode(const char *s, char *store, int length)
 static int handle_auth(int client_fd, const char *buffer, int buffer_len)
 {
     // TODO: userpass is from config file.
-    char *userpass = "admin:admin";
+    const char *userpass = global.webserver_userpass;
     char auth[1024];
     char *authentication = NULL;
     size_t auth_size = strlen(userpass);

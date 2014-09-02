@@ -70,6 +70,7 @@
 #define DEFAULT_WEBSERVER_IP "127.0.0.1"
 #define DEFAULT_WEBSERVER_PORT 8080
 #define DEFAULT_WEBSERVER_ROOT "/var/www/opendmd"
+#define DEFAULT_WEBSERVER_USERPASS "admin:admin"
 
 
 /////////////////////////////////////////////////////////////
@@ -300,6 +301,8 @@ struct global_context {
     char webserver_ip[PATH_MAX];          // for webserver binding ip;
     int webserver_port;                   // for webserver binding port;
     char webserver_root[PATH_MAX];        // dir to place webserver file;
+    char webserver_userpass[PATH_MAX];    // username and password to
+                                          // login webserver;
 
     // client/server settings;
     struct client_context client;

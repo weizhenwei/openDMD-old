@@ -258,6 +258,11 @@ void init_default_global()
             strlen(DEFAULT_WEBSERVER_ROOT));
     global.webserver_root[strlen(DEFAULT_WEBSERVER_ROOT)] = '\0';
 
+    assert(strlen(DEFAULT_WEBSERVER_USERPASS) < PATH_MAX);
+    strncpy(global.webserver_userpass, DEFAULT_WEBSERVER_USERPASS,
+            strlen(DEFAULT_WEBSERVER_USERPASS));
+    global.webserver_userpass[strlen(DEFAULT_WEBSERVER_USERPASS)] = '\0';
+
 
     // init client/server specific;
     init_default_client();

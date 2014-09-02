@@ -250,7 +250,7 @@ int parse_config(const char *conf_file)
             strncpy(global.pid_file, item->value, strlen(item->value));
             /* Warning:If there is no null byte among the first n bytes of
              * src, the string placed in dest will not be null-terminated,
-             * remember add null-terminated manually.
+             * remember to add null-terminated manually.
              */
             global.pid_file[strlen(item->value)] = '\0';
 
@@ -264,7 +264,7 @@ int parse_config(const char *conf_file)
             strncpy(global.database_repo, item->value, strlen(item->value));
             /* Warning:If there is no null byte among the first n bytes of
              * src, the string placed in dest will not be null-terminated,
-             * remember add null-terminated manually.
+             * remember to add null-terminated manually.
              */
             global.database_repo[strlen(item->value)] = '\0';
 
@@ -273,7 +273,7 @@ int parse_config(const char *conf_file)
             strncpy(global.webserver_ip, item->value, strlen(item->value));
             /* Warning:If there is no null byte among the first n bytes of
              * src, the string placed in dest will not be null-terminated,
-             * remember add null-terminated manually.
+             * remember to add null-terminated manually.
              */
             global.webserver_ip[strlen(item->value)] = '\0';
 
@@ -287,9 +287,19 @@ int parse_config(const char *conf_file)
             strncpy(global.webserver_root, item->value, strlen(item->value));
             /* Warning:If there is no null byte among the first n bytes of
              * src, the string placed in dest will not be null-terminated,
-             * remember add null-terminated manually.
+             * remember to add null-terminated manually.
              */
             global.webserver_root[strlen(item->value)] = '\0';
+
+        } else if (strcmp(item->key, "webserver_userpass") == 0) {
+            assert(strlen(item->value) < PATH_MAX);
+            strncpy(global.webserver_userpass, item->value,
+                    strlen(item->value));
+            /* Warning:If there is no null byte among the first n bytes of
+             * src, the string placed in dest will not be null-terminated,
+             * remember to add null-terminated manually.
+             */
+            global.webserver_userpass[strlen(item->value)] = '\0';
 
         } else if (strcmp(item->key, "working_mode") == 0) {
             if (strcmp(item->value, "picture") == 0) {
@@ -311,12 +321,12 @@ int parse_config(const char *conf_file)
                     item->value, strlen(item->value));
             /* Warning:If there is no null byte among the first n bytes of
              * src, the string placed in dest will not be null-terminated,
-             * remember add null-terminated manually.
+             * remember to add null-terminated manually.
              */
             global.client.video_device[strlen(item->value)] = '\0';
 
         } else if (strcmp(item->key, "image_width") == 0) {
-            // Waring: there is no error detection in atoi();
+            // TODO: there is no error detection in atoi();
             global.client.image_width = atoi(item->value);
 
         } else if (strcmp(item->key, "image_height") == 0) {
@@ -357,7 +367,7 @@ int parse_config(const char *conf_file)
                     item->value, strlen(item->value));
             /* Warning:If there is no null byte among the first n bytes of
              * src, the string placed in dest will not be null-terminated,
-             * remember add null-terminated manually.
+             * remember to add null-terminated manually.
              */
             global.client.video_device[strlen(item->value)] = '\0';
 
@@ -382,7 +392,7 @@ int parse_config(const char *conf_file)
             strncpy(global.client.client_repo, item->value, strlen(item->value));
             /* Warning:If there is no null byte among the first n bytes of
              * src, the string placed in dest will not be null-terminated,
-             * remember add null-terminated manually.
+             * remember to add null-terminated manually.
              */
             global.client.client_repo[strlen(item->value)] = '\0';
 
@@ -392,7 +402,7 @@ int parse_config(const char *conf_file)
                     item->value, strlen(item->value));
             /* Warning:If there is no null byte among the first n bytes of
              * src, the string placed in dest will not be null-terminated,
-             * remember add null-terminated manually.
+             * remember to add null-terminated manually.
              */
             global.server.server_repo[strlen(item->value)] = '\0';
 
