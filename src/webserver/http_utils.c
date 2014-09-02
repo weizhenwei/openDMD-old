@@ -148,6 +148,9 @@ static void send_open_error_response(int client_fd)
     dmd_log(LOG_INFO, "send succeed client\n\n");
 }
 
+/* How many bytes it will take to store LEN bytes in base64.  */
+#define BASE64_LENGTH(len) (4 * (((len) + 2) / 3))
+
 // Encode the string S of length LENGTH to base64 format and place it
 // to STORE.  STORE will be 0-terminated, and must point to a writable
 // buffer of at least 1+BASE64_LENGTH(length) bytes.  
@@ -190,9 +193,12 @@ static void base64_encode(const char *s, char *store, int length)
 
 static int handle_auth(int client_fd, const char *buffer, int buffer_len)
 {
-    // TODO: encoding auth here.
-    char *auth = "dXNlcm5hbWU6cGFzc3dvcmQ="; // for "username:password";
+    // TODO: userpass is from config file.
+    char *userpass = "admin:admin";
+    char auth[1024];
     char *authentication = NULL;
+    size_t auth_size = strlen(userpass);
+    base64_encode(userpass, auth, auth_size);
 
     if ((authentication = strstr(buffer,"Basic")) != NULL) {
         char *end_auth = NULL;
