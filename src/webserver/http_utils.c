@@ -55,6 +55,7 @@
 
 #include "global_context.h"
 #include "http_response-inl.h"
+#include "sqlite_utils.h"
 #include "log.h"
 
 static void send_open_error_response(int client_fd)
