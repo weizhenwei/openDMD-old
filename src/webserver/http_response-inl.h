@@ -51,7 +51,7 @@
 
 
 static const char *ok_response_header =
-    "HTTP/1.1 200 ok\r\n"
+    "HTTP/1.0 200 ok\r\n"
     "Server: openDMD-0.01\r\n"
     "Connection: close\r\n"
     "Max-Age: 0\r\n"
@@ -72,7 +72,7 @@ static const char *bad_request_response =
     "</html>\n";
 
 static const char * forbidden_response =
-    "HTTP/1.1 403 Forbidden\r\n"
+    "HTTP/1.0 403 Forbidden\r\n"
     "Content-type: text/html\r\n\r\n"
     "<html>\n"
     "<head>\n"
@@ -85,7 +85,7 @@ static const char * forbidden_response =
     "</html>\n";
 
 static const char * not_found_response =
-    "HTTP/1.1 404 Not Found\r\n"
+    "HTTP/1.0 404 Not Found\r\n"
     "Content-type: text/html\r\n\r\n"
     "<html>\n"
     "<head>\n"
@@ -127,20 +127,31 @@ static const char *auth_response =
     "HTTP/1.0 401 Authorization Required\r\n"
     "WWW-Authenticate: Basic realm=\"openDMD Security Access\"\r\n";
 
-#if 0
-static const char *not_valid_syntax =
-    "HTTP/1.0 404 Not Valid Syntax\r\n"
-    "Content-type: text/html\r\n\r\n"
+static const char *response_header =
+    "<!DOCTYPE html>\n"
     "<html>\n"
-    "<body>\n"
-    "<h1>Not Valid Syntax</h1>\n"
-    "</body>\n"
-    "</html>\n";
+    "<head>\n"
+    "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n"
+    "<title>%s</title>\n"
+    "</head>\n";
 
-static const char *request_auth_response=
-    "HTTP/1.0 401 Authorization Required\r\n"
-    "WWW-Authenticate: Basic realm=\"openDMD Security Access\"\r\n";
-#endif
+static const char *response_css =
+    "<style type=\"text/css\" media=\"screen\">\n"
+    "body { background: #e7e7e7; font-family: Verdana, sans-serif; font-size: 11pt; }\n"
+    "#page { background: #ffffff; margin: 50px; border: 2px solid #c0c0c0; padding: 10px; }\n"
+    "#header { background: #4b6983; border: 2px solid #7590ae; text-align: center; padding: 10px; color: #ffffff; }\n"
+    "#header h1 { color: #ffffff; }\n"
+    "#body { padding: 10px; }\n"
+    "span.tt { font-family: monospace; }\n"
+    "span.bold { font-weight: bold; }\n"
+    "a:link { text-decoration: none; font-weight: bold; color: #0000FF; }\n"
+    "a:visited { text-decoration: none; font-weight: bold; color: #800080; }\n"
+    "a:active { text-decoration: none; font-weight: bold; color: #4B0082;}\n"
+    "a:hover { text-decoration: none; color: #2F4F4F;}\n"
+    "</style>\n";
+
+static const char *response_footer =
+    "</html>";
 
 static inline void send_not_found_response(int client_fd)
 {
@@ -203,6 +214,35 @@ static void send_authentication(int client_fd)
     int sendlen = send(client_fd, auth_response, auth_response_len, 0);
     assert(sendlen == auth_response_len);
     dmd_log(LOG_DEBUG, "send auth_response to client:\n%s\n", auth_response);
+}
+
+static inline void send_response_header(int client_fd, const char *title)
+{
+    char header[1024];
+    sprintf(header, response_header, title);
+    int header_len = strlen(header);
+    int sendlen = send(client_fd, header, header_len, 0);
+    assert(sendlen == header_len);
+    dmd_log(LOG_DEBUG, "send response header to client:\n%s\n",
+            header);
+}
+
+static inline void send_css(int client_fd)
+{
+    int css_len = strlen(response_css);
+    int sendlen = send(client_fd, response_css, css_len, 0);
+    assert(sendlen == css_len);
+    dmd_log(LOG_DEBUG, "send response css to client:\n%s\n",
+            response_css);
+}
+
+static inline void send_response_footer(int client_fd)
+{
+    int footer_len = strlen(response_footer);
+    int sendlen = send(client_fd, response_footer, footer_len, 0);
+    assert(sendlen == footer_len);
+    dmd_log(LOG_DEBUG, "send response footer to client:\n%s\n",
+            response_footer);
 }
 
 

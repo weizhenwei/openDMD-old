@@ -134,6 +134,65 @@ static int check_auth(int client_fd, const char *client_auth)
     return 0;
 }
 
+static void send_statistics_body(int client_fd)
+{
+    const char *statistics =
+    "<body>\n"
+    "<div id=\"page\">\n"
+    "<div id=\"header\">\n"
+    "<h1>openDMD Statistics Page</h1>\n"
+    "</div>\n"
+    "<div id=\"body\">\n"
+    "<h3>The Statistics Page is under construction</h3>\n"
+    "</div>\n"
+    "</div>\n"
+    "</body>\n";
+    int statistics_len = strlen(statistics);
+    int sendlen = send(client_fd, statistics, statistics_len, 0);
+    assert(sendlen == statistics_len);
+    dmd_log(LOG_DEBUG, "send statistics body to client:\n%s\n",
+            statistics);
+}
+
+static void send_statistics_response(int client_fd)
+{
+    send_ok_response_header(client_fd);
+    send_response_header(client_fd, "openDMD Motion Statistics");
+    send_css(client_fd);
+    send_statistics_body(client_fd);
+    send_response_footer(client_fd);
+}
+
+static void send_settings_body(int client_fd)
+{
+    const char *settings =
+    "<body>\n"
+    "<div id=\"page\">\n"
+    "<div id=\"header\">\n"
+    "<h1>openDMD Statistics Page</h1>\n"
+    "</div>\n"
+    "<div id=\"body\">\n"
+    "<h3>The Settings Page is under construction</h3>\n"
+    "</div>\n"
+    "</div>\n"
+    "</body>\n";
+    int settings_len = strlen(settings);
+    int sendlen = send(client_fd, settings, settings_len, 0);
+    assert(sendlen == settings_len);
+    dmd_log(LOG_DEBUG, "send settings body to client:\n%s\n",
+            settings);
+}
+
+static void send_settings_response(int client_fd)
+{
+    send_ok_response_header(client_fd);
+    send_response_header(client_fd, "openDMD Settings");
+    send_css(client_fd);
+    send_settings_body(client_fd);
+    send_response_footer(client_fd);
+}
+
+
 int response_url(int client_fd, const char *url, const char *auth)
 {
 #define BUFFSIZE 1024
@@ -167,6 +226,14 @@ int response_url(int client_fd, const char *url, const char *auth)
             sprintf(response_file, "%s%s", webserver_root, url);
         } else {
             send_authentication(client_fd);
+            return 0;
+        }
+
+        if (strcmp(url, "/statistics.html") == 0) {
+            send_statistics_response(client_fd);
+            return 0;
+        } else if (strcmp(url, "/settings.html") == 0) {
+            send_settings_response(client_fd);
             return 0;
         }
     }
