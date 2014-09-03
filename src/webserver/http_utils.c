@@ -57,80 +57,6 @@
 #include "http_response-inl.h"
 #include "log.h"
 
-uint64_t request_count = 0;
-
-const char *hellowHTML = "HTTP/1.0 200 ok\r\n"
-                                "Server: openDMD-0.01\r\n"
-                                "Connection: close\r\n"
-                                "Max-Age: 0\r\n"
-                                "Expires: 0\r\n"
-                                "Cache-Control: no-cache\r\n"
-                                "Cache-Control: private\r\n"
-                                "Pragma: no-cache\r\n"
-                                "Content-type: text/html\r\n\r\n"
-                                "<html>\n"
-                                "<head>\n"
-                                "<title>HelloHTML</title>\n"
-                                "</head>"
-                                "<body>\n"
-                                "Hello, HTML!\n"
-                                "</body>\n"
-                                "</html>\n";
-
-const char *hellowWorld = "HTTP/1.0 200 ok\r\n"
-                                "Server: openDMD-0.01\r\n"
-                                "Connection: close\r\n"
-                                "Max-Age: 0\r\n"
-                                "Expires: 0\r\n"
-                                "Cache-Control: no-cache\r\n"
-                                "Cache-Control: private\r\n"
-                                "Pragma: no-cache\r\n"
-                                "Content-type: text/html\r\n\r\n"
-                                "<html>\n"
-                                "<head>\n"
-                                "<title>HelloWorld</title>\n"
-                                "</head>"
-                                "<body>\n"
-                                "Hello, world!\n"
-                                "</body>\n"
-                                "</html>\n";
-
-const char *hellowChrome = "HTTP/1.0 200 ok\r\n"
-                                "Server: openDMD-0.01\r\n"
-                                "Connection: close\r\n"
-                                "Max-Age: 0\r\n"
-                                "Expires: 0\r\n"
-                                "Cache-Control: no-cache\r\n"
-                                "Cache-Control: private\r\n"
-                                "Pragma: no-cache\r\n"
-                                "Content-type: text/html\r\n\r\n"
-                                "<html>\n"
-                                "<head>\n"
-                                "<title>Hello Chrome</title>\n"
-                                "</head>"
-                                "<body>\n"
-                                "Hello, chrome web browser!\n"
-                                "</body>\n"
-                                "</html>\n";
-
-
-void sendHello(int fd, const char *msg)
-{
-    char reply[1024];
-    int len = strlen(msg);
-    sprintf(reply, msg, len);
-    reply[len] = '\0';
-
-    dmd_log(LOG_DEBUG, "reply to send:\n%s\n", reply);
-    int sendlen = write(fd, reply, len);
-    if (sendlen != len) {
-        dmd_log(LOG_ERR, "send length not match: expected send length:%d, "
-                "actual send length:%d\n", len, (int)sendlen);
-    } else {
-        dmd_log(LOG_INFO, "send succeed client\n\n");
-    }
-}
-
 static void send_open_error_response(int client_fd)
 {
     // TODO, may reasons file open failure, parse them.
@@ -191,32 +117,15 @@ static void base64_encode(const char *s, char *store, int length)
     *p = '\0';
 }
 
-static int handle_auth(int client_fd, const char *buffer, int buffer_len)
+static int check_auth(int client_fd, const char *client_auth)
 {
-    // TODO: userpass is from config file.
     const char *userpass = global.webserver_userpass;
     char auth[1024];
-    char *authentication = NULL;
     size_t auth_size = strlen(userpass);
     base64_encode(userpass, auth, auth_size);
 
-    if ((authentication = strstr(buffer,"Basic")) != NULL) {
-        char *end_auth = NULL;
-        authentication = authentication + 6;
-
-        if ((end_auth  = strstr(authentication,"\r\n")) != NULL) {
-            authentication[end_auth - authentication] = '\0';
-        } else {
-            send_authentication(client_fd);
-            return -1;
-        }
-
-        if (strcmp(auth, authentication) != 0) {
-            send_authentication(client_fd);
-            return -1;
-        } else { // authentication ok!
-            return 0;
-        }
+    if (strcmp(auth, client_auth) == 0) { // ok;
+        return 0;
     } else {
         send_authentication(client_fd);
         return -1;
@@ -225,29 +134,41 @@ static int handle_auth(int client_fd, const char *buffer, int buffer_len)
     return 0;
 }
 
-int response_url(int client_fd, const char *url)
+int response_url(int client_fd, const char *url, const char *auth)
 {
 #define BUFFSIZE 1024
 
     int fd = -1;
+    int ret = -1;
     char *webserver_root = global.webserver_root;
     char response_file[PATH_MAX];
     char buffer[BUFFSIZE];
     bzero(buffer, BUFFSIZE);
+    int auth_checked = -1;
 
-    if (strcmp(url, "/") == 0
-            || strcmp(url, "/index.html") == 0) { // redirect to index.html;
+    if (auth != NULL) {
+        ret = check_auth(client_fd, auth);
+        if (ret == -1) {
+            return 0;
+        } else {
+            auth_checked = 1;
+        }
+    }
+
+    if (strcmp(url, "/") == 0 /* redirect to index.html */
+            || strcmp(url, "/index.html") == 0) {
+        // no need to do the authentication;
         sprintf(response_file, "%s/index.html", webserver_root);
-
-    } else if (strcmp(url, "/favicon.ico") == 0) { // chrome browser specific
+    } else if (strcmp(url, "/favicon.ico") == 0) {
+        // no need to do the authentication;
         sprintf(response_file, "%s/favicon.ico", webserver_root);
-
-    } else if (strcmp(url, "/login.html") == 0) {
-        sprintf(response_file, "%s/login.html", webserver_root);
-
-    } else { // 404 not fond;
-        send_not_found_response(client_fd);
-        return 0;
+    } else { // need to do the authentication;
+        if (auth_checked == 1) {
+            sprintf(response_file, "%s%s", webserver_root, url);
+        } else {
+            send_authentication(client_fd);
+            return 0;
+        }
     }
 
     // TODO: what if response_file is not a regular file?
@@ -318,13 +239,33 @@ int parse_http(int client_fd, const char *client_request, int client_len)
         return 0;
     }
 
+    // get authentication info, if any;
+    char *auth_start = NULL;
+    char *auth_end = NULL;
+    char *auth = NULL;
+    int auth_len = 0;
+    if ((auth_start = strstr(client_request, "Basic")) != NULL) {
+        auth_start = auth_start + 6;
+        if ((auth_end  = strstr(auth_start, "\r\n")) != NULL) {
+            auth_len = auth_end - auth_start;
+            auth = (char *)malloc(sizeof(char) * (auth_len + 1));
+            strncpy(auth, auth_start, auth_len);
+            auth[auth_len] = '\0';
+        }
+    }
+
     dmd_log(LOG_INFO, "method: %s, url:%s, protocol:%s\n",
             method, url, protocol);
+    
+    if (auth == NULL) {
+        dmd_log(LOG_DEBUG, "client authentication is NULL\n");
+    } else {
+        dmd_log(LOG_DEBUG, "client authentication is not NULL\n");
+    }
+    ret = response_url(client_fd, url, auth);
 
-
-    ret = handle_auth(client_fd, client_request, client_len);
-    if (ret == 0) { // authentication ok, do response
-        ret = response_url(client_fd, url);
+    if (auth != NULL) {
+        free(auth);
     }
 
     return ret;
@@ -358,15 +299,6 @@ int handle_request(int client_fd)
         dmd_log(LOG_INFO, "read from client:\n%s\n", buffer);
 
         parse_http(client_fd, buffer, readlen);
-
-        // if (request_count % 3 == 0) {
-        //     sendHello(client_fd, hellowHTML);
-        // } else if (request_count % 3 == 1) {
-        //     sendHello(client_fd, hellowWorld);
-        // } else {
-        //     sendHello(client_fd, hellowChrome);
-        // }
-        // request_count++;
 
         close(client_fd); //remember to close client fd!
     }

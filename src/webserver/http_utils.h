@@ -44,15 +44,7 @@
 
 #include <stdint.h>
 
-extern uint64_t request_count;
-
-extern const char *hellowHTML;
-extern const char *hellowWorld;
-extern const char *hellowChrome;
-
-extern void sendHello(int fd, const char *msg);
-
-extern int response_url(int client_fd, const char *url);
+extern int response_url(int client_fd, const char *url, const char *auth);
 
 extern int parse_http(int client_fd, const char *client_request,
         int client_len);
