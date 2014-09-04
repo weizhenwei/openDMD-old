@@ -73,6 +73,9 @@ extern int store_motion_to_database(const struct stats *stats);
 
 extern int dump_database_table(sqlite3 *db, const char *table_name);
 
+extern int dump_database_table_to_fd(sqlite3 *db,
+        const char *table_name, int fd);
+
 extern int clean_database_table(sqlite3 *db, const char *table_name);
 
 extern int close_db(sqlite3 *db);

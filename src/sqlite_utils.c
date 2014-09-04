@@ -49,6 +49,7 @@
 
 #include "global_context.h"
 #include "log.h"
+#include "sqlite_utils.h"
 #include "path.h"
 #include "statistics.h"
 
@@ -192,6 +193,52 @@ int dump_database_table(sqlite3 *db, const char *table_name)
 
     const char *prefix = "motion detected:";
     int rc = exec_SQL(db, dump_table_sql, dump_callback, (void *)prefix);
+    if (rc != SQLITE_OK) {
+        return -1;
+    } else {
+        return 0;
+    }
+
+    return 0;
+}
+
+static void send_buffer(int fd, const char *buffer)
+{
+    int buffer_len = strlen(buffer);
+    int sendlen = send(fd, buffer, buffer_len, 0);
+    assert(sendlen == buffer_len);
+    dmd_log(LOG_DEBUG, "send buffer to client:\n%s\n", buffer);
+}
+
+static int dump_to_fd_callback(void *prefix, int argc,
+        char **argv, char **azColName)
+{
+   int i;
+   int fd = *(int *)prefix;
+   char item[1024];
+   const char *p_start = "<br><p>\n";
+   const char *p_end = "</p>\n";
+
+   send_buffer(fd, p_start);
+   for (i = 0; i < argc; i++) {
+       sprintf(item, "<h3>%s:%s</h3>\n", azColName[i],
+               argv[i] ? argv[i] : "NULL");
+       assert(strlen(item) < 1024 - 1);
+       send_buffer(fd, item);
+   }
+   send_buffer(fd, p_end);
+
+   return 0;
+}
+
+int dump_database_table_to_fd(sqlite3 *db, const char *table_name, int fd)
+{
+    char dump_table_sql[1024];
+    sprintf(dump_table_sql, "SELECT * FROM %s ", table_name);
+
+    int prefix = fd;
+    int rc = exec_SQL(db, dump_table_sql, dump_to_fd_callback,
+            (void *)&prefix);
     if (rc != SQLITE_OK) {
         return -1;
     } else {

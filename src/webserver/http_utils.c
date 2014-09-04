@@ -135,24 +135,42 @@ static int check_auth(int client_fd, const char *client_auth)
     return 0;
 }
 
-static void send_statistics_body(int client_fd)
-{
-    const char *statistics =
+static const char *statistics_header = 
     "<body>\n"
     "<div id=\"page\">\n"
     "<div id=\"header\">\n"
     "<h1>openDMD Statistics Page</h1>\n"
     "</div>\n"
     "<div id=\"body\">\n"
-    "<h3>The Statistics Page is under construction</h3>\n"
+    "<h2>The Motion Detection Statistics:</h2>\n";
+
+static const char *statistics_footer =
     "</div>\n"
     "</div>\n"
     "</body>\n";
-    int statistics_len = strlen(statistics);
-    int sendlen = send(client_fd, statistics, statistics_len, 0);
-    assert(sendlen == statistics_len);
-    dmd_log(LOG_DEBUG, "send statistics body to client:\n%s\n",
-            statistics);
+
+static inline void send_statistics_body_header(int client_fd)
+{
+    int header_len = strlen(statistics_header);
+    int sendlen = send(client_fd, statistics_header, header_len, 0);
+    assert(sendlen == header_len);
+    dmd_log(LOG_DEBUG, "send statistics_header to client:\n%s\n",
+            statistics_header);
+}
+
+static inline void send_statistics_body_item(int client_fd)
+{
+    int ret = dump_database_table_to_fd(opendmd_db, DEFAULT_TABLE, client_fd);
+    assert(ret == 0);
+}
+
+static inline void send_statistics_body_footer(int client_fd)
+{
+    int footer_len = strlen(statistics_footer);
+    int sendlen = send(client_fd, statistics_footer, footer_len, 0);
+    assert(sendlen == footer_len);
+    dmd_log(LOG_DEBUG, "send statistics_footer to client:\n%s\n",
+            statistics_footer);
 }
 
 static void send_statistics_response(int client_fd)
@@ -160,7 +178,9 @@ static void send_statistics_response(int client_fd)
     send_ok_response_header(client_fd);
     send_response_header(client_fd, "openDMD Motion Statistics");
     send_css(client_fd);
-    send_statistics_body(client_fd);
+    send_statistics_body_header(client_fd);
+    send_statistics_body_item(client_fd);
+    send_statistics_body_footer(client_fd);
     send_response_footer(client_fd);
 }
 
