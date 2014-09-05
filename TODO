@@ -1,3 +1,12 @@
+2014.09.06:
+    Urgent: continue working on libx264!
+    Urgent: Avoid unnecessary memory copy when converting YUYV422 
+            to RGB888 or YUV420.
+    Urgent: add reload config file to project!
+    Urgent: make configurable dir more convenient;
+            there is a base dir, and then picture dir, video dir,
+            database dir and web dir are all sub dirs of base dir;
+    
 2014.09.03:
     Urgent: continue working on libx264!
     Urgent: Avoid unnecessary memory copy when converting YUYV422 
