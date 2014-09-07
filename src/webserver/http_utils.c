@@ -141,6 +141,10 @@ static const char *statistics_header =
     "<div id=\"header\">\n"
     "<h1>openDMD Statistics Page</h1>\n"
     "</div>\n"
+    "<div id=\"login_logout\">\n"
+         "<h3><a href=/main.html>Back to Main</a></h3>\n"
+         "<h3><a href=/index.html>Logout</a></h3>\n"
+    "</div>\n"
     "<div id=\"body\">\n"
     "<h2>The Motion Detection Statistics:</h2>\n";
 
@@ -189,8 +193,16 @@ static void send_settings_body(int client_fd)
     const char *settings =
     "<body>\n"
     "<div id=\"page\">\n"
+    "<div id=\"login_logout\">\n"
+         "<h3><a href=/main.html>Back to Main</a></h3>\n"
+         "<h3><a href=/index.html>Logout</a></h3>\n"
+    "</div>\n"
     "<div id=\"header\">\n"
     "<h1>openDMD Statistics Page</h1>\n"
+    "</div>\n"
+    "<div id=\"login_logout\">\n"
+         "<h3><a href=/main.html>Back to Main</a></h3>\n"
+         "<h3><a href=/index.html>Logout</a></h3>\n"
     "</div>\n"
     "<div id=\"body\">\n"
     "<h3>The Settings Page is under construction</h3>\n"
