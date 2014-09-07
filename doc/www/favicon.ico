@@ -1,1 +1,7 @@
-This is a stupid chrome browser related file!
+/*
+ * when login at chrome brower, a /favicon.ico request is required
+ * in a frequent period, so we'd better place an empty favicon.ico
+ * file at web root directory.
+ */
+ 
+This is a chrome browser related file, which means nothing for now!
