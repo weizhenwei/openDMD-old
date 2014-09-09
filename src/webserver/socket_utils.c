@@ -39,7 +39,7 @@
  * *****************************************************************************
  */
 
-#include "socket_utils.h"
+#include "src/webserver/socket_utils.h"
 
 #include <arpa/inet.h>
 #include <assert.h>
@@ -55,16 +55,15 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "global_context.h"
-#include "http_utils.h"
-#include "log.h"
+#include "src/global_context.h"
+#include "src/log.h"
+#include "src/webserver/http_utils.h"
 
 
 struct sockaddr *webserver_serverAddr = NULL;
 struct sockaddr *webserver_clientAddr = NULL;
 
-int newSocket(void)
-{
+int newSocket() {
     int reuse = 1;
     int sendbuffer = SENDBUF;
     int recvbuffer = RECVBUF;
@@ -88,13 +87,11 @@ int newSocket(void)
     return sockfd;
 }
 
-void closeSocket(int sockfd)
-{
+void closeSocket(int sockfd) {
     close(sockfd);
 }
 
-struct sockaddr *newAddress()
-{
+struct sockaddr *newAddress() {
     struct sockaddr_in *addr =
         (struct sockaddr_in *)malloc(sizeof(struct sockaddr_in));
     if (addr == NULL) {
@@ -103,28 +100,26 @@ struct sockaddr *newAddress()
     }
 
     bzero(addr, sizeof(struct sockaddr_in));
-    //in_addr_t bind_addr = inet_addr(BIND_ADDR);
-    //network byte order
+    // in_addr_t bind_addr = inet_addr(BIND_ADDR);
+    // network byte order
     addr->sin_family = AF_INET;
     addr->sin_port = htons(global.webserver_port);
     addr->sin_addr.s_addr = htonl(INADDR_ANY);
     // addr->sin_addr.s_addr = htonl(INADDR_LOOPBACK);
     // addr->sin_addr.s_addr = htonl(global.webserver_ip);
-    // TODO: why this code doesn't work ?
+    // TODO(weizhenwei): why this code doesn't work ?
     // inet_pton(AF_INET, global.webserver_ip, &addr->sin_addr);
 
     return (struct sockaddr *) addr;
 }
 
-void releaseAddress(struct sockaddr *addr)
-{
+void releaseAddress(struct sockaddr *addr) {
     if (addr) {
         free(addr);
     }
 }
 
-int bindAddress(int sockfd, struct sockaddr *addr)
-{
+int bindAddress(int sockfd, struct sockaddr *addr) {
     int ret = bind(sockfd, addr, sizeof(struct sockaddr));
     if (ret == -1) {
         dmd_log(LOG_ERR, "bind socket addr error:%s\n", strerror(errno));
@@ -134,8 +129,7 @@ int bindAddress(int sockfd, struct sockaddr *addr)
     return 0;
 }
 
-int listenAddress(int sockfd)
-{
+int listenAddress(int sockfd) {
     int ret = listen(sockfd, LISTEN_BACKLOG);
     if (ret == -1) {
         dmd_log(LOG_ERR, "listen socket error:%s\n", strerror(errno));
@@ -145,8 +139,7 @@ int listenAddress(int sockfd)
     return 0;
 }
 
-int acceptConnection(int sockfd, struct sockaddr *clientAddress)
-{
+int acceptConnection(int sockfd, struct sockaddr *clientAddress) {
     int addrlen = sizeof(*clientAddress);
     int clientfd = accept(sockfd, clientAddress,
             (socklen_t * restrict)&addrlen);
@@ -158,8 +151,7 @@ int acceptConnection(int sockfd, struct sockaddr *clientAddress)
     return clientfd;
 }
 
-int newEpollSocket(void)
-{
+int newEpollSocket() {
     int epollfd = epoll_create(5);
 
     if (epollfd == -1) {
@@ -170,15 +162,14 @@ int newEpollSocket(void)
     return epollfd;
 }
 
-int addSockfd(int epollfd, int fd)
-{
+int addSockfd(int epollfd, int fd) {
     struct epoll_event event;
-    // WARNING: if we don't empty struct event, 
+    // WARNING: if we don't empty struct event,
     //          valgrind will report an error of uninitialised byte.
-    bzero(&event, sizeof(event)); 
+    bzero(&event, sizeof(event));
 
     event.data.fd = fd;
-    event.events = EPOLLIN | EPOLLET; //Read and Edge Trigger
+    event.events = EPOLLIN | EPOLLET;  // Read and Edge Trigger
 
     epoll_ctl(epollfd, EPOLL_CTL_ADD, fd, &event);
 
@@ -186,14 +177,12 @@ int addSockfd(int epollfd, int fd)
 }
 
 void handleEvent(int epollfd, int sockfd, struct epoll_event *events,
-        int nevents)
-{
+        int nevents) {
     int i = 0;
     for (i = 0; i < nevents; i++) {
         int fd = events[i].data.fd;
 
-        if(fd == sockfd) { //new client arrival
-
+        if (fd == sockfd) {  // new client arrival
             dmd_log(LOG_DEBUG, "in function %s, new client arrival\n",
                     __func__);
 
@@ -210,14 +199,13 @@ void handleEvent(int epollfd, int sockfd, struct epoll_event *events,
                     (struct sockaddr *)clientAddr);
             addSockfd(epollfd, clientfd);
             free(clientAddr);
-        } else if (events[i].events & EPOLLIN) { // read events happened
+        } else if (events[i].events & EPOLLIN) {  // read events happened;
             dmd_log(LOG_DEBUG, "EPOLLIN happened\n");
 
             handle_request(fd);
         } else {
             dmd_log(LOG_ERR, "something unknown happend!\n");
         }
-    } // for
-
+    }  // for
 }
 

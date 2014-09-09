@@ -39,8 +39,8 @@
  * *****************************************************************************
  */
 
-#ifndef SOCKET_UTILS_H
-#define SOCKET_UTILS_H
+#ifndef SRC_WEBSERVER_SOCKET_UTILS_H_
+#define SRC_WEBSERVER_SOCKET_UTILS_H_
 
 #include <stdint.h>
 
@@ -75,4 +75,4 @@ extern int addSockfd(int epollfd, int fd);
 extern void handleEvent(int epollfd, int sockfd, struct epoll_event *events,
         int nevents);
 
-#endif
+#endif  // SRC_WEBSERVER_SOCKET_UTILS_H_
