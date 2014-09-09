@@ -39,8 +39,8 @@
  * *****************************************************************************
  */
 
-#ifndef HTTP_UTILS_H
-#define HTTP_UTILS_H
+#ifndef SRC_WEBSERVER_HTTP_UTILS_H_
+#define SRC_WEBSERVER_HTTP_UTILS_H_
 
 #include <stdint.h>
 
@@ -51,4 +51,4 @@ extern int parse_http(int client_fd, const char *client_request,
 
 extern int handle_request(int client_fd);
 
-#endif
+#endif  // SRC_WEBSERVER_HTTP_UTILS_H_

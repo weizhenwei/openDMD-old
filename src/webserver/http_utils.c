@@ -39,7 +39,7 @@
  * *****************************************************************************
  */
 
-#include "http_utils.h"
+#include "src/webserver/http_utils.h"
 
 #include <assert.h>
 #include <errno.h>
@@ -53,14 +53,13 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "global_context.h"
-#include "http_response-inl.h"
-#include "sqlite_utils.h"
-#include "log.h"
+#include "src/global_context.h"
+#include "src/sqlite_utils.h"
+#include "src/log.h"
+#include "src/webserver/http_response-inl.h"
 
-static void send_open_error_response(int client_fd)
-{
-    // TODO, may reasons file open failure, parse them.
+static void send_open_error_response(int client_fd) {
+    // TODO(weizhenwei): may reasons file open failure, parse them.
     switch (errno) {
         case EACCES:
             send_forbidden_response(client_fd);
@@ -71,7 +70,7 @@ static void send_open_error_response(int client_fd)
         default:
             send_not_found_response(client_fd);
             break;
-    } // switch
+    }  // switch
     dmd_log(LOG_INFO, "send succeed client\n\n");
 }
 
@@ -80,10 +79,9 @@ static void send_open_error_response(int client_fd)
 
 // Encode the string S of length LENGTH to base64 format and place it
 // to STORE.  STORE will be 0-terminated, and must point to a writable
-// buffer of at least 1+BASE64_LENGTH(length) bytes.  
+// buffer of at least 1+BASE64_LENGTH(length) bytes.
 // this function originate from motion-3.2.12 softare, netcam_wget.c
-static void base64_encode(const char *s, char *store, int length)
-{
+static void base64_encode(const char *s, char *store, int length) {
     /* Conversion table.  */
     static const char tbl[64] = {
         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
@@ -95,7 +93,7 @@ static void base64_encode(const char *s, char *store, int length)
         'w', 'x', 'y', 'z', '0', '1', '2', '3',
         '4', '5', '6', '7', '8', '9', '+', '/'
     };
-    
+
     int i;
     unsigned char *p = (unsigned char *)store;
 
@@ -107,7 +105,7 @@ static void base64_encode(const char *s, char *store, int length)
         *p++ = tbl[s[2] & 0x3f];
         s += 3;
     }
-    
+
     /* Pad the result if necessary...  */
     if (i == length + 1)
         *(p - 1) = '=';
@@ -118,14 +116,13 @@ static void base64_encode(const char *s, char *store, int length)
     *p = '\0';
 }
 
-static int check_auth(int client_fd, const char *client_auth)
-{
+static int check_auth(int client_fd, const char *client_auth) {
     const char *userpass = global.webserver_userpass;
     char auth[1024];
     size_t auth_size = strlen(userpass);
     base64_encode(userpass, auth, auth_size);
 
-    if (strcmp(auth, client_auth) == 0) { // ok;
+    if (strcmp(auth, client_auth) == 0) {  // ok;
         return 0;
     } else {
         send_authentication(client_fd);
@@ -135,7 +132,7 @@ static int check_auth(int client_fd, const char *client_auth)
     return 0;
 }
 
-static const char *statistics_header = 
+static const char *statistics_header =
     "<body>\n"
     "<div id=\"page\">\n"
     "<div id=\"header\">\n"
@@ -153,8 +150,7 @@ static const char *statistics_footer =
     "</div>\n"
     "</body>\n";
 
-static inline void send_statistics_body_header(int client_fd)
-{
+static inline void send_statistics_body_header(int client_fd) {
     int header_len = strlen(statistics_header);
     int sendlen = send(client_fd, statistics_header, header_len, 0);
     assert(sendlen == header_len);
@@ -162,14 +158,12 @@ static inline void send_statistics_body_header(int client_fd)
             statistics_header);
 }
 
-static inline void send_statistics_body_item(int client_fd)
-{
+static inline void send_statistics_body_item(int client_fd) {
     int ret = dump_database_table_to_fd(opendmd_db, DEFAULT_TABLE, client_fd);
     assert(ret == 0);
 }
 
-static inline void send_statistics_body_footer(int client_fd)
-{
+static inline void send_statistics_body_footer(int client_fd) {
     int footer_len = strlen(statistics_footer);
     int sendlen = send(client_fd, statistics_footer, footer_len, 0);
     assert(sendlen == footer_len);
@@ -177,8 +171,7 @@ static inline void send_statistics_body_footer(int client_fd)
             statistics_footer);
 }
 
-static void send_statistics_response(int client_fd)
-{
+static void send_statistics_response(int client_fd) {
     send_ok_response_header(client_fd);
     send_response_header(client_fd, "openDMD Motion Statistics");
     send_css(client_fd);
@@ -188,8 +181,7 @@ static void send_statistics_response(int client_fd)
     send_response_footer(client_fd);
 }
 
-static void send_settings_body(int client_fd)
-{
+static void send_settings_body(int client_fd) {
     const char *settings =
     "<body>\n"
     "<div id=\"page\">\n"
@@ -216,8 +208,7 @@ static void send_settings_body(int client_fd)
             settings);
 }
 
-static void send_settings_response(int client_fd)
-{
+static void send_settings_response(int client_fd) {
     send_ok_response_header(client_fd);
     send_response_header(client_fd, "openDMD Settings");
     send_css(client_fd);
@@ -226,8 +217,7 @@ static void send_settings_response(int client_fd)
 }
 
 
-int response_url(int client_fd, const char *url, const char *auth)
-{
+int response_url(int client_fd, const char *url, const char *auth) {
 #define BUFFSIZE 1024
 
     int fd = -1;
@@ -254,7 +244,7 @@ int response_url(int client_fd, const char *url, const char *auth)
     } else if (strcmp(url, "/favicon.ico") == 0) {
         // no need to do the authentication;
         sprintf(response_file, "%s/favicon.ico", webserver_root);
-    } else { // need to do the authentication;
+    } else {  // need to do the authentication;
         if (auth_checked == 1) {
             sprintf(response_file, "%s%s", webserver_root, url);
         } else {
@@ -271,17 +261,17 @@ int response_url(int client_fd, const char *url, const char *auth)
         }
     }
 
-    // TODO: what if response_file is not a regular file?
+    // TODO(weizhenwei): what if response_file is not a regular file?
     //       using fstat to check it later!
     fd = open(response_file, O_RDONLY);
-    if (fd == -1) { // response file not found
+    if (fd == -1) {  // response file not found;
         send_open_error_response(client_fd);
         return 0;
     }
 
     // first send http ok header
     send_ok_response_header(client_fd);
-    
+
     // then send http body;
     int readlen = read(fd, buffer, BUFFSIZE - 1);
     if (readlen > 0) {
@@ -307,8 +297,7 @@ int response_url(int client_fd, const char *url, const char *auth)
     return 0;
 }
 
-int parse_http(int client_fd, const char *client_request, int client_len)
-{
+int parse_http(int client_fd, const char *client_request, int client_len) {
     int ret = 0;
     char method[10], url[512], protocol[10];
     bzero(method, 10);
@@ -327,13 +316,13 @@ int parse_http(int client_fd, const char *client_request, int client_len)
     // Check Protocol
     if (strcmp(protocol, "HTTP/1.0") != 0
             && strcmp(protocol, "HTTP/1.1") != 0) {
-        // TODO: Unsupported HTTP protocol.
+        // TODO(weizhenwei): Unsupported HTTP protocol.
         send_bad_request_response(client_fd);
         dmd_log(LOG_ERR, "Bad HTTP Protocol:%s\n", protocol);
         return 0;
     }
 
-    if (strcmp (method, "GET") != 0) {
+    if (strcmp(method, "GET") != 0) {
         send_method_not_implemented_response(client_fd);
         dmd_log(LOG_INFO, "send succeed client\n\n");
         return 0;
@@ -356,7 +345,7 @@ int parse_http(int client_fd, const char *client_request, int client_len)
 
     dmd_log(LOG_INFO, "method: %s, url:%s, protocol:%s\n",
             method, url, protocol);
-    
+
     if (auth == NULL) {
         dmd_log(LOG_DEBUG, "client authentication is NULL\n");
     } else {
@@ -371,8 +360,7 @@ int parse_http(int client_fd, const char *client_request, int client_len)
     return ret;
 }
 
-int handle_request(int client_fd)
-{
+int handle_request(int client_fd) {
 #define BUFFSIZE 1024
 
     char buffer[BUFFSIZE];
@@ -391,8 +379,8 @@ int handle_request(int client_fd)
         return 0;
     } else {
         if (readlen == BUFFSIZE) {
-            // TODO: there maybe more but we didn't read it,
-            //       deal this situation later!
+            // TODO(weizhenwei): there maybe more but we didn't read it,
+            // deal this situation later!
             assert(0);
         }
         buffer[readlen] = '\0';
@@ -400,7 +388,7 @@ int handle_request(int client_fd)
 
         parse_http(client_fd, buffer, readlen);
 
-        close(client_fd); //remember to close client fd!
+        close(client_fd);  // remember to close client fd!
     }
 
 #undef BUFFSIZE
