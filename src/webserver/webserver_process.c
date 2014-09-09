@@ -39,7 +39,7 @@
  * *****************************************************************************
  */
 
-#include "webserver_process.h"
+#include "src/webserver/webserver_process.h"
 
 #include <arpa/inet.h>
 #include <errno.h>
@@ -54,33 +54,32 @@
 #include <strings.h>
 #include <unistd.h>
 
-#include "global_context.h"
-#include "http_utils.h"
-#include "log.h"
-#include "socket_utils.h"
+#include "src/global_context.h"
+#include "src/webserver/http_utils.h"
+#include "src/log.h"
+#include "src/webserver/socket_utils.h"
 
 
-int webserver_fork()
-{
+int webserver_fork() {
     pid_t pid;
 
-	pid = fork();
+    pid = fork();
 
-	if (pid < 0) {
-		dmd_log(LOG_ERR, "webserver process: fork error(%s)",
+    if (pid < 0) {
+        dmd_log(LOG_ERR, "webserver process: fork error(%s)",
                 strerror(errno));
-		return -1;
-	} else if (pid > 0) { // parent, just return;
-		global.webserver_pid = pid;
-		dmd_log(LOG_INFO, "Starting webserver process, pid = %d\n", pid);
+        return -1;
+    } else if (pid > 0) {  // parent, just return;
+        global.webserver_pid = pid;
+        dmd_log(LOG_INFO, "Starting webserver process, pid = %d\n", pid);
 
         if (global.client.working_mode == WEBSERVER_ONLY) {
-            dmd_log(LOG_INFO, "working_mode = webserver, main process exit.\n");
+            dmd_log(LOG_INFO, "working_mode = webserver, main process exit\n");
             exit(EXIT_SUCCESS);
         }
 
-		return 0;
-	}
+        return 0;
+    }
 
     webserver_loop();
 
@@ -88,8 +87,7 @@ int webserver_fork()
     exit(EXIT_SUCCESS);
 }
 
-void webserver_loop()
-{
+void webserver_loop() {
     dmd_log(LOG_INFO, "in function %s, starting webserver main loop.\n",
             __func__);
 
@@ -111,10 +109,9 @@ void webserver_loop()
         } else {
             handleEvent(epollfd, serverfd, events, ret);
         }
-    } // while
+    }  // while
 
     closeSocket(serverfd);
     releaseAddress(webserver_serverAddr);
-
 }
 

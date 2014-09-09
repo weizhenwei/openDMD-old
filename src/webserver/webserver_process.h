@@ -39,11 +39,11 @@
  * *****************************************************************************
  */
 
-#ifndef WEBSERVER_PROCESS_H
-#define WEBSERVER_PROCESS_H
+#ifndef SRC_WEBSERVER_WEBSERVER_PROCESS_H_
+#define SRC_WEBSERVER_WEBSERVER_PROCESS_H_
 
 extern int webserver_fork();
 
 extern void webserver_loop();
 
-#endif
+#endif  // SRC_WEBSERVER_WEBSERVER_PROCESS_H_

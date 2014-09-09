@@ -39,15 +39,15 @@
  * *****************************************************************************
  */
 
-#ifndef HTTP_RESPONSE_INL_H
-#define HTTP_RESPONSE_INL_H
+#ifndef SRC_WEBSERVER_HTTP_RESPONSE_INL_H_
+#define SRC_WEBSERVER_HTTP_RESPONSE_INL_H_
 
 #include <assert.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 
-#include "log.h"
+#include "src/log.h"
 
 
 static const char *ok_response_header =
@@ -131,15 +131,19 @@ static const char *response_header =
     "<!DOCTYPE html>\n"
     "<html>\n"
     "<head>\n"
-    "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n"
+    "<meta http-equiv=\"Content-Type\" content=\"text/html; "
+    "charset=UTF-8\" />\n"
     "<title>%s</title>\n"
     "</head>\n";
 
 static const char *response_css =
     "<style type=\"text/css\" media=\"screen\">\n"
-    "body { background: #e7e7e7; font-family: Verdana, sans-serif; font-size: 11pt; }\n"
-    "#page { background: #ffffff; margin: 50px; border: 2px solid #c0c0c0; padding: 10px; }\n"
-    "#header { background: #4b6983; border: 2px solid #7590ae; text-align: center; padding: 10px; color: #ffffff; }\n"
+    "body { background: #e7e7e7; font-family: Verdana, sans-serif;"
+    "font-size: 11pt; }\n"
+    "#page { background: #ffffff; margin: 50px; border: 2px solid #c0c0c0;"
+    "padding: 10px; }\n"
+    "#header { background: #4b6983; border: 2px solid #7590ae;"
+    "text-align: center; padding: 10px; color: #ffffff; }\n"
     "#header h1 { color: #ffffff; }\n"
     "#body { padding: 10px; }\n"
     "span.tt { font-family: monospace; }\n"
@@ -150,11 +154,9 @@ static const char *response_css =
     "a:hover { text-decoration: none; color: #2F4F4F;}\n"
     "</style>\n";
 
-static const char *response_footer =
-    "</html>";
+static const char *response_footer = "</html>";
 
-static inline void send_not_found_response(int client_fd)
-{
+static inline void send_not_found_response(int client_fd) {
     int not_found_len = strlen(not_found_response);
     int sendlen = send(client_fd, not_found_response, not_found_len, 0);
     assert(sendlen == not_found_len);
@@ -162,8 +164,7 @@ static inline void send_not_found_response(int client_fd)
             not_found_response);
 }
 
-static inline void send_bad_request_response(int client_fd)
-{
+static inline void send_bad_request_response(int client_fd) {
     int bad_request_len = strlen(bad_request_response);
     int sendlen = send(client_fd, bad_request_response, bad_request_len, 0);
     assert(sendlen == bad_request_len);
@@ -171,8 +172,7 @@ static inline void send_bad_request_response(int client_fd)
             bad_request_response);
 }
 
-static inline void send_ok_response_header(int client_fd)
-{
+static inline void send_ok_response_header(int client_fd) {
     int ok_len = strlen(ok_response_header);
     int sendlen = send(client_fd, ok_response_header, ok_len, 0);
     assert(sendlen == ok_len);
@@ -180,8 +180,7 @@ static inline void send_ok_response_header(int client_fd)
             ok_response_header);
 }
 
-static inline void send_forbidden_response(int client_fd)
-{
+static inline void send_forbidden_response(int client_fd) {
     int forbidden_len = strlen(forbidden_response);
     int sendlen = send(client_fd, forbidden_response, forbidden_len, 0);
     assert(sendlen == forbidden_len);
@@ -189,8 +188,7 @@ static inline void send_forbidden_response(int client_fd)
             forbidden_response);
 }
 
-static inline void send_not_valid_response(int client_fd)
-{
+static inline void send_not_valid_response(int client_fd) {
     int not_valid_len = strlen(not_valid_response);
     int sendlen = send(client_fd, not_valid_response, not_valid_len, 0);
     assert(sendlen == not_valid_len);
@@ -198,8 +196,7 @@ static inline void send_not_valid_response(int client_fd)
             not_valid_response);
 }
 
-static inline void send_method_not_implemented_response(int client_fd)
-{
+static inline void send_method_not_implemented_response(int client_fd) {
     int not_implemented_len = strlen(method_not_implemented_response);
     int sendlen = send(client_fd, method_not_implemented_response,
             not_implemented_len, 0);
@@ -208,16 +205,14 @@ static inline void send_method_not_implemented_response(int client_fd)
             method_not_implemented_response);
 }
 
-static void send_authentication(int client_fd)
-{
+static void send_authentication(int client_fd) {
     int auth_response_len = strlen(auth_response);
     int sendlen = send(client_fd, auth_response, auth_response_len, 0);
     assert(sendlen == auth_response_len);
     dmd_log(LOG_DEBUG, "send auth_response to client:\n%s\n", auth_response);
 }
 
-static inline void send_response_header(int client_fd, const char *title)
-{
+static inline void send_response_header(int client_fd, const char *title) {
     char header[1024];
     sprintf(header, response_header, title);
     int header_len = strlen(header);
@@ -227,8 +222,7 @@ static inline void send_response_header(int client_fd, const char *title)
             header);
 }
 
-static inline void send_css(int client_fd)
-{
+static inline void send_css(int client_fd) {
     int css_len = strlen(response_css);
     int sendlen = send(client_fd, response_css, css_len, 0);
     assert(sendlen == css_len);
@@ -236,8 +230,7 @@ static inline void send_css(int client_fd)
             response_css);
 }
 
-static inline void send_response_footer(int client_fd)
-{
+static inline void send_response_footer(int client_fd) {
     int footer_len = strlen(response_footer);
     int sendlen = send(client_fd, response_footer, footer_len, 0);
     assert(sendlen == footer_len);
@@ -246,4 +239,4 @@ static inline void send_response_footer(int client_fd)
 }
 
 
-#endif
+#endif  // SRC_WEBSERVER_HTTP_RESPONSE_INL_H_
