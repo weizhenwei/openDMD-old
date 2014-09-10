@@ -39,8 +39,8 @@
  * *****************************************************************************
  */
 
-#ifndef RTP_SEND_H
-#define RTP_SEND_H
+#ifndef SRC_CLIENT_RTP_SEND_H_
+#define SRC_CLIENT_RTP_SEND_H_
 
 #include <ortp/ortp.h>
 
@@ -53,14 +53,14 @@
 // #define VIDEO_TIME_STAMP_INC  3600
 #define VIDEO_TIME_STAMP_INC  1800
 
-extern void rtp_send_init(); 
+extern void rtp_send_init();
 
-extern void rtp_send_release(RtpSession *rtpsession); 
+extern void rtp_send_release(RtpSession *rtpsession);
 
 extern RtpSession *rtp_send_createSession(
         const char *localIP, const int localPort,
         const char *remoteIP, const int remotePort);
 
 extern int rtp_send(RtpSession *rtpsession, unsigned char *buffer, int len);
- 
-#endif
+
+#endif  // SRC_CLIENT_RTP_SEND_H_

@@ -39,7 +39,7 @@
  * *****************************************************************************
  */
 
-#include "picture_thread.h"
+#include "src/client/picture_thread.h"
 
 #include <assert.h>
 #include <pthread.h>
@@ -48,24 +48,22 @@
 #include <string.h>
 #include <strings.h>
 
-#include "global_context.h"
-#include "image_convert.h"
-#include "log.h"
-#include "path.h"
-#include "statistics.h"
+#include "src/client/image_convert.h"
+#include "src/global_context.h"
+#include "src/log.h"
+#include "src/path.h"
+#include "src/statistics.h"
 
 // from libjpeg library
-#include "jerror.h"
-#include "jpeglib.h"
+#include "libjpeg/jerror.h"
+#include "libjpeg/jpeglib.h"
 
-void *picture_thread(void *arg)
-{
+void *picture_thread(void *arg) {
     int ret = -1;
     struct path_t *jpeg_filepath = NULL;
     enum main_notify_target notify = NOTIFY_NONE;
 
     for (;;) {
-
         pthread_mutex_lock(&global.client.thread_attr.picture_mutex);
 
         while (global.client.picture_target == NOTIFY_NONE) {
@@ -77,7 +75,6 @@ void *picture_thread(void *arg)
         global.client.picture_target = NOTIFY_NONE;
 
         if (notify == NOTIFY_PICTURE) {
-            
             int width = global.client.image_width;
             int height = global.client.image_height;
             int length = width * height * 2;
@@ -101,8 +98,8 @@ void *picture_thread(void *arg)
             assert(ret == 0);
 
             // increase statistics data;
-            // TODO: this may caused problem here!
-            //       counting number is unaccuracy!
+            // TODO(weizhenwei): this may caused problem here!
+            //                   counting number is unaccuracy!
             pthread_mutex_lock(&global_stats->mutex);
             if (global_stats->current_motion != NULL) {
                 increase_motion_pictures(global_stats->current_motion);
@@ -126,7 +123,7 @@ void *picture_thread(void *arg)
 
             break;
         }
-    } // for
+    }  // for
 
     pthread_mutex_lock(&total_thread_mutex);
     total_thread--;
@@ -136,8 +133,7 @@ void *picture_thread(void *arg)
 }
 
 int write_jpeg(char *filename, unsigned char *buf, int quality,
-    int width, int height, int gray)
-{
+    int width, int height, int gray) {
     struct jpeg_compress_struct cinfo;
     struct jpeg_error_mgr jerr;
 
@@ -167,7 +163,6 @@ int write_jpeg(char *filename, unsigned char *buf, int quality,
     jpeg_start_compress(&cinfo, TRUE);
 
     line_length = gray ? width : width * 3;
-
     line = buf;
     for (i = 0; i < height; i++) {
         jpeg_write_scanlines(&cinfo, &line, 1);

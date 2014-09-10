@@ -39,9 +39,8 @@
  * *****************************************************************************
  */
 
-#ifndef PICTURE_THREAD_H
-#define PICTURE_THREAD_H
-
+#ifndef SRC_CLIENT_PICTURE_THREAD_H_
+#define SRC_CLIENT_PICTURE_THREAD_H_
 
 extern int picture_flag;
 
@@ -50,4 +49,4 @@ extern void *picture_thread(void *arg);
 extern int write_jpeg(char *filename, unsigned char *buf, int quality,
         int width, int height, int gray);
 
-#endif
+#endif  // SRC_CLIENT_PICTURE_THREAD_H_

@@ -39,7 +39,7 @@
  * *****************************************************************************
  */
 
-#include "rtp_send.h"
+#include "src/client/rtp_send.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -47,55 +47,49 @@
 
 #include <ortp/ortp.h>
 
-#include "global_context.h"
-#include "log.h"
+#include "src/global_context.h"
+#include "src/log.h"
 
-void rtp_send_init()
-{
-	ortp_init();
-	ortp_scheduler_init();
+void rtp_send_init() {
+    ortp_init();
+    ortp_scheduler_init();
     ortp_set_log_level_mask(ORTP_DEBUG | ORTP_MESSAGE
             | ORTP_WARNING | ORTP_ERROR);
-
 }
 
-void rtp_send_release(RtpSession *rtpsession)
-{
+void rtp_send_release(RtpSession *rtpsession) {
     ortp_exit();
     rtp_session_destroy(rtpsession);
     ortp_global_stats_display();
 }
 
-
 RtpSession *rtp_send_createSession(
         const char *localIP, const int localPort,
-        const char *remoteIP, const int remotePort)
-{
-    RtpSession *rtpsession = rtp_session_new(RTP_SESSION_SENDONLY);	
+        const char *remoteIP, const int remotePort) {
+    RtpSession *rtpsession = rtp_session_new(RTP_SESSION_SENDONLY);
     assert(rtpsession != NULL);
 
-	rtp_session_set_scheduling_mode(rtpsession, 1);
+    rtp_session_set_scheduling_mode(rtpsession, 1);
     // WARNING: in multiple receiving condtion, block mode is must unset;
-	rtp_session_set_blocking_mode(rtpsession, 0);
-    rtp_session_set_connected_mode(rtpsession, 1); // 1 means TRUE;
-	rtp_session_set_local_addr(rtpsession, localIP, localPort, -1);
-	rtp_session_set_remote_addr(rtpsession, remoteIP, remotePort);
+    rtp_session_set_blocking_mode(rtpsession, 0);
+    rtp_session_set_connected_mode(rtpsession, 1);  // 1 means TRUE;
+    rtp_session_set_local_addr(rtpsession, localIP, localPort, -1);
+    rtp_session_set_remote_addr(rtpsession, remoteIP, remotePort);
 
-    rtp_session_set_symmetric_rtp(rtpsession, 1); // 1 means TRUE;
+    rtp_session_set_symmetric_rtp(rtpsession, 1);  // 1 means TRUE;
 
     // set payload_type to H264 (96);
-	rtp_session_set_payload_type(rtpsession, PAYLOAD_TYPE_H264);
+    rtp_session_set_payload_type(rtpsession, PAYLOAD_TYPE_H264);
 
-	char *ssrc = getenv("SSRC");
-	if (ssrc != NULL) {
-		rtp_session_set_ssrc(rtpsession, atoi(ssrc));
-	}
+    char *ssrc = getenv("SSRC");
+    if (ssrc != NULL) {
+        rtp_session_set_ssrc(rtpsession, atoi(ssrc));
+    }
 
     return rtpsession;
 }
-    
-int rtp_send(RtpSession *rtpsession, unsigned char *buffer, int len)
-{
+
+int rtp_send(RtpSession *rtpsession, unsigned char *buffer, int len) {
     int payloadlen = 0;
     int sendlen = 0;
     int remainlen = len;
