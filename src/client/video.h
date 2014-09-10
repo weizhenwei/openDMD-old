@@ -39,9 +39,8 @@
  * *****************************************************************************
  */
 
-#ifndef VIDEO_H
-#define VIDEO_H
-
+#ifndef SRC_CLIENT_VIDEO_H_
+#define SRC_CLIENT_VIDEO_H_
 
 // declare global variable
 extern struct v4l2_device_info *dmd_video;
@@ -60,4 +59,4 @@ extern int dmd_video_close(struct v4l2_device_info *v4l2_info);
 
 extern void dmd_video_release(struct v4l2_device_info *v4l2_info);
 
-#endif
+#endif  // SRC_CLIENT_VIDEO_H_

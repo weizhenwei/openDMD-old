@@ -39,7 +39,7 @@
  * *****************************************************************************
  */
 
-#include "video.h"
+#include "src/client/video.h"
 
 #include <assert.h>
 #include <string.h>
@@ -47,16 +47,14 @@
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 
-#include "global_context.h"
-#include "log.h"
-#include "v4l2_utils.h"
-
+#include "src/global_context.h"
+#include "src/log.h"
+#include "src/v4l2_utils.h"
 
 // define global variable dmd_video;
 struct v4l2_device_info *dmd_video = NULL;
 
-struct v4l2_device_info *dmd_video_create(const char *device_path)
-{
+struct v4l2_device_info *dmd_video_create(const char *device_path) {
     struct v4l2_device_info *device;
     device =
         (struct v4l2_device_info *)malloc(sizeof(struct v4l2_device_info));
@@ -79,8 +77,7 @@ struct v4l2_device_info *dmd_video_create(const char *device_path)
     return device;
 }
 
-int dmd_video_open(struct v4l2_device_info *v4l2_info)
-{
+int dmd_video_open(struct v4l2_device_info *v4l2_info) {
     int fd = -1;
     const char *devpath = v4l2_info->video_device_path;
     dmd_log(LOG_INFO, "video device:%s\n", devpath);
@@ -94,8 +91,7 @@ int dmd_video_open(struct v4l2_device_info *v4l2_info)
     return 1;
 }
 
-int dmd_video_init(struct v4l2_device_info *v4l2_info)
-{
+int dmd_video_init(struct v4l2_device_info *v4l2_info) {
     int ret;
     // query video device's capability
     if ((ret = video_capability(v4l2_info)) == -1) {
@@ -125,7 +121,7 @@ int dmd_video_init(struct v4l2_device_info *v4l2_info)
     if ((ret = video_set_fps(v4l2_info)) == -1) {
         return ret;
     }
-    
+
     // memory map for the request buffer
     if ((ret = video_mmap(v4l2_info)) == -1) {
         return ret;
@@ -154,9 +150,7 @@ int dmd_video_init(struct v4l2_device_info *v4l2_info)
  *
  * open the video stream
  */
-
-int dmd_video_streamon(struct v4l2_device_info *v4l2_info)
-{
+int dmd_video_streamon(struct v4l2_device_info *v4l2_info) {
     int ret = 0, i = 0;
     int n_buffer = v4l2_info->reqbuffer_count;
     int fd = v4l2_info->video_device_fd;
@@ -169,14 +163,14 @@ int dmd_video_streamon(struct v4l2_device_info *v4l2_info)
         buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
         buf.memory = V4L2_MEMORY_MMAP;
         buf.index = i;
-        
+
         // requestbuffer to queue
         if ((ret = ioctl(fd, VIDIOC_QBUF, &buf)) == -1) {
             dmd_log(LOG_ERR, "ioctl VIDIOC_QBUF error:%s\n", strerror(errno));
             return ret;
         }
     }
-    
+
     // start stream on, start capture data
     enum v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     if ((ret = ioctl(fd, VIDIOC_STREAMON, &type)) == -1) {
@@ -184,15 +178,12 @@ int dmd_video_streamon(struct v4l2_device_info *v4l2_info)
         return ret;
     }
 
-
     dmd_log(LOG_INFO, "Video stream is now on!\n");
 
     return ret;
 }
 
-int dmd_video_streamoff(struct v4l2_device_info *v4l2_info)
-{
-
+int dmd_video_streamoff(struct v4l2_device_info *v4l2_info) {
     int ret = 0;
     unsigned int i = 0;
     int n_buffer = v4l2_info->reqbuffer_count;
@@ -219,8 +210,7 @@ int dmd_video_streamoff(struct v4l2_device_info *v4l2_info)
     return ret;
 }
 
-int dmd_video_close(struct v4l2_device_info *v4l2_info)
-{
+int dmd_video_close(struct v4l2_device_info *v4l2_info) {
     if (close(v4l2_info->video_device_fd) == -1) {
         dmd_log(LOG_ERR, "close video device error:%s\n", strerror(errno));
         return -1;
@@ -229,8 +219,7 @@ int dmd_video_close(struct v4l2_device_info *v4l2_info)
     return 1;
 }
 
-void dmd_video_release(struct v4l2_device_info *v4l2_info)
-{
+void dmd_video_release(struct v4l2_device_info *v4l2_info) {
     if (v4l2_info != NULL) {
         if (v4l2_info->buffers) {
             free(v4l2_info->buffers);

@@ -39,9 +39,8 @@
  * *****************************************************************************
  */
 
-#ifndef VIDEO_THREAD_H
-#define VIDEO_THREAD_H
-
+#ifndef SRC_CLIENT_VIDEO_THREAD_H_
+#define SRC_CLIENT_VIDEO_THREAD_H_
 
 // switch on-off for controlling video capturing status;
 enum video_capturing_type {
@@ -55,4 +54,4 @@ extern enum video_capturing_type video_capturing_switch;
 
 extern void *video_thread(void *arg);
 
-#endif
+#endif  // SRC_CLIENT_VIDEO_THREAD_H_

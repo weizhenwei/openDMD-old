@@ -39,7 +39,7 @@
  * *****************************************************************************
  */
 
-#include "video_thread.h"
+#include "src/client/video_thread.h"
 
 #include <assert.h>
 #include <pthread.h>
@@ -48,26 +48,23 @@
 #include <string.h>
 #include <strings.h>
 
-#include "flv_muxer.h"
-#include "global_context.h"
-#include "image_convert.h"
-#include "libx264.h"
-#include "log.h"
-#include "path.h"
-#include "rtp_send.h"
-#include "statistics.h"
-
+#include "src/client/flv_muxer.h"
+#include "src/client/image_convert.h"
+#include "src/client/libx264.h"
+#include "src/client/rtp_send.h"
+#include "src/global_context.h"
+#include "src/log.h"
+#include "src/path.h"
+#include "src/statistics.h"
 
 enum video_capturing_type video_capturing_switch = VIDEO_CAPTURING_OFF;
 
-void *video_thread(void *arg)
-{
+void *video_thread(void *arg) {
     int ret = -1;
     struct path_t *flv_filepath = NULL;
     enum main_notify_target notify = NOTIFY_NONE;
 
     for (;;) {
-
         pthread_mutex_lock(&global.client.thread_attr.video_mutex);
 
         while (global.client.video_target == NOTIFY_NONE) {
@@ -78,7 +75,6 @@ void *video_thread(void *arg)
         global.client.video_target = NOTIFY_NONE;
 
         if (notify == NOTIFY_VIDEO) {
-
             if (video_capturing_switch == VIDEO_CAPTURING_OFF) {
                 // switch on video capturing state and refresh h264 filename;
                 video_capturing_switch = VIDEO_CAPTURING_ON;
@@ -92,17 +88,16 @@ void *video_thread(void *arg)
 
                 flv_filepath = client_get_filepath(FLV_FILE);
                 assert(flv_filepath != NULL);
-                
+
                 // set global_stats->current_motion->videopath;
-                // TODO: this may caused problem here!
-                //       counting number is unaccuracy!
+                // TODO(weizhenwei): this may caused problem here!
+                //                   counting number is unaccuracy!
                 pthread_mutex_lock(&global_stats->mutex);
                 if (global_stats->current_motion != NULL) {
                     set_motion_videopath(global_stats->current_motion,
                             flv_filepath->path);
                 }
                 pthread_mutex_unlock(&global_stats->mutex);
-
 
                 dmd_log(LOG_INFO, "in function %s, encapsulate flvheader\n",
                         __func__);
@@ -133,7 +128,7 @@ void *video_thread(void *arg)
             // if global_stats->current_motion is set to NULL already,
             // it's moved to global_stats->motion_list;
             // so increase_motion_video_frames at there!
-            // TODO: there may be problems here, check it later!
+            // TODO(weizhenwei): there may be problems here, check it later!
             pthread_mutex_lock(&global_stats->mutex);
             if (global_stats->current_motion == NULL) {
                 assert(global_stats->motion_list != NULL);
@@ -154,8 +149,7 @@ void *video_thread(void *arg)
             pthread_mutex_unlock(&global.client.thread_attr.video_mutex);
             break;
         }
-
-    } // for
+    }  // for
 
     if (flv_filepath != NULL) {
         free(flv_filepath->path);
@@ -170,3 +164,4 @@ void *video_thread(void *arg)
 
     pthread_exit(NULL);
 }
+
