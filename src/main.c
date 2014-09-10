@@ -55,36 +55,33 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "config.h"
-#include "global_context.h"
-#include "image_capture.h"
-#include "image_convert.h"
-#include "log.h"
-#include "parser.h"
-#include "path.h"
-#include "picture_thread.h"
-#include "rtp_send.h"
-#include "rtp_server.h"
-#include "signal_handler.h"
-#include "sqlite_utils.h"
-#include "statistics.h"
-#include "v4l2_utils.h"
-#include "video.h"
-#include "video_thread.h"
-#include "webserver_process.h"
-
+#include "src/client/image_capture.h"
+#include "src/client/image_convert.h"
+#include "src/client/picture_thread.h"
+#include "src/client/video.h"
+#include "src/client/video_thread.h"
+#include "src/client/rtp_send.h"
+#include "src/server/rtp_server.h"
+#include "src/webserver/webserver_process.h"
+#include "src/config.h"
+#include "src/global_context.h"
+#include "src/log.h"
+#include "src/parser.h"
+#include "src/path.h"
+#include "src/signal_handler.h"
+#include "src/sqlite_utils.h"
+#include "src/statistics.h"
+#include "src/v4l2_utils.h"
 
 // for cmd line control
 static unsigned int show_statistics = 0;
 static unsigned int clean_statistics = 0;
 
-static void clean(void)
-{
+static void clean(void) {
     dmd_closelog();
 }
 
-static void client_working_progress()
-{
+static void client_working_progress() {
     int ret = -1;
     const char *devpath = global.client.video_device;
 
@@ -113,8 +110,7 @@ static void client_working_progress()
 }
 
 // daemonize the main program;
-static void daemonize()
-{
+static void daemonize() {
     pid_t pid;
     int i, fd0, fd1, fd2;
     struct rlimit r1;
@@ -134,7 +130,7 @@ static void daemonize()
     if ((pid = fork()) == -1) {
         dmd_log(LOG_ERR, "fork error:%s\n", strerror(errno));
         exit(EXIT_FAILURE);
-    } else if (pid > 0) { // parent
+    } else if (pid > 0) {  // parent
         exit(EXIT_SUCCESS);
     }
 
@@ -159,7 +155,7 @@ static void daemonize()
     if ((pid = fork()) == -1) {
         dmd_log(LOG_ERR, "fork 2 error:%s\n", strerror(errno));
         exit(EXIT_FAILURE);
-    } else if (pid > 0) { // parent
+    } else if (pid > 0) {  // parent
         exit(EXIT_SUCCESS);
     }
 
@@ -190,18 +186,16 @@ static void daemonize()
 
     // write pid to file
     pid = getpid();
-    global.pid = pid; // refresh global's pid member;
+    global.pid = pid;  // refresh global's pid member;
     if ((fp = fopen(global.pid_file, "w")) == NULL) {
         dmd_log(LOG_ERR, "fopen pid file error:%s\n", strerror(errno));
         exit(EXIT_FAILURE);
     }
     fprintf(fp, "%d", pid);
     fclose(fp);
-
 }
 
-static void init(void)
-{
+static void init(void) {
     int ret = -1;
     // signal init;
     signal_init();
@@ -228,8 +222,7 @@ static void init(void)
     }
 }
 
-static void client_rtp_init()
-{
+static void client_rtp_init() {
     global.client.clientrtp.server_rtp_port =
         global.client.clientrtp.server_port_base +
         2 * global.client.clientrtp.local_sequence_number;
@@ -245,29 +238,26 @@ static void client_rtp_init()
             global.client.clientrtp.local_port,
             global.client.clientrtp.server_ip,
             global.client.clientrtp.server_rtp_port);
-
 }
 
-static void client_rtp_release()
-{
+static void client_rtp_release() {
     rtp_send_release(global.client.clientrtp.rtpsession);
 }
 
-static void client_create_thread()
-{
+static void client_create_thread() {
     int dummy = 0;
     int ret;
 
     if (global.client.working_mode == CAPTURE_ALL) {
         // create picture thread;
         ret = pthread_create(&global.client.thread_attr.picture_thread_id,
-                &global.client.thread_attr.global_attr, picture_thread, &dummy);
+                &global.client.thread_attr.global_attr,
+                picture_thread, &dummy);
         assert(ret == 0);
 
         pthread_mutex_lock(&total_thread_mutex);
         total_thread++;
         pthread_mutex_unlock(&total_thread_mutex);
-
 
         // and create video thread;
         ret = pthread_create(&global.client.thread_attr.video_thread_id,
@@ -277,7 +267,6 @@ static void client_create_thread()
         pthread_mutex_lock(&total_thread_mutex);
         total_thread++;
         pthread_mutex_unlock(&total_thread_mutex);
-
     } else if (global.client.working_mode == CAPTURE_PICTURE) {
         // only create picture thread;
         ret = pthread_create(&global.client.thread_attr.picture_thread_id,
@@ -287,7 +276,6 @@ static void client_create_thread()
         pthread_mutex_lock(&total_thread_mutex);
         total_thread++;
         pthread_mutex_unlock(&total_thread_mutex);
-
     } else if (global.client.working_mode == CAPTURE_VIDEO) {
         // only create video thread;
         ret = pthread_create(&global.client.thread_attr.video_thread_id,
@@ -302,23 +290,20 @@ static void client_create_thread()
         dmd_log(LOG_ERR, "impossible reach here!\n");
         assert(0);
     }
-
 }
 
-static void usage(const char *progname)
-{
+static void usage(const char *progname) {
     fprintf(stdout, "Usage:%s [OPTION...]\n", progname);
-    fprintf(stdout, "  -p, --pid-file=FILE,    Use specified pid file\n");  
-    fprintf(stdout, "  -f, --cfg-file=FILE,    Use specified config file\n");  
-    fprintf(stdout, "  -d, --daemonize,        Run opendmd in daemon mode\n");  
-    fprintf(stdout, "  -v, --version,          Display the version number\n");  
-    fprintf(stdout, "  -s, --show-statistics,  Show historical statistics\n");  
-    fprintf(stdout, "  -c, --clean-statistics, Clean historical statistics\n");  
-    fprintf(stdout, "  -h, --help,             Display this help message\n");  
+    fprintf(stdout, "  -p, --pid-file=FILE,    Use specified pid file\n");
+    fprintf(stdout, "  -f, --cfg-file=FILE,    Use specified config file\n");
+    fprintf(stdout, "  -d, --daemonize,        Run opendmd in daemon mode\n");
+    fprintf(stdout, "  -v, --version,          Display the version number\n");
+    fprintf(stdout, "  -s, --show-statistics,  Show historical statistics\n");
+    fprintf(stdout, "  -c, --clean-statistics, Clean historical statistics\n");
+    fprintf(stdout, "  -h, --help,             Display this help message\n");
 }
 
-static int parse_cmdline(int argc, char *argv[])
-{
+static int parse_cmdline(int argc, char *argv[]) {
     int c;
     struct option long_options[] = {
         {"pid-file",           required_argument,  0, 'p'},
@@ -374,8 +359,7 @@ static int parse_cmdline(int argc, char *argv[])
                 exit(EXIT_SUCCESS);
                 break;
         }
-
-    } // while
+    }  // while
 
     if (optind < argc) {
         fprintf(stderr, "Illegal argument(s): ");
@@ -389,8 +373,7 @@ static int parse_cmdline(int argc, char *argv[])
     return 0;
 }
 
-static void manage_cmdline()
-{
+static void manage_cmdline() {
     if (show_statistics == 1 && clean_statistics == 1) {
         fprintf(stderr, "ERROR: show statistics and clean statistics "
                 "can't be specified at same time.\n");
@@ -412,11 +395,9 @@ static void manage_cmdline()
 
         exit(EXIT_SUCCESS);
     }
-
 }
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     // set locale according current environment;
     setlocale(LC_ALL, "");
 
@@ -439,7 +420,6 @@ int main(int argc, char *argv[])
     // slave or singleton do the capturing work;
     if (global.cluster_mode == CLUSTER_CLIENT
             || global.cluster_mode == CLUSTER_SINGLETON) {
-
         client_init_repodir();
         if (global.cluster_mode == CLUSTER_CLIENT) {
             client_rtp_init();
@@ -447,7 +427,6 @@ int main(int argc, char *argv[])
 
         // create picture thread and/or video thread;
         client_create_thread();
-
         client_working_progress();
 
         if (global.cluster_mode == CLUSTER_CLIENT) {
@@ -460,9 +439,7 @@ int main(int argc, char *argv[])
         }
 
         rtp_server_running();
-
         rtp_server_clean();
-
     }
 
 end:
@@ -475,3 +452,4 @@ end:
 
     return 0;
 }
+
