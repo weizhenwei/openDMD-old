@@ -39,7 +39,7 @@
  * *****************************************************************************
  */
 
-#include "rtp_recv.h"
+#include "src/server/rtp_recv.h"
 
 #include <assert.h>
 #include <signal.h>
@@ -47,61 +47,56 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "global_context.h"
-#include "log.h"
+#include "src/global_context.h"
+#include "src/log.h"
 
-void rtp_recv_init()
-{
-	ortp_init();
-	ortp_scheduler_init();
-	ortp_set_log_level_mask(ORTP_DEBUG | ORTP_MESSAGE
+void rtp_recv_init() {
+    ortp_init();
+    ortp_scheduler_init();
+    ortp_set_log_level_mask(ORTP_DEBUG | ORTP_MESSAGE
             | ORTP_WARNING | ORTP_ERROR);
 }
 
-void rtp_recv_release(RtpSession *rtpsession)
-{
+void rtp_recv_release(RtpSession *rtpsession) {
     ortp_exit();
     rtp_session_destroy(rtpsession);
     ortp_global_stats_display();
 }
 
-RtpSession *rtp_recv_createSession(const char *localIP, const int localPort)
-{
-    RtpSession *rtpsession = rtp_session_new(RTP_SESSION_RECVONLY);	
+RtpSession *rtp_recv_createSession(const char *localIP, const int localPort) {
+    RtpSession *rtpsession = rtp_session_new(RTP_SESSION_RECVONLY);
     assert(rtpsession != NULL);
 
-	rtp_session_set_scheduling_mode(rtpsession, 1);
+    rtp_session_set_scheduling_mode(rtpsession, 1);
     // WARNING: in multiple receiving condtion, block mode is must unset;
-	rtp_session_set_blocking_mode(rtpsession, 0);
-	rtp_session_set_local_addr(rtpsession, localIP, localPort, localPort + 1);
-	rtp_session_set_connected_mode(rtpsession, 1); // 1 means TRUE;
+    rtp_session_set_blocking_mode(rtpsession, 0);
+    rtp_session_set_local_addr(rtpsession, localIP, localPort, localPort + 1);
+    rtp_session_set_connected_mode(rtpsession, 1);  // 1 means TRUE;
     rtp_session_set_symmetric_rtp(rtpsession, 1);  // 1 means TRUE;
 
     rtp_session_enable_adaptive_jitter_compensation(rtpsession, 1);
     rtp_session_set_jitter_compensation(rtpsession, 40);
 
     // set video payload_type to H264
-	rtp_session_set_payload_type(rtpsession, PAYLOAD_TYPE_H264);
+    rtp_session_set_payload_type(rtpsession, PAYLOAD_TYPE_H264);
 
     return rtpsession;
 }
 
 static int cond = 1;
 
-void stop_handler(int signum)
-{
-	cond = 0;
+void stop_handler(int signum) {
+    cond = 0;
 }
 
-int rtp_recv(RtpSession *rtpsession, uint32_t *user_ts, const char *recvfile)
-{
-	int recvBytes  = 0;
+int rtp_recv(RtpSession *rtpsession, uint32_t *user_ts, const char *recvfile) {
+    int recvBytes  = 0;
     int writelen = 0;
-	int have_more = 1;
-	int stream_received = 0;
+    int have_more = 1;
+    int stream_received = 0;
     unsigned char buffer[RECV_LEN];
 
-	signal(SIGINT, stop_handler);
+    signal(SIGINT, stop_handler);
 
     assert(recvfile != NULL);
     FILE *fp = fopen(recvfile, "a");
@@ -121,7 +116,7 @@ int rtp_recv(RtpSession *rtpsession, uint32_t *user_ts, const char *recvfile)
             if ((stream_received) && (recvBytes > 0)) {
                 writelen = fwrite(buffer,
                         sizeof(unsigned char), recvBytes, fp);
-                
+
                 dmd_log(LOG_DEBUG, "receive %d bytes, write %d bytes\n",
                         recvBytes, writelen);
 

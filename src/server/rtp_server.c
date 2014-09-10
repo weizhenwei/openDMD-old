@@ -39,7 +39,7 @@
  * *****************************************************************************
  */
 
-#include "rtp_server.h"
+#include "src/server/rtp_server.h"
 
 #include <assert.h>
 #include <time.h>
@@ -49,15 +49,14 @@
 
 #include <ortp/ortp.h>
 
-#include "global_context.h"
-#include "log.h"
-#include "path.h"
-#include "signal_handler.h"
-#include "rtp_recv.h"
+#include "src/global_context.h"
+#include "src/log.h"
+#include "src/path.h"
+#include "src/signal_handler.h"
+#include "src/server/rtp_recv.h"
 
 // init rtpsession;
-int rtp_server_init()
-{
+int rtp_server_init() {
     int i = 0;
     rtp_recv_init();
 
@@ -95,33 +94,32 @@ int rtp_server_init()
         if (server_init_client_repodir(i + 1) != 0) {
             return -1;
         }
-    } // for
+    }  // for
 
     return 0;
 }
 
-static int deal_with_client(int i, uint32_t user_ts)
-{
+static int deal_with_client(int i, uint32_t user_ts) {
     RtpSession *rtpsession = global.server.client_items[i].rtpsession;
     time_t lasttime = global.server.client_items[i].lasttime;
     time_t last_duration = global.server.last_duration;
     FILE *fp = NULL;
-    
+
     dmd_log(LOG_DEBUG, "in function %s, dealing with client %d\n",
             __func__, i + 1);
 
     unsigned char buffer[RECV_LEN];
-	int readlen, havemore = 1;
-	while (havemore) {
+    int readlen, havemore = 1;
+    while (havemore) {
         dmd_log(LOG_DEBUG, "in function %s, in while loop\n", __func__);
 
-		readlen = rtp_session_recv_with_ts(rtpsession, buffer, RECV_LEN,
+        readlen = rtp_session_recv_with_ts(rtpsession, buffer, RECV_LEN,
                 user_ts, &havemore);
 
         dmd_log(LOG_DEBUG, "in function %s, readlen = %d, havemore=%d\n",
                 __func__, readlen, havemore);
 
-		if (readlen > 0) {
+        if (readlen > 0) {
             // create an new h264 file;
             time_t now = time(&now);
             assert(now != -1);
@@ -145,19 +143,18 @@ static int deal_with_client(int i, uint32_t user_ts)
             fp = fopen(h264file, "a");
             assert(fp != NULL);
 
-			size_t ret = fwrite(buffer, sizeof(unsigned char), readlen, fp);
-			assert( ret == readlen );
+            size_t ret = fwrite(buffer, sizeof(unsigned char), readlen, fp);
+            assert(ret == readlen);
 
             fflush(fp);
             fclose(fp);
-		}
-	}
+        }
+    }
 
-	return 0;
+    return 0;
 }
 
-void rtp_server_running()
-{
+void rtp_server_running() {
     SessionSet *set;
     int client_scale = global.server.client_scale;
 
@@ -165,7 +162,6 @@ void rtp_server_running()
 
     set = session_set_new();
     while (server_running) {
-
         int i = 0;
         for (i = 0; i < client_scale; i++) {
             session_set_set(set, global.server.client_items[i].rtpsession);
@@ -181,21 +177,20 @@ void rtp_server_running()
                 deal_with_client(i, global.server.user_ts);
                 dmd_log(LOG_INFO, "back to function %s\n", __func__);
             }
-        } // for
+        }  // for
 
         global.server.user_ts +=  VIDEO_TIME_STAMP_INC;
-    } // while
+    }  // while
 }
 
 // release rtp_session;
-void rtp_server_clean()
-{
+void rtp_server_clean() {
     int i = 0;
     int client_scale = global.server.client_scale;
 
     for (i = 0; i < client_scale; i++) {
         rtp_recv_release(global.server.client_items[i].rtpsession);
-    } // for
+    }  // for
 
     free(global.server.client_items);
     global.server.client_items = NULL;

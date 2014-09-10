@@ -39,13 +39,13 @@
  * *****************************************************************************
  */
 
-#ifndef RTP_SERVER_H
-#define RTP_SERVER_H
+#ifndef SRC_SERVER_RTP_SERVER_H_
+#define SRC_SERVER_RTP_SERVER_H_
 
 extern int rtp_server_init();
 
-extern void rtp_server_running(); 
+extern void rtp_server_running();
 
 extern void rtp_server_clean();
 
-#endif
+#endif  // SRC_SERVER_RTP_SERVER_H_
