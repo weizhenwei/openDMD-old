@@ -39,8 +39,8 @@
  * *****************************************************************************
  */
 
-#ifndef IMAGE_CONVERT_H
-#define IMAGE_CONVERT_H
+#ifndef SRC_CLIENT_IMAGE_CONVERT_H_
+#define SRC_CLIENT_IMAGE_CONVERT_H_
 
 #include <stdint.h>
 
@@ -67,4 +67,4 @@ extern void YUV422PtoYUV420P(uint8_t *yuv422p, int width,
 extern void YUYV422toYUV420P(uint8_t *yuyv422, int width,
         int height, uint8_t *yuv420p, int length);
 
-#endif
+#endif  // SRC_CLIENT_IMAGE_CONVERT_H_

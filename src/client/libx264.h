@@ -39,8 +39,8 @@
  * *****************************************************************************
  */
 
-#ifndef LIBX264_H
-#define LIBX264_H
+#ifndef SRC_CLIENT_LIBX264_H_
+#define SRC_CLIENT_LIBX264_H_
 
 #include <stdint.h>
 
@@ -50,8 +50,8 @@ extern uint32_t ts;
 // NAL_SLICE_IDR nalu
 struct h264_idr_nalu {
     struct h264_idr_nalu *next;
-    unsigned int idr_len; // pure payload len;
-    uint8_t *idr_payload; // idr unit stripped heading 0x00 0x00 0x01
+    unsigned int idr_len;  // pure payload len;
+    uint8_t *idr_payload;  // idr unit stripped heading 0x00 0x00 0x01
 };
 
 // nalu lists of a h264 frame
@@ -61,7 +61,7 @@ struct h264_frame {
     unsigned int pps_len;
     uint8_t *pps_payload;
 
-    unsigned int idr_total; // total node of h264_idr_nalu
+    unsigned int idr_total;  // total node of h264_idr_nalu
     struct h264_idr_nalu *idr_list;
 
     unsigned int idr_total_len;
@@ -72,4 +72,4 @@ struct h264_frame {
 extern int encode_yuv420p(uint8_t *yuv420p,
         int height, int width, const char *h264file);
 
-#endif
+#endif  // SRC_CLIENT_LIBX264_H_

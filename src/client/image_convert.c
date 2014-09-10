@@ -39,20 +39,19 @@
  * *****************************************************************************
  */
 
-#include "image_convert.h"
+#include "src/client/image_convert.h"
 
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "global_context.h"
-#include "image_capture.h"
-#include "log.h"
+#include "src/client/image_capture.h"
+#include "src/global_context.h"
+#include "src/log.h"
 
 
 // diff with referenceYUYV422 to detect whether motion occured;
-int YUYV422_motion_detect(uint8_t *yuyv, int width, int height, int length)
-{
+int YUYV422_motion_detect(uint8_t *yuyv, int width, int height, int length) {
     int line, column;
     uint8_t *py, *pu, *pv;
     unsigned int counter = 0;
@@ -71,7 +70,6 @@ int YUYV422_motion_detect(uint8_t *yuyv, int width, int height, int length)
 
     for (line = 0; line < height; line++) {
         for (column = 0; column < width; column++) {
-
             // whether pixel changed
             if (column % 2 == 0) {
                 int absy = abs(*(ref + index + 0) - *py);
@@ -87,18 +85,18 @@ int YUYV422_motion_detect(uint8_t *yuyv, int width, int height, int length)
                     counter++;
             }
 
-            py += 2; // jump to the adjcent pixel, or
+            py += 2;  // jump to the adjcent pixel, or
 
-            if (column % 2 == 1) { // jump to next u and v macro
+            if (column % 2 == 1) {  // jump to next u and v macro
                 pu += 4;
                 pv += 4;
                 index += 4;
-            } // if
+            }
 
             if (counter > DIFF)
                 goto exit;
-        } // for inner
-    } // for outer
+        }  // for inner
+    }  // for outer
 
 exit:
     // refresh referenceYUYV422 to new captured image;
@@ -127,9 +125,8 @@ exit:
  *  0 <= R <= 255, 0 <= G <= 255, 0 <= B <= 255;
  *
  */
-void YUYV422toRGB888(uint8_t *yuyv, int width,
-    int height, uint8_t *rgb, int length)
-{
+void YUYV422toRGB888(uint8_t *yuyv, int width, int height,
+        uint8_t *rgb, int length) {
     int line, column;
     uint8_t *py, *pu, *pv;
     uint8_t *tmp = rgb;
@@ -151,25 +148,22 @@ void YUYV422toRGB888(uint8_t *yuyv, int width,
                 - 0.71414 * ((double) *pv - 128.0));
             *tmp++ = CLIP((double)*py + 1.772 * ((double) * pu - 128.0));
 
-            py += 2; // jump to the adjcent pixel, or
-
-            if (column % 2 == 1) { // jump to next u and v macro
+            py += 2;  // jump to the adjcent pixel, or
+            if (column % 2 == 1) {  // jump to next u and v macro
                 pu += 4;
                 pv += 4;
                 index += 4;
-            } // if
-        } // for inner
-    } // for outer
-
+            }  // if
+        }  // for inner
+    }  // for outer
 }
 
 /*
  * convert YUYV422 to RGB88 using integer operation, 
  * it's said this method is more efficient than float operation;
  */
-void YUYV422toRGB888INT(uint8_t *yuyv, int width,
-    int height, uint8_t *rgb, int length)
-{
+void YUYV422toRGB888INT(uint8_t *yuyv, int width, int height,
+        uint8_t *rgb, int length) {
     int line, column;
     uint8_t *py, *pu, *pv;
     uint8_t *tmp = rgb;
@@ -196,22 +190,19 @@ void YUYV422toRGB888INT(uint8_t *yuyv, int width,
             *tmp++ = CLIP(*py - gdiff);
             *tmp++ = CLIP(*py + bdiff);
 
-            py += 2; // jump to the adjcent pixel, or
-
-            if (column % 2 == 1) { // jump to next u and v macro
+            py += 2;  // jump to the adjcent pixel, or
+            if (column % 2 == 1) {  // jump to next u and v macro
                 pu += 4;
                 pv += 4;
                 index += 4;
-            } // if
-        } // for inner
-    } // for outer
-
+            }  // if
+        }  // for inner
+    }  // for outer
 }
 
 // convert packed YUYV422 to planar YUV422P
-void YUYV422toYUV422P(uint8_t *yuyv422, int width,
-	int height, uint8_t *yuv422p, int length)
-{
+void YUYV422toYUV422P(uint8_t *yuyv422, int width, int height,
+        uint8_t *yuv422p, int length) {
     int line, column;
     uint8_t *py, *pu, *pv;
     uint8_t *yuyvTemp;
@@ -240,9 +231,8 @@ void YUYV422toYUV422P(uint8_t *yuyv422, int width,
 }
 
 // convert planar YUV422P to planar YUV420P
-void YUV422PtoYUV420P(uint8_t *yuv422p, int width,
-	int height, uint8_t *yuv420p, int length)
-{
+void YUV422PtoYUV420P(uint8_t *yuv422p, int width, int height,
+        uint8_t *yuv420p, int length) {
     int line, column;
     uint8_t *py, *pu, *pv;
     uint8_t *yuyvTemp;
@@ -279,14 +269,12 @@ void YUV422PtoYUV420P(uint8_t *yuv422p, int width,
                      (line / 2 + 1) * width + column)) / 2;
         }
     }
-
 }
 
 // convert packed YUYV422 to planar YUV420P
-void YUYV422toYUV420P(uint8_t *yuyv422, int width,
-	int height, uint8_t *yuv420p, int length)
-{
-    int i,j;
+void YUYV422toYUV420P(uint8_t *yuyv422, int width, int height,
+        uint8_t *yuv420p, int length) {
+    int i, j;
     uint8_t *pY = yuv420p;
     uint8_t *pU = yuv420p + width * height;
     uint8_t *pV = pU + (width * height) / 4;
@@ -304,11 +292,8 @@ void YUYV422toYUV420P(uint8_t *yuyv422, int width,
             pYUVTemp++;
             pYUVTempNext++;
 
-
             pY[j + 1] = *pYUVTemp++;
             pY[j + 1 + width] = *pYUVTempNext++;
-
-
             pV[j / 2] =(*(pYUVTemp) + *(pYUVTempNext)) / 2;
 
             pYUVTemp++;
@@ -321,6 +306,4 @@ void YUYV422toYUV420P(uint8_t *yuyv422, int width,
         pU += width / 2;
         pV += width / 2;
     }
-    
 }
-
