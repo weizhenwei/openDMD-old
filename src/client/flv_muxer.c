@@ -39,7 +39,7 @@
  * *****************************************************************************
  */
 
-#include "flv_muxer.h"
+#include "src/client/flv_muxer.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -48,31 +48,29 @@
 
 #include <x264.h>
 
-#include "global_context.h"
-#include "log.h"
+#include "src/global_context.h"
+#include "src/log.h"
 
 
 // 9 bytes header + 4 bytes previous tag size;
 uint8_t flv_header[13] = {
-    0x46, 0x4c, 0x56, /* file type, namely string "FLV" */
-    0x01,             /* version number, always to be 0x01 */
-    0x01,             /* stream info: 0x01 is video, 0x04 audio, 0x05 both */
-    0x00, 0x00, 0x00, 0x09, /* flv header length, always to be 0x09 */
-    0x00, 0x00, 0x00, 0x00  /*previous tag size, always to be 0 */
-
+    0x46, 0x4c, 0x56,  /* file type, namely string "FLV" */
+    0x01,              /* version number, always to be 0x01 */
+    0x01,              /* stream info: 0x01 is video, 0x04 audio, 0x05 both */
+    0x00, 0x00, 0x00, 0x09,  /* flv header length, always to be 0x09 */
+    0x00, 0x00, 0x00, 0x00,  /* previous tag size, always to be 0 */
 };
 
 uint8_t first_AMF[13] = {
-    0x02, /* AMF package type: AMF_DATA_TYPE_STRING */
-    0x00, 0x0a, /* package data len, always to be 10 */
-    0x6f, 0x6e, /* string "on" */
-    0x4d, 0x65, 0x74, 0x61, /* string "Meta" */
-    0x44, 0x61, 0x74, 0x61  /* string "Data" */
+    0x02,  /* AMF package type: AMF_DATA_TYPE_STRING */
+    0x00, 0x0a,  /* package data len, always to be 10 */
+    0x6f, 0x6e,  /* string "on" */
+    0x4d, 0x65, 0x74, 0x61,  /* string "Meta" */
+    0x44, 0x61, 0x74, 0x61,  /* string "Data" */
 };
 
 // encapulate flv header;
-extern int encapulate_flvheader(const char *filename)
-{
+int encapulate_flvheader(const char *filename) {
     FILE *fp = fopen(filename, "ab");
     assert(fp != NULL);
 
@@ -84,9 +82,8 @@ extern int encapulate_flvheader(const char *filename)
     return 0;
 }
 
-// TODO: encapulate 2 AMFs to flv file;
-int encapulate_first_tag(const char *filename)
-{
+// TODO(weizhenwei): encapulate 2 AMFs to flv file;
+int encapulate_first_tag(const char *filename) {
     FILE *fp = fopen(filename, "ab");
     assert(fp != NULL);
     fclose(fp);
@@ -96,9 +93,8 @@ int encapulate_first_tag(const char *filename)
 
 // encapulate first tag body;
 // in: the heading 00 00 01 in sps and pps is stripped already;
-extern int encapulate_spspps(uint8_t *sps, int sps_len,
-        uint8_t *pps, int pps_len, const char *filename, uint32_t ts)
-{
+int encapulate_spspps(uint8_t *sps, int sps_len, uint8_t *pps, int pps_len,
+        const char *filename, uint32_t ts) {
     // type infomation assertation;
     assert(sps[0] == 0x67);
     assert(pps[0] == 0x68);
@@ -107,56 +103,56 @@ extern int encapulate_spspps(uint8_t *sps, int sps_len,
     // 16 = 5  bytes flv video header + 5 bytes AVCDecoderConfigurationRecord
     //      + 1 byte numofsequenceset + 2 bytes sps_len
     //      + 2 byte numofpictureset + 2 bytes pps_len
-    uint32_t body_len = sps_len + pps_len + 16; // 16 = 5 + 5 + 1 + 2 + 1 + 2;
+    uint32_t body_len = sps_len + pps_len + 16;  // 16 = 5 + 5 + 1 + 2 + 1 + 2;
     uint32_t total_tag_len = body_len + FLV_TAG_HEADER_SIZE + FLV_PRE_TAG_SIZE;
     uint8_t *buffer = (uint8_t *)malloc(sizeof(uint8_t) * total_tag_len);
     assert(buffer != NULL);
 
     // fill flv tag header, 11 bytes;
     buffer[offset++] = 0x09;  // tagtype: video;
-    buffer[offset++] = (uint8_t)(body_len >> 16); // data len;
-    buffer[offset++] = (uint8_t)(body_len >> 8);  // data len;
-    buffer[offset++] = (uint8_t)(body_len);       // data len;
-    buffer[offset++] = (uint8_t)(ts >> 16); // timestamp;
-    buffer[offset++] = (uint8_t)(ts >> 8);  // timestamp;
-    buffer[offset++] = (uint8_t)(ts);       // timestamp;
-    buffer[offset++] = (uint8_t)(ts >> 24); // timestamp;
-    buffer[offset++] = 0x00; // stream id 0;
-    buffer[offset++] = 0x00; // stream id 0;
-    buffer[offset++] = 0x00; // stream id 0;
+    buffer[offset++] = (uint8_t)(body_len >> 16);  // data len;
+    buffer[offset++] = (uint8_t)(body_len >> 8);   // data len;
+    buffer[offset++] = (uint8_t)(body_len);        // data len;
+    buffer[offset++] = (uint8_t)(ts >> 16);  // timestamp;
+    buffer[offset++] = (uint8_t)(ts >> 8);   // timestamp;
+    buffer[offset++] = (uint8_t)(ts);        // timestamp;
+    buffer[offset++] = (uint8_t)(ts >> 24);  // timestamp;
+    buffer[offset++] = 0x00;  // stream id 0;
+    buffer[offset++] = 0x00;  // stream id 0;
+    buffer[offset++] = 0x00;  // stream id 0;
 
     // fill flv video header, 5 bytes;
-    buffer[offset++] = 0x17; // key frame, AVC;
-    buffer[offset++] = 0x00; // AVC sequence header;
-    buffer[offset++] = 0x00; // composition time;
-    buffer[offset++] = 0x00; // composition time;
-    buffer[offset++] = 0x00; // composition time;
+    buffer[offset++] = 0x17;  // key frame, AVC;
+    buffer[offset++] = 0x00;  // AVC sequence header;
+    buffer[offset++] = 0x00;  // composition time;
+    buffer[offset++] = 0x00;  // composition time;
+    buffer[offset++] = 0x00;  // composition time;
 
     // fill flv video body, AVCDecoderConfigurationRecord, 5 bytes;
-    buffer[offset++] = 0x01;   // configuration version;
-    buffer[offset++] = sps[1]; // avcprofileindication;
-    buffer[offset++] = sps[2]; // profilecompatibilty;
-    buffer[offset++] = sps[3]; // avclevelindication;
-    buffer[offset++] = 0xff;   // reserved + lengthsizeminusone;
+    buffer[offset++] = 0x01;    // configuration version;
+    buffer[offset++] = sps[1];  // avcprofileindication;
+    buffer[offset++] = sps[2];  // profilecompatibilty;
+    buffer[offset++] = sps[3];  // avclevelindication;
+    buffer[offset++] = 0xff;    // reserved + lengthsizeminusone;
 
     // fill sps and pps
-    buffer[offset++] = 0xe1;   // numofsequenceset;
-    buffer[offset++] = (uint8_t)(sps_len >> 8);   // sps_len high 8 bits;
-    buffer[offset++] = (uint8_t)(sps_len);        // sps_len low 8 bits;
+    buffer[offset++] = 0xe1;  // numofsequenceset;
+    buffer[offset++] = (uint8_t)(sps_len >> 8);  // sps_len high 8 bits;
+    buffer[offset++] = (uint8_t)(sps_len);       // sps_len low 8 bits;
     memcpy(buffer + offset, sps, sps_len);
     offset += sps_len;
     buffer[offset++] = 0x01;  // numofpictureset;
-    buffer[offset++] = (uint8_t)(pps_len >> 8);   // pps_len high 8 bits;
-    buffer[offset++] = (uint8_t)(pps_len);        // pps_len low 8 bits;
+    buffer[offset++] = (uint8_t)(pps_len >> 8);  // pps_len high 8 bits;
+    buffer[offset++] = (uint8_t)(pps_len);       // pps_len low 8 bits;
     memcpy(buffer + offset, pps, pps_len);
     offset += pps_len;
 
     // fill previous tag size;
     uint32_t prev_tag_size = body_len + FLV_TAG_HEADER_SIZE;
-    buffer[offset++] = (uint8_t)(prev_tag_size >> 24); // prev tag size;
-    buffer[offset++] = (uint8_t)(prev_tag_size >> 16); // prev tag size;
-    buffer[offset++] = (uint8_t)(prev_tag_size >> 8);  // prev tag size;
-    buffer[offset++] = (uint8_t)(prev_tag_size);       // prev tag size;
+    buffer[offset++] = (uint8_t)(prev_tag_size >> 24);  // prev tag size;
+    buffer[offset++] = (uint8_t)(prev_tag_size >> 16);  // prev tag size;
+    buffer[offset++] = (uint8_t)(prev_tag_size >> 8);   // prev tag size;
+    buffer[offset++] = (uint8_t)(prev_tag_size);        // prev tag size;
 
     assert(offset == total_tag_len);
 
@@ -173,57 +169,55 @@ extern int encapulate_spspps(uint8_t *sps, int sps_len,
 }
 
 // encapulate IDR/SLICE nalu;
-extern int encapulate_nalu(uint8_t *nalu, int nalu_len,
-        const char *filename, uint32_t ts, int type)
-{
+int encapulate_nalu(uint8_t *nalu, int nalu_len, const char *filename,
+        uint32_t ts, int type) {
     int offset = 0;
     // 9 = 5 bytes flv video header + 4 nalu length;
-    uint32_t body_len = nalu_len + 9; // 9 = 5 + 4;
+    uint32_t body_len = nalu_len + 9;  // 9 = 5 + 4;
     uint32_t total_tag_len = body_len + FLV_TAG_HEADER_SIZE + FLV_PRE_TAG_SIZE;
     uint8_t *buffer = (uint8_t *)malloc(sizeof(uint8_t) * total_tag_len);
     assert(buffer != NULL);
 
-
     // fill flv tag header, 11 bytes;
     buffer[offset++] = 0x09;  // tagtype: video;
-    buffer[offset++] = (uint8_t)(body_len >> 16); // data len;
-    buffer[offset++] = (uint8_t)(body_len >> 8);  // data len;
-    buffer[offset++] = (uint8_t)(body_len);       // data len;
-    buffer[offset++] = (uint8_t)(ts >> 16); // timestamp;
-    buffer[offset++] = (uint8_t)(ts >> 8);  // timestamp;
-    buffer[offset++] = (uint8_t)(ts);       // timestamp;
-    buffer[offset++] = (uint8_t)(ts >> 24); // timestamp;
-    buffer[offset++] = 0x00; // stream id 0;
-    buffer[offset++] = 0x00; // stream id 0;
-    buffer[offset++] = 0x00; // stream id 0;
+    buffer[offset++] = (uint8_t)(body_len >> 16);  // data len;
+    buffer[offset++] = (uint8_t)(body_len >> 8);   // data len;
+    buffer[offset++] = (uint8_t)(body_len);        // data len;
+    buffer[offset++] = (uint8_t)(ts >> 16);  // timestamp;
+    buffer[offset++] = (uint8_t)(ts >> 8);   // timestamp;
+    buffer[offset++] = (uint8_t)(ts);        // timestamp;
+    buffer[offset++] = (uint8_t)(ts >> 24);  // timestamp;
+    buffer[offset++] = 0x00;  // stream id 0;
+    buffer[offset++] = 0x00;  // stream id 0;
+    buffer[offset++] = 0x00;  // stream id 0;
 
     // fill flv video header, 5 bytes;
     if (type == NAL_SLICE_IDR) {
-        buffer[offset++] = 0x17; // key frame, AVC;
+        buffer[offset++] = 0x17;  // key frame, AVC;
     } else if (type == NAL_SLICE) {
-        buffer[offset++] = 0x27; // key frame, AVC;
+        buffer[offset++] = 0x27;  // key frame, AVC;
     } else {
         dmd_log(LOG_INFO, "impossible to reach here!\n");
         assert(0);
     }
-    buffer[offset++] = 0x01; // AVC NALU unit;
-    buffer[offset++] = 0x00; // composition time;
-    buffer[offset++] = 0x00; // composition time;
-    buffer[offset++] = 0x00; // composition time;
+    buffer[offset++] = 0x01;  // AVC NALU unit;
+    buffer[offset++] = 0x00;  // composition time;
+    buffer[offset++] = 0x00;  // composition time;
+    buffer[offset++] = 0x00;  // composition time;
 
     // fill flv video body;
-    buffer[offset++] = (uint8_t)(nalu_len >> 24); // nalu length;
-    buffer[offset++] = (uint8_t)(nalu_len >> 16); // nalu length;
-    buffer[offset++] = (uint8_t)(nalu_len >> 8);  // nalu length;
-    buffer[offset++] = (uint8_t)(nalu_len);       // nalu length;
+    buffer[offset++] = (uint8_t)(nalu_len >> 24);  // nalu length;
+    buffer[offset++] = (uint8_t)(nalu_len >> 16);  // nalu length;
+    buffer[offset++] = (uint8_t)(nalu_len >> 8);   // nalu length;
+    buffer[offset++] = (uint8_t)(nalu_len);        // nalu length;
     memcpy(buffer + offset, nalu, nalu_len);
     offset += nalu_len;
 
     // fill previous tag size;
     uint32_t prev_tag_size = body_len + FLV_TAG_HEADER_SIZE;
-    buffer[offset++] = (uint8_t)(prev_tag_size >> 24); // prev tag size;
-    buffer[offset++] = (uint8_t)(prev_tag_size >> 16); // prev tag size;
-    buffer[offset++] = (uint8_t)(prev_tag_size >> 8);  // prev tag size;
+    buffer[offset++] = (uint8_t)(prev_tag_size >> 24);  // prev tag size;
+    buffer[offset++] = (uint8_t)(prev_tag_size >> 16);  // prev tag size;
+    buffer[offset++] = (uint8_t)(prev_tag_size >> 8);   // prev tag size;
     buffer[offset++] = (uint8_t)(prev_tag_size);       // prev tag size;
 
     assert(offset == total_tag_len);

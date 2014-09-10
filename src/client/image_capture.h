@@ -39,11 +39,10 @@
  * *****************************************************************************
  */
 
-#ifndef IMAGE_CAPTURE_H
-#define IMAGE_CAPTURE_H
+#ifndef SRC_CLIENT_IMAGE_CAPTURE_H_
+#define SRC_CLIENT_IMAGE_CAPTURE_H_
 
-#include "v4l2_utils.h"
-
+#include "src/v4l2_utils.h"
 
 extern int process_image(void *yuyv, int length, int width, int height);
 
@@ -52,4 +51,4 @@ extern int read_frame(int fd, struct mmap_buffer *buffers,
 
 extern int dmd_image_capture(struct v4l2_device_info *v4l2_info);
 
-#endif
+#endif  // SRC_CLIENT_IMAGE_CAPTURE_H_

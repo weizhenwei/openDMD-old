@@ -39,7 +39,7 @@
  * *****************************************************************************
  */
 
-#include "image_capture.h"
+#include "src/client/image_capture.h"
 
 #include <assert.h>
 #include <errno.h>
@@ -57,18 +57,16 @@
 #include <time.h>
 #include <unistd.h>
 
-#include "global_context.h"
-#include "image_convert.h"
-#include "log.h"
-#include "picture_thread.h"
-#include "signal_handler.h"
-#include "sqlite_utils.h"
-#include "statistics.h"
-#include "video_thread.h"
+#include "src/global_context.h"
+#include "src/log.h"
+#include "src/signal_handler.h"
+#include "src/sqlite_utils.h"
+#include "src/statistics.h"
+#include "src/client/image_convert.h"
+#include "src/client/video_thread.h"
+#include "src/client/picture_thread.h"
 
-
-static void notify_picture()
-{
+static void notify_picture() {
     dmd_log(LOG_DEBUG, "in %s, notify to picture thread\n", __func__);
     pthread_mutex_lock(&global.client.thread_attr.picture_mutex);
     global.client.picture_target = NOTIFY_PICTURE;
@@ -76,8 +74,7 @@ static void notify_picture()
     pthread_mutex_unlock(&global.client.thread_attr.picture_mutex);
 }
 
-static void notify_video()
-{
+static void notify_video() {
     dmd_log(LOG_DEBUG, "in %s, notify to video thread\n", __func__);
     pthread_mutex_lock(&global.client.thread_attr.video_mutex);
     global.client.video_target = NOTIFY_VIDEO;
@@ -85,8 +82,7 @@ static void notify_video()
     pthread_mutex_unlock(&global.client.thread_attr.video_mutex);
 }
 
-int process_image(void *yuyv, int length, int width, int height)
-{
+int process_image(void *yuyv, int length, int width, int height) {
     int ret = -1;
 
     assert(length == width * height * 2);
@@ -97,8 +93,7 @@ int process_image(void *yuyv, int length, int width, int height)
     time_t now;
     now = time(&now);
     assert(now != -1);
-    if (ret == 0) { // motion detected!
-        
+    if (ret == 0) {  // motion detected!
         dmd_log(LOG_INFO, "motion detected !\n");
 
         // if this detection is the first capture in current motion,
@@ -143,11 +138,9 @@ int process_image(void *yuyv, int length, int width, int height)
             dmd_log(LOG_INFO, "in %s, impossible to reach here!\n", __func__);
         }
 
-    } else { // check time elapsed exceeds global.video_duration;
-
+    } else {  // check time elapsed exceeds global.video_duration;
         if (global.client.working_mode == CAPTURE_VIDEO
                 || global.client.working_mode == CAPTURE_ALL) {
-
             // if video capturing is on, continue encode video;
             if (video_capturing_switch == VIDEO_CAPTURING_ON) {
                 dmd_log(LOG_INFO, "in function %s, notify video thread\n",
@@ -172,7 +165,7 @@ int process_image(void *yuyv, int length, int width, int height)
                         __func__);
 
                 video_capturing_switch = VIDEO_CAPTURING_OFF;
-                
+
                 pthread_mutex_lock(&global_stats->mutex);
                 if (global_stats->current_motion != NULL) {
                     // five things to do:
@@ -193,16 +186,13 @@ int process_image(void *yuyv, int length, int width, int height)
                 }
                 pthread_mutex_unlock(&global_stats->mutex);
             }
-
-
-
-        } else { // for only capturing picture the current motion is stoped;
+        } else {  // for only capturing picture the current motion is stoped;
 #if defined(DEBUG)
             assert(global.client.working_mode == CAPTURE_PICTURE);
 #endif
             pthread_mutex_lock(&global_stats->mutex);
             if (global_stats->current_motion != NULL) {
-                // TODO: there is statistics unaccuracy here,
+                // TODO(weizhenwei): there is statistics unaccuracy here,
                 //       may be we should not counting picture data here!
 
                 // five things to do:
@@ -229,8 +219,7 @@ int process_image(void *yuyv, int length, int width, int height)
     return 0;
 }
 
-int read_frame(int fd, struct mmap_buffer *buffers, int width, int height)
-{
+int read_frame(int fd, struct mmap_buffer *buffers, int width, int height) {
     int ret = 0;
     struct v4l2_buffer buf;
     bzero(&buf, sizeof(struct v4l2_buffer));
@@ -257,15 +246,13 @@ int read_frame(int fd, struct mmap_buffer *buffers, int width, int height)
     return ret;
 }
 
-
-int dmd_image_capture(struct v4l2_device_info *v4l2_info)
-{
+int dmd_image_capture(struct v4l2_device_info *v4l2_info) {
     int fd = v4l2_info->video_device_fd;
     int width = v4l2_info->width;
     int height = v4l2_info->height;
     struct mmap_buffer *buffers = v4l2_info->buffers;
 
-    // client_running is global switchoff changed when 
+    // client_running is global switchoff changed when
     // Ctrl + C signal generated;
     while (client_running == 1) {
         fd_set fds;
@@ -279,9 +266,9 @@ int dmd_image_capture(struct v4l2_device_info *v4l2_info)
         tv.tv_sec = 2;
         tv.tv_usec = 0;
 
-        // TODO: replace select with epoll invoking;
+        // TODO(weizhenwei): replace select with epoll invoking;
         r = select(fd + 1, &fds, NULL, NULL, &tv);
-        if ( r == -1) {
+        if (r == -1) {
             if (errno == EINTR)
                 continue;
             dmd_log(LOG_ERR, "Multi I/O select failed.\n");
@@ -293,9 +280,8 @@ int dmd_image_capture(struct v4l2_device_info *v4l2_info)
 
         if (read_frame(fd, buffers, width, height) == -1)
             break;
-
     }
-    
+
     dmd_log(LOG_INFO, "in %s, main thread exit\n", __func__);
 
     // when exiting in main thread, remember to record the last motion info;

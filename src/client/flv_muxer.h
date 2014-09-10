@@ -39,8 +39,8 @@
  * *****************************************************************************
  */
 
-#ifndef FLV_MUXER_H
-#define FLV_MUXER_H
+#ifndef SRC_CLIENT_FLV_MUXER_H_
+#define SRC_CLIENT_FLV_MUXER_H_
 
 #include <stdint.h>
 
@@ -88,5 +88,5 @@ extern int encapulate_spspps(uint8_t *sps, int sps_len,
 extern int encapulate_nalu(uint8_t *nalu, int nalu_len,
         const char *filename, uint32_t ts, int type);
 
-#endif
+#endif  // SRC_CLIENT_FLV_MUXER_H_
 
