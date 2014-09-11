@@ -39,9 +39,8 @@
  * *****************************************************************************
  */
 
-#ifndef PATH_H
-#define PATH_H
-
+#ifndef SRC_PATH_H_
+#define SRC_PATH_H_
 
 // what type of this node, jpeg file, h264 file, or flv file;
 enum path_type {
@@ -68,4 +67,4 @@ extern int server_init_client_repodir(int client_number);
 // path_type is member of enum path_type;
 extern struct path_t *server_get_filepath(int path_type, int client_number);
 
-#endif
+#endif  // SRC_PATH_H_

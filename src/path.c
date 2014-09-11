@@ -39,7 +39,7 @@
  * *****************************************************************************
  */
 
-#include "path.h"
+#include "src/path.h"
 
 #define _GNU_SOURCE  // for strndupa() function;
 
@@ -53,41 +53,39 @@
 #include <time.h>
 #include <unistd.h>
 
-#include "global_context.h"
-#include "log.h"
+#include "src/global_context.h"
+#include "src/log.h"
 
-
-int test_and_mkdir(const char *path)
-{
+int test_and_mkdir(const char *path) {
     // first, find parent path;
     const char *ptr = path + strlen(path);
     while (*ptr != '/' && ptr > path) {
         ptr--;
     }
-    char *parent = strndupa(path, ptr - path); // no need to free manually
+    char *parent = strndupa(path, ptr - path);  // no need to free manually
     assert(parent != NULL);
     dmd_log(LOG_DEBUG, "in function %s, parent path is %s\n",
             __func__, parent);
     dmd_log(LOG_DEBUG, "in function %s, path is %s\n",
             __func__, path);
 
-    if (access(parent, F_OK) == 0) { // parent exist, just mkdir
-        if (access(path, F_OK) == 0) { // path exist, just return
+    if (access(parent, F_OK) == 0) {  // parent exist, just mkdir
+        if (access(path, F_OK) == 0) {  // path exist, just return
             dmd_log(LOG_DEBUG, "in function %s, dir %s existed already\n",
                     __func__, path);
             return 0;
-        } else { // else just mkdir path;
+        } else {  // else just mkdir path;
             if (mkdir(path, 0755) == -1) {
-                dmd_log(LOG_ERR, "in function %s, mkdir %s error:%s\n", 
+                dmd_log(LOG_ERR, "in function %s, mkdir %s error:%s\n",
                         __func__, path, strerror(errno));
                 return -1;
             } else {
-                dmd_log(LOG_DEBUG, "in function %s, mkdir %s succeed\n", 
+                dmd_log(LOG_DEBUG, "in function %s, mkdir %s succeed\n",
                         __func__, path);
             }
         }
 
-    } else { // parent doesn't exist, recursively call test_and_mkdir();
+    } else {  // parent doesn't exist, recursively call test_and_mkdir();
         // first mkdir parent;
         int ret = test_and_mkdir(parent);
         if (ret == -1) {
@@ -96,7 +94,7 @@ int test_and_mkdir(const char *path)
 
         // then mkdir path;
         if (mkdir(path, 0755) == -1) {
-            dmd_log(LOG_ERR, "in function %s, mkdir %s error:%s\n", 
+            dmd_log(LOG_ERR, "in function %s, mkdir %s error:%s\n",
                     __func__, path, strerror(errno));
             return -1;
         } else {
@@ -105,19 +103,16 @@ int test_and_mkdir(const char *path)
         }
     }
 
-
     return 0;
 }
 
 // client path stuff;
-int client_init_repodir()
-{
+int client_init_repodir() {
     return test_and_mkdir(global.client.client_repo);
 }
 
-struct path_t *client_get_filepath(int path_type)
-{
-    char filepath[PATH_MAX]; // #define PATH_MAX 4096 at linux/limits.h
+struct path_t *client_get_filepath(int path_type) {
+    char filepath[PATH_MAX];  // #define PATH_MAX 4096 at linux/limits.h
     char storepath[PATH_MAX];
 
     char *suffix = NULL;
@@ -133,19 +128,19 @@ struct path_t *client_get_filepath(int path_type)
     }
     // global.client.client_repo's correctness is checked at
     // check_path() at src/config.c
-    sprintf(storepath, "%s/%s", global.client.client_repo, suffix);
+    snprintf(storepath, PATH_MAX, "%s/%s", global.client.client_repo, suffix);
     assert(test_and_mkdir(storepath) == 0);
 
     time_t now;
-    struct tm *tmptr;
+    struct tm *tmptr = NULL;
     now = time(&now);
     assert(now != -1);
-    tmptr = localtime(&now);
+    tmptr = localtime_r(&now, tmptr);
     assert(tmptr != NULL);
 
     if (strcmp(suffix, "jpg") == 0) {
-        sprintf(filepath, "%s/%04d%02d%02d%02d%02d%02d-%02d.%s",
-                storepath, 
+        snprintf(filepath, PATH_MAX, "%s/%04d%02d%02d%02d%02d%02d-%02d.%s",
+                storepath,
                 tmptr->tm_year + 1900,
                 tmptr->tm_mon + 1,
                 tmptr->tm_mday,
@@ -155,7 +150,7 @@ struct path_t *client_get_filepath(int path_type)
                 global.client.counter_in_second,
                 suffix);
     } else {
-        sprintf(filepath, "%s/%04d%02d%02d%02d%02d%02d.%s",
+        snprintf(filepath, PATH_MAX, "%s/%04d%02d%02d%02d%02d%02d.%s",
                 storepath,
                 tmptr->tm_year + 1900,
                 tmptr->tm_mon + 1,
@@ -181,29 +176,25 @@ struct path_t *client_get_filepath(int path_type)
     return path;
 }
 
-
-int server_init_repodir()
-{
+int server_init_repodir() {
     return test_and_mkdir(global.server.server_repo);
 }
 
-int server_init_client_repodir(int client_number)
-{
+int server_init_client_repodir(int client_number) {
     char client_repodir[PATH_MAX];
 
-    sprintf(client_repodir, "%s/client-%02d",
+    snprintf(client_repodir, PATH_MAX, "%s/client-%02d",
             global.server.server_repo, client_number);
 
     dmd_log(LOG_DEBUG, "in function %s,  client repodir is : %s\n",
            __func__, client_repodir);
-    
+
     return test_and_mkdir(client_repodir);
 }
 
 
-struct path_t *server_get_filepath(int path_type, int client_number)
-{
-    char filepath[PATH_MAX]; // #define PATH_MAX 4096 at linux/limits.h
+struct path_t *server_get_filepath(int path_type, int client_number) {
+    char filepath[PATH_MAX];  // #define PATH_MAX 4096 at linux/limits.h
     char storepath[PATH_MAX];
 
     char *suffix = NULL;
@@ -217,22 +208,23 @@ struct path_t *server_get_filepath(int path_type, int client_number)
         dmd_log(LOG_ERR, "in function %s, error to reach here!\n", __func__);
         return NULL;
     }
+
     // global.server.server_repo's correctness is checked at
     // check_path() at src/config.c
-    sprintf(storepath, "%s/client-%02d/%s", global.server.server_repo,
-           client_number, suffix);
+    snprintf(storepath, PATH_MAX, "%s/client-%02d/%s",
+            global.server.server_repo, client_number, suffix);
     assert(test_and_mkdir(storepath) == 0);
 
     time_t now;
-    struct tm *tmptr;
+    struct tm *tmptr = NULL;
     now = time(&now);
     assert(now != -1);
-    tmptr = localtime(&now);
+    tmptr = localtime_r(&now, tmptr);
     assert(tmptr != NULL);
 
     if (strcmp(suffix, "jpg") == 0) {
-        sprintf(filepath, "%s/%04d%02d%02d%02d%02d%02d-%02d.%s",
-                storepath, 
+        snprintf(filepath, PATH_MAX, "%s/%04d%02d%02d%02d%02d%02d-%02d.%s",
+                storepath,
                 tmptr->tm_year + 1900,
                 tmptr->tm_mon + 1,
                 tmptr->tm_mday,
@@ -242,7 +234,7 @@ struct path_t *server_get_filepath(int path_type, int client_number)
                 global.client.counter_in_second,
                 suffix);
     } else {
-        sprintf(filepath, "%s/%04d%02d%02d%02d%02d%02d.%s",
+        snprintf(filepath, PATH_MAX, "%s/%04d%02d%02d%02d%02d%02d.%s",
                 storepath,
                 tmptr->tm_year + 1900,
                 tmptr->tm_mon + 1,

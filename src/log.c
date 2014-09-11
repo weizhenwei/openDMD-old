@@ -39,22 +39,19 @@
  * *****************************************************************************
  */
 
-#include "log.h"
+#include "src/log.h"
 
 #include <stdio.h>
 #include <stdarg.h>
 #include <syslog.h>
 
-#include "global_context.h"
+#include "src/global_context.h"
 
-void dmd_openlog(const char *ident, int logopt, int facility)
-{
+void dmd_openlog(const char *ident, int logopt, int facility) {
     openlog(ident, logopt, facility);
 }
 
-void dmd_log(int priority, const char *format, ...)
-{
-
+void dmd_log(int priority, const char *format, ...) {
     if (priority > global.log_level) {
         return;
     }
@@ -90,7 +87,7 @@ void dmd_log(int priority, const char *format, ...)
         log_level = "notice";
     }
 
-    // TODO: why va_start and va_end again ?
+    // TODO(weizhenwei): why va_start and va_end again ?
     va_start(var_list, format);
     va_end(var_list);
     fprintf(stdout, "[%s]: ", log_level);
@@ -98,7 +95,7 @@ void dmd_log(int priority, const char *format, ...)
 #endif
 }
 
-void dmd_closelog()
-{
+void dmd_closelog() {
     closelog();
 }
+

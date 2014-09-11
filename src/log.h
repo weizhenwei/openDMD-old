@@ -39,8 +39,8 @@
  * *****************************************************************************
  */
 
-#ifndef LOG_H
-#define LOG_H
+#ifndef SRC_LOG_H_
+#define SRC_LOG_H_
 
 #include <syslog.h>
 
@@ -54,4 +54,5 @@ extern void dmd_log(int priority, const char *format, ...);
 
 extern void dmd_closelog();
 
-#endif
+#endif  // SRC_LOG_H_
+
