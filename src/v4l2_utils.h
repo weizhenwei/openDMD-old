@@ -39,8 +39,8 @@
  * *****************************************************************************
  */
 
-#ifndef V4L2_UTILS_H
-#define V4L2_UTILS_H
+#ifndef SRC_V4L2_UTILS_H_
+#define SRC_V4L2_UTILS_H_
 
 #include <linux/videodev2.h>
 
@@ -64,14 +64,13 @@ struct v4l2_device_info {
 
     int width;                               // picture width;
     int height;                              // picture height;
-
 };
 
 
 // query video device's capability
 extern int video_capability(struct v4l2_device_info *v4l2_info);
 
-// set and query video device's input 
+// set and query video device's input
 extern int video_input(struct v4l2_device_info *v4l2_info);
 
 // query video format this video device support
@@ -92,4 +91,4 @@ extern int video_set_fps(struct v4l2_device_info *v4l2_info);
 // malloc request buffer and mmap it
 extern int video_mmap(struct v4l2_device_info *v4l2_info);
 
-#endif
+#endif  // SRC_V4L2_UTILS_H_

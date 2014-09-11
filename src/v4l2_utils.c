@@ -39,7 +39,7 @@
  * *****************************************************************************
  */
 
-#include "v4l2_utils.h"
+#include "src/v4l2_utils.h"
 
 #include <assert.h>
 #include <errno.h>
@@ -58,25 +58,24 @@
 #include <time.h>
 #include <unistd.h>
 
-#include "log.h"
+#include "src/log.h"
 
 /*
  * DRIVER CAPABILITIES
  *
  * struct v4l2_capability {
- * 	__u8	driver[16];	// i.e. "bttv"
- * 	__u8	card[32];	// i.e. "Hauppauge WinTV"
- * 	__u8	bus_info[32];	// "PCI:" + pci_name(pci_dev)
- * 	__u32   version;        // should use KERNEL_VERSION()
- * 	__u32	capabilities;	// Device capabilities,
- * 				// for more details, see linux/videodev2.h
- * 	__u32	reserved[4];
+ *     __u8    driver[16];    // i.e. "bttv"
+ *     __u8    card[32];      // i.e. "Hauppauge WinTV"
+ *     __u8    bus_info[32];  // "PCI:" + pci_name(pci_dev)
+ *     __u32   version;       // should use KERNEL_VERSION()
+ *     __u32   capabilities;  // Device capabilities,
+ *                            // for more details, see linux/videodev2.h
+ *     __u32   reserved[4];
  * };
  *
  * query video device's capability
  */
-int video_capability(struct v4l2_device_info *v4l2_info)
-{
+int video_capability(struct v4l2_device_info *v4l2_info) {
     int ret = 0;
 
     // get the device capability.
@@ -116,24 +115,23 @@ int video_capability(struct v4l2_device_info *v4l2_info)
 
 
 /*
- *	VIDEO   INPUTS
+ *    VIDEO   INPUTS
  *
  * struct v4l2_input {
- * 	__u32	     index;	//  Which input
- * 	__u8	     name[32];	//  Label
- * 	__u32	     type;	//  Type of input
- * 	__u32	     audioset;	//  Associated audios (bitfield)
- * 	__u32        tuner;     //  Associated tuner
- * 	v4l2_std_id  std;
- * 	__u32	     status;
- * 	__u32	     capabilities;
- * 	__u32	     reserved[3];
+ *     __u32         index;     //  Which input
+ *     __u8          name[32];  //  Label
+ *     __u32         type;      //  Type of input
+ *     __u32         audioset;  //  Associated audios (bitfield)
+ *     __u32         tuner;     //  Associated tuner
+ *     v4l2_std_id   std;
+ *     __u32         status;
+ *     __u32         capabilities;
+ *     __u32         reserved[3];
  * }
  *
  * query and set video input format
  */
-int video_input(struct v4l2_device_info *v4l2_info)
-{
+int video_input(struct v4l2_device_info *v4l2_info) {
     int ret = 0;
     int index = 0;
     int fd = v4l2_info->video_device_fd;
@@ -165,18 +163,17 @@ int video_input(struct v4l2_device_info *v4l2_info)
  *	FORMAT   ENUMERATION
  *
  * struct v4l2_fmtdesc {
- * 	__u32		    index;             // Format number      
- * 	enum v4l2_buf_type  type;              // buffer type        
- * 	__u32               flags;
- * 	__u8		    description[32];   // Description string 
- * 	__u32		    pixelformat;       // Format fourcc      
- * 	__u32		    reserved[4];
+ *     __u32               index;             // Format number      
+ *     enum v4l2_buf_type  type;              // buffer type        
+ *     __u32               flags;
+ *     __u8                description[32];   // Description string 
+ *     __u32               pixelformat;       // Format fourcc      
+ *     __u32               reserved[4];
  * };
  *
  * traverse video stream format, query video format this video device support.
  */
-int video_fmtdesc(struct v4l2_device_info *v4l2_info)
-{
+int video_fmtdesc(struct v4l2_device_info *v4l2_info) {
     int ret = 0;
     int fd = v4l2_info->video_device_fd;
     struct v4l2_fmtdesc fmtdesc;
@@ -188,7 +185,7 @@ int video_fmtdesc(struct v4l2_device_info *v4l2_info)
     dmd_log(LOG_INFO, "\n*vidioc enumeration stream format informations*\n");
     while (1) {
         if ((ret = ioctl(fd, VIDIOC_ENUM_FMT, &fmtdesc)) == -1) {
-            if (errno == EINVAL) { // take it as normal exit
+            if (errno == EINVAL) {  // take it as normal exit
                 ret = 0;
                 break;
             } else {
@@ -220,31 +217,32 @@ int video_fmtdesc(struct v4l2_device_info *v4l2_info)
 
 /**
  * struct v4l2_format - stream data format
- * @type:	type of the data stream
- * @pix:	definition of an image format
- * @pix_mp:	definition of a multiplanar image format
- * @win:	definition of an overlaid image
- * @vbi:	raw VBI capture or output parameters
- * @sliced:	sliced VBI capture or output parameters
- * @raw_data:	placeholder for future extensions and custom formats
+ * @type:    type of the data stream
+ * @pix:     definition of an image format
+ * @pix_mp:  efinition of a multiplanar image format
+ * @win:     definition of an overlaid image
+ * @vbi:     raw VBI capture or output parameters
+ * @sliced:  sliced VBI capture or output parameters
+ * @raw_data: placeholder for future extensions and custom formats
  *
  *
  * struct v4l2_format {
  *     enum v4l2_buf_type type;
  *     union {
- *         struct v4l2_pix_format pix;           // V4L2_BUF_TYPE_VIDEO_CAPTURE
- * 	   struct v4l2_pix_format_mplane pix_mp; // V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE
- *         struct v4l2_window win;               // V4L2_BUF_TYPE_VIDEO_OVERLAY
- *         struct v4l2_vbi_format vbi;           // V4L2_BUF_TYPE_VBI_CAPTURE
- *         struct v4l2_sliced_vbi_format sliced; // V4L2_BUF_TYPE_SLICED_VBI_CAPTURE
- *         __u8 raw_data[200];                   // user-defined
- * 	} fmt;
+ *       struct v4l2_pix_format pix;           // V4L2_BUF_TYPE_VIDEO_CAPTURE
+ *       // V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE
+ *       struct v4l2_pix_format_mplane pix_mp;
+ *       struct v4l2_window win;               // V4L2_BUF_TYPE_VIDEO_OVERLAY
+ *       struct v4l2_vbi_format vbi;           // V4L2_BUF_TYPE_VBI_CAPTURE
+ *       // V4L2_BUF_TYPE_SLICED_VBI_CAPTURE
+ *       struct v4l2_sliced_vbi_format sliced;
+ *       __u8 raw_data[200];                   // user-defined
+ * } fmt;
  * };
  *
  * set video stream data format
  */
-int video_setfmt(struct v4l2_device_info *v4l2_info)
-{
+int video_setfmt(struct v4l2_device_info *v4l2_info) {
     int ret = 0;
     int fd = v4l2_info->video_device_fd;
     struct v4l2_format fmt;
@@ -267,9 +265,9 @@ int video_setfmt(struct v4l2_device_info *v4l2_info)
 
     return ret;
 }
+
 // query video data format
-int video_getfmt(struct v4l2_device_info *v4l2_info)
-{
+int video_getfmt(struct v4l2_device_info *v4l2_info) {
     int ret = 0;
     int fd = v4l2_info->video_device_fd;
     struct v4l2_format fmt;
@@ -288,7 +286,7 @@ int video_getfmt(struct v4l2_device_info *v4l2_info)
     dmd_log(LOG_INFO, "Size of the buffer = %d\n", fmt.fmt.pix.sizeimage);
     dmd_log(LOG_INFO, "Line offset = %d\n", fmt.fmt.pix.bytesperline);
     if (fmt.fmt.pix.field == V4L2_FIELD_INTERLACED) {
-    	dmd_log(LOG_INFO, "Storate format is interlaced frame format\n");
+        dmd_log(LOG_INFO, "Storate format is interlaced frame format\n");
     }
 
     return ret;
@@ -306,8 +304,7 @@ int video_getfmt(struct v4l2_device_info *v4l2_info)
  * };
  */
 // set stream fps;
-int video_set_fps(struct v4l2_device_info *v4l2_info)
-{
+int video_set_fps(struct v4l2_device_info *v4l2_info) {
     int ret = 0;
     int fd = v4l2_info->video_device_fd;
     struct v4l2_streamparm *setfps =
@@ -315,7 +312,7 @@ int video_set_fps(struct v4l2_device_info *v4l2_info)
     assert(setfps != NULL);
     bzero(setfps, sizeof(struct v4l2_streamparm));
 
-    // TODO: these two parameters should be set as config file;
+    // TODO(weizhenwei): these two parameters should be set as config file;
     setfps->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     setfps->parm.capture.capturemode = V4L2_MODE_HIGHQUALITY;
     setfps->parm.capture.capability = V4L2_CAP_TIMEPERFRAME;
@@ -338,64 +335,63 @@ int video_set_fps(struct v4l2_device_info *v4l2_info)
  *	MEMORY-MAPPING BUFFERS
  *
  * struct v4l2_requestbuffers {
- * 	__u32			count;
- * 	enum v4l2_buf_type      type;
- * 	enum v4l2_memory        memory;
- * 	__u32			reserved[2];
+ *     __u32                count;
+ *     enum v4l2_buf_type   type;
+ *     enum v4l2_memory     memory;
+ *     __u32                reserved[2];
  * };
  *
  * struct v4l2_buffer - video buffer info
- * @index:	id number of the buffer
- * @type:	buffer type (type == *_MPLANE for multiplanar buffers)
- * @bytesused:	number of bytes occupied by data in the buffer (payload);
- *		unused (set to 0) for multiplanar buffers
- * @flags:	buffer informational flags
- * @field:	field order of the image in the buffer
- * @timestamp:	frame timestamp
- * @timecode:	frame timecode
- * @sequence:	sequence count of this frame
- * @memory:	the method, in which the actual video data is passed
- * @offset:	for non-multiplanar buffers with memory == V4L2_MEMORY_MMAP;
- *		offset from the start of the device memory for this plane,
- *		(or a "cookie" that should be passed to mmap() as offset)
- * @userptr:	for non-multiplanar buffers with memory == V4L2_MEMORY_USERPTR;
- *		a userspace pointer pointing to this buffer
- * @planes:	for multiplanar buffers; userspace pointer to the array of plane
- *		info structs for this buffer
- * @length:	size in bytes of the buffer (NOT its payload) for single-plane
- *		buffers (when type != *_MPLANE); number of elements in the
- *		planes array for multi-plane buffers
- * @input:	input number from which the video data has has been captured
+ * @index: id number of the buffer
+ * @type: buffer type (type == *_MPLANE for multiplanar buffers)
+ * @bytesused: number of bytes occupied by data in the buffer (payload);
+ *             unused (set to 0) for multiplanar buffers
+ * @flags: buffer informational flags
+ * @field: field order of the image in the buffer
+ * @timestamp: frame timestamp
+ * @timecode: frame timecode
+ * @sequence: sequence count of this frame
+ * @memory: the method, in which the actual video data is passed
+ * @offset: for non-multiplanar buffers with memory == V4L2_MEMORY_MMAP;
+ *          offset from the start of the device memory for this plane,
+ *          (or a "cookie" that should be passed to mmap() as offset)
+ * @userptr: for non-multiplanar buffers with memory == V4L2_MEMORY_USERPTR;
+ *           a userspace pointer pointing to this buffer
+ * @planes: for multiplanar buffers; userspace pointer to the array of plane
+ *          info structs for this buffer
+ * @length: size in bytes of the buffer (NOT its payload) for single-plane
+ *          buffers (when type != *_MPLANE); number of elements in the
+ *          planes array for multi-plane buffers
+ * @input:  input number from which the video data has has been captured
  *
  * Contains data exchanged by application and driver using one of the Streaming
  * I/O methods.
  *
  * struct v4l2_buffer {
- * 	__u32			index;
- * 	enum v4l2_buf_type      type;
- * 	__u32			bytesused;
- * 	__u32			flags;
- * 	enum v4l2_field		field;
- * 	struct timeval		timestamp;
- * 	struct v4l2_timecode	timecode;
- * 	__u32			sequence;
- * 
- * 	// memory location
- * 	enum v4l2_memory        memory;
- * 	union {
- * 		__u32           offset;
- * 		unsigned long   userptr;
- * 		struct v4l2_plane *planes;
- * 	} m;
- * 	__u32			length;
- * 	__u32			input;
- * 	__u32			reserved;
+ *     __u32                   index;
+ *     enum v4l2_buf_type      type;
+ *     __u32                   bytesused;
+ *     __u32                   flags;
+ *     enum v4l2_field         field;
+ *     struct timeval          timestamp;
+ *     struct v4l2_timecode    timecode;
+ *     __u32                   sequence;
+ *     
+ *     // memory location
+ *     enum v4l2_memory        memory;
+ *     union {
+ *         __u32           offset;
+ *         unsigned long   userptr;
+ *         struct v4l2_plane *planes;
+ *     } m;
+ *     __u32    length;
+ *     __u32    input;
+ *     __u32    reserved;
  * };
  *
  * memory map for the request buffer
  */
-int video_mmap(struct v4l2_device_info *v4l2_info)
-{
+int video_mmap(struct v4l2_device_info *v4l2_info) {
     // step 1, requestbuffers allocating memory
     int ret = 0;
     int fd = v4l2_info->video_device_fd;
@@ -422,14 +418,15 @@ int video_mmap(struct v4l2_device_info *v4l2_info)
     struct mmap_buffer *buffers = v4l2_info->buffers;
     assert(buffers != NULL);
     for (n_buffer = 0; n_buffer < req.count; n_buffer++) {
-        struct v4l2_buffer buf; // stand for a frame in driver
+        struct v4l2_buffer buf;  // stand for a frame in driver
         bzero(&buf, sizeof(struct v4l2_buffer));
         buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
         buf.memory = V4L2_MEMORY_MMAP;
         buf.index = n_buffer;
 
-        if((ret = ioctl(fd, VIDIOC_QUERYBUF, &buf)) == -1) {
-            dmd_log(LOG_ERR, "ioctl VIDIOC_QUERYBUF error:\n", strerror(errno));
+        if ((ret = ioctl(fd, VIDIOC_QUERYBUF, &buf)) == -1) {
+            dmd_log(LOG_ERR, "ioctl VIDIOC_QUERYBUF error:\n",
+                    strerror(errno));
             return ret;
         }
 
@@ -447,3 +444,4 @@ int video_mmap(struct v4l2_device_info *v4l2_info)
 
     return ret;
 }
+
