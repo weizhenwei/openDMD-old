@@ -39,8 +39,8 @@
  * *****************************************************************************
  */
 
-#ifndef STATISTICS_H
-#define STATISTICS_H
+#ifndef SRC_STATISTICS_H_
+#define SRC_STATISTICS_H_
 
 #include <pthread.h>
 #include <stdint.h>
@@ -50,14 +50,14 @@ struct motion_t {
     // public
     time_t start;  // start time of motion;
     time_t end;    // end time of motion;
-    uint64_t duration; // detected motion duration;
-    uint64_t pictures; // for picture_thread use;
-    uint64_t video_frames; // for video_thread use;
+    uint64_t duration;  // detected motion duration;
+    uint64_t pictures;  // for picture_thread use;
+    uint64_t video_frames;  // for video_thread use;
 
     // private
-    char *video_path;      // for showing video path?
+    char *video_path;       // for showing video path?
 
-    struct motion_t *next; // for next node;
+    struct motion_t *next;  // for next node;
 };
 
 struct stats {
@@ -65,8 +65,8 @@ struct stats {
     struct motion_t *motion_list;
     struct motion_t *current_motion;
     uint32_t num_motions;
-    uint64_t total_pictures; // for picture_thread statistics;
-    uint64_t total_video_frames; // for video_thread statistics;
+    uint64_t total_pictures;      // for picture_thread statistics;
+    uint64_t total_video_frames;  // for video_thread statistics;
 };
 
 // global statistics variable;
@@ -86,7 +86,6 @@ extern void set_motion_videopath(struct motion_t *motion,
 // add struct motion_t motion to struct stats stats
 extern int add_motion(struct stats *stats, struct motion_t *motion);
 
-
 extern struct stats *new_statistics();
 // at the end of programming running, dump the statistics;
 extern void dump_statistics(const struct stats *stats);
@@ -94,4 +93,4 @@ extern void dump_statistics(const struct stats *stats);
 // release memory
 extern void release_statistics(struct stats *stats);
 
-#endif
+#endif  // SRC_STATISTICS_H_
