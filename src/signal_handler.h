@@ -39,9 +39,8 @@
  * *****************************************************************************
  */
 
-#ifndef SIGNAL_HANDLER_H
-#define SIGNAL_HANDLER_H
-
+#ifndef SRC_SIGNAL_HANDLER_H_
+#define SRC_SIGNAL_HANDLER_H_
 
 // for controlling server running;
 extern int client_running;
@@ -51,4 +50,4 @@ extern void signal_init();
 
 extern void signal_register(int sig, void (*sighandler)(int));
 
-#endif
+#endif  // SRC_SIGNAL_HANDLER_H_

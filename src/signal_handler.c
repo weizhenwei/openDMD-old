@@ -39,25 +39,24 @@
  * *****************************************************************************
  */
 
-#include "signal_handler.h"
+#include "src/signal_handler.h"
 
 #include <assert.h>
 #include <bits/signum.h>
 #include <stdlib.h>
 #include <signal.h>
 
-#include "global_context.h"
-#include "log.h"
+#include "src/global_context.h"
+#include "src/log.h"
 
 int client_running = 1;
 int server_running = 1;
-static void sigint_handler(int signal)
-{
+
+static void sigint_handler(int signal) {
     assert(signal == SIGINT);
 
     if (global.cluster_mode == CLUSTER_CLIENT
             || global.cluster_mode == CLUSTER_SINGLETON) {
-
         if (global.client.working_mode == CAPTURE_ALL) {
             // notify picture thread and video thread to exit;
             pthread_mutex_lock(&global.client.thread_attr.picture_mutex);
@@ -104,15 +103,12 @@ static void sigint_handler(int signal)
             "captured SIGINT (Ctrl + C), program exit\n", __func__);
 }
 
-static void sighup_handler(int signal)
-{
-    // TODO: reload config file;
-
+static void sighup_handler(int signal) {
+    // TODO(weizhenwei): reload config file;
     dmd_log(LOG_INFO, "reload config file\n");
 }
 
-void signal_init()
-{
+void signal_init() {
     signal(SIGPIPE, SIG_IGN);
     signal(SIGTERM, SIG_DFL);
 
@@ -123,8 +119,8 @@ void signal_init()
     signal(SIGHUP, sighup_handler);
 }
 
-void signal_register(int sig, void (*sighandler)(int))
-{
-    //TODO
+void signal_register(int sig, void (*sighandler)(int)) {
+    // TODO(weizhenwei): fulfill this function later!
     signal(sig, sighandler);
 }
+
