@@ -39,7 +39,7 @@
  * *****************************************************************************
  */
 
-#include "global_context.h"
+#include "src/global_context.h"
 
 #include <time.h>
 #include <assert.h>
@@ -51,11 +51,9 @@
 #include <unistd.h>
 #include <syslog.h>
 
-
-#include "log.h"
-#include "statistics.h"
-#include "sqlite_utils.h"
-
+#include "src/log.h"
+#include "src/statistics.h"
+#include "src/sqlite_utils.h"
 
 // for thread synchronization;
 unsigned int total_thread = 0;
@@ -64,8 +62,7 @@ pthread_mutex_t total_thread_mutex = PTHREAD_MUTEX_INITIALIZER;
 // define the global variable global to control opendmd running;
 struct global_context global;
 
-static void init_client_rtp()
-{
+static void init_client_rtp() {
     global.client.clientrtp.rtpsession = NULL;
     global.client.clientrtp.user_ts = 0;
 
@@ -87,8 +84,7 @@ static void init_client_rtp()
         2 * global.client.clientrtp.local_sequence_number + 1;
 }
 
-static void init_default_client()
-{
+static void init_default_client() {
     // video device settings;
     assert(strlen(DEFAULT_VIDEO_DEVICE) < PATH_MAX);
     strncpy(global.client.video_device, DEFAULT_VIDEO_DEVICE,
@@ -116,7 +112,6 @@ static void init_default_client()
     global.client.yuv420pbuffer = NULL;
     global.client.bufferingYUYV422 = NULL;
 
-
     // FIXME: according config item:working mode to initialize picture thread
     //        or video thread or both.
 
@@ -139,12 +134,11 @@ static void init_default_client()
     global.client.picture_target = NOTIFY_NONE;
     global.client.video_target = NOTIFY_NONE;
 
-
     // captured picture/video storage settings;
     global.client.picture_format = PICTURE_JPEG;
     global.client.video_format = VIDEO_H264;
 
-    // TODO: need more optimization;
+    // TODO(weizhenwei): need more optimization;
     const char *home = getenv("HOME");
     sprintf(global.client.client_repo, "%s/opendmd/client_repo", home);
 #if 0
@@ -165,9 +159,8 @@ static void init_default_client()
     init_client_rtp();
 }
 
-static void init_default_server()
-{
-    // TODO: need more optimization;
+static void init_default_server() {
+    // TODO(weizhenwei): need more optimization;
     const char *home = getenv("HOME");
     sprintf(global.server.server_repo, "%s/opendmd/server_repo", home);
 #if 0
@@ -188,8 +181,7 @@ static void init_default_server()
                                          // after config parsing;
 }
 
-void init_default_global()
-{
+void init_default_global() {
     // basic global information
 
     global.cluster_mode = CLUSTER_SINGLETON;
@@ -263,14 +255,12 @@ void init_default_global()
             strlen(DEFAULT_WEBSERVER_USERPASS));
     global.webserver_userpass[strlen(DEFAULT_WEBSERVER_USERPASS)] = '\0';
 
-
     // init client/server specific;
     init_default_client();
     init_default_server();
 }
 
-static void dump_client_rtp()
-{
+static void dump_client_rtp() {
     dmd_log(LOG_INFO, "local ip:%s\n", global.client.clientrtp.local_ip);
     dmd_log(LOG_INFO, "local port:%d\n",
             global.client.clientrtp.local_port);
@@ -285,17 +275,15 @@ static void dump_client_rtp()
             global.client.clientrtp.server_rtp_port);
     dmd_log(LOG_INFO, "server rtcp port:%d\n",
             global.client.clientrtp.server_rtcp_port);
-
 }
 
-static int dump_client()
-{
+static int dump_client() {
     // client settings;
     if (global.client.working_mode == CAPTURE_VIDEO) {
         dmd_log(LOG_INFO, "working_mode: capture video\n");
     } else if (global.client.working_mode == CAPTURE_PICTURE) {
         dmd_log(LOG_INFO, "working_mode: capture picture\n");
-    } else if (global.client.working_mode == WEBSERVER_ONLY) { // for debug 
+    } else if (global.client.working_mode == WEBSERVER_ONLY) {  // for debug
         dmd_log(LOG_INFO, "working_mode: webserver only\n");
     } else if (global.client.working_mode == CAPTURE_ALL) {
         dmd_log(LOG_INFO, "working_mode: capture video and picture\n");
@@ -338,8 +326,7 @@ static int dump_client()
     return 0;
 }
 
-static int dump_server()
-{
+static int dump_server() {
     // server settings;
     dmd_log(LOG_INFO, "server repository dir:%s\n", global.server.server_repo);
 
@@ -354,8 +341,7 @@ static int dump_server()
     return 0;
 }
 
-static int dump_common()
-{
+static int dump_common() {
     // basic settings;
     if (global.cluster_mode == CLUSTER_CLIENT) {
         dmd_log(LOG_INFO, "cluster_mode: client\n");
@@ -370,7 +356,7 @@ static int dump_common()
 
     if (global.daemon_mode == DAEMON_ON) {
         dmd_log(LOG_INFO, "daemon_mode: on\n");
-    } if (global.daemon_mode == DAEMON_OFF) {
+    } else if (global.daemon_mode == DAEMON_OFF) {
         dmd_log(LOG_INFO, "daemon_mode: off\n");
     } else {
         dmd_log(LOG_ERR, "Unsupported daemon mode\n");
@@ -391,8 +377,7 @@ static int dump_common()
     return 0;
 }
 
-int dump_global_config()
-{
+int dump_global_config() {
     // only dump, no error detect.
     dmd_log(LOG_INFO, "in function %s:\n", __func__);
 
@@ -411,9 +396,7 @@ int dump_global_config()
     return 0;
 }
 
-
-static void release_client()
-{
+static void release_client() {
     dmd_log(LOG_INFO, "at function %s, free malloced memory\n", __func__);
 
     // free reusable buffers;
@@ -456,20 +439,16 @@ static void release_client()
     pthread_cond_destroy(&global.client.thread_attr.video_cond);
 }
 
-static void release_server()
-{
-    return ;
-}
+static void release_server() { }
 
 // called at atexit() to free malloced memory in variable global;
-void release_default_global()
-{
+void release_default_global() {
     // clean threads;
     if (global.cluster_mode == CLUSTER_CLIENT ||
             global.cluster_mode == CLUSTER_SINGLETON) {
         release_client();
     } else {
-        // TODO: master thread clean utils;
+        // TODO(weizhenwei): master thread clean utils;
         release_server();
     }
 
@@ -485,3 +464,4 @@ void release_default_global()
     // close database connection;
     close_db(opendmd_db);
 }
+

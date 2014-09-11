@@ -39,41 +39,38 @@
  * *****************************************************************************
  */
 
-#include "config.h"
+#include "src/config.h"
 
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
 
-#include "global_context.h"
-#include "log.h"
-#include "parser.h"
+#include "src/global_context.h"
+#include "src/log.h"
+#include "src/parser.h"
 
-static void remove_tail_slash(char *path)
-{
+static void remove_tail_slash(char *path) {
     dmd_log(LOG_DEBUG, "in function %s, before remove tail, path is %s\n",
             __func__, path);
     int len = strlen(path);
     // we only remove once, because path like "/home/abc/" may happen,
     // but path like "/home/abc//"may not happen always;
-    if (*(path + len - 1) == '/') { // remove the tail slash;
+    if (*(path + len - 1) == '/') {  // remove the tail slash;
         *(path + len - 1) = '\0';
     }
     dmd_log(LOG_DEBUG, "in function %s, after remove tail, path is %s\n",
             __func__, path);
 }
 
-static void check_path()
-{
+static void check_path() {
     remove_tail_slash(global.client.client_repo);
     remove_tail_slash(global.server.server_repo);
     remove_tail_slash(global.database_repo);
     remove_tail_slash(global.webserver_root);
 }
 
-static int check_config_integrity()
-{
+static int check_config_integrity() {
     // client side check;
     if (global.cluster_mode == CLUSTER_CLIENT) {
         int lsn = global.client.clientrtp.local_sequence_number;
@@ -85,11 +82,9 @@ static int check_config_integrity()
     check_path();
 
     return 0;
-
 }
 
-static void set_buffering()
-{
+static void set_buffering() {
     int width = global.client.image_width;
     int height = global.client.image_height;
 
@@ -135,8 +130,7 @@ static void set_buffering()
     bzero(global.client.bufferingYUYV422, bufferyuyvlength * sizeof(uint8_t));
 }
 
-int parse_config(const char *conf_file)
-{
+int parse_config(const char *conf_file) {
     char comment_char = '#';
     char separate_char = ' ';
     struct config *conf = new_config(comment_char, separate_char);
@@ -326,7 +320,7 @@ int parse_config(const char *conf_file)
             global.client.video_device[strlen(item->value)] = '\0';
 
         } else if (strcmp(item->key, "image_width") == 0) {
-            // TODO: there is no error detection in atoi();
+            // TODO(weizhenwei): there is no error detection in atoi();
             global.client.image_width = atoi(item->value);
 
         } else if (strcmp(item->key, "image_height") == 0) {
@@ -389,7 +383,8 @@ int parse_config(const char *conf_file)
 
         } else if (strcmp(item->key, "client_repo") == 0) {
             assert(strlen(item->value) < PATH_MAX);
-            strncpy(global.client.client_repo, item->value, strlen(item->value));
+            strncpy(global.client.client_repo, item->value,
+                    strlen(item->value));
             /* Warning:If there is no null byte among the first n bytes of
              * src, the string placed in dest will not be null-terminated,
              * remember to add null-terminated manually.
@@ -412,7 +407,7 @@ int parse_config(const char *conf_file)
         }
 
         item = item->next;
-    } // while
+    }  // while
 
     // clean the config parser;
     release_config(conf);

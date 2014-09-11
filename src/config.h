@@ -39,9 +39,9 @@
  * *****************************************************************************
  */
 
-#ifndef DMD_CONFIG_H
-#define DMD_CONFIG_H
+#ifndef SRC_CONFIG_H_
+#define SRC_CONFIG_H_
 
 extern int parse_config(const char *conf_file);
 
-#endif
+#endif  // SRC_CONFIG_H_

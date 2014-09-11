@@ -39,8 +39,8 @@
  * *****************************************************************************
  */
 
-#ifndef GLOBAL_CONTEXT_H
-#define GLOBAL_CONTEXT_H
+#ifndef SRC_GLOBAL_CONTEXT_H_
+#define SRC_GLOBAL_CONTEXT_H_
 
 #include <linux/limits.h>   // for PATH_MAX
 #include <stdint.h>
@@ -118,7 +118,7 @@ enum daemon_mode_type {
 enum working_type {
     CAPTURE_PICTURE = 1,
     CAPTURE_VIDEO = 2,
-    WEBSERVER_ONLY = 3, // just for webserver debug purpose;
+    WEBSERVER_ONLY = 3,  // just for webserver debug purpose;
     CAPTURE_ALL = 4,
 };
 
@@ -200,13 +200,13 @@ struct client_rtp {
 
 struct client_context {
     // basic client settings;
-    enum working_type  working_mode;     // working mode: picture, video or all;
+    enum working_type  working_mode;  // working mode: picture, video or all;
 
     // video device settings;
-    char video_device[PATH_MAX];         // video device path;
-    unsigned int image_width;            // image width in pixels; 
-    unsigned int image_height;           // image height in pixels; 
-    unsigned int req_count;              // mmap req.count;
+    char video_device[PATH_MAX];      // video device path;
+    unsigned int image_width;         // image width in pixels;
+    unsigned int image_height;        // image height in pixels;
+    unsigned int req_count;           // mmap req.count;
 
     // motion detection threshold settings;
     unsigned int diff_pixels;         // the pixels threshold motion occured;
@@ -232,17 +232,17 @@ struct client_context {
     uint8_t *bufferingYUYV422;        // buffered place when captured new image
                                       // length = image_width*image_height*2;
 
-    struct thread_attribute thread_attr;    // thread attribute;
-    enum main_notify_target picture_target; // picture thread notify target;
-    enum main_notify_target video_target;   // picture thread notify target;
+    struct thread_attribute thread_attr;     // thread attribute;
+    enum main_notify_target picture_target;  // picture thread notify target;
+    enum main_notify_target video_target;    // picture thread notify target;
 
     // captured pictures/video storage settings;
-    enum picture_format_type picture_format; // captured picture format.
-    enum video_format_type video_format;     // captured video format;
-    char client_repo[PATH_MAX];              // captured pictures/video
-                                             // storage directory.
+    enum picture_format_type picture_format;  // captured picture format.
+    enum video_format_type video_format;      // captured video format;
+    char client_repo[PATH_MAX];               // captured pictures/video
+                                              // storage directory.
     // video sending ortp associated
-    struct client_rtp clientrtp;                   // client ortp session;
+    struct client_rtp clientrtp;              // client ortp session;
 };
 
 // describe a client in server side;
@@ -251,7 +251,6 @@ struct server_client_item {
     time_t lasttime;          // last time when received from this client;
     FILE *fp;                 // fp for writing to disk file;
     char filename[PATH_MAX];  // disk filename for writing to;
-    
 };
 
 struct server_context {
@@ -263,10 +262,10 @@ struct server_context {
     int server_port_base;                    // base port for rtp_port
                                              // and rtcp_port mallocation;
 
-    time_t last_duration;                    // if time elapsed this period,
-                                             // but no receiving from client,
-                                             // restart fp for next filename;
-    struct server_client_item *client_items; // total client items,
+    time_t last_duration;                     // if time elapsed this period,
+                                              // but no receiving from client,
+                                              // restart fp for next filename;
+    struct server_client_item *client_items;  // total client items,
                                              // totalnumber = client_scale;
 };
 
@@ -313,8 +312,7 @@ extern void init_default_global();
 
 extern int dump_global_config();
 
-
 // called at atexit() to free malloced memory in variable global;
 extern void release_default_global();
 
-#endif
+#endif  // SRC_GLOBAL_CONTEXT_H_
