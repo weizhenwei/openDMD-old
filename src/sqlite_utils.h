@@ -39,8 +39,8 @@
  * *****************************************************************************
  */
 
-#ifndef SQLITE_UTILS_H
-#define SQLITE_UTILS_H
+#ifndef SRC_SQLITE_UTILS_H_
+#define SRC_SQLITE_UTILS_H_
 
 #include <sqlite3.h>
 
@@ -61,8 +61,7 @@ extern int init_database();
 extern sqlite3 *open_db(const char *database);
 
 extern int exec_SQL(sqlite3 *db, const char *sql,
-        int (*callback)(void *, int, char **, char **),
-        void *firstarg);
+        int (*callback)(void *, int, char **, char **), void *firstarg);
 
 extern int create_table(sqlite3 *db, const char *table_name);
 
@@ -80,7 +79,5 @@ extern int clean_database_table(sqlite3 *db, const char *table_name);
 
 extern int close_db(sqlite3 *db);
 
-
-
-#endif
+#endif  // SRC_SQLITE_UTILS_H_
 

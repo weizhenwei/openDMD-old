@@ -39,7 +39,7 @@
  * *****************************************************************************
  */
 
-#include "sqlite_utils.h"
+#include "src/sqlite_utils.h"
 
 #include <assert.h>
 #include <linux/limits.h>
@@ -47,23 +47,22 @@
 #include <stdint.h>
 #include <time.h>
 
-#include "global_context.h"
-#include "log.h"
-#include "sqlite_utils.h"
-#include "path.h"
-#include "statistics.h"
+#include "src/global_context.h"
+#include "src/log.h"
+#include "src/path.h"
+#include "src/statistics.h"
 
 // global database file;
 char database_file[PATH_MAX];
 sqlite3 *opendmd_db = NULL;
 
-int init_database()
-{
+int init_database() {
     int ret = test_and_mkdir(global.database_repo);
     assert(ret == 0);
 
     // open/create default database opendmd.db
-    sprintf(database_file, "%s/%s", global.database_repo, DEFAULT_DATABASE);
+    snprintf(database_file, PATH_MAX, "%s/%s",
+            global.database_repo, DEFAULT_DATABASE);
     dmd_log(LOG_DEBUG, "database_file is %s\n", database_file);
     opendmd_db = open_db(database_file);
     assert(opendmd_db != NULL);
@@ -75,8 +74,7 @@ int init_database()
     return 0;
 }
 
-sqlite3 *open_db(const char *database)
-{
+sqlite3 *open_db(const char *database) {
     // define the sqlite data connection object;
     sqlite3 *db = NULL;
 
@@ -90,11 +88,8 @@ sqlite3 *open_db(const char *database)
     return db;
 }
 
-
 int exec_SQL(sqlite3 *db, const char *sql,
-        int (*callback)(void *, int, char **, char **),
-        void *firstarg)
-{
+        int (*callback)(void *, int, char **, char **), void *firstarg) {
     char *errmsg = NULL;
     int rc = sqlite3_exec(db, sql, callback, firstarg, &errmsg);
     if (rc != SQLITE_OK) {
@@ -106,11 +101,11 @@ int exec_SQL(sqlite3 *db, const char *sql,
     return rc;
 }
 
-int create_table(sqlite3 *db, const char *table_name)
-{
+int create_table(sqlite3 *db, const char *table_name) {
     char create_table_sql[1024];
     // creat table if not exists, "is not exists" is important!
-    sprintf(create_table_sql, "CREATE TABLE IF NOT EXISTS %s "
+    snprintf(create_table_sql, sizeof(create_table_sql),
+            "CREATE TABLE IF NOT EXISTS %s "
             "(start_time TEXT PRIMARY KEY, end_time TEXT, duration INT, "
             "pictures INT, video_frames INT, video_path TEXT)", table_name);
 
@@ -125,24 +120,23 @@ int create_table(sqlite3 *db, const char *table_name)
 }
 
 int insert_item(sqlite3 *db, const char *table_name,
-        const struct motion_t *motion)
-{
+        const struct motion_t *motion) {
     assert(motion != NULL);
     char insert_item_sql[1024];
     char start_time[1024];
     char end_time[1024];
     ctime_r(&motion->start, start_time);
-    start_time[strlen(start_time) - 1] = '\0'; // remove the tailing '\n';
+    start_time[strlen(start_time) - 1] = '\0';  // remove the tailing '\n';
     ctime_r(&motion->end, end_time);
-    end_time[strlen(end_time) - 1] = '\0';     // remove the tailing '\n';
+    end_time[strlen(end_time) - 1] = '\0';      // remove the tailing '\n';
     if (motion->video_path != NULL) {
-        sprintf(insert_item_sql,
+        snprintf(insert_item_sql, sizeof(insert_item_sql),
                 "INSERT INTO %s VALUES(\"%s\", \"%s\", "
                 "%05ld, %05ld, %05ld, \"%s\")",
                 table_name, start_time, end_time, motion->duration,
                 motion->pictures, motion->video_frames, motion->video_path);
     } else {
-        sprintf(insert_item_sql,
+        snprintf(insert_item_sql, sizeof(insert_item_sql),
                 "INSERT INTO %s VALUES(\"%s\", \"%s\", "
                 "%05ld, %05ld, %05ld, \"%s\")",
                 table_name, start_time, end_time, motion->duration,
@@ -159,8 +153,7 @@ int insert_item(sqlite3 *db, const char *table_name,
     return 0;
 }
 
-int store_motion_to_database(const struct stats *stats)
-{
+int store_motion_to_database(const struct stats *stats) {
     int i = 0;
     struct motion_t *m = stats->motion_list;
     while (m != NULL) {
@@ -174,22 +167,22 @@ int store_motion_to_database(const struct stats *stats)
     return 0;
 }
 
-static int dump_callback(void *prefix, int argc, char **argv, char **azColName)
-{
-   int i;
-   dmd_log(LOG_INFO, "%s\n", (const char *)prefix);
-   for (i = 0; i < argc; i++) {
-      dmd_log(LOG_INFO, "%s:%s\n", azColName[i], argv[i] ? argv[i] : "NULL");
-   }
-   dmd_log(LOG_INFO, "\n");
+static int dump_callback(void *prefix, int argc, char **argv,
+        char **azColName) {
+    int i;
+    dmd_log(LOG_INFO, "%s\n", (const char *)prefix);
+    for (i = 0; i < argc; i++) {
+        dmd_log(LOG_INFO, "%s:%s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+    }
+    dmd_log(LOG_INFO, "\n");
 
-   return 0;
+    return 0;
 }
 
-int dump_database_table(sqlite3 *db, const char *table_name)
-{
+int dump_database_table(sqlite3 *db, const char *table_name) {
     char dump_table_sql[1024];
-    sprintf(dump_table_sql, "SELECT * FROM %s ", table_name);
+    snprintf(dump_table_sql, sizeof(dump_table_sql),
+            "SELECT * FROM %s ", table_name);
 
     const char *prefix = "motion detected:";
     int rc = exec_SQL(db, dump_table_sql, dump_callback, (void *)prefix);
@@ -202,8 +195,7 @@ int dump_database_table(sqlite3 *db, const char *table_name)
     return 0;
 }
 
-static void send_buffer(int fd, const char *buffer)
-{
+static void send_buffer(int fd, const char *buffer) {
     int buffer_len = strlen(buffer);
     int sendlen = send(fd, buffer, buffer_len, 0);
     assert(sendlen == buffer_len);
@@ -211,30 +203,29 @@ static void send_buffer(int fd, const char *buffer)
 }
 
 static int dump_to_fd_callback(void *prefix, int argc,
-        char **argv, char **azColName)
-{
-   int i;
-   int fd = *(int *)prefix;
-   char item[1024];
-   const char *p_start = "<br><p>\n";
-   const char *p_end = "</p>\n";
+        char **argv, char **azColName) {
+    int i;
+    int fd = *(int *)prefix;
+    char item[1024];
+    const char *p_start = "<br><p>\n";
+    const char *p_end = "</p>\n";
 
-   send_buffer(fd, p_start);
-   for (i = 0; i < argc; i++) {
-       sprintf(item, "<h3>%s:%s</h3>\n", azColName[i],
-               argv[i] ? argv[i] : "NULL");
-       assert(strlen(item) < 1024 - 1);
-       send_buffer(fd, item);
-   }
-   send_buffer(fd, p_end);
+    send_buffer(fd, p_start);
+    for (i = 0; i < argc; i++) {
+        snprintf(item, sizeof(item), "<h3>%s:%s</h3>\n", azColName[i],
+                argv[i] ? argv[i] : "NULL");
+        assert(strlen(item) < 1024 - 1);
+        send_buffer(fd, item);
+    }
+    send_buffer(fd, p_end);
 
-   return 0;
+    return 0;
 }
 
-int dump_database_table_to_fd(sqlite3 *db, const char *table_name, int fd)
-{
+int dump_database_table_to_fd(sqlite3 *db, const char *table_name, int fd) {
     char dump_table_sql[1024];
-    sprintf(dump_table_sql, "SELECT * FROM %s ", table_name);
+    snprintf(dump_table_sql, sizeof(dump_table_sql),
+            "SELECT * FROM %s ", table_name);
 
     int prefix = fd;
     int rc = exec_SQL(db, dump_table_sql, dump_to_fd_callback,
@@ -248,10 +239,10 @@ int dump_database_table_to_fd(sqlite3 *db, const char *table_name, int fd)
     return 0;
 }
 
-int clean_database_table(sqlite3 *db, const char *table_name)
-{
+int clean_database_table(sqlite3 *db, const char *table_name) {
     char delete_table_sql[1024];
-    sprintf(delete_table_sql, "DELETE FROM %s ", table_name);
+    snprintf(delete_table_sql, sizeof(delete_table_sql),
+            "DELETE FROM %s ", table_name);
 
     int rc = exec_SQL(db, delete_table_sql, NULL, NULL);
     if (rc != SQLITE_OK) {
@@ -263,9 +254,7 @@ int clean_database_table(sqlite3 *db, const char *table_name)
     return 0;
 }
 
-
-int close_db(sqlite3 *db)
-{
+int close_db(sqlite3 *db) {
     int rc = sqlite3_close(db);
     if (rc != SQLITE_OK) {
         dmd_log(LOG_ERR, "can't close the database:%s\n",
