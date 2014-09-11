@@ -39,8 +39,8 @@
  * *****************************************************************************
  */
 
-#ifndef PARSER_H
-#define PARSER_H
+#ifndef SRC_PARSER_H_
+#define SRC_PARSER_H_
 
 struct config_item {
     struct config_item *next;
@@ -65,4 +65,5 @@ extern void dump_config(const struct config *conf);
 
 extern void release_config(struct config *conf);
 
-#endif
+#endif  // SRC_PARSER_H_
+

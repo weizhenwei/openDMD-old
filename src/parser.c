@@ -39,7 +39,7 @@
  * *****************************************************************************
  */
 
-#include "parser.h"
+#include "src/parser.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -47,12 +47,9 @@
 #include <string.h>
 #include <strings.h>
 
-#include "log.h"
+#include "src/log.h"
 
-
-struct config *new_config(const char comment_char,
-        const char separator_char)
-{
+struct config *new_config(const char comment_char, const char separator_char) {
     struct config *conf = (struct config *)malloc(sizeof(struct config));
     if (conf == NULL) {
         dmd_log(LOG_ERR, "in function %s, malloc for struct config failed\n",
@@ -86,8 +83,7 @@ struct config *new_config(const char comment_char,
 }
 
 static int add_config_item(struct config *conf,
-        const char *key, const char *value)
-{
+        const char *key, const char *value) {
     struct config_item *item = (struct config_item *)
         malloc(sizeof(struct config_item));
     if (item == NULL) {
@@ -107,8 +103,7 @@ static int add_config_item(struct config *conf,
     return 0;
 }
 
-int parse_config_file(const char *config_file, struct config *conf)
-{
+int parse_config_file(const char *config_file, struct config *conf) {
     int ret = -1;
 
     FILE *fp = fopen(config_file, "r");
@@ -120,18 +115,17 @@ int parse_config_file(const char *config_file, struct config *conf)
         return -1;
     }
 
-    // TODO: we assume that the chars of each line is less than 1024
+    // TODO(weizhenwei): we assume that chars of each line is less than 1024
     // remove this assumption later!
     char *p = fgets(buffer, LINE, fp);
-    while ( p != NULL) {
-
+    while (p != NULL) {
         dmd_log(LOG_DEBUG, "in function %s, config line is %s",
                 __func__, buffer);
-        if (buffer[0] == conf->comment_char) { // comment line;
+        if (buffer[0] == conf->comment_char) {  // comment line;
             p = fgets(buffer, LINE, fp);
             continue;
         }
-        if (buffer[0] == '\n') { // empty line;
+        if (buffer[0] == '\n') {  // empty line;
             p = fgets(buffer, LINE, fp);
             continue;
         }
@@ -161,7 +155,7 @@ int parse_config_file(const char *config_file, struct config *conf)
                 key, value, strlen(value));
 
         // add config_item to config;
-        ret = add_config_item(conf, key ,value);
+        ret = add_config_item(conf, key, value);
         assert(ret == 0);
 
         p = fgets(buffer, LINE, fp);
@@ -176,8 +170,7 @@ int parse_config_file(const char *config_file, struct config *conf)
     return 0;
 }
 
-void dump_config(const struct config *conf)
-{
+void dump_config(const struct config *conf) {
     int total_item = conf->total_item;
     int counter = 0;
     struct config_item *item = conf->items;
@@ -197,8 +190,7 @@ void dump_config(const struct config *conf)
     assert(counter == total_item);
 }
 
-void release_config(struct config *conf)
-{
+void release_config(struct config *conf) {
     if (conf == NULL) {
         return;
     }
@@ -218,6 +210,7 @@ void release_config(struct config *conf)
         }
         free(p);
     }
-    
+
     free(conf);
 }
+
