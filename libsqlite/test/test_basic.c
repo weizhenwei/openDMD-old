@@ -44,18 +44,16 @@
 #include <assert.h>
 #include <sqlite3.h>
 
-
 // array that stores SQL command;
-char sql[1024];
+static char sql[1024];
 
-static sqlite3 *open_db(const char *database)
-{
+static sqlite3 *open_db(const char *database) {
     // define an sqlite data connection object;
     sqlite3 *db = NULL;
 
     int rc = sqlite3_open(database, &db);
     if (rc != SQLITE_OK) {
-        fprintf(stderr,"%s\n",sqlite3_errmsg(db));
+        fprintf(stderr, "%s\n", sqlite3_errmsg(db));
         return NULL;
     }
     printf("connect sucess!\n");
@@ -63,8 +61,7 @@ static sqlite3 *open_db(const char *database)
     return db;
 }
 
-static void close_db(sqlite3 *db)
-{
+static void close_db(sqlite3 *db) {
     int rc = sqlite3_close(db);
     if (rc != SQLITE_OK) {
         printf("can't close the database:%s\n", sqlite3_errmsg(db));
@@ -72,8 +69,7 @@ static void close_db(sqlite3 *db)
     }
 }
 
-static int exec_SQL(sqlite3 *db, const char *sql)
-{
+static int exec_SQL(sqlite3 *db, const char *sql) {
     char *errmsg = NULL;
     int rc = sqlite3_exec(db, sql, NULL, NULL, &errmsg);
     if (rc != SQLITE_OK) {
@@ -88,11 +84,11 @@ static int exec_SQL(sqlite3 *db, const char *sql)
 }
 
 // test insert cmd and transaction cmd;
-static int insert_values(sqlite3 *db)
-{
+static int insert_values(sqlite3 *db) {
     char *errmsg = NULL;
 
-    sprintf(sql, "%s", "INSERT INTO detected_motions(id, des, start_time, "
+    snprintf(sql, sizeof(sql),
+            "%s", "INSERT INTO detected_motions(id, des, start_time, "
             "end_time, video_path) VALUES(20140823, \"first motion\", "
             "20140817, 20140817, \"/home/wzw/opendmd/video/a.flv\")");
 
@@ -128,14 +124,14 @@ static int insert_values(sqlite3 *db)
     return 0;
 }
 
-int main(void)
-{
+int main(void) {
     int rc = -1;
     sqlite3 *db = NULL;
     db = open_db("sqlite.db");
     assert(db != NULL);
 
-    sprintf(sql, "CREATE TABLE IF NOT EXISTS detected_motions"
+    snprintf(sql, sizeof(sql),
+            "CREATE TABLE IF NOT EXISTS detected_motions"
             "(id INT, des TEXT, start_time INT, "
             "end_time INT, video_path TEXT)");
     rc = exec_SQL(db, sql);
