@@ -39,67 +39,61 @@
  * *****************************************************************************
  */
 
-#include "rtp_send.h"
+#include "libortp/test/rtp_send.h"
 
-void rtp_send_init()
-{
-	ortp_init();
-	ortp_scheduler_init();
+void rtp_send_init() {
+    ortp_init();
+    ortp_scheduler_init();
     ortp_set_log_level_mask(ORTP_DEBUG | ORTP_MESSAGE
             | ORTP_WARNING | ORTP_ERROR);
     // ortp_set_log_level_mask(ORTP_ERROR);
-
 }
 
-void rtp_send_release()
-{
+void rtp_send_release() {
     ortp_exit();
 }
 
-
 RtpSession *rtp_send_createSession(
         const char *clientIP, const int clientPort,
-        const char *remoteIP, const int remotePort)
-{
-    RtpSession *rtpsession = rtp_session_new(RTP_SESSION_SENDONLY);	
+        const char *remoteIP, const int remotePort) {
+    RtpSession *rtpsession = rtp_session_new(RTP_SESSION_SENDONLY);
     assert(rtpsession != NULL);
 
-	rtp_session_set_scheduling_mode(rtpsession, 1);
-	rtp_session_set_blocking_mode(rtpsession, 0);
-    rtp_session_set_connected_mode(rtpsession, 1); // 1 means TRUE;
-    //rtp_session_set_local_addr(rtpsession, clientIP, clientPort, clientPort+1);
-	rtp_session_set_remote_addr(rtpsession, remoteIP, remotePort);
+    rtp_session_set_scheduling_mode(rtpsession, 1);
+    rtp_session_set_blocking_mode(rtpsession, 0);
+    rtp_session_set_connected_mode(rtpsession, 1);  // 1 means TRUE;
+    // rtp_session_set_local_addr(rtpsession,
+    // clientIP, clientPort, clientPort+1);
+    rtp_session_set_remote_addr(rtpsession, remoteIP, remotePort);
 
-	rtp_session_set_symmetric_rtp(rtpsession, 1);
-    
+    rtp_session_set_symmetric_rtp(rtpsession, 1);
+
     rtp_session_set_source_description(
             rtpsession,
-            "cname", /*cname*/
-            "name",  /*name*/
-            "weizhenwei1988@gmail.com", /*email*/
-            "110", /*phone number*/
-            "loc", /*loc*/
-            "tool", /*tool*/
-            "note:rtp_send test" /*note*/
-            );
+            "cname",  /*cname*/
+            "name",   /*name*/
+            "weizhenwei1988@gmail.com",  /*email*/
+            "110",   /*phone number*/
+            "loc",   /*loc*/
+            "tool",  /*tool*/
+            "note:rtp_send test");
 
-    rtp_session_enable_rtcp(rtpsession, 1); // 1 means TRUE;
+    rtp_session_enable_rtcp(rtpsession, 1);  // 1 means TRUE;
 
     // set payload type to H264 (96);
-	rtp_session_set_payload_type(rtpsession, PAYLOAD_TYPE_H264);
+    rtp_session_set_payload_type(rtpsession, PAYLOAD_TYPE_H264);
 
-	char *ssrc = getenv("SSRC");
-	if (ssrc != NULL) {
-		rtp_session_set_ssrc(rtpsession, atoi(ssrc));
-	}
+    char *ssrc = getenv("SSRC");
+    if (ssrc != NULL) {
+        rtp_session_set_ssrc(rtpsession, atoi(ssrc));
+    }
 
     return rtpsession;
 }
-    
+
 void rtp_send(const char *sendfile,
         const char *clientIP, const int clientPort,
-        const char *remoteIP, const int remotePort)
-{
+        const char *remoteIP, const int remotePort) {
     unsigned char buffer[SEND_LEN];
     unsigned int user_ts = 0;
     int readlen = 0;

@@ -39,7 +39,7 @@
  * *****************************************************************************
  */
 
-#include "rtp_send.h"
+#include "libortp/test/rtp_send.h"
 
 #define CLIENT_IP "127.0.0.1"
 #define CLIENT_PORT 9000
@@ -48,9 +48,9 @@
 #define REMOTE_PORT 5004
 
 
-int  main(int argc, char *argv[])
-{
+int  main(int argc, char *argv[]) {
     rtp_send("./send.h264", CLIENT_IP, CLIENT_PORT, REMPTE_IP, REMOTE_PORT);
 
     return 0;
 }
+

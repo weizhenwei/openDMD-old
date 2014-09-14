@@ -39,8 +39,8 @@
  * *****************************************************************************
  */
 
-#ifndef RTP_SEND_H
-#define RTP_SEND_H
+#ifndef LIBORTP_TEST_RTP_SEND_H_
+#define LIBORTP_TEST_RTP_SEND_H_
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -57,9 +57,9 @@
 // #define VIDEO_TIME_STAMP_INC  3600
 #define VIDEO_TIME_STAMP_INC  1800
 
-extern void rtp_send_init(); 
+extern void rtp_send_init();
 
-extern void rtp_send_release(); 
+extern void rtp_send_release();
 
 extern RtpSession *rtp_send_createSession(
         const char *clientIP, const int clientPort,
@@ -68,5 +68,6 @@ extern RtpSession *rtp_send_createSession(
 extern void rtp_send(const char *sendfile,
         const char *clientIP, const int clientPort,
         const char *remoteIP, const int remotePort);
- 
-#endif
+
+#endif  // LIBORTP_TEST_RTP_SEND_H_
+
