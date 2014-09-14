@@ -6,7 +6,7 @@ INCLUDES = -I$(top_srcdir)/libjpeg -I$(top_srcdir)/libsqlite/src \
        -I$(top_srcdir)/libortp/include -I$(top_srcdir)/libortp \
        -I$(top_srcdir)/libx264 -I$(top_srcdir)/libx264/output \
        -I$(top_srcdir)/src/client -I$(top_srcdir)/src/server \
-       -I$(top_srcdir)/src/webserver
+       -I$(top_srcdir)/src/webserver -I$(top_srcdir)/src/jit
 
 opendmd_LDADD = $(top_srcdir)/libjpeg/libjpeg.a \
         $(top_srcdir)/libortp/src/libortp.a \
@@ -31,6 +31,7 @@ opendmd_SOURCES = main.c \
           client/libx264.h client/libx264.c \
           client/video_thread.h client/video_thread.c \
           client/rtp_send.h client/rtp_send.c \
+		  jit/jit.h jit/x86_64/assembler.h jit/x86_64/assembler.c \
           server/rtp_recv.h server/rtp_recv.c \
           server/rtp_server.h server/rtp_server.c \
 		  webserver/socket_utils.h webserver/socket_utils.c \

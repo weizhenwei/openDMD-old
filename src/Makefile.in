@@ -51,8 +51,8 @@ am_opendmd_OBJECTS = main.$(OBJEXT) config.$(OBJEXT) log.$(OBJEXT) \
 	statistics.$(OBJEXT) sqlite_utils.$(OBJEXT) video.$(OBJEXT) \
 	image_convert.$(OBJEXT) image_capture.$(OBJEXT) \
 	picture_thread.$(OBJEXT) flv_muxer.$(OBJEXT) libx264.$(OBJEXT) \
-	video_thread.$(OBJEXT) rtp_send.$(OBJEXT) rtp_recv.$(OBJEXT) \
-	rtp_server.$(OBJEXT) socket_utils.$(OBJEXT) \
+	video_thread.$(OBJEXT) rtp_send.$(OBJEXT) assembler.$(OBJEXT) \
+	rtp_recv.$(OBJEXT) rtp_server.$(OBJEXT) socket_utils.$(OBJEXT) \
 	http_utils.$(OBJEXT) webserver_process.$(OBJEXT)
 opendmd_OBJECTS = $(am_opendmd_OBJECTS)
 opendmd_DEPENDENCIES = $(top_srcdir)/libjpeg/libjpeg.a \
@@ -171,7 +171,7 @@ INCLUDES = -I$(top_srcdir)/libjpeg -I$(top_srcdir)/libsqlite/src \
        -I$(top_srcdir)/libortp/include -I$(top_srcdir)/libortp \
        -I$(top_srcdir)/libx264 -I$(top_srcdir)/libx264/output \
        -I$(top_srcdir)/src/client -I$(top_srcdir)/src/server \
-       -I$(top_srcdir)/src/webserver
+       -I$(top_srcdir)/src/webserver -I$(top_srcdir)/src/jit
 
 opendmd_LDADD = $(top_srcdir)/libjpeg/libjpeg.a \
         $(top_srcdir)/libortp/src/libortp.a \
@@ -190,6 +190,7 @@ opendmd_SOURCES = main.c \
           client/libx264.h client/libx264.c \
           client/video_thread.h client/video_thread.c \
           client/rtp_send.h client/rtp_send.c \
+		  jit/jit.h jit/x86_64/assembler.h jit/x86_64/assembler.c \
           server/rtp_recv.h server/rtp_recv.c \
           server/rtp_server.h server/rtp_server.c \
 		  webserver/socket_utils.h webserver/socket_utils.c \
@@ -277,6 +278,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/assembler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/config.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flv_muxer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/global_context.Po@am__quote@
@@ -426,6 +428,20 @@ rtp_send.obj: client/rtp_send.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='client/rtp_send.c' object='rtp_send.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rtp_send.obj `if test -f 'client/rtp_send.c'; then $(CYGPATH_W) 'client/rtp_send.c'; else $(CYGPATH_W) '$(srcdir)/client/rtp_send.c'; fi`
+
+assembler.o: jit/x86_64/assembler.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT assembler.o -MD -MP -MF $(DEPDIR)/assembler.Tpo -c -o assembler.o `test -f 'jit/x86_64/assembler.c' || echo '$(srcdir)/'`jit/x86_64/assembler.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/assembler.Tpo $(DEPDIR)/assembler.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jit/x86_64/assembler.c' object='assembler.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o assembler.o `test -f 'jit/x86_64/assembler.c' || echo '$(srcdir)/'`jit/x86_64/assembler.c
+
+assembler.obj: jit/x86_64/assembler.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT assembler.obj -MD -MP -MF $(DEPDIR)/assembler.Tpo -c -o assembler.obj `if test -f 'jit/x86_64/assembler.c'; then $(CYGPATH_W) 'jit/x86_64/assembler.c'; else $(CYGPATH_W) '$(srcdir)/jit/x86_64/assembler.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/assembler.Tpo $(DEPDIR)/assembler.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jit/x86_64/assembler.c' object='assembler.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o assembler.obj `if test -f 'jit/x86_64/assembler.c'; then $(CYGPATH_W) 'jit/x86_64/assembler.c'; else $(CYGPATH_W) '$(srcdir)/jit/x86_64/assembler.c'; fi`
 
 rtp_recv.o: server/rtp_recv.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rtp_recv.o -MD -MP -MF $(DEPDIR)/rtp_recv.Tpo -c -o rtp_recv.o `test -f 'server/rtp_recv.c' || echo '$(srcdir)/'`server/rtp_recv.c

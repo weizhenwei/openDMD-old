@@ -1,0 +1,2 @@
+This directory is inspired from qemu project.
+The directory x86_64 originates from qemu-2.1.0/tcg/i36;
