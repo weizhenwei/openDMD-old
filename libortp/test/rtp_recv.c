@@ -39,71 +39,67 @@
  * *****************************************************************************
  */
 
-#include "rtp_recv.h"
+#include "libortp/test/rtp_recv.h"
 
-void rtp_recv_init()
-{
-	ortp_init();
-	ortp_scheduler_init();
-	ortp_set_log_level_mask(ORTP_DEBUG | ORTP_MESSAGE
+void rtp_recv_init() {
+    ortp_init();
+    ortp_scheduler_init();
+    ortp_set_log_level_mask(ORTP_DEBUG | ORTP_MESSAGE
             | ORTP_WARNING | ORTP_ERROR);
-	// ortp_set_log_level_mask(ORTP_ERROR);
 
+    // ortp_set_log_level_mask(ORTP_ERROR);
 }
 
-void rtp_recv_release()
-{
+void rtp_recv_release() {
     ortp_exit();
 }
 
-void ssrc_cb(RtpSession *session)
-{
-	printf("hey, the ssrc has changed !\n");
+void ssrc_cb(RtpSession *session) {
+    printf("hey, the ssrc has changed !\n");
 }
 
-RtpSession *rtp_recv_createSession(const char *localIP, const int localPort)
-{
-    RtpSession *rtpsession = rtp_session_new(RTP_SESSION_RECVONLY);	
+RtpSession *rtp_recv_createSession(const char *localIP, const int localPort) {
+    RtpSession *rtpsession = rtp_session_new(RTP_SESSION_RECVONLY);
     assert(rtpsession != NULL);
 
-	rtp_session_set_scheduling_mode(rtpsession, 1);
-	rtp_session_set_blocking_mode(rtpsession, 1);
-	rtp_session_set_local_addr(rtpsession, localIP, localPort, -1);
-	rtp_session_set_connected_mode(rtpsession, 1); // 1 means TRUE;
+    rtp_session_set_scheduling_mode(rtpsession, 1);
+    rtp_session_set_blocking_mode(rtpsession, 1);
+    rtp_session_set_local_addr(rtpsession, localIP, localPort, -1);
+    rtp_session_set_connected_mode(rtpsession, 1);  // 1 means TRUE;
 
-	rtp_session_set_symmetric_rtp(rtpsession, 1); // this is important;
+    rtp_session_set_symmetric_rtp(rtpsession, 1);  // this is important;
     // rtp_session_enable_adaptive_jitter_compensation(rtpsession, 1);
     // rtp_session_set_jitter_compensation(rtpsession, 40);
 
-	// rtp_session_signal_connect(rtpsession, "ssrc_changed", (RtpCallback)ssrc_cb, 0);
-	// rtp_session_signal_connect(rtpsession, "ssrc_changed", (RtpCallback)rtp_session_reset, 0);
+    // rtp_session_signal_connect(rtpsession, "ssrc_changed",
+    // (RtpCallback)ssrc_cb, 0);
+    // rtp_session_signal_connect(rtpsession, "ssrc_changed",
+    // (RtpCallback)rtp_session_reset, 0);
 
-    rtp_session_enable_rtcp(rtpsession, 1); // 1 means TRUE;
+    rtp_session_enable_rtcp(rtpsession, 1);  // 1 means TRUE;
     // set video payload type to H264
-	rtp_session_set_payload_type(rtpsession, PAYLOAD_TYPE_H264);
+    rtp_session_set_payload_type(rtpsession, PAYLOAD_TYPE_H264);
 
     return rtpsession;
 }
 
 static int cond = 1;
 
-void stop_handler(int signum)
-{
-	cond = 0;
+void stop_handler(int signum) {
+    cond = 0;
 }
 
 void rtp_recv(const char *recvfile, const char *localIP,
-        const int localPort)
-{
-	int recvBytes  = 0;
+        const int localPort) {
+    int recvBytes  = 0;
     int writelen = 0;
-	int have_more = 1;
+    int have_more = 1;
     uint32_t user_ts = 0;
-	int stream_received = 0;
+    int stream_received = 0;
     unsigned char buffer[RECV_LEN];
 
     rtp_recv_init();
-	signal(SIGINT, stop_handler);
+    signal(SIGINT, stop_handler);
     RtpSession *rtpsession = rtp_recv_createSession(localIP, localPort);
     assert(rtpsession != NULL);
 
@@ -125,7 +121,7 @@ void rtp_recv(const char *recvfile, const char *localIP,
             if ((stream_received) && (recvBytes > 0)) {
                 writelen = fwrite(buffer,
                         sizeof(unsigned char), recvBytes, fp);
-                
+
                 printf("receive %d bytes, write %d bytes\n",
                         recvBytes, writelen);
 
@@ -142,3 +138,4 @@ void rtp_recv(const char *recvfile, const char *localIP,
     rtp_recv_release();
     ortp_global_stats_display();
 }
+

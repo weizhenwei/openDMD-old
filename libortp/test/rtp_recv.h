@@ -39,8 +39,8 @@
  * *****************************************************************************
  */
 
-#ifndef RTP_RECV_H
-#define RTP_RECV_H
+#ifndef LIBORTP_TEST_RTP_RECV_H_
+#define LIBORTP_TEST_RTP_RECV_H_
 
 #include <assert.h>
 #include <stdio.h>
@@ -58,14 +58,14 @@
 // #define VIDEO_TIME_STAMP_INC  3600
 #define VIDEO_TIME_STAMP_INC  1800
 
-extern void rtp_recv_init(); 
+extern void rtp_recv_init();
 
-extern void rtp_recv_release(); 
+extern void rtp_recv_release();
 
 extern RtpSession *rtp_recv_createSession(const char *localIP,
         const int localPort);
 
 extern void rtp_recv(const char *recvfile, const char *localIP,
         const int localPort);
- 
-#endif
+
+#endif  // LIBORTP_TEST_RTP_RECV_H_
