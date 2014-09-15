@@ -1,28 +1,45 @@
 /*
- * Tiny Code Generator for QEMU
  *
- * Copyright (c) 2008 Fabrice Bellard
+ * Copyright (c) 2014, weizhenwei
+ * All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * 
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ * 
+ * * Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
+ *   and/or other materials provided with the distribution.
+ * 
+ * * Neither the name of the {organization} nor the names of its
+ *   contributors may be used to endorse or promote products derived from
+ *   this software without specific prior written permission.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * File: x86_64_assembler.c
  *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
+ * Brief: implementation file of x86_64 jit;
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * Date: 2014.09.14
+ *
+ * Author: weizhenwei <weizhenwei1988@gmail.com>
+ *
+ * *****************************************************************************
  */
 
-#include "src/jit/x86_64/assembler.h"
+#include "src/jit/x86_64/x86_64_assembler.h"
 
 static const int jit_target_reg_alloc_order[] = {
     JIT_REG_RBP,
@@ -89,9 +106,6 @@ static inline void jit_out_mov(JITContext *s, JITType type,
 
 /* Compute frame size via macros, and tcg_register_jit. */
 
-#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
-#define CPU_TEMP_BUF_NLONGS 128
-#define JIT_STATIC_CALL_ARGS_SIZE 128
 
 #define PUSH_SIZE \
     ((1 + ARRAY_SIZE(jit_callee_save_regs)) * (JIT_TARGET_REG_BITS / 8))
@@ -104,7 +118,7 @@ static inline void jit_out_mov(JITContext *s, JITType type,
      & ~(JIT_TARGET_STACK_ALIGN - 1))
 
 /* Generate global jit prologue and epilogue code */
-void jit_target_qemu_prologue(JITContext *s) {
+void jit_x86_64_prologue(JITContext *s) {
     int i, stack_addend;
 
     /* TB prologue */

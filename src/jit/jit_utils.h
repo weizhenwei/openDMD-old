@@ -28,24 +28,27 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: jit_test.c
+ * File: jit.h
  *
- * Brief: test_file of jit;
+ * Brief: include file of jit
  *
- * Date: 2014.09.14
+ * Date: 2014.09.15
  *
  * Author: weizhenwei <weizhenwei1988@gmail.com>
  *
  * *****************************************************************************
  */
 
-#include "src/jit/jit_utils.h"
+#ifndef SRC_JIT_JIT_UTILS_H_
+#define SRC_JIT_JIT_UTILS_H_
 
-int main(int argc, char *argv[])
-{
+#if defined(__arm__)
+#include "src/jit/arm/jit_assembler.h"
+#elif defined(__x86_64__)
+#include "src/jit/x86_64/x86_64_assembler.h"
+#else
+#error "unsupported architecture"
+#endif
 
 
-
-    return 0;
-}
-
+#endif  // SRC_JIT_JIT_UTILS_H_

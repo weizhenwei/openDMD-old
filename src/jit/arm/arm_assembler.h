@@ -2,6 +2,7 @@
  * Tiny Code Generator for QEMU
  *
  * Copyright (c) 2008 Fabrice Bellard
+ * Copyright (c) 2008 Andrzej Zaborowski
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,28 +23,22 @@
  * THE SOFTWARE.
  */
 
-#ifndef SRC_JIT_X86_64_ASSEMBLER_H_
-#define SRC_JIT_X86_64_ASSEMBLER_H_
+#ifndef SRC_JIT_ARM_ARM_ASSEMBLER_H_ 
+#define SRC_JIT_ARM_ARM_ASSEMBLER_H_
+
+#define JIT_TARGET_INSN_UNIT_SIZE 4
 
 #include "src/jit/jit.h"
 
-#define JIT_TARGET_INSN_UNIT_SIZE  1
-
-# define JIT_TARGET_REG_BITS  64
-# define JIT_TARGET_NB_REGS   16
-
 typedef enum {
-    JIT_REG_EAX = 0,
-    JIT_REG_ECX,
-    JIT_REG_EDX,
-    JIT_REG_EBX,
-    JIT_REG_ESP,
-    JIT_REG_EBP,
-    JIT_REG_ESI,
-    JIT_REG_EDI,
-
-    /* 64-bit registers; always define the symbols to avoid
-       too much if-deffing.  */
+    JIT_REG_R0 = 0,
+    JIT_REG_R1,
+    JIT_REG_R2,
+    JIT_REG_R3,
+    JIT_REG_R4,
+    JIT_REG_R5,
+    JIT_REG_R6,
+    JIT_REG_R7,
     JIT_REG_R8,
     JIT_REG_R9,
     JIT_REG_R10,
@@ -51,23 +46,19 @@ typedef enum {
     JIT_REG_R12,
     JIT_REG_R13,
     JIT_REG_R14,
-    JIT_REG_R15,
-    JIT_REG_RAX = JIT_REG_EAX,
-    JIT_REG_RCX = JIT_REG_ECX,
-    JIT_REG_RDX = JIT_REG_EDX,
-    JIT_REG_RBX = JIT_REG_EBX,
-    JIT_REG_RSP = JIT_REG_ESP,
-    JIT_REG_RBP = JIT_REG_EBP,
-    JIT_REG_RSI = JIT_REG_ESI,
-    JIT_REG_RDI = JIT_REG_EDI,
+    JIT_REG_PC,
 } JITReg;
 
+#define JIT_TARGET_NB_REGS 16
+
 /* used for function call generation */
-#define JIT_REG_CALL_STACK JIT_REG_ESP
-#define JIT_TARGET_STACK_ALIGN 16
-#define JIT_TARGET_CALL_STACK_OFFSET 0
+#define JIT_REG_CALL_STACK		JIT_REG_R13
+#define JIT_TARGET_STACK_ALIGN		8
+#define JIT_TARGET_CALL_ALIGN_ARGS	1
+#define JIT_TARGET_CALL_STACK_OFFSET	0
 
-# define JIT_AREG0 JIT_REG_R14
+enum {
+    JIT_AREG0 = JIT_REG_R6,
+};
 
-#endif  // SRC_JIT_X86_64_ASSEMBLER_H_
-
+#endif  // SRC_JIT_ARM_ARM_ASSEMBLER_H_

@@ -31,7 +31,9 @@ opendmd_SOURCES = main.c \
           client/libx264.h client/libx264.c \
           client/video_thread.h client/video_thread.c \
           client/rtp_send.h client/rtp_send.c \
-		  jit/jit.h jit/x86_64/assembler.h jit/x86_64/assembler.c \
+		  jit/jit.h jit/jit.c \
+		  jit/arm/arm_assembler.h jit/arm/arm_assembler.c \
+		  jit/x86_64/x86_64_assembler.h jit/x86_64/x86_64_assembler.c \
           server/rtp_recv.h server/rtp_recv.c \
           server/rtp_server.h server/rtp_server.c \
 		  webserver/socket_utils.h webserver/socket_utils.c \

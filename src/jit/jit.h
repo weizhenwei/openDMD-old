@@ -28,11 +28,11 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: main.c
+ * File: jit.h
  *
- * Brief: main entry point of the project
+ * Brief: include file of jit
  *
- * Date: 2014.05.10
+ * Date: 2014.09.15
  *
  * Author: weizhenwei <weizhenwei1988@gmail.com>
  *
@@ -43,6 +43,24 @@
 #define SRC_JIT_JIT_H_
 
 #include <stdint.h>
+#include <string.h>
+
+#if defined(__arm__)
+typedef uint32_t jit_insn_unit;
+#elif defined(__x86_64__)
+typedef uint8_t jit_insn_unit;
+#else
+#error "unsupported architecture"
+#endif
+
+// in 32 bit mode;
+typedef uint8_t jit_target_long;
+
+#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+
+#define CPU_TEMP_BUF_NLONGS 128
+
+#define JIT_STATIC_CALL_ARGS_SIZE 128
 
 typedef struct JITContext {
     /* goto_tb support */
@@ -64,5 +82,9 @@ typedef enum JITType {
     /* An alias for the size of the target "long", aka register.  */
     JIT_TYPE_TL = JIT_TYPE_I64,
 } JITType;
+
+extern void jit_out32(JITContext *s, uint32_t v);
+
+extern void jit_prologue(JITContext *s);
 
 #endif  // SRC_JIT_JIT_H_

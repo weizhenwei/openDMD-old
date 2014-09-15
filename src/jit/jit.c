@@ -28,24 +28,29 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * File: jit_test.c
+ * File: jit.c
  *
- * Brief: test_file of jit;
+ * Brief: implementation file of jit
  *
- * Date: 2014.09.14
+ * Date: 2014.09.15
  *
  * Author: weizhenwei <weizhenwei1988@gmail.com>
  *
  * *****************************************************************************
  */
 
-#include "src/jit/jit_utils.h"
+#include "src/jit/jit.h"
 
-int main(int argc, char *argv[])
-{
+#include <string.h>
 
-
-
-    return 0;
+void jit_out32(JITContext *s, uint32_t v) {
+    *s->code_ptr++ = v;
+    // if (JIT_TARGET_INSN_UNIT_SIZE == 4) {
+    //     *s->code_ptr++ = v;
+    // } else {
+    //     jit_insn_unit *p = s->code_ptr;
+    //     memcpy(p, &v, sizeof(v));
+    //     s->code_ptr = p + (4 / TCG_TARGET_INSN_UNIT_SIZE);
+    // }
 }
 
