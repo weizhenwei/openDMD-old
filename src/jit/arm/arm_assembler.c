@@ -49,22 +49,6 @@ static const int jit_target_call_oarg_regs[2] = {
     JIT_REG_R0, JIT_REG_R1
 };
 
-#define JIT_REG_TMP  JIT_REG_R12
-
-static inline void reloc_pc24(jit_insn_unit *code_ptr, jit_insn_unit *target)
-{
-    // ptrdiff_t offset = (tcg_ptr_byte_diff(target, code_ptr) - 8) >> 2;
-    // *code_ptr = (*code_ptr & ~0xffffff) | (offset & 0xffffff);
-}
-
-static void patch_reloc(jit_insn_unit *code_ptr, int type,
-                        intptr_t value, intptr_t addend)
-{
-    // assert(type == R_ARM_PC24);
-    // assert(addend == 0);
-    reloc_pc24(code_ptr, (jit_insn_unit *)value);
-}
-
 #define TO_CPSR (1 << 20)
 
 typedef enum {
