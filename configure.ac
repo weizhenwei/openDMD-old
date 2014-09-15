@@ -113,5 +113,7 @@ AC_CONFIG_FILES([Makefile
                  libx264/common/Makefile
                  libx264/encoder/Makefile
                  libx264/output/Makefile
-                 src/Makefile])
+                 src/Makefile
+                 src/jit/Makefile
+                 src/jit/test/Makefile])
 AC_OUTPUT
