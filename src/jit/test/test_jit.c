@@ -41,10 +41,32 @@
 
 #include "src/jit/jit_utils.h"
 
+#include <stdio.h>
+
+#if 0
+# define tcg_qemu_tb_exec(env, tb_ptr) \
+    ((uintptr_t (*)(void *, void *))tcg_ctx.code_gen_prologue)(env, tb_ptr)
+#endif
+
+// declare function pointer;
+int (*add)(int, int);
+
+// declare function pointer type;
+typedef int (*Add)(int, int);
+
+int add_two(int a, int b) { 
+    return a + b;
+}
+
 int main(int argc, char *argv[])
 {
+    Add addd = add_two;
+    int c = addd(1, 2);
+    printf("c = %d\n", c);
 
-
+    add = add_two;
+    int d = add(2, 3);
+    printf("d = %d\n", d);
 
     return 0;
 }
