@@ -137,4 +137,31 @@ void jit_arm_prologue(JITContext *s) {
     // tcg_out32(s, (COND_AL << 28) | 0x08bd8ff0);
 }
 
+void jit_arm_epilogue(JITContext *s) {
+    int stack_addend;
+
+    /* Calling convention requires us to save r4-r11 and lr.  */
+    /* stmdb sp!, { r4 - r11, lr } */
+    // jit_out32(s, (COND_AL << 28) | 0x092d4ff0);
+
+    /* Reserve callee argument and tcg temp space.  */
+    stack_addend = FRAME_SIZE - PUSH_SIZE;
+
+    // tcg_out_dat_rI(s, COND_AL, ARITH_SUB, TCG_REG_CALL_STACK,
+    //                TCG_REG_CALL_STACK, stack_addend, 1);
+    // tcg_set_frame(s, TCG_REG_CALL_STACK, TCG_STATIC_CALL_ARGS_SIZE,
+    //               CPU_TEMP_BUF_NLONGS * sizeof(long));
+
+    // tcg_out_mov(s, TCG_TYPE_PTR, TCG_AREG0, tcg_target_call_iarg_regs[0]);
+
+    // tcg_out_bx(s, COND_AL, tcg_target_call_iarg_regs[1]);
+    // tb_ret_addr = s->code_ptr;
+
+    // /* Epilogue.  We branch here via tb_ret_addr.  */
+    // tcg_out_dat_rI(s, COND_AL, ARITH_ADD, TCG_REG_CALL_STACK,
+    //                TCG_REG_CALL_STACK, stack_addend, 1);
+
+    // /* ldmia sp!, { r4 - r11, pc } */
+    // tcg_out32(s, (COND_AL << 28) | 0x08bd8ff0);
+}
 

@@ -87,4 +87,6 @@ extern void jit_out32(JITContext *s, uint32_t v);
 
 extern void jit_prologue(JITContext *s);
 
+extern void jit_epilogue(JITContext *s);
+
 #endif  // SRC_JIT_JIT_H_
