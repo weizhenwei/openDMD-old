@@ -43,7 +43,7 @@
 #define SRC_JIT_JIT_UTILS_H_
 
 #if defined(__arm__)
-#include "src/jit/arm/jit_assembler.h"
+#include "src/jit/arm/arm_assembler.h"
 #elif defined(__x86_64__)
 #include "src/jit/x86_64/x86_64_assembler.h"
 #else
