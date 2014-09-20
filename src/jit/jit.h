@@ -54,7 +54,12 @@ typedef uint8_t jit_insn_unit;
 #endif
 
 // in 32 bit mode;
-typedef uint8_t jit_target_long;
+// typedef uint8_t jit_target_long;
+
+typedef int32_t jit_target_long;
+typedef uint32_t jit_target_ulong;
+
+typedef jit_target_ulong JITArg;
 
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
 

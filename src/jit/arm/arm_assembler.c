@@ -93,6 +93,49 @@ typedef enum {
     INSN_STRD_REG  = 0x000000f0,
 } ARMInsn;
 
+#define SHIFT_IMM_LSL(im)	(((im) << 7) | 0x00)
+#define SHIFT_IMM_LSR(im)	(((im) << 7) | 0x20)
+#define SHIFT_IMM_ASR(im)	(((im) << 7) | 0x40)
+#define SHIFT_IMM_ROR(im)	(((im) << 7) | 0x60)
+#define SHIFT_REG_LSL(rs)	(((rs) << 8) | 0x10)
+#define SHIFT_REG_LSR(rs)	(((rs) << 8) | 0x30)
+#define SHIFT_REG_ASR(rs)	(((rs) << 8) | 0x50)
+#define SHIFT_REG_ROR(rs)	(((rs) << 8) | 0x70)
+
+enum arm_cond_code_e {
+    COND_EQ = 0x0,
+    COND_NE = 0x1,
+    COND_CS = 0x2,	/* Unsigned greater or equal */
+    COND_CC = 0x3,	/* Unsigned less than */
+    COND_MI = 0x4,	/* Negative */
+    COND_PL = 0x5,	/* Zero or greater */
+    COND_VS = 0x6,	/* Overflow */
+    COND_VC = 0x7,	/* No overflow */
+    COND_HI = 0x8,	/* Unsigned greater than */
+    COND_LS = 0x9,	/* Unsigned less or equal */
+    COND_GE = 0xa,
+    COND_LT = 0xb,
+    COND_GT = 0xc,
+    COND_LE = 0xd,
+    COND_AL = 0xe,
+};
+
+#if 0
+static const uint8_t tcg_cond_to_arm_cond[] = {
+    [TCG_COND_EQ] = COND_EQ,
+    [TCG_COND_NE] = COND_NE,
+    [TCG_COND_LT] = COND_LT,
+    [TCG_COND_GE] = COND_GE,
+    [TCG_COND_LE] = COND_LE,
+    [TCG_COND_GT] = COND_GT,
+    /* unsigned */
+    [TCG_COND_LTU] = COND_CC,
+    [TCG_COND_GEU] = COND_CS,
+    [TCG_COND_LEU] = COND_LS,
+    [TCG_COND_GTU] = COND_HI,
+};
+#endif
+
 
 static jit_insn_unit *tb_ret_addr;
 
@@ -114,7 +157,7 @@ void jit_arm_prologue(JITContext *s) {
 
     /* Calling convention requires us to save r4-r11 and lr.  */
     /* stmdb sp!, { r4 - r11, lr } */
-    // jit_out32(s, (COND_AL << 28) | 0x092d4ff0);
+    jit_out32(s, (COND_AL << 28) | 0x092d4ff0);
 
     /* Reserve callee argument and tcg temp space.  */
     stack_addend = FRAME_SIZE - PUSH_SIZE;
@@ -142,7 +185,7 @@ void jit_arm_epilogue(JITContext *s) {
 
     /* Calling convention requires us to save r4-r11 and lr.  */
     /* stmdb sp!, { r4 - r11, lr } */
-    // jit_out32(s, (COND_AL << 28) | 0x092d4ff0);
+    jit_out32(s, (COND_AL << 28) | 0x092d4ff0);
 
     /* Reserve callee argument and tcg temp space.  */
     stack_addend = FRAME_SIZE - PUSH_SIZE;
