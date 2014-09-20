@@ -24,6 +24,8 @@
 
 #include "src/jit/arm/arm_assembler.h"
 
+#include <assert.h>
+
 static const int jit_target_reg_alloc_order[] = {
     JIT_REG_R4,
     JIT_REG_R5,
@@ -136,8 +138,101 @@ static const uint8_t tcg_cond_to_arm_cond[] = {
 };
 #endif
 
-
 static jit_insn_unit *tb_ret_addr;
+
+
+
+/**
+ * ctz32 - count trailing zeros in a 32-bit value.
+ * @val: The value to search
+ *
+ * Returns 32 if the value is zero.  Note that the GCC builtin is
+ * undefined if the value is zero.
+ */
+static inline int ctz32(uint32_t val) {
+    /* Binary search for the trailing one bit.  */
+    int cnt;
+
+    cnt = 0;
+    if (!(val & 0x0000FFFFUL)) {
+        cnt += 16;
+        val >>= 16;
+    }
+    if (!(val & 0x000000FFUL)) {
+        cnt += 8;
+        val >>= 8;
+    }
+    if (!(val & 0x0000000FUL)) {
+        cnt += 4;
+        val >>= 4;
+    }
+    if (!(val & 0x00000003UL)) {
+        cnt += 2;
+        val >>= 2;
+    }
+    if (!(val & 0x00000001UL)) {
+        cnt++;
+        val >>= 1;
+    }
+    if (!(val & 0x00000001UL)) {
+        cnt++;
+    }
+
+    return cnt;
+}
+
+static inline uint32_t rotl(uint32_t val, int n) {
+  return (val << n) | (val >> (32 - n));
+}
+
+/* ARM immediates for ALU instructions are made of an unsigned 8-bit
+   right-rotated by an even amount between 0 and 30. */
+static inline int encode_imm(uint32_t imm) {
+    int shift;
+
+    /* simple case, only lower bits */
+    if ((imm & ~0xff) == 0)
+        return 0;
+    /* then try a simple even shift */
+    shift = ctz32(imm) & ~1;
+    if (((imm >> shift) & ~0xff) == 0)
+        return 32 - shift;
+    /* now try harder with rotations */
+    if ((rotl(imm, 2) & ~0xff) == 0)
+        return 2;
+    if ((rotl(imm, 4) & ~0xff) == 0)
+        return 4;
+    if ((rotl(imm, 6) & ~0xff) == 0)
+        return 6;
+    /* imm can't be encoded */
+    return -1;
+}
+
+static inline void jit_out_dat_imm(JITContext *s, int cond,
+        int opc, int rd, int rn, int im) {
+    jit_out32(s, (cond << 28) | (1 << 25) | opc |
+                    (rn << 16) | (rd << 12) | im);
+}
+
+static inline void jit_out_dat_reg(JITContext *s, int cond,
+        int opc, int rd, int rn, int rm, int shift) {
+    jit_out32(s, (cond << 28) | (0 << 25) | opc |
+                    (rn << 16) | (rd << 12) | shift | rm);
+}
+
+static inline void jit_out_dat_rI(JITContext *s, int cond, int opc, JITArg dst,
+        JITArg lhs, JITArg rhs, int rhs_is_const) {
+    /* Emit either the reg,imm or reg,reg form of a data-processing insn.
+     * rhs must satisfy the "rI" constraint.
+     */
+    if (rhs_is_const) {
+        int rot = encode_imm(rhs);
+        assert(rot >= 0);
+        jit_out_dat_imm(s, cond, opc, dst, lhs, rotl(rhs, rot) | (rot << 7));
+    } else {
+        jit_out_dat_reg(s, cond, opc, dst, lhs, rhs, SHIFT_IMM_LSL(0));
+    }
+}
 
 
 /* Compute frame size via macros, to share between tcg_target_qemu_prologue
@@ -162,10 +257,10 @@ void jit_arm_prologue(JITContext *s) {
     /* Reserve callee argument and tcg temp space.  */
     stack_addend = FRAME_SIZE - PUSH_SIZE;
 
-    // tcg_out_dat_rI(s, COND_AL, ARITH_SUB, TCG_REG_CALL_STACK,
-    //                TCG_REG_CALL_STACK, stack_addend, 1);
+    jit_out_dat_rI(s, COND_AL, ARITH_SUB, JIT_REG_CALL_STACK,
+            JIT_REG_CALL_STACK, stack_addend, 1);
     // tcg_set_frame(s, TCG_REG_CALL_STACK, TCG_STATIC_CALL_ARGS_SIZE,
-    //               CPU_TEMP_BUF_NLONGS * sizeof(long));
+    //         CPU_TEMP_BUF_NLONGS * sizeof(long));
 
     // tcg_out_mov(s, TCG_TYPE_PTR, TCG_AREG0, tcg_target_call_iarg_regs[0]);
 
@@ -177,7 +272,7 @@ void jit_arm_prologue(JITContext *s) {
     //                TCG_REG_CALL_STACK, stack_addend, 1);
 
     // /* ldmia sp!, { r4 - r11, pc } */
-    // tcg_out32(s, (COND_AL << 28) | 0x08bd8ff0);
+    jit_out32(s, (COND_AL << 28) | 0x08bd8ff0);
 }
 
 void jit_arm_epilogue(JITContext *s) {
@@ -205,6 +300,6 @@ void jit_arm_epilogue(JITContext *s) {
     //                TCG_REG_CALL_STACK, stack_addend, 1);
 
     // /* ldmia sp!, { r4 - r11, pc } */
-    // tcg_out32(s, (COND_AL << 28) | 0x08bd8ff0);
+    jit_out32(s, (COND_AL << 28) | 0x08bd8ff0);
 }
 
