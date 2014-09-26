@@ -71,6 +71,11 @@ typedef struct JITContext {
     /* goto_tb support */
     uint8_t *code_buf;
     uint8_t *code_ptr;
+
+
+    intptr_t frame_start;
+    intptr_t frame_end;
+    int frame_reg;
 } JITContext;
 
 typedef enum JITType {
@@ -89,6 +94,9 @@ typedef enum JITType {
 } JITType;
 
 extern void jit_out32(JITContext *s, uint32_t v);
+
+extern void jit_set_frame(JITContext *s,
+        int reg, intptr_t start, intptr_t size);
 
 extern void jit_prologue(JITContext *s);
 

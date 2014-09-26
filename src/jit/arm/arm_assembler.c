@@ -257,8 +257,8 @@ void jit_arm_prologue(JITContext *s) {
 
     jit_out_dat_rI(s, COND_AL, ARITH_SUB, JIT_REG_CALL_STACK,
             JIT_REG_CALL_STACK, stack_addend, 1);
-    // tcg_set_frame(s, TCG_REG_CALL_STACK, TCG_STATIC_CALL_ARGS_SIZE,
-    //         CPU_TEMP_BUF_NLONGS * sizeof(long));
+    jit_set_frame(s, JIT_REG_CALL_STACK, JIT_STATIC_CALL_ARGS_SIZE,
+            CPU_TEMP_BUF_NLONGS * sizeof(long));
 
     // tcg_out_mov(s, TCG_TYPE_PTR, TCG_AREG0, tcg_target_call_iarg_regs[0]);
 

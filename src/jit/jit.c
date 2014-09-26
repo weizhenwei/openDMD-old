@@ -54,3 +54,8 @@ void jit_out32(JITContext *s, uint32_t v) {
     // }
 }
 
+void jit_set_frame(JITContext *s, int reg, intptr_t start, intptr_t size) {
+    s->frame_start = start;
+    s->frame_end = start + size;
+    s->frame_reg = reg;
+}
