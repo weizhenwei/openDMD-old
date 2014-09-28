@@ -41,6 +41,9 @@
 
 #include "src/jit/x86_64/x86_64_assembler.h"
 
+#include <assert.h>
+#include <stdint.h>
+
 static const int jit_target_reg_alloc_order[] = {
     JIT_REG_RBP,
     JIT_REG_RBX,
@@ -207,6 +210,54 @@ static int jit_callee_save_regs[] = {
 #define JCC_JGE 0xd
 #define JCC_JLE 0xe
 #define JCC_JG  0xf
+
+
+static inline void jit_out8(JITContext *s, uint8_t v) {
+    *s->code_ptr++ = v;
+}
+
+static void jit_out_opc(JITContext *s, int opc, int r, int rm, int x) {
+    int rex;
+
+    if (opc & P_GS) {
+        jit_out8(s, 0x65);
+    }
+    if (opc & P_DATA16) {
+        /* We should never be asking for both 16 and 64-bit operation.  */
+        assert((opc & P_REXW) == 0);
+        jit_out8(s, 0x66);
+    }
+    if (opc & P_ADDR32) {
+        jit_out8(s, 0x67);
+    }
+
+    rex = 0;
+    rex |= (opc & P_REXW) ? 0x8 : 0x0;  /* REX.W */
+    rex |= (r & 8) >> 1;                /* REX.R */
+    rex |= (x & 8) >> 2;                /* REX.X */
+    rex |= (rm & 8) >> 3;               /* REX.B */
+
+    /* P_REXB_{R,RM} indicates that the given register is the low byte.
+       For %[abcd]l we need no REX prefix, but for %{si,di,bp,sp}l we do,
+       as otherwise the encoding indicates %[abcd]h.  Note that the values
+       that are ORed in merely indicate that the REX byte must be present;
+       those bits get discarded in output.  */
+    rex |= opc & (r >= 4 ? P_REXB_R : 0);
+    rex |= opc & (rm >= 4 ? P_REXB_RM : 0);
+
+    if (rex) {
+        jit_out8(s, (uint8_t)(rex | 0x40));
+    }
+
+    if (opc & (P_EXT | P_EXT38)) {
+        jit_out8(s, 0x0f);
+        if (opc & P_EXT38) {
+            jit_out8(s, 0x38);
+        }
+    }
+
+    jit_out8(s, opc);
+}
 
 static inline void jit_out_push(JITContext *s, int reg) {
     // tcg_out_opc(s, OPC_PUSH_r32 + LOWREGMASK(reg), 0, reg, 0);
