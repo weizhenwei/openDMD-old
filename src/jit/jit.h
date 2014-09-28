@@ -93,12 +93,18 @@ typedef enum JITType {
     JIT_TYPE_TL = JIT_TYPE_I64,
 } JITType;
 
+typedef enum BodyType {
+    YUYV422_TO_RGB888,
+} BodyType;
+
 extern void jit_out32(JITContext *s, uint32_t v);
 
 extern void jit_set_frame(JITContext *s,
         int reg, intptr_t start, intptr_t size);
 
 extern void jit_prologue(JITContext *s);
+
+extern void jit_body(JITContext *s, BodyType body_type);
 
 extern void jit_epilogue(JITContext *s);
 
