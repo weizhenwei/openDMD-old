@@ -232,6 +232,11 @@ static inline void jit_out_dat_rI(JITContext *s, int cond, int opc, JITArg dst,
     }
 }
 
+static inline void jit_out_mov(JITContext *s, JITType type,
+        JITReg ret, JITReg arg) {
+    jit_out_dat_reg(s, COND_AL, ARITH_MOV, ret, 0, arg, SHIFT_IMM_LSL(0));
+}
+
 
 /* Compute frame size via macros, to share between tcg_target_qemu_prologue
    and tcg_register_jit.  */
@@ -260,7 +265,7 @@ void jit_arm_prologue(JITContext *s) {
     jit_set_frame(s, JIT_REG_CALL_STACK, JIT_STATIC_CALL_ARGS_SIZE,
             CPU_TEMP_BUF_NLONGS * sizeof(long));
 
-    // tcg_out_mov(s, TCG_TYPE_PTR, TCG_AREG0, tcg_target_call_iarg_regs[0]);
+    jit_out_mov(s, JIT_TYPE_PTR, JIT_AREG0, jit_target_call_iarg_regs[0]);
 
     // tcg_out_bx(s, COND_AL, tcg_target_call_iarg_regs[1]);
     // tb_ret_addr = s->code_ptr;
