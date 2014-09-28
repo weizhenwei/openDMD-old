@@ -44,6 +44,8 @@ static const int jit_target_reg_alloc_order[] = {
     JIT_REG_R14,
 };
 
+static jit_insn_unit *tb_ret_addr;
+
 static const int jit_target_call_iarg_regs[4] = {
     JIT_REG_R0, JIT_REG_R1, JIT_REG_R2, JIT_REG_R3
 };
@@ -138,7 +140,10 @@ static const uint8_t tcg_cond_to_arm_cond[] = {
 };
 #endif
 
-static jit_insn_unit *tb_ret_addr;
+
+static inline void jit_out_bx(JITContext *s, int cond, int rn) {
+    jit_out32(s, (cond << 28) | 0x012fff10 | rn);
+}
 
 /**
  * ctz32 - count trailing zeros in a 32-bit value.
@@ -267,8 +272,8 @@ void jit_arm_prologue(JITContext *s) {
 
     jit_out_mov(s, JIT_TYPE_PTR, JIT_AREG0, jit_target_call_iarg_regs[0]);
 
-    // tcg_out_bx(s, COND_AL, tcg_target_call_iarg_regs[1]);
-    // tb_ret_addr = s->code_ptr;
+    jit_out_bx(s, COND_AL, jit_target_call_iarg_regs[1]);
+    tb_ret_addr = s->code_ptr;
 
     // /* Epilogue.  We branch here via tb_ret_addr.  */
     // tcg_out_dat_rI(s, COND_AL, ARITH_ADD, TCG_REG_CALL_STACK,
