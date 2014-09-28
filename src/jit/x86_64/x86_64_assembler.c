@@ -91,6 +91,123 @@ static int jit_callee_save_regs[] = {
     JIT_REG_R15,
 };
 
+#define P_EXT           0x100           /* 0x0f opcode prefix */
+#define P_EXT38         0x200           /* 0x0f 0x38 opcode prefix */
+#define P_DATA16        0x400           /* 0x66 opcode prefix */
+
+// x86_64 specific
+# define P_ADDR32       0x800           /* 0x67 opcode prefix */
+# define P_REXW         0x1000          /* Set REX.W = 1 */
+# define P_REXB_R       0x2000          /* REG field as byte register */
+# define P_REXB_RM      0x4000          /* R/M field as byte register */
+# define P_GS           0x8000          /* gs segment override */
+
+
+#define P_SIMDF3        0x10000         /* 0xf3 opcode prefix */
+#define P_SIMDF2        0x20000         /* 0xf2 opcode prefix */
+
+#define OPC_ARITH_EvIz    (0x81)
+#define OPC_ARITH_EvIb    (0x83)
+#define OPC_ARITH_GvEv    (0x03)  /* ... plus (ARITH_FOO << 3) */
+#define OPC_ANDN          (0xf2 | P_EXT38)
+#define OPC_ADD_GvEv      (OPC_ARITH_GvEv | (ARITH_ADD << 3))
+#define OPC_BSWAP         (0xc8 | P_EXT)
+#define OPC_CALL_Jz       (0xe8)
+#define OPC_CMOVCC        (0x40 | P_EXT)  /* ... plus condition code */
+#define OPC_CMP_GvEv      (OPC_ARITH_GvEv | (ARITH_CMP << 3))
+#define OPC_DEC_r32       (0x48)
+#define OPC_IMUL_GvEv     (0xaf | P_EXT)
+#define OPC_IMUL_GvEvIb   (0x6b)
+#define OPC_IMUL_GvEvIz   (0x69)
+#define OPC_INC_r32       (0x40)
+#define OPC_JCC_long      (0x80 | P_EXT)  /* ... plus condition code */
+#define OPC_JCC_short     (0x70)  /* ... plus condition code */
+#define OPC_JMP_long      (0xe9)
+#define OPC_JMP_short     (0xeb)
+#define OPC_LEA           (0x8d)
+#define OPC_MOVB_EvGv     (0x88)  /* stores, more or less */
+#define OPC_MOVL_EvGv     (0x89)  /* stores, more or less */
+#define OPC_MOVL_GvEv     (0x8b)  /* loads, more or less */
+#define OPC_MOVB_EvIz     (0xc6)
+#define OPC_MOVL_EvIz     (0xc7)
+#define OPC_MOVL_Iv       (0xb8)
+#define OPC_MOVBE_GyMy    (0xf0 | P_EXT38)
+#define OPC_MOVBE_MyGy    (0xf1 | P_EXT38)
+#define OPC_MOVSBL        (0xbe | P_EXT)
+#define OPC_MOVSWL        (0xbf | P_EXT)
+#define OPC_MOVSLQ        (0x63 | P_REXW)
+#define OPC_MOVZBL        (0xb6 | P_EXT)
+#define OPC_MOVZWL        (0xb7 | P_EXT)
+#define OPC_POP_r32       (0x58)
+#define OPC_PUSH_r32      (0x50)
+#define OPC_PUSH_Iv       (0x68)
+#define OPC_PUSH_Ib       (0x6a)
+#define OPC_RET           (0xc3)
+#define OPC_SETCC         (0x90 | P_EXT | P_REXB_RM)  /* ... plus cc */
+#define OPC_SHIFT_1       (0xd1)
+#define OPC_SHIFT_Ib      (0xc1)
+#define OPC_SHIFT_cl      (0xd3)
+#define OPC_SARX          (0xf7 | P_EXT38 | P_SIMDF3)
+#define OPC_SHLX          (0xf7 | P_EXT38 | P_DATA16)
+#define OPC_SHRX          (0xf7 | P_EXT38 | P_SIMDF2)
+#define OPC_TESTL         (0x85)
+#define OPC_XCHG_ax_r32   (0x90)
+
+#define OPC_GRP3_Ev       (0xf7)
+#define OPC_GRP5          (0xff)
+
+/* Group 1 opcode extensions for 0x80-0x83.
+ * These are also used as modifiers for OPC_ARITH.
+ */
+#define ARITH_ADD 0
+#define ARITH_OR  1
+#define ARITH_ADC 2
+#define ARITH_SBB 3
+#define ARITH_AND 4
+#define ARITH_SUB 5
+#define ARITH_XOR 6
+#define ARITH_CMP 7
+
+/* Group 2 opcode extensions for 0xc0, 0xc1, 0xd0-0xd3.  */
+#define SHIFT_ROL 0
+#define SHIFT_ROR 1
+#define SHIFT_SHL 4
+#define SHIFT_SHR 5
+#define SHIFT_SAR 7
+
+/* Group 3 opcode extensions for 0xf6, 0xf7.  To be used with OPC_GRP3.  */
+#define EXT3_NOT   2
+#define EXT3_NEG   3
+#define EXT3_MUL   4
+#define EXT3_IMUL  5
+#define EXT3_DIV   6
+#define EXT3_IDIV  7
+
+/* Group 5 opcode extensions for 0xff.  To be used with OPC_GRP5.  */
+#define EXT5_INC_Ev    0
+#define EXT5_DEC_Ev    1
+#define EXT5_CALLN_Ev  2
+#define EXT5_JMPN_Ev   4
+
+/* Condition codes to be added to OPC_JCC_{long,short}.  */
+#define JCC_JMP (-1)
+#define JCC_JO  0x0
+#define JCC_JNO 0x1
+#define JCC_JB  0x2
+#define JCC_JAE 0x3
+#define JCC_JE  0x4
+#define JCC_JNE 0x5
+#define JCC_JBE 0x6
+#define JCC_JA  0x7
+#define JCC_JS  0x8
+#define JCC_JNS 0x9
+#define JCC_JP  0xa
+#define JCC_JNP 0xb
+#define JCC_JL  0xc
+#define JCC_JGE 0xd
+#define JCC_JLE 0xe
+#define JCC_JG  0xf
+
 static inline void jit_out_push(JITContext *s, int reg) {
     // tcg_out_opc(s, OPC_PUSH_r32 + LOWREGMASK(reg), 0, reg, 0);
 }
