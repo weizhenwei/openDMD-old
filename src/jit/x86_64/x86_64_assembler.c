@@ -80,12 +80,12 @@ static const int jit_target_call_oarg_regs[] = {
 /* Registers used with L constraint, which are the first argument 
    registers on x86_64, and two random call clobbered registers on
    i386. */
-#define TCG_REG_L0 tcg_target_call_iarg_regs[0]
-#define TCG_REG_L1 tcg_target_call_iarg_regs[1]
+#define TCG_REG_L0 jit_target_call_iarg_regs[0]
+#define TCG_REG_L1 jit_target_call_iarg_regs[1]
 
 static uint8_t *jit_ret_addr;
 
-static int jit_callee_save_regs[] = {
+static int jit_target_callee_save_regs[] = {
     JIT_REG_RBP,
     JIT_REG_RBX,
     JIT_REG_R12,
@@ -282,7 +282,7 @@ static inline void jit_out_mov(JITContext *s, JITType type,
 /* Compute frame size via macros, and tcg_register_jit. */
 
 #define PUSH_SIZE \
-    ((1 + ARRAY_SIZE(jit_callee_save_regs)) * (JIT_TARGET_REG_BITS / 8))
+    ((1 + ARRAY_SIZE(jit_target_callee_save_regs)) * (JIT_TARGET_REG_BITS / 8))
 
 #define FRAME_SIZE \
     ((PUSH_SIZE \
@@ -292,33 +292,35 @@ static inline void jit_out_mov(JITContext *s, JITType type,
      & ~(JIT_TARGET_STACK_ALIGN - 1))
 
 /* Generate global jit prologue and epilogue code */
-void jit_x86_64_prologue(JITContext *s) {
+static void jit_x86_64_prologue(JITContext *s) {
     int i, stack_addend;
 
     /* TB prologue */
 
-    /* Reserve some stack space */
+    /* Reserve some stack space, also for TCG temps.  */
     stack_addend = FRAME_SIZE - PUSH_SIZE;
+    jit_set_frame(s, JIT_REG_CALL_STACK, JIT_STATIC_CALL_ARGS_SIZE,
+                  CPU_TEMP_BUF_NLONGS * sizeof(long));
 
     /* Save all callee saved registers.  */
-    for (i = 0; i < ARRAY_SIZE(jit_callee_save_regs); i++) {
-        // jit_out_push(s, jit_target_callee_save_regs[i]);
+    for (i = 0; i < ARRAY_SIZE(jit_target_callee_save_regs); i++) {
+        jit_out_push(s, jit_target_callee_save_regs[i]);
     }
 
-    // jit_out_mov(s, JIT_TYPE_PTR, JIT_AREG0, jit_target_call_iarg_regs[0]);
+    jit_out_mov(s, JIT_TYPE_PTR, JIT_AREG0, jit_target_call_iarg_regs[0]);
     // jit_out_addi(s, JIT_REG_ESP, -stack_addend);
+
     /* jmp *tb.  */
-    // jit_out_mod(s, OPC_GRP5, EXT5_JMPN_Ev, jit_target_call_iarg_regs[1]);
+    jit_out_modrm(s, OPC_GRP5, EXT5_JMPN_Ev, jit_target_call_iarg_regs[1]);
 
     /* TB epilogue */
-    // jit_ret_addr = s->code_ptr;
-    jit_ret_addr = s->code_ptr + stack_addend;
+    jit_ret_addr = s->code_ptr;
 
     // jit_out_addi(s, JIT_REG_CALL_STACK, stack_addend);
 
-    for (i = ARRAY_SIZE(jit_callee_save_regs) - 1; i >= 0; i--) {
-        // jit_out_pop(s, tcg_target_callee_save_regs[i]);
+    for (i = ARRAY_SIZE(jit_target_callee_save_regs) - 1; i >= 0; i--) {
+        // jit_out_pop(s, jit_target_callee_save_regs[i]);
     }
-    // jit_out_opc(s, OPC_RET, 0, 0, 0);
+    jit_out_opc(s, OPC_RET, 0, 0, 0);
 }
 
