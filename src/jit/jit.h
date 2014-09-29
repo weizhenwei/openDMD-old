@@ -43,6 +43,8 @@
 #define SRC_JIT_JIT_H_
 
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #if defined(__arm__)
@@ -66,6 +68,12 @@ typedef jit_target_ulong JITArg;
 #define CPU_TEMP_BUF_NLONGS 128
 
 #define JIT_STATIC_CALL_ARGS_SIZE 128
+
+#define jit_abort() \
+do {\
+    fprintf(stderr, "%s:%d: tcg fatal error\n", __FILE__, __LINE__);\
+    abort();\
+} while (0)
 
 typedef struct JITContext {
     /* goto_tb support */

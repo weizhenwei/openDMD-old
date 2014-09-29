@@ -282,6 +282,103 @@ static inline void jit_out_mov(JITContext *s, JITType type,
     }
 }
 
+static inline void jit_out_ext8u(JITContext *s, int dest, int src) {
+    /* movzbl */
+    assert(src < 4 || JIT_TARGET_REG_BITS == 64);
+    jit_out_modrm(s, OPC_MOVZBL + P_REXB_RM, dest, src);
+}
+
+static void jit_out_ext8s(JITContext *s, int dest, int src, int rexw) {
+    /* movsbl */
+    assert(src < 4 || JIT_TARGET_REG_BITS == 64);
+    jit_out_modrm(s, OPC_MOVSBL + P_REXB_RM + rexw, dest, src);
+}
+
+static inline void jit_out_ext16u(JITContext *s, int dest, int src) {
+    /* movzwl */
+    jit_out_modrm(s, OPC_MOVZWL, dest, src);
+}
+
+static inline void jit_out_ext16s(JITContext *s, int dest, int src, int rexw) {
+    /* movsw[lq] */
+    jit_out_modrm(s, OPC_MOVSWL + rexw, dest, src);
+}
+
+static inline void jit_out_ext32u(JITContext *s, int dest, int src) {
+    /* 32-bit mov zero extends.  */
+    jit_out_modrm(s, OPC_MOVL_GvEv, dest, src);
+}
+
+static inline void jit_out_ext32s(JITContext *s, int dest, int src) {
+    jit_out_modrm(s, OPC_MOVSLQ, dest, src);
+}
+
+static void tgen_arithi(JITContext *s, int c, int r0, jit_target_long val,
+        int cf) {
+    int rexw = 0;
+
+    if (JIT_TARGET_REG_BITS == 64) {
+        rexw = c & -8;
+        c &= 7;
+    }
+
+    /* ??? While INC is 2 bytes shorter than ADDL $1, they also induce
+       partial flags update stalls on Pentium4 and are not recommended
+       by current Intel optimization manuals.  */
+    if (!cf && (c == ARITH_ADD || c == ARITH_SUB) && (val == 1 || val == -1)) {
+        int is_inc = (c == ARITH_ADD) ^ (val < 0);
+        if (JIT_TARGET_REG_BITS == 64) {
+            /* The single-byte increment encodings are re-tasked as the
+               REX prefixes.  Use the MODRM encoding.  */
+            jit_out_modrm(s, OPC_GRP5 + rexw,
+                          (is_inc ? EXT5_INC_Ev : EXT5_DEC_Ev), r0);
+        } else {
+            jit_out8(s, (is_inc ? OPC_INC_r32 : OPC_DEC_r32) + r0);
+        }
+        return;
+    }
+
+    if (c == ARITH_AND) {
+        if (JIT_TARGET_REG_BITS == 64) {
+            if (val == 0xffffffffu) {
+                jit_out_ext32u(s, r0, r0);
+                return;
+            }
+            if (val == (uint32_t)val) {
+                /* AND with no high bits set can use a 32-bit operation.  */
+                rexw = 0;
+            }
+        }
+        if (val == 0xffu && (r0 < 4 || JIT_TARGET_REG_BITS == 64)) {
+            jit_out_ext8u(s, r0, r0);
+            return;
+        }
+        if (val == 0xffffu) {
+            jit_out_ext16u(s, r0, r0);
+            return;
+        }
+    }
+
+    if (val == (int8_t)val) {
+        jit_out_modrm(s, OPC_ARITH_EvIb + rexw, c, r0);
+        jit_out8(s, val);
+        return;
+    }
+    if (rexw == 0 || val == (int32_t)val) {
+        jit_out_modrm(s, OPC_ARITH_EvIz + rexw, c, r0);
+        jit_out32(s, val);
+        return;
+    }
+
+    jit_abort();
+}
+
+static void jit_out_addi(JITContext *s, int reg, jit_target_long val) {
+    if (val != 0) {
+        tgen_arithi(s, ARITH_ADD + P_REXW, reg, val, 0);
+    }
+}
+
 /* Compute frame size via macros, and tcg_register_jit. */
 
 #define PUSH_SIZE \
@@ -311,7 +408,7 @@ static void jit_x86_64_prologue(JITContext *s) {
     }
 
     jit_out_mov(s, JIT_TYPE_PTR, JIT_AREG0, jit_target_call_iarg_regs[0]);
-    // jit_out_addi(s, JIT_REG_ESP, -stack_addend);
+    jit_out_addi(s, JIT_REG_ESP, -stack_addend);
 
     /* jmp *tb.  */
     jit_out_modrm(s, OPC_GRP5, EXT5_JMPN_Ev, jit_target_call_iarg_regs[1]);
@@ -319,7 +416,7 @@ static void jit_x86_64_prologue(JITContext *s) {
     /* TB epilogue */
     jit_ret_addr = s->code_ptr;
 
-    // jit_out_addi(s, JIT_REG_CALL_STACK, stack_addend);
+    jit_out_addi(s, JIT_REG_CALL_STACK, stack_addend);
 
     for (i = ARRAY_SIZE(jit_target_callee_save_regs) - 1; i >= 0; i--) {
         jit_out_pop(s, jit_target_callee_save_regs[i]);
