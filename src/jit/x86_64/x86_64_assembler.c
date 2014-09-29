@@ -391,7 +391,7 @@ static void jit_out_addi(JITContext *s, int reg, jit_target_long val) {
       + JIT_TARGET_STACK_ALIGN - 1) \
      & ~(JIT_TARGET_STACK_ALIGN - 1))
 
-/* Generate global jit prologue and epilogue code */
+// prologue: save registers and build frame;
 static void jit_x86_64_prologue(JITContext *s) {
     int i, stack_addend;
 
@@ -409,9 +409,19 @@ static void jit_x86_64_prologue(JITContext *s) {
 
     jit_out_mov(s, JIT_TYPE_PTR, JIT_AREG0, jit_target_call_iarg_regs[0]);
     jit_out_addi(s, JIT_REG_ESP, -stack_addend);
+}
 
+// body: do the main function body;
+static void jit_x86_64_body(JITContext *s, BodyType body_type) {
     /* jmp *tb.  */
     jit_out_modrm(s, OPC_GRP5, EXT5_JMPN_Ev, jit_target_call_iarg_regs[1]);
+}
+
+// epilogue: recovery registers and destroy frame;
+static void jit_x86_64_epilogue(JITContext *s) {
+    int i, stack_addend;
+
+    stack_addend = FRAME_SIZE - PUSH_SIZE;
 
     /* TB epilogue */
     jit_ret_addr = s->code_ptr;
