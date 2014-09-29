@@ -94,6 +94,8 @@ static int jit_callee_save_regs[] = {
     JIT_REG_R15,
 };
 
+# define LOWREGMASK(x)  ((x) & 7)
+
 #define P_EXT           0x100           /* 0x0f opcode prefix */
 #define P_EXT38         0x200           /* 0x0f 0x38 opcode prefix */
 #define P_DATA16        0x400           /* 0x66 opcode prefix */
@@ -260,20 +262,24 @@ static void jit_out_opc(JITContext *s, int opc, int r, int rm, int x) {
 }
 
 static inline void jit_out_push(JITContext *s, int reg) {
-    // tcg_out_opc(s, OPC_PUSH_r32 + LOWREGMASK(reg), 0, reg, 0);
+    jit_out_opc(s, OPC_PUSH_r32 + LOWREGMASK(reg), 0, reg, 0);
+}
+
+static void jit_out_modrm(JITContext *s, int opc, int r, int rm) {
+    jit_out_opc(s, opc, r, rm, 0);
+    jit_out8(s, 0xc0 | (LOWREGMASK(r) << 3) | LOWREGMASK(rm));
 }
 
 static inline void jit_out_mov(JITContext *s, JITType type,
-                               JITReg ret, JITReg arg) {
-    // if (arg != ret) {
-    //     int opc = OPC_MOVL_GvEv + (type == TCG_TYPE_I64 ? P_REXW : 0);
-    //     tcg_out_modrm(s, opc, ret, arg);
-    // }
+        JITReg ret, JITReg arg) {
+    if (arg != ret) {
+        int opc = OPC_MOVL_GvEv + (type == JIT_TYPE_I64 ? P_REXW : 0);
+        jit_out_modrm(s, opc, ret, arg);
+    }
 }
 
 
 /* Compute frame size via macros, and tcg_register_jit. */
-
 
 #define PUSH_SIZE \
     ((1 + ARRAY_SIZE(jit_callee_save_regs)) * (JIT_TARGET_REG_BITS / 8))
