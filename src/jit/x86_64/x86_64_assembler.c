@@ -265,6 +265,10 @@ static inline void jit_out_push(JITContext *s, int reg) {
     jit_out_opc(s, OPC_PUSH_r32 + LOWREGMASK(reg), 0, reg, 0);
 }
 
+static inline void jit_out_pop(JITContext *s, int reg) {
+    jit_out_opc(s, OPC_POP_r32 + LOWREGMASK(reg), 0, reg, 0);
+}
+
 static void jit_out_modrm(JITContext *s, int opc, int r, int rm) {
     jit_out_opc(s, opc, r, rm, 0);
     jit_out8(s, 0xc0 | (LOWREGMASK(r) << 3) | LOWREGMASK(rm));
@@ -277,7 +281,6 @@ static inline void jit_out_mov(JITContext *s, JITType type,
         jit_out_modrm(s, opc, ret, arg);
     }
 }
-
 
 /* Compute frame size via macros, and tcg_register_jit. */
 
@@ -319,7 +322,7 @@ static void jit_x86_64_prologue(JITContext *s) {
     // jit_out_addi(s, JIT_REG_CALL_STACK, stack_addend);
 
     for (i = ARRAY_SIZE(jit_target_callee_save_regs) - 1; i >= 0; i--) {
-        // jit_out_pop(s, jit_target_callee_save_regs[i]);
+        jit_out_pop(s, jit_target_callee_save_regs[i]);
     }
     jit_out_opc(s, OPC_RET, 0, 0, 0);
 }
