@@ -41,7 +41,37 @@
 
 #include "src/jit/jit.h"
 
+#include <assert.h>
+#include <stdlib.h>
 #include <string.h>
+
+JITContext *jitctx = NULL;
+
+JITContext *jit_init() {
+    JITContext *ctx = (JITContext *)malloc(sizeof(JITContext));
+    assert(ctx != NULL);
+
+    ctx->code_buf = (uint8_t *) malloc(4096);
+    assert(ctx->code_buf != NULL);
+    ctx->code_ptr = ctx->code_buf;
+
+    ctx->frame_start = 0;
+    ctx->frame_end = 0;
+    ctx->frame_reg = 0;
+
+    return ctx;
+}
+
+void jit_release(JITContext *ctx) {
+    if (ctx == NULL)
+        return ;
+
+    if (ctx->code_buf != NULL) {
+        free(ctx->code_buf);
+    }
+
+    free(ctx);
+}
 
 void jit_out32(JITContext *s, uint32_t v) {
     *s->code_ptr++ = v;
@@ -59,3 +89,10 @@ void jit_set_frame(JITContext *s, int reg, intptr_t start, intptr_t size) {
     s->frame_end = start + size;
     s->frame_reg = reg;
 }
+
+void jit_build(JITContext *s, BodyType body_type) {
+    // jit_prologue(s);
+    // jit_body(s, body_type);
+    // jit_prologue(s);
+}
+

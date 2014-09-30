@@ -94,6 +94,11 @@ typedef struct JITContext {
     int frame_reg;
 } JITContext;
 
+extern JITContext *jitctx;
+
+extern JITContext *jit_init();
+extern void jit_release(JITContext *ctx);
+
 typedef enum JITType {
     JIT_TYPE_I32,
     JIT_TYPE_I64,
@@ -110,6 +115,7 @@ typedef enum JITType {
 } JITType;
 
 typedef enum BodyType {
+    ADD_TWO,
     YUYV422_TO_RGB888,
 } BodyType;
 
@@ -126,5 +132,10 @@ extern void jit_body(JITContext *s, BodyType body_type);
 
 extern void jit_epilogue(JITContext *s);
 #define jit_epilogue(s) jit_epilogue_specific(s)
+
+extern void jit_build(JITContext *s, BodyType body_type);
+
+// TODO
+#define  jit_exec(s, code_ptr)  0;
 
 #endif  // SRC_JIT_JIT_H_
