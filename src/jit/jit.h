@@ -48,11 +48,19 @@
 #include <string.h>
 
 #if defined(__arm__)
+#include "src/jit/arm/arm_assembler.h"
+#elif defined(__x86_64__)
+#include "src/jit/x86_64/x86_64_assembler.h"
+#else
+#error "jit unsupported architecture"
+#endif
+
+#if defined(__arm__)
 typedef uint32_t jit_insn_unit;
 #elif defined(__x86_64__)
 typedef uint8_t jit_insn_unit;
 #else
-#error "unsupported architecture"
+#error "jit unsupported architecture"
 #endif
 
 // in 32 bit mode;
@@ -111,9 +119,12 @@ extern void jit_set_frame(JITContext *s,
         int reg, intptr_t start, intptr_t size);
 
 extern void jit_prologue(JITContext *s);
+#define jit_prologue(s) jit_prologue_specific(s)
 
 extern void jit_body(JITContext *s, BodyType body_type);
+#define jit_body(s, body_type) jit_body_specific(s, body_type)
 
 extern void jit_epilogue(JITContext *s);
+#define jit_epilogue(s) jit_epilogue_specific(s)
 
 #endif  // SRC_JIT_JIT_H_

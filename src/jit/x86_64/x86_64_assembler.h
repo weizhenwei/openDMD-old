@@ -86,9 +86,9 @@ typedef enum {
 
 # define JIT_AREG0 JIT_REG_R14
 
-#define jit_prologue jit_x86_64_prologue
-#define jit_body jit_x86_64_body
-#define jit_epilogue jit_x86_64_epilogue
+#define jit_prologue_specific jit_x86_64_prologue
+#define jit_body_specific jit_x86_64_body
+#define jit_epilogue_specific jit_x86_64_epilogue
 
 #endif  // SRC_JIT_X86_64_X86_64_ASSEMBLER_H_
 

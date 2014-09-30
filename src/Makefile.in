@@ -52,8 +52,8 @@ am_opendmd_OBJECTS = main.$(OBJEXT) config.$(OBJEXT) log.$(OBJEXT) \
 	image_convert.$(OBJEXT) image_capture.$(OBJEXT) \
 	picture_thread.$(OBJEXT) flv_muxer.$(OBJEXT) libx264.$(OBJEXT) \
 	video_thread.$(OBJEXT) rtp_send.$(OBJEXT) jit.$(OBJEXT) \
-	arm_assembler.$(OBJEXT) x86_64_assembler.$(OBJEXT) \
-	rtp_recv.$(OBJEXT) rtp_server.$(OBJEXT) socket_utils.$(OBJEXT) \
+	x86_64_assembler.$(OBJEXT) rtp_recv.$(OBJEXT) \
+	rtp_server.$(OBJEXT) socket_utils.$(OBJEXT) \
 	http_utils.$(OBJEXT) webserver_process.$(OBJEXT)
 opendmd_OBJECTS = $(am_opendmd_OBJECTS)
 opendmd_DEPENDENCIES = $(top_srcdir)/libjpeg/libjpeg.a \
@@ -231,7 +231,6 @@ opendmd_SOURCES = main.c \
           client/video_thread.h client/video_thread.c \
           client/rtp_send.h client/rtp_send.c \
 		  jit/jit.h jit/jit.c \
-		  jit/arm/arm_assembler.h jit/arm/arm_assembler.c \
 		  jit/x86_64/x86_64_assembler.h jit/x86_64/x86_64_assembler.c \
           server/rtp_recv.h server/rtp_recv.c \
           server/rtp_server.h server/rtp_server.c \
@@ -320,7 +319,6 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arm_assembler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/config.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flv_muxer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/global_context.Po@am__quote@
@@ -486,20 +484,6 @@ jit.obj: jit/jit.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jit/jit.c' object='jit.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o jit.obj `if test -f 'jit/jit.c'; then $(CYGPATH_W) 'jit/jit.c'; else $(CYGPATH_W) '$(srcdir)/jit/jit.c'; fi`
-
-arm_assembler.o: jit/arm/arm_assembler.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT arm_assembler.o -MD -MP -MF $(DEPDIR)/arm_assembler.Tpo -c -o arm_assembler.o `test -f 'jit/arm/arm_assembler.c' || echo '$(srcdir)/'`jit/arm/arm_assembler.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/arm_assembler.Tpo $(DEPDIR)/arm_assembler.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jit/arm/arm_assembler.c' object='arm_assembler.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o arm_assembler.o `test -f 'jit/arm/arm_assembler.c' || echo '$(srcdir)/'`jit/arm/arm_assembler.c
-
-arm_assembler.obj: jit/arm/arm_assembler.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT arm_assembler.obj -MD -MP -MF $(DEPDIR)/arm_assembler.Tpo -c -o arm_assembler.obj `if test -f 'jit/arm/arm_assembler.c'; then $(CYGPATH_W) 'jit/arm/arm_assembler.c'; else $(CYGPATH_W) '$(srcdir)/jit/arm/arm_assembler.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/arm_assembler.Tpo $(DEPDIR)/arm_assembler.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jit/arm/arm_assembler.c' object='arm_assembler.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o arm_assembler.obj `if test -f 'jit/arm/arm_assembler.c'; then $(CYGPATH_W) 'jit/arm/arm_assembler.c'; else $(CYGPATH_W) '$(srcdir)/jit/arm/arm_assembler.c'; fi`
 
 x86_64_assembler.o: jit/x86_64/x86_64_assembler.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT x86_64_assembler.o -MD -MP -MF $(DEPDIR)/x86_64_assembler.Tpo -c -o x86_64_assembler.o `test -f 'jit/x86_64/x86_64_assembler.c' || echo '$(srcdir)/'`jit/x86_64/x86_64_assembler.c
