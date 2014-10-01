@@ -6,6 +6,14 @@ AC_INIT([opendmd], [0.0.1], [weizhenwei1988@gmail.com])
 AC_CONFIG_SRCDIR([src/main.c])
 AC_CONFIG_HEADERS([config.h])
 
+# get system canonical system message,
+# such as build, host, target;
+#         build_alias, host_alias, arget_alias
+#         build_cpu,   build_vender, build_os
+#         host_cpu,    host_vender,  host_os
+#         target_cpu,   target_vender, target_os
+AC_CANONICAL_SYSTEM
+
 AM_INIT_AUTOMAKE(opendmd, 0.0.1)
 
 # Checks for programs.
