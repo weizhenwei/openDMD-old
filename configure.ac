@@ -83,9 +83,9 @@ LDFLAGS=
 
 
 # add --enable-debug option.
-AC_ARG_ENABLE( [debug], 
-	      AS_HELP_STRING([--enable-debug], [enable debug mode(default=no)]),
-	      [enable_debug=yes],
+	      #[enable-debug=yes],
+AC_ARG_ENABLE( [debug], AS_HELP_STRING([--enable-debug], [enable debug mode(default=no)]),
+	      [],
 	      [enable_debug=no]
 	      )
 AS_IF([test "x$enable_debug" = "xyes"], [CFLAGS+="-DDEBUG "],
@@ -93,22 +93,35 @@ AS_IF([test "x$enable_debug" = "xyes"], [CFLAGS+="-DDEBUG "],
       [echo "enable-debug with wrong value"]
       )
 
+
 # add --enable-gcov option.
 AC_ARG_ENABLE( [gcov], 
 	      AS_HELP_STRING([--enable-gcov], [enable gcov code-coverage(default=no)]),
-	      [enable_debug=yes],
-	      [enable_debug=no]
+	      [],
+	      [enable_gcov=no]
 	      )
 # add code-coverage info to gcc options;
-AS_IF([test "x$enable_gcov" = "xyes"], [CFLAGS+="-fprofile-arcs -ftest-coverage"
-       LDFLAGS+="-lgcov"],
+AS_IF([test "x$enable_gcov" = "xyes"], [CFLAGS+="-fprofile-arcs -ftest-coverage "
+       LDFLAGS+="-lgcov "],
       [test "x$enable_gcov" = "xno"], [CFLAGS+=" " LDFLAGS+=" "],
       [echo "enable-gcov with wrong value"]
+      )
+
+# add --enable-jit option.
+AC_ARG_ENABLE( [jit], 
+	      AS_HELP_STRING([--enable-jit], [enable jit(default=no)]),
+	      [],
+	      [enable_jit=no]
+	      )
+AS_IF([test "x$enable_jit" = "xyes"], [CFLAGS+="-DJIT "],
+      [test "x$enable_jit" = "xno"], [CFLAGS+=" "],
+      [echo "enable-jit with wrong value"]
       )
 
 # choose specific host architecture
 AM_CONDITIONAL([HAVE_X86_64], [test "x$host_cpu" = xx86_64])
 AM_CONDITIONAL([HAVE_ARM], [test "x$host_cpu" = xarm])
+
 
 #Attention: this is import, list the Makefile need to generate
 AC_CONFIG_FILES([Makefile
