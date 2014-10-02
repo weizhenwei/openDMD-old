@@ -83,9 +83,15 @@ do {\
     abort();\
 } while (0)
 
+
+// TODO(weizhenwei): may overflow here
+#define CODE_PROBLOGUE_LEN 1024
+#define CODE_BODY_LEN 4096
+
 typedef struct JITContext {
     /* goto_tb support */
-    uint8_t *code_buf;
+    uint8_t *code_gen_prologue;
+    uint8_t *code_gen_body;
     uint8_t *code_ptr;
 
 
@@ -94,7 +100,7 @@ typedef struct JITContext {
     int frame_reg;
 } JITContext;
 
-extern JITContext *jitctx;
+extern JITContext *jit_ctx;
 
 extern JITContext *jit_init();
 extern void jit_release(JITContext *ctx);
@@ -119,23 +125,37 @@ typedef enum BodyType {
     YUYV422_TO_RGB888,
 } BodyType;
 
+typedef struct BodyParams {
+    jit_target_long a;
+    jit_target_long b;
+} BodyParams;
+
 extern void jit_out32(JITContext *s, uint32_t v);
 
 extern void jit_set_frame(JITContext *s,
         int reg, intptr_t start, intptr_t size);
 
-extern void jit_prologue(JITContext *s);
+
+// TODO(weizhenwei): it's a litte wield here, which these functions should be
+//                   defined at architecture-specific files;
+#if defined(__arm__)
+extern void jit_arm_prologue(JITContext *s);
+extern void jit_arm_body(JITContext *s, BodyType body_type, BodyParams param);
+#elif defined(__x86_64__)
+extern void jit_x86_64_prologue(JITContext *s);
+extern void jit_x86_64_body(JITContext *s,
+        BodyType body_type, BodyParams param);
+#else
+#error "jit unsupported architecture"
+#endif
+
+// extern void jit_prologue(JITContext *s);
+// extern void jit_body(JITContext *s, BodyType body_type,
+//                      struct bodyParams param);
 #define jit_prologue(s) jit_prologue_specific(s)
+#define jit_body(s, body_type, param) jit_body_specific(s, body_type, param)
 
-extern void jit_body(JITContext *s, BodyType body_type);
-#define jit_body(s, body_type) jit_body_specific(s, body_type)
-
-extern void jit_epilogue(JITContext *s);
-#define jit_epilogue(s) jit_epilogue_specific(s)
-
-extern void jit_build(JITContext *s, BodyType body_type);
-
-// TODO
-#define  jit_exec(s, code_ptr)  0;
+# define jit_exec(env, body_ptr) \
+    ((int (*)(void *, void *))jit_ctx->code_gen_prologue)(env, body_ptr)
 
 #endif  // SRC_JIT_JIT_H_

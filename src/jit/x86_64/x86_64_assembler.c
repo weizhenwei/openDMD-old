@@ -80,8 +80,8 @@ static const int jit_target_call_oarg_regs[] = {
 /* Registers used with L constraint, which are the first argument 
    registers on x86_64, and two random call clobbered registers on
    i386. */
-#define TCG_REG_L0 jit_target_call_iarg_regs[0]
-#define TCG_REG_L1 jit_target_call_iarg_regs[1]
+#define JIT_REG_L0 jit_target_call_iarg_regs[0]
+#define JIT_REG_L1 jit_target_call_iarg_regs[1]
 
 static uint8_t *jit_ret_addr;
 
@@ -312,6 +312,14 @@ static inline void jit_out_ext32u(JITContext *s, int dest, int src) {
 static inline void jit_out_ext32s(JITContext *s, int dest, int src) {
     jit_out_modrm(s, OPC_MOVSLQ, dest, src);
 }
+/* Generate dest op= src.  Uses the same ARITH_* codes as tgen_arithi.  */
+static inline void tgen_arithr(JITContext *s, int subop, int dest, int src) {
+    /* Propagate an opcode prefix, such as P_REXW.  */
+    int ext = subop & ~0x7;
+    subop &= 0x7;
+
+    jit_out_modrm(s, OPC_ARITH_GvEv + (subop << 3) + ext, dest, src);
+}
 
 static void tgen_arithi(JITContext *s, int c, int r0, jit_target_long val,
         int cf) {
@@ -391,9 +399,10 @@ static void jit_out_addi(JITContext *s, int reg, jit_target_long val) {
       + JIT_TARGET_STACK_ALIGN - 1) \
      & ~(JIT_TARGET_STACK_ALIGN - 1))
 
-// prologue: save registers and build frame;
-static void jit_x86_64_prologue(JITContext *s) {
+void jit_x86_64_prologue(JITContext *s) {
     int i, stack_addend;
+
+    bzero(s->code_gen_prologue, CODE_PROBLOGUE_LEN);
 
     /* TB prologue */
 
@@ -409,19 +418,9 @@ static void jit_x86_64_prologue(JITContext *s) {
 
     jit_out_mov(s, JIT_TYPE_PTR, JIT_AREG0, jit_target_call_iarg_regs[0]);
     jit_out_addi(s, JIT_REG_ESP, -stack_addend);
-}
 
-// body: do the main function body;
-static void jit_x86_64_body(JITContext *s, BodyType body_type) {
     /* jmp *tb.  */
     jit_out_modrm(s, OPC_GRP5, EXT5_JMPN_Ev, jit_target_call_iarg_regs[1]);
-}
-
-// epilogue: recovery registers and destroy frame;
-static void jit_x86_64_epilogue(JITContext *s) {
-    int i, stack_addend;
-
-    stack_addend = FRAME_SIZE - PUSH_SIZE;
 
     /* TB epilogue */
     jit_ret_addr = s->code_ptr;
@@ -434,3 +433,27 @@ static void jit_x86_64_epilogue(JITContext *s) {
     jit_out_opc(s, OPC_RET, 0, 0, 0);
 }
 
+static void jit_x86_64_add_two(JITContext *s, BodyParams param) {
+    jit_target_long a = param.a;
+    jit_target_long b = param.b;
+
+    jit_out_addi(s, JIT_REG_RAX, a);
+    jit_out_addi(s, JIT_REG_RCX, b);
+    tgen_arithr(s, ARITH_ADD + P_REXW, JIT_REG_RAX, JIT_REG_RCX);
+}
+
+void jit_x86_64_body(JITContext *s, BodyType body_type, BodyParams param) {
+    // prepare body buffer;
+    bzero(s->code_gen_body, CODE_BODY_LEN);
+    s->code_ptr = s->code_gen_body;
+
+    switch (body_type) {
+        case ADD_TWO:
+            jit_x86_64_add_two(s, param);
+            break;
+        case YUYV422_TO_RGB888:
+            break;
+        default:
+            jit_abort();
+    }
+}

@@ -44,16 +44,23 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 
-JITContext *jitctx = NULL;
+JITContext *jit_ctx = NULL;
 
 JITContext *jit_init() {
     JITContext *ctx = (JITContext *)malloc(sizeof(JITContext));
     assert(ctx != NULL);
 
-    ctx->code_buf = (uint8_t *) malloc(4096);
-    assert(ctx->code_buf != NULL);
-    ctx->code_ptr = ctx->code_buf;
+    ctx->code_gen_prologue = (uint8_t *) malloc(CODE_PROBLOGUE_LEN);
+    assert(ctx->code_gen_prologue != NULL);
+    bzero(ctx->code_gen_prologue, CODE_PROBLOGUE_LEN);
+
+    ctx->code_gen_body = (uint8_t *) malloc(CODE_BODY_LEN);
+    assert(ctx->code_gen_body != NULL);
+    bzero(ctx->code_gen_body, CODE_BODY_LEN);
+
+    ctx->code_ptr = ctx->code_gen_prologue;
 
     ctx->frame_start = 0;
     ctx->frame_end = 0;
@@ -64,10 +71,13 @@ JITContext *jit_init() {
 
 void jit_release(JITContext *ctx) {
     if (ctx == NULL)
-        return ;
+        return;
 
-    if (ctx->code_buf != NULL) {
-        free(ctx->code_buf);
+    if (ctx->code_gen_prologue != NULL) {
+        free(ctx->code_gen_prologue);
+    }
+    if (ctx->code_gen_body != NULL) {
+        free(ctx->code_gen_body);
     }
 
     free(ctx);
@@ -75,24 +85,20 @@ void jit_release(JITContext *ctx) {
 
 void jit_out32(JITContext *s, uint32_t v) {
     *s->code_ptr++ = v;
-    // if (JIT_TARGET_INSN_UNIT_SIZE == 4) {
-    //     *s->code_ptr++ = v;
-    // } else {
-    //     jit_insn_unit *p = s->code_ptr;
-    //     memcpy(p, &v, sizeof(v));
-    //     s->code_ptr = p + (4 / TCG_TARGET_INSN_UNIT_SIZE);
-    // }
+#if 0
+    if (JIT_TARGET_INSN_UNIT_SIZE == 4) {
+        *s->code_ptr++ = v;
+    } else {
+        jit_insn_unit *p = s->code_ptr;
+        memcpy(p, &v, sizeof(v));
+        s->code_ptr = p + (4 / TCG_TARGET_INSN_UNIT_SIZE);
+    }
+#endif
 }
 
 void jit_set_frame(JITContext *s, int reg, intptr_t start, intptr_t size) {
     s->frame_start = start;
     s->frame_end = start + size;
     s->frame_reg = reg;
-}
-
-void jit_build(JITContext *s, BodyType body_type) {
-    // jit_prologue(s);
-    // jit_body(s, body_type);
-    // jit_prologue(s);
 }
 

@@ -59,9 +59,8 @@ typedef enum {
 
 
 // upper function calling interface;
-#define jit_arm_prologue jit_prologue
-#define jit_arm_body jit_body
-#define jit_arm_epilogue jit_epilogue
+#define jit_prologue_specific jit_arm_prologue
+#define jit_body_specific jit_arm_body
 
 enum {
     JIT_AREG0 = JIT_REG_R6,

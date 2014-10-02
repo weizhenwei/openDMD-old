@@ -36,6 +36,8 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 noinst_PROGRAMS = test_jit$(EXEEXT)
+@HAVE_X86_64_TRUE@am__append_1 = ../x86_64/x86_64_assembler.h ../x86_64/x86_64_assembler.c
+@HAVE_ARM_TRUE@am__append_2 = ../arm/arm_assembler.h ../arm/arm_assembler.c
 subdir = src/jit/test
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -47,7 +49,13 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
-am_test_jit_OBJECTS = test_jit.$(OBJEXT)
+am__test_jit_SOURCES_DIST = test_jit.c ../jit.h ../jit.c \
+	../x86_64/x86_64_assembler.h ../x86_64/x86_64_assembler.c \
+	../arm/arm_assembler.h ../arm/arm_assembler.c
+@HAVE_X86_64_TRUE@am__objects_1 = x86_64_assembler.$(OBJEXT)
+@HAVE_ARM_TRUE@am__objects_2 = arm_assembler.$(OBJEXT)
+am__objects_3 = jit.$(OBJEXT) $(am__objects_1) $(am__objects_2)
+am_test_jit_OBJECTS = test_jit.$(OBJEXT) $(am__objects_3)
 test_jit_OBJECTS = $(am_test_jit_OBJECTS)
 test_jit_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -59,7 +67,7 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(test_jit_SOURCES)
-DIST_SOURCES = $(test_jit_SOURCES)
+DIST_SOURCES = $(am__test_jit_SOURCES_DIST)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -166,7 +174,10 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
 INCLUDES = -I$(top_srcdir)
-test_jit_SOURCES = test_jit.c
+
+# jit specific files
+JITFILES := ../jit.h ../jit.c $(am__append_1) $(am__append_2)
+test_jit_SOURCES = test_jit.c $(JITFILES)
 all: all-am
 
 .SUFFIXES:
@@ -214,7 +225,10 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arm_assembler.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jit.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_jit.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/x86_64_assembler.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -229,6 +243,48 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
+
+jit.o: ../jit.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT jit.o -MD -MP -MF $(DEPDIR)/jit.Tpo -c -o jit.o `test -f '../jit.c' || echo '$(srcdir)/'`../jit.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/jit.Tpo $(DEPDIR)/jit.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../jit.c' object='jit.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o jit.o `test -f '../jit.c' || echo '$(srcdir)/'`../jit.c
+
+jit.obj: ../jit.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT jit.obj -MD -MP -MF $(DEPDIR)/jit.Tpo -c -o jit.obj `if test -f '../jit.c'; then $(CYGPATH_W) '../jit.c'; else $(CYGPATH_W) '$(srcdir)/../jit.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/jit.Tpo $(DEPDIR)/jit.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../jit.c' object='jit.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o jit.obj `if test -f '../jit.c'; then $(CYGPATH_W) '../jit.c'; else $(CYGPATH_W) '$(srcdir)/../jit.c'; fi`
+
+x86_64_assembler.o: ../x86_64/x86_64_assembler.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT x86_64_assembler.o -MD -MP -MF $(DEPDIR)/x86_64_assembler.Tpo -c -o x86_64_assembler.o `test -f '../x86_64/x86_64_assembler.c' || echo '$(srcdir)/'`../x86_64/x86_64_assembler.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/x86_64_assembler.Tpo $(DEPDIR)/x86_64_assembler.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../x86_64/x86_64_assembler.c' object='x86_64_assembler.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o x86_64_assembler.o `test -f '../x86_64/x86_64_assembler.c' || echo '$(srcdir)/'`../x86_64/x86_64_assembler.c
+
+x86_64_assembler.obj: ../x86_64/x86_64_assembler.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT x86_64_assembler.obj -MD -MP -MF $(DEPDIR)/x86_64_assembler.Tpo -c -o x86_64_assembler.obj `if test -f '../x86_64/x86_64_assembler.c'; then $(CYGPATH_W) '../x86_64/x86_64_assembler.c'; else $(CYGPATH_W) '$(srcdir)/../x86_64/x86_64_assembler.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/x86_64_assembler.Tpo $(DEPDIR)/x86_64_assembler.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../x86_64/x86_64_assembler.c' object='x86_64_assembler.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o x86_64_assembler.obj `if test -f '../x86_64/x86_64_assembler.c'; then $(CYGPATH_W) '../x86_64/x86_64_assembler.c'; else $(CYGPATH_W) '$(srcdir)/../x86_64/x86_64_assembler.c'; fi`
+
+arm_assembler.o: ../arm/arm_assembler.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT arm_assembler.o -MD -MP -MF $(DEPDIR)/arm_assembler.Tpo -c -o arm_assembler.o `test -f '../arm/arm_assembler.c' || echo '$(srcdir)/'`../arm/arm_assembler.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/arm_assembler.Tpo $(DEPDIR)/arm_assembler.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../arm/arm_assembler.c' object='arm_assembler.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o arm_assembler.o `test -f '../arm/arm_assembler.c' || echo '$(srcdir)/'`../arm/arm_assembler.c
+
+arm_assembler.obj: ../arm/arm_assembler.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT arm_assembler.obj -MD -MP -MF $(DEPDIR)/arm_assembler.Tpo -c -o arm_assembler.obj `if test -f '../arm/arm_assembler.c'; then $(CYGPATH_W) '../arm/arm_assembler.c'; else $(CYGPATH_W) '$(srcdir)/../arm/arm_assembler.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/arm_assembler.Tpo $(DEPDIR)/arm_assembler.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../arm/arm_assembler.c' object='arm_assembler.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o arm_assembler.obj `if test -f '../arm/arm_assembler.c'; then $(CYGPATH_W) '../arm/arm_assembler.c'; else $(CYGPATH_W) '$(srcdir)/../arm/arm_assembler.c'; fi`
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \

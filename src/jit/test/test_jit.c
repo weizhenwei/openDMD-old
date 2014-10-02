@@ -39,6 +39,7 @@
  * *****************************************************************************
  */
 
+#include <assert.h>
 #include <stdio.h>
 
 #include "src/jit/jit.h"
@@ -48,24 +49,15 @@
     ((uintptr_t (*)(void *, void *))tcg_ctx.code_gen_prologue)(env, tb_ptr)
 #endif
 
-// declare function pointer;
-int (*add)(int, int);
-
-// declare function pointer type;
-typedef int (*Add)(int, int);
-
-int add_two(int a, int b) {
-    return a + b;
-}
-
 int main(int argc, char *argv[]) {
-    Add addd = add_two;
-    int c = addd(1, 2);
-    printf("c = %d\n", c);
+    BodyParams param = {1, 2};
 
-    add = add_two;
-    int d = add(2, 3);
-    printf("d = %d\n", d);
+    jit_ctx = jit_init();
+    jit_prologue(jit_ctx);
+    jit_body(jit_ctx, ADD_TWO, param);
+    int ret = jit_exec(jit_ctx, jit_ctx->code_gen_body);
+    assert(ret == 3);
+    jit_release(jit_ctx);
 
     return 0;
 }
