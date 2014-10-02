@@ -43,6 +43,7 @@
 
 #include <assert.h>
 #include <stdint.h>
+#include <stddef.h>
 
 static const int jit_target_reg_alloc_order[] = {
     JIT_REG_RBP,
@@ -288,11 +289,13 @@ static inline void jit_out_ext8u(JITContext *s, int dest, int src) {
     jit_out_modrm(s, OPC_MOVZBL + P_REXB_RM, dest, src);
 }
 
+#if 0
 static void jit_out_ext8s(JITContext *s, int dest, int src, int rexw) {
     /* movsbl */
     assert(src < 4 || JIT_TARGET_REG_BITS == 64);
     jit_out_modrm(s, OPC_MOVSBL + P_REXB_RM + rexw, dest, src);
 }
+#endif
 
 static inline void jit_out_ext16u(JITContext *s, int dest, int src) {
     /* movzwl */
@@ -381,10 +384,93 @@ static void tgen_arithi(JITContext *s, int c, int r0, jit_target_long val,
     jit_abort();
 }
 
+static void jit_out_movi(JITContext *s, JITType type,
+                         JITReg ret, jit_target_long arg) {
+    jit_target_long diff;
+
+    if (arg == 0) {
+        tgen_arithr(s, ARITH_XOR, ret, ret);
+        return;
+    }
+    if (arg == (uint32_t)arg || type == JIT_TYPE_I32) {
+        jit_out_opc(s, OPC_MOVL_Iv + LOWREGMASK(ret), 0, ret, 0);
+        jit_out32(s, arg);
+        return;
+    }
+    if (arg == (int32_t)arg) {
+        jit_out_modrm(s, OPC_MOVL_EvIz + P_REXW, 0, ret);
+        jit_out32(s, arg);
+        return;
+    }
+
+    /* Try a 7 byte pc-relative lea before the 10 byte movq.  */
+    diff = arg - ((uintptr_t)s->code_ptr + 7);
+    if (diff == (int32_t)diff) {
+        jit_out_opc(s, OPC_LEA | P_REXW, ret, 0, 0);
+        jit_out8(s, (LOWREGMASK(ret) << 3) | 5);
+        jit_out32(s, diff);
+        return;
+    }
+
+    jit_out_opc(s, OPC_MOVL_Iv + P_REXW + LOWREGMASK(ret), 0, ret, 0);
+    jit_out64(s, arg);
+}
+
 static void jit_out_addi(JITContext *s, int reg, jit_target_long val) {
     if (val != 0) {
         tgen_arithi(s, ARITH_ADD + P_REXW, reg, val, 0);
     }
+}
+
+/**
+ * jit_ptr_byte_diff
+ * @a, @b: addresses to be differenced
+ *
+ * There are many places within the TCG backends where we need a byte
+ * difference between two pointers.  While this can be accomplished
+ * with local casting, it's easy to get wrong -- especially if one is
+ * concerned with the signedness of the result.
+ *
+ * This version relies on GCC's void pointer arithmetic to get the
+ * correct result.
+ */
+
+static inline ptrdiff_t jit_ptr_byte_diff(void *a, void *b) {
+    return a - b;
+}
+
+/**
+ * jit_pcrel_diff
+ * @s: the jit context
+ * @target: address of the target
+ *
+ * Produce a pc-relative difference, from the current code_ptr
+ * to the destination address.
+ */
+
+static inline ptrdiff_t jit_pcrel_diff(JITContext *s, void *target) {
+    return jit_ptr_byte_diff(target, s->code_ptr);
+}
+
+static void jit_out_branch(JITContext *s, int call, jit_insn_unit *dest) {
+    intptr_t disp = jit_pcrel_diff(s, dest) - 5;
+
+    if (disp == (int32_t)disp) {
+        jit_out_opc(s, call ? OPC_CALL_Jz : OPC_JMP_long, 0, 0, 0);
+        jit_out32(s, disp);
+    } else {
+        jit_out_movi(s, JIT_TYPE_PTR, JIT_REG_R10, (uintptr_t)dest);
+        jit_out_modrm(s, OPC_GRP5,
+                      call ? EXT5_CALLN_Ev : EXT5_JMPN_Ev, JIT_REG_R10);
+    }
+}
+
+static inline void jit_out_call(JITContext *s, jit_insn_unit *dest) {
+    jit_out_branch(s, 1, dest);
+}
+
+static void jit_out_jmp(JITContext *s, jit_insn_unit *dest) {
+    jit_out_branch(s, 0, dest);
 }
 
 /* Compute frame size via macros, and tcg_register_jit. */
@@ -395,7 +481,7 @@ static void jit_out_addi(JITContext *s, int reg, jit_target_long val) {
 #define FRAME_SIZE \
     ((PUSH_SIZE \
       + JIT_STATIC_CALL_ARGS_SIZE \
-      + CPU_TEMP_BUF_NLONGS * sizeof(long) \
+      + CPU_TEMP_BUF_NLONGS * sizeof(jit_target_long) \
       + JIT_TARGET_STACK_ALIGN - 1) \
      & ~(JIT_TARGET_STACK_ALIGN - 1))
 
@@ -403,13 +489,14 @@ void jit_x86_64_prologue(JITContext *s) {
     int i, stack_addend;
 
     bzero(s->code_gen_prologue, CODE_PROBLOGUE_LEN);
+    s->code_ptr = s->code_gen_prologue;
 
     /* TB prologue */
 
     /* Reserve some stack space, also for TCG temps.  */
     stack_addend = FRAME_SIZE - PUSH_SIZE;
     jit_set_frame(s, JIT_REG_CALL_STACK, JIT_STATIC_CALL_ARGS_SIZE,
-                  CPU_TEMP_BUF_NLONGS * sizeof(long));
+                  CPU_TEMP_BUF_NLONGS * sizeof(jit_target_long));
 
     /* Save all callee saved registers.  */
     for (i = 0; i < ARRAY_SIZE(jit_target_callee_save_regs); i++) {
@@ -437,15 +524,20 @@ static void jit_x86_64_add_two(JITContext *s, BodyParams param) {
     jit_target_long a = param.a;
     jit_target_long b = param.b;
 
-    jit_out_addi(s, JIT_REG_RAX, a);
-    jit_out_addi(s, JIT_REG_RCX, b);
+    // clean rax and rcx;
+    tgen_arithr(s, ARITH_XOR + P_REXW, JIT_REG_RAX, JIT_REG_RAX);
+    tgen_arithr(s, ARITH_XOR + P_REXW, JIT_REG_RCX, JIT_REG_RCX);
+
+    jit_out_movi(s, JIT_TYPE_I64, JIT_REG_RAX, a);
+    jit_out_movi(s, JIT_TYPE_I64, JIT_REG_RCX, b);
     tgen_arithr(s, ARITH_ADD + P_REXW, JIT_REG_RAX, JIT_REG_RCX);
+
+    jit_out_jmp(s, jit_ret_addr);
 }
 
 void jit_x86_64_body(JITContext *s, BodyType body_type, BodyParams param) {
-    // prepare body buffer;
-    bzero(s->code_gen_body, CODE_BODY_LEN);
-    s->code_ptr = s->code_gen_body;
+    // prepare body pointer;
+    s->code_gen_body = s->code_ptr;
 
     switch (body_type) {
         case ADD_TWO:

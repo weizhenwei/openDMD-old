@@ -57,17 +57,15 @@
 
 #if defined(__arm__)
 typedef uint32_t jit_insn_unit;
+typedef int32_t jit_target_long;
+typedef uint32_t jit_target_ulong;
 #elif defined(__x86_64__)
 typedef uint8_t jit_insn_unit;
+typedef int64_t jit_target_long;
+typedef uint64_t jit_target_ulong;
 #else
 #error "jit unsupported architecture"
 #endif
-
-// in 32 bit mode;
-// typedef uint8_t jit_target_long;
-
-typedef int32_t jit_target_long;
-typedef uint32_t jit_target_ulong;
 
 typedef jit_target_ulong JITArg;
 
@@ -85,8 +83,7 @@ do {\
 
 
 // TODO(weizhenwei): may overflow here
-#define CODE_PROBLOGUE_LEN 1024
-#define CODE_BODY_LEN 4096
+#define CODE_PROBLOGUE_LEN 4096
 
 typedef struct JITContext {
     /* goto_tb support */
@@ -131,6 +128,10 @@ typedef struct BodyParams {
 } BodyParams;
 
 extern void jit_out32(JITContext *s, uint32_t v);
+extern void jit_out64(JITContext *s, uint64_t v);
+
+// make memory executable;
+extern void map_exec(void *start, uint64_t size);
 
 extern void jit_set_frame(JITContext *s,
         int reg, intptr_t start, intptr_t size);

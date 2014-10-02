@@ -45,6 +45,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
+#include <sys/mman.h>
+#include <unistd.h>
 
 JITContext *jit_ctx = NULL;
 
@@ -55,12 +57,10 @@ JITContext *jit_init() {
     ctx->code_gen_prologue = (uint8_t *) malloc(CODE_PROBLOGUE_LEN);
     assert(ctx->code_gen_prologue != NULL);
     bzero(ctx->code_gen_prologue, CODE_PROBLOGUE_LEN);
-
-    ctx->code_gen_body = (uint8_t *) malloc(CODE_BODY_LEN);
-    assert(ctx->code_gen_body != NULL);
-    bzero(ctx->code_gen_body, CODE_BODY_LEN);
+    map_exec(ctx->code_gen_prologue, CODE_PROBLOGUE_LEN);
 
     ctx->code_ptr = ctx->code_gen_prologue;
+    ctx->code_gen_body = ctx->code_ptr;
 
     ctx->frame_start = 0;
     ctx->frame_end = 0;
@@ -75,25 +75,45 @@ void jit_release(JITContext *ctx) {
 
     if (ctx->code_gen_prologue != NULL) {
         free(ctx->code_gen_prologue);
-    }
-    if (ctx->code_gen_body != NULL) {
-        free(ctx->code_gen_body);
+        ctx->code_gen_prologue = NULL;
     }
 
     free(ctx);
 }
 
+void map_exec(void *addr, uint64_t size) {
+    uint64_t start, end, page_size;
+
+    page_size = getpagesize();
+    start = (uint64_t)addr;
+    start &= ~(page_size - 1);
+
+    end = (uint64_t)addr + size;
+    end += page_size - 1;
+    end &= ~(page_size - 1);
+
+    mprotect((void *)start, end - start,
+             PROT_READ | PROT_WRITE | PROT_EXEC);
+}
+
 void jit_out32(JITContext *s, uint32_t v) {
-    *s->code_ptr++ = v;
-#if 0
     if (JIT_TARGET_INSN_UNIT_SIZE == 4) {
         *s->code_ptr++ = v;
     } else {
         jit_insn_unit *p = s->code_ptr;
         memcpy(p, &v, sizeof(v));
-        s->code_ptr = p + (4 / TCG_TARGET_INSN_UNIT_SIZE);
+        s->code_ptr = p + (4 / JIT_TARGET_INSN_UNIT_SIZE);
     }
-#endif
+}
+
+inline void jit_out64(JITContext *s, uint64_t v) {
+    if (JIT_TARGET_INSN_UNIT_SIZE == 8) {
+        *s->code_ptr++ = v;
+    } else {
+        jit_insn_unit *p = s->code_ptr;
+        memcpy(p, &v, sizeof(v));
+        s->code_ptr = p + (8 / JIT_TARGET_INSN_UNIT_SIZE);
+    }
 }
 
 void jit_set_frame(JITContext *s, int reg, intptr_t start, intptr_t size) {
