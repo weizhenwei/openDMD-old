@@ -21,11 +21,20 @@ opendmd_LDADD = $(top_srcdir)/libjpeg/libjpeg.a \
 # -lrt for function clock_gettime()
 LIBS=-lm -lpthread -lrt -ldl
 
+# jit specific files
+JITFILES := jit/jit.h jit/jit.c
+if HAVE_X86_64
+    JITFILES += jit/x86_64/x86_64_assembler.h jit/x86_64/x86_64_assembler.c
+endif
+if HAVE_ARM
+    JITFILES += jit/arm/arm_assembler.h jit/arm/arm_assembler.c
+endif
+
 opendmd_SOURCES = main.c \
           config.h config.c log.h log.c path.h path.c global_context.h \
           global_context.c parser.h parser.c v4l2_utils.h v4l2_utils.c \
           signal_handler.h signal_handler.c statistics.h statistics.c \
-		  sqlite_utils.h sqlite_utils.c \
+          sqlite_utils.h sqlite_utils.c \
           client/video.h client/video.c client/image_convert.h \
           client/image_convert.c client/image_capture.h client/image_capture.c \
           client/picture_thread.h client/picture_thread.c \
@@ -33,12 +42,11 @@ opendmd_SOURCES = main.c \
           client/libx264.h client/libx264.c \
           client/video_thread.h client/video_thread.c \
           client/rtp_send.h client/rtp_send.c \
-		  jit/jit.h jit/jit.c \
-		  jit/x86_64/x86_64_assembler.h jit/x86_64/x86_64_assembler.c \
+          $(JITFILES) \
           server/rtp_recv.h server/rtp_recv.c \
           server/rtp_server.h server/rtp_server.c \
-		  webserver/socket_utils.h webserver/socket_utils.c \
-		  webserver/http_utils.h webserver/http_utils.c \
-		  webserver/webserver_process.h webserver/webserver_process.c
+          webserver/socket_utils.h webserver/socket_utils.c \
+          webserver/http_utils.h webserver/http_utils.c \
+          webserver/webserver_process.h webserver/webserver_process.c
 
 

@@ -106,6 +106,10 @@ AS_IF([test "x$enable_gcov" = "xyes"], [CFLAGS+="-fprofile-arcs -ftest-coverage"
       [echo "enable-gcov with wrong value"]
       )
 
+# choose specific host architecture
+AM_CONDITIONAL([HAVE_X86_64], [test "x$host_cpu" = xx86_64])
+AM_CONDITIONAL([HAVE_ARM], [test "x$host_cpu" = xarm])
+
 #Attention: this is import, list the Makefile need to generate
 AC_CONFIG_FILES([Makefile
                  libjpeg/Makefile

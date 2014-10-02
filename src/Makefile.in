@@ -32,7 +32,12 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+build_triplet = @build@
+host_triplet = @host@
+target_triplet = @target@
 bin_PROGRAMS = opendmd$(EXEEXT)
+@HAVE_X86_64_TRUE@am__append_1 = jit/x86_64/x86_64_assembler.h jit/x86_64/x86_64_assembler.c
+@HAVE_ARM_TRUE@am__append_2 = jit/arm/arm_assembler.h jit/arm/arm_assembler.c
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -45,15 +50,34 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
+am__opendmd_SOURCES_DIST = main.c config.h config.c log.h log.c path.h \
+	path.c global_context.h global_context.c parser.h parser.c \
+	v4l2_utils.h v4l2_utils.c signal_handler.h signal_handler.c \
+	statistics.h statistics.c sqlite_utils.h sqlite_utils.c \
+	client/video.h client/video.c client/image_convert.h \
+	client/image_convert.c client/image_capture.h \
+	client/image_capture.c client/picture_thread.h \
+	client/picture_thread.c client/flv_muxer.h client/flv_muxer.c \
+	client/libx264.h client/libx264.c client/video_thread.h \
+	client/video_thread.c client/rtp_send.h client/rtp_send.c \
+	jit/jit.h jit/jit.c jit/x86_64/x86_64_assembler.h \
+	jit/x86_64/x86_64_assembler.c jit/arm/arm_assembler.h \
+	jit/arm/arm_assembler.c server/rtp_recv.h server/rtp_recv.c \
+	server/rtp_server.h server/rtp_server.c \
+	webserver/socket_utils.h webserver/socket_utils.c \
+	webserver/http_utils.h webserver/http_utils.c \
+	webserver/webserver_process.h webserver/webserver_process.c
+@HAVE_X86_64_TRUE@am__objects_1 = x86_64_assembler.$(OBJEXT)
+@HAVE_ARM_TRUE@am__objects_2 = arm_assembler.$(OBJEXT)
+am__objects_3 = jit.$(OBJEXT) $(am__objects_1) $(am__objects_2)
 am_opendmd_OBJECTS = main.$(OBJEXT) config.$(OBJEXT) log.$(OBJEXT) \
 	path.$(OBJEXT) global_context.$(OBJEXT) parser.$(OBJEXT) \
 	v4l2_utils.$(OBJEXT) signal_handler.$(OBJEXT) \
 	statistics.$(OBJEXT) sqlite_utils.$(OBJEXT) video.$(OBJEXT) \
 	image_convert.$(OBJEXT) image_capture.$(OBJEXT) \
 	picture_thread.$(OBJEXT) flv_muxer.$(OBJEXT) libx264.$(OBJEXT) \
-	video_thread.$(OBJEXT) rtp_send.$(OBJEXT) jit.$(OBJEXT) \
-	x86_64_assembler.$(OBJEXT) rtp_recv.$(OBJEXT) \
-	rtp_server.$(OBJEXT) socket_utils.$(OBJEXT) \
+	video_thread.$(OBJEXT) rtp_send.$(OBJEXT) $(am__objects_3) \
+	rtp_recv.$(OBJEXT) rtp_server.$(OBJEXT) socket_utils.$(OBJEXT) \
 	http_utils.$(OBJEXT) webserver_process.$(OBJEXT)
 opendmd_OBJECTS = $(am_opendmd_OBJECTS)
 opendmd_DEPENDENCIES = $(top_srcdir)/libjpeg/libjpeg.a \
@@ -69,7 +93,7 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(opendmd_SOURCES)
-DIST_SOURCES = $(opendmd_SOURCES)
+DIST_SOURCES = $(am__opendmd_SOURCES_DIST)
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-dvi-recursive install-exec-recursive \
@@ -174,14 +198,22 @@ am__quote = @am__quote@
 am__tar = @am__tar@
 am__untar = @am__untar@
 bindir = @bindir@
+build = @build@
 build_alias = @build_alias@
+build_cpu = @build_cpu@
+build_os = @build_os@
+build_vendor = @build_vendor@
 builddir = @builddir@
 datadir = @datadir@
 datarootdir = @datarootdir@
 docdir = @docdir@
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
+host = @host@
 host_alias = @host_alias@
+host_cpu = @host_cpu@
+host_os = @host_os@
+host_vendor = @host_vendor@
 htmldir = @htmldir@
 includedir = @includedir@
 infodir = @infodir@
@@ -201,7 +233,11 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 srcdir = @srcdir@
 sysconfdir = @sysconfdir@
+target = @target@
 target_alias = @target_alias@
+target_cpu = @target_cpu@
+target_os = @target_os@
+target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
@@ -218,11 +254,14 @@ opendmd_LDADD = $(top_srcdir)/libjpeg/libjpeg.a \
         $(top_srcdir)/libsqlite/src/libsqlite3.a \
         $(top_srcdir)/libx264/libx264.a
 
+
+# jit specific files
+JITFILES := jit/jit.h jit/jit.c $(am__append_1) $(am__append_2)
 opendmd_SOURCES = main.c \
           config.h config.c log.h log.c path.h path.c global_context.h \
           global_context.c parser.h parser.c v4l2_utils.h v4l2_utils.c \
           signal_handler.h signal_handler.c statistics.h statistics.c \
-		  sqlite_utils.h sqlite_utils.c \
+          sqlite_utils.h sqlite_utils.c \
           client/video.h client/video.c client/image_convert.h \
           client/image_convert.c client/image_capture.h client/image_capture.c \
           client/picture_thread.h client/picture_thread.c \
@@ -230,13 +269,12 @@ opendmd_SOURCES = main.c \
           client/libx264.h client/libx264.c \
           client/video_thread.h client/video_thread.c \
           client/rtp_send.h client/rtp_send.c \
-		  jit/jit.h jit/jit.c \
-		  jit/x86_64/x86_64_assembler.h jit/x86_64/x86_64_assembler.c \
+          $(JITFILES) \
           server/rtp_recv.h server/rtp_recv.c \
           server/rtp_server.h server/rtp_server.c \
-		  webserver/socket_utils.h webserver/socket_utils.c \
-		  webserver/http_utils.h webserver/http_utils.c \
-		  webserver/webserver_process.h webserver/webserver_process.c
+          webserver/socket_utils.h webserver/socket_utils.c \
+          webserver/http_utils.h webserver/http_utils.c \
+          webserver/webserver_process.h webserver/webserver_process.c
 
 all: all-recursive
 
@@ -319,6 +357,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arm_assembler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/config.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flv_muxer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/global_context.Po@am__quote@
@@ -498,6 +537,20 @@ x86_64_assembler.obj: jit/x86_64/x86_64_assembler.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jit/x86_64/x86_64_assembler.c' object='x86_64_assembler.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o x86_64_assembler.obj `if test -f 'jit/x86_64/x86_64_assembler.c'; then $(CYGPATH_W) 'jit/x86_64/x86_64_assembler.c'; else $(CYGPATH_W) '$(srcdir)/jit/x86_64/x86_64_assembler.c'; fi`
+
+arm_assembler.o: jit/arm/arm_assembler.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT arm_assembler.o -MD -MP -MF $(DEPDIR)/arm_assembler.Tpo -c -o arm_assembler.o `test -f 'jit/arm/arm_assembler.c' || echo '$(srcdir)/'`jit/arm/arm_assembler.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/arm_assembler.Tpo $(DEPDIR)/arm_assembler.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jit/arm/arm_assembler.c' object='arm_assembler.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o arm_assembler.o `test -f 'jit/arm/arm_assembler.c' || echo '$(srcdir)/'`jit/arm/arm_assembler.c
+
+arm_assembler.obj: jit/arm/arm_assembler.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT arm_assembler.obj -MD -MP -MF $(DEPDIR)/arm_assembler.Tpo -c -o arm_assembler.obj `if test -f 'jit/arm/arm_assembler.c'; then $(CYGPATH_W) 'jit/arm/arm_assembler.c'; else $(CYGPATH_W) '$(srcdir)/jit/arm/arm_assembler.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/arm_assembler.Tpo $(DEPDIR)/arm_assembler.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jit/arm/arm_assembler.c' object='arm_assembler.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o arm_assembler.obj `if test -f 'jit/arm/arm_assembler.c'; then $(CYGPATH_W) 'jit/arm/arm_assembler.c'; else $(CYGPATH_W) '$(srcdir)/jit/arm/arm_assembler.c'; fi`
 
 rtp_recv.o: server/rtp_recv.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rtp_recv.o -MD -MP -MF $(DEPDIR)/rtp_recv.Tpo -c -o rtp_recv.o `test -f 'server/rtp_recv.c' || echo '$(srcdir)/'`server/rtp_recv.c
