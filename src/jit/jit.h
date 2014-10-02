@@ -122,10 +122,23 @@ typedef enum BodyType {
     YUYV422_TO_RGB888,
 } BodyType;
 
-typedef struct BodyParams {
+struct add_param {
     jit_target_long a;
     jit_target_long b;
+};
+
+struct yuyv_param {
+    jit_target_long a;
+    jit_target_long b;
+};
+
+typedef struct BodyParams {
+    union {
+        struct add_param add;
+        struct yuyv_param yuyv;
+    }u;
 } BodyParams;
+
 
 extern void jit_out32(JITContext *s, uint32_t v);
 extern void jit_out64(JITContext *s, uint64_t v);

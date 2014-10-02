@@ -50,7 +50,9 @@
 #endif
 
 int main(int argc, char *argv[]) {
-    BodyParams param = {1, 2};
+    struct add_param add = {1, 2};
+    BodyParams param;
+    param.u.add = add;
 
     jit_ctx = jit_init();
     jit_prologue(jit_ctx);

@@ -521,8 +521,9 @@ void jit_x86_64_prologue(JITContext *s) {
 }
 
 static void jit_x86_64_add_two(JITContext *s, BodyParams param) {
-    jit_target_long a = param.a;
-    jit_target_long b = param.b;
+    struct add_param add = param.u.add;
+    jit_target_long a = add.a;
+    jit_target_long b = add.b;
 
     // clean rax and rcx;
     tgen_arithr(s, ARITH_XOR + P_REXW, JIT_REG_RAX, JIT_REG_RAX);
