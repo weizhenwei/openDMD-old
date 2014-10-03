@@ -38,6 +38,10 @@ target_triplet = @target@
 bin_PROGRAMS = opendmd$(EXEEXT)
 @HAVE_X86_64_TRUE@am__append_1 = jit/x86_64/x86_64_assembler.h jit/x86_64/x86_64_assembler.c
 @HAVE_ARM_TRUE@am__append_2 = jit/arm/arm_assembler.h jit/arm/arm_assembler.c
+@HAVE_WEB_TRUE@am__append_3 = webserver/socket_utils.h webserver/socket_utils.c \
+@HAVE_WEB_TRUE@            webserver/http_utils.h webserver/http_utils.c \
+@HAVE_WEB_TRUE@            webserver/webserver_process.h webserver/webserver_process.c
+
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -60,25 +64,28 @@ am__opendmd_SOURCES_DIST = main.c config.h config.c log.h log.c path.h \
 	client/picture_thread.c client/flv_muxer.h client/flv_muxer.c \
 	client/libx264.h client/libx264.c client/video_thread.h \
 	client/video_thread.c client/rtp_send.h client/rtp_send.c \
-	jit/jit.h jit/jit.c jit/x86_64/x86_64_assembler.h \
-	jit/x86_64/x86_64_assembler.c jit/arm/arm_assembler.h \
-	jit/arm/arm_assembler.c server/rtp_recv.h server/rtp_recv.c \
-	server/rtp_server.h server/rtp_server.c \
+	server/rtp_recv.h server/rtp_recv.c server/rtp_server.h \
+	server/rtp_server.c jit/jit.h jit/jit.c \
+	jit/x86_64/x86_64_assembler.h jit/x86_64/x86_64_assembler.c \
+	jit/arm/arm_assembler.h jit/arm/arm_assembler.c \
 	webserver/socket_utils.h webserver/socket_utils.c \
 	webserver/http_utils.h webserver/http_utils.c \
 	webserver/webserver_process.h webserver/webserver_process.c
 @HAVE_X86_64_TRUE@am__objects_1 = x86_64_assembler.$(OBJEXT)
 @HAVE_ARM_TRUE@am__objects_2 = arm_assembler.$(OBJEXT)
 am__objects_3 = jit.$(OBJEXT) $(am__objects_1) $(am__objects_2)
+@HAVE_WEB_TRUE@am__objects_4 = socket_utils.$(OBJEXT) \
+@HAVE_WEB_TRUE@	http_utils.$(OBJEXT) \
+@HAVE_WEB_TRUE@	webserver_process.$(OBJEXT)
+am__objects_5 = $(am__objects_4)
 am_opendmd_OBJECTS = main.$(OBJEXT) config.$(OBJEXT) log.$(OBJEXT) \
 	path.$(OBJEXT) global_context.$(OBJEXT) parser.$(OBJEXT) \
 	v4l2_utils.$(OBJEXT) signal_handler.$(OBJEXT) \
 	statistics.$(OBJEXT) sqlite_utils.$(OBJEXT) video.$(OBJEXT) \
 	image_convert.$(OBJEXT) image_capture.$(OBJEXT) \
 	picture_thread.$(OBJEXT) flv_muxer.$(OBJEXT) libx264.$(OBJEXT) \
-	video_thread.$(OBJEXT) rtp_send.$(OBJEXT) $(am__objects_3) \
-	rtp_recv.$(OBJEXT) rtp_server.$(OBJEXT) socket_utils.$(OBJEXT) \
-	http_utils.$(OBJEXT) webserver_process.$(OBJEXT)
+	video_thread.$(OBJEXT) rtp_send.$(OBJEXT) rtp_recv.$(OBJEXT) \
+	rtp_server.$(OBJEXT) $(am__objects_3) $(am__objects_5)
 opendmd_OBJECTS = $(am_opendmd_OBJECTS)
 opendmd_DEPENDENCIES = $(top_srcdir)/libjpeg/libjpeg.a \
 	$(top_srcdir)/libortp/src/libortp.a \
@@ -257,6 +264,9 @@ opendmd_LDADD = $(top_srcdir)/libjpeg/libjpeg.a \
 
 # jit specific files
 JITFILES := jit/jit.h jit/jit.c $(am__append_1) $(am__append_2)
+
+# web specific files
+WEBFILES := $(am__append_3)
 opendmd_SOURCES = main.c \
           config.h config.c log.h log.c path.h path.c global_context.h \
           global_context.c parser.h parser.c v4l2_utils.h v4l2_utils.c \
@@ -269,12 +279,10 @@ opendmd_SOURCES = main.c \
           client/libx264.h client/libx264.c \
           client/video_thread.h client/video_thread.c \
           client/rtp_send.h client/rtp_send.c \
-          $(JITFILES) \
           server/rtp_recv.h server/rtp_recv.c \
           server/rtp_server.h server/rtp_server.c \
-          webserver/socket_utils.h webserver/socket_utils.c \
-          webserver/http_utils.h webserver/http_utils.c \
-          webserver/webserver_process.h webserver/webserver_process.c
+          $(JITFILES) \
+          ${WEBFILES}
 
 all: all-recursive
 
@@ -510,6 +518,34 @@ rtp_send.obj: client/rtp_send.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rtp_send.obj `if test -f 'client/rtp_send.c'; then $(CYGPATH_W) 'client/rtp_send.c'; else $(CYGPATH_W) '$(srcdir)/client/rtp_send.c'; fi`
 
+rtp_recv.o: server/rtp_recv.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rtp_recv.o -MD -MP -MF $(DEPDIR)/rtp_recv.Tpo -c -o rtp_recv.o `test -f 'server/rtp_recv.c' || echo '$(srcdir)/'`server/rtp_recv.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/rtp_recv.Tpo $(DEPDIR)/rtp_recv.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='server/rtp_recv.c' object='rtp_recv.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rtp_recv.o `test -f 'server/rtp_recv.c' || echo '$(srcdir)/'`server/rtp_recv.c
+
+rtp_recv.obj: server/rtp_recv.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rtp_recv.obj -MD -MP -MF $(DEPDIR)/rtp_recv.Tpo -c -o rtp_recv.obj `if test -f 'server/rtp_recv.c'; then $(CYGPATH_W) 'server/rtp_recv.c'; else $(CYGPATH_W) '$(srcdir)/server/rtp_recv.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/rtp_recv.Tpo $(DEPDIR)/rtp_recv.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='server/rtp_recv.c' object='rtp_recv.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rtp_recv.obj `if test -f 'server/rtp_recv.c'; then $(CYGPATH_W) 'server/rtp_recv.c'; else $(CYGPATH_W) '$(srcdir)/server/rtp_recv.c'; fi`
+
+rtp_server.o: server/rtp_server.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rtp_server.o -MD -MP -MF $(DEPDIR)/rtp_server.Tpo -c -o rtp_server.o `test -f 'server/rtp_server.c' || echo '$(srcdir)/'`server/rtp_server.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/rtp_server.Tpo $(DEPDIR)/rtp_server.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='server/rtp_server.c' object='rtp_server.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rtp_server.o `test -f 'server/rtp_server.c' || echo '$(srcdir)/'`server/rtp_server.c
+
+rtp_server.obj: server/rtp_server.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rtp_server.obj -MD -MP -MF $(DEPDIR)/rtp_server.Tpo -c -o rtp_server.obj `if test -f 'server/rtp_server.c'; then $(CYGPATH_W) 'server/rtp_server.c'; else $(CYGPATH_W) '$(srcdir)/server/rtp_server.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/rtp_server.Tpo $(DEPDIR)/rtp_server.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='server/rtp_server.c' object='rtp_server.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rtp_server.obj `if test -f 'server/rtp_server.c'; then $(CYGPATH_W) 'server/rtp_server.c'; else $(CYGPATH_W) '$(srcdir)/server/rtp_server.c'; fi`
+
 jit.o: jit/jit.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT jit.o -MD -MP -MF $(DEPDIR)/jit.Tpo -c -o jit.o `test -f 'jit/jit.c' || echo '$(srcdir)/'`jit/jit.c
 @am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/jit.Tpo $(DEPDIR)/jit.Po
@@ -551,34 +587,6 @@ arm_assembler.obj: jit/arm/arm_assembler.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jit/arm/arm_assembler.c' object='arm_assembler.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o arm_assembler.obj `if test -f 'jit/arm/arm_assembler.c'; then $(CYGPATH_W) 'jit/arm/arm_assembler.c'; else $(CYGPATH_W) '$(srcdir)/jit/arm/arm_assembler.c'; fi`
-
-rtp_recv.o: server/rtp_recv.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rtp_recv.o -MD -MP -MF $(DEPDIR)/rtp_recv.Tpo -c -o rtp_recv.o `test -f 'server/rtp_recv.c' || echo '$(srcdir)/'`server/rtp_recv.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/rtp_recv.Tpo $(DEPDIR)/rtp_recv.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='server/rtp_recv.c' object='rtp_recv.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rtp_recv.o `test -f 'server/rtp_recv.c' || echo '$(srcdir)/'`server/rtp_recv.c
-
-rtp_recv.obj: server/rtp_recv.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rtp_recv.obj -MD -MP -MF $(DEPDIR)/rtp_recv.Tpo -c -o rtp_recv.obj `if test -f 'server/rtp_recv.c'; then $(CYGPATH_W) 'server/rtp_recv.c'; else $(CYGPATH_W) '$(srcdir)/server/rtp_recv.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/rtp_recv.Tpo $(DEPDIR)/rtp_recv.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='server/rtp_recv.c' object='rtp_recv.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rtp_recv.obj `if test -f 'server/rtp_recv.c'; then $(CYGPATH_W) 'server/rtp_recv.c'; else $(CYGPATH_W) '$(srcdir)/server/rtp_recv.c'; fi`
-
-rtp_server.o: server/rtp_server.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rtp_server.o -MD -MP -MF $(DEPDIR)/rtp_server.Tpo -c -o rtp_server.o `test -f 'server/rtp_server.c' || echo '$(srcdir)/'`server/rtp_server.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/rtp_server.Tpo $(DEPDIR)/rtp_server.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='server/rtp_server.c' object='rtp_server.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rtp_server.o `test -f 'server/rtp_server.c' || echo '$(srcdir)/'`server/rtp_server.c
-
-rtp_server.obj: server/rtp_server.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rtp_server.obj -MD -MP -MF $(DEPDIR)/rtp_server.Tpo -c -o rtp_server.obj `if test -f 'server/rtp_server.c'; then $(CYGPATH_W) 'server/rtp_server.c'; else $(CYGPATH_W) '$(srcdir)/server/rtp_server.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/rtp_server.Tpo $(DEPDIR)/rtp_server.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='server/rtp_server.c' object='rtp_server.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rtp_server.obj `if test -f 'server/rtp_server.c'; then $(CYGPATH_W) 'server/rtp_server.c'; else $(CYGPATH_W) '$(srcdir)/server/rtp_server.c'; fi`
 
 socket_utils.o: webserver/socket_utils.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT socket_utils.o -MD -MP -MF $(DEPDIR)/socket_utils.Tpo -c -o socket_utils.o `test -f 'webserver/socket_utils.c' || echo '$(srcdir)/'`webserver/socket_utils.c

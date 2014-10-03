@@ -30,6 +30,14 @@ if HAVE_ARM
     JITFILES += jit/arm/arm_assembler.h jit/arm/arm_assembler.c
 endif
 
+# web specific files
+WEBFILES :=
+if HAVE_WEB
+WEBFILES += webserver/socket_utils.h webserver/socket_utils.c \
+            webserver/http_utils.h webserver/http_utils.c \
+            webserver/webserver_process.h webserver/webserver_process.c
+endif
+
 opendmd_SOURCES = main.c \
           config.h config.c log.h log.c path.h path.c global_context.h \
           global_context.c parser.h parser.c v4l2_utils.h v4l2_utils.c \
@@ -42,11 +50,9 @@ opendmd_SOURCES = main.c \
           client/libx264.h client/libx264.c \
           client/video_thread.h client/video_thread.c \
           client/rtp_send.h client/rtp_send.c \
-          $(JITFILES) \
           server/rtp_recv.h server/rtp_recv.c \
           server/rtp_server.h server/rtp_server.c \
-          webserver/socket_utils.h webserver/socket_utils.c \
-          webserver/http_utils.h webserver/http_utils.c \
-          webserver/webserver_process.h webserver/webserver_process.c
+          $(JITFILES) \
+          ${WEBFILES}
 
 

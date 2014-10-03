@@ -83,7 +83,6 @@ LDFLAGS=
 
 
 # add --enable-debug option.
-	      #[enable-debug=yes],
 AC_ARG_ENABLE( [debug], AS_HELP_STRING([--enable-debug], [enable debug mode(default=no)]),
 	      [],
 	      [enable_debug=no]
@@ -117,6 +116,18 @@ AS_IF([test "x$enable_jit" = "xyes"], [CFLAGS+="-DJIT "],
       [test "x$enable_jit" = "xno"], [CFLAGS+=" "],
       [echo "enable-jit with wrong value"]
       )
+
+# add --enable-jit option.
+AC_ARG_ENABLE( [web], 
+	      AS_HELP_STRING([--enable-web], [enable web admin(default=no)]),
+	      [],
+	      [enable_web=no]
+	      )
+AS_IF([test "x$enable_web" = "xyes"], [CFLAGS+="-DWEB "],
+      [test "x$enable_web" = "xno"], [CFLAGS+=" "],
+      [echo "enable-web with wrong value"]
+      )
+AM_CONDITIONAL([HAVE_WEB], [test "x$enable_web" = xyes])
 
 # choose specific host architecture
 AM_CONDITIONAL([HAVE_X86_64], [test "x$host_cpu" = xx86_64])
