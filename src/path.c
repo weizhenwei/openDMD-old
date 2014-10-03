@@ -132,7 +132,8 @@ struct path_t *client_get_filepath(int path_type) {
     assert(test_and_mkdir(storepath) == 0);
 
     time_t now;
-    struct tm *tmptr = NULL;
+    struct tm tmp = {0};
+    struct tm *tmptr = &tmp;
     now = time(&now);
     assert(now != -1);
     tmptr = localtime_r(&now, tmptr);
@@ -216,7 +217,8 @@ struct path_t *server_get_filepath(int path_type, int client_number) {
     assert(test_and_mkdir(storepath) == 0);
 
     time_t now;
-    struct tm *tmptr = NULL;
+    struct tm tmp = {0};
+    struct tm *tmptr = &tmp;
     now = time(&now);
     assert(now != -1);
     tmptr = localtime_r(&now, tmptr);
