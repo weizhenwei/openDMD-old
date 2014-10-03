@@ -448,9 +448,11 @@ int main(int argc, char *argv[]) {
     }
 
 end:
+#if defined(WEB)
     // kill webserver process;
     ret = kill(global.webserver_pid, SIGKILL);
     assert(ret == 0);
+#endif
 
     release_default_global();
     clean();
