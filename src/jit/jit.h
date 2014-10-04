@@ -118,8 +118,12 @@ typedef enum JITType {
 } JITType;
 
 typedef enum BodyType {
-    ADD_TWO,
-    YUYV422_TO_RGB888,
+    ADD_TWO,                // example to verify whether jit works;
+    YUYV422_motion_detect,  // detect motion occured;
+    YUYV422toRGB888INT,     // YUYV422 format to RGB888 format;
+    YUYV422toYUV422P,       // YUYV422 format to YUV422P format;
+    YUYV422PtoYUV422P,      // YUYV422P format to YUV422P format;
+    YUYV422toYUV420P,       // packed YUYV422 to planar YUV422P;
 } BodyType;
 
 struct add_param {
@@ -127,15 +131,53 @@ struct add_param {
     jit_target_long b;
 };
 
-struct yuyv_param {
-    jit_target_long a;
-    jit_target_long b;
+struct motion_detect_param {
+    uint8_t *yuyv;
+    uint32_t width;
+    uint32_t height;
+    uint32_t length;
+};
+
+struct rgb888int {
+    uint8_t *yuyv;
+    uint32_t width;
+    uint32_t height;
+    uint8_t *rgb;
+    uint32_t length;
+};
+
+struct yuyv422toyuv422p {
+    uint8_t *yuyv;
+    uint32_t width;
+    uint32_t height;
+    uint8_t *yuv422p;
+    uint32_t length;
+};
+
+struct yuyv422ptoyuv420p {
+    uint8_t *yuyv;
+    uint32_t width;
+    uint32_t height;
+    uint8_t *yuv420p;
+    uint32_t length;
+};
+
+struct yuyv422toyuv420p {
+    uint8_t *yuyv;
+    uint32_t width;
+    uint32_t height;
+    uint8_t *yuv420p;
+    uint32_t length;
 };
 
 typedef struct BodyParams {
     union {
         struct add_param add;
-        struct yuyv_param yuyv;
+        struct motion_detect_param  detect;
+        struct rgb888int rgb888;
+        struct yuyv422toyuv422p y422to422p;
+        struct yuyv422ptoyuv420p y422pto420p;
+        struct yuyv422toyuv420p y422to420p;
     }u;
 } BodyParams;
 

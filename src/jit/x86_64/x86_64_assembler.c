@@ -544,7 +544,15 @@ void jit_x86_64_body(JITContext *s, BodyType body_type, BodyParams param) {
         case ADD_TWO:
             jit_x86_64_add_two(s, param);
             break;
-        case YUYV422_TO_RGB888:
+        case YUYV422_motion_detect:  // detect motion occured;
+            break;
+        case YUYV422toRGB888INT:     // YUYV422 format to RGB888 format;
+            break;
+        case YUYV422toYUV422P:       // YUYV422 format to YUV422P format;
+            break;
+        case YUYV422PtoYUV422P:      // YUYV422P format to YUV422P format;
+            break;
+        case YUYV422toYUV420P:       // packed YUYV422 to planar YUV422P;
             break;
         default:
             jit_abort();
