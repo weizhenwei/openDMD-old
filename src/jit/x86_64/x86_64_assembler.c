@@ -520,6 +520,19 @@ void jit_x86_64_prologue(JITContext *s) {
     jit_out_opc(s, OPC_RET, 0, 0, 0);
 }
 
+#if 0
+typedef struct BodyParams {
+    union {
+        struct add_param add;
+        struct motion_detect_param  detect;
+        struct rgb888int rgb888;
+        struct yuyv422toyuv422p y422to422p;
+        struct yuyv422ptoyuv420p y422pto420p;
+        struct yuyv422toyuv420p y422to420p;
+    }u;
+} BodyParams;
+#endif
+
 static void jit_x86_64_add_two(JITContext *s, BodyParams param) {
     struct add_param add = param.u.add;
     jit_target_long a = add.a;
@@ -536,6 +549,36 @@ static void jit_x86_64_add_two(JITContext *s, BodyParams param) {
     jit_out_jmp(s, jit_ret_addr);
 }
 
+static void jit_YUYV422_motion_detect(JITContext *s, BodyParams param) {
+    struct motion_detect_param  detect = param.u.detect;
+
+    jit_out_jmp(s, jit_ret_addr);
+}
+
+static void jit_YUYV422toRGB888INT(JITContext *s, BodyParams param) {
+    struct rgb888int  rgb888 = param.u.rgb888;
+
+    jit_out_jmp(s, jit_ret_addr);
+}
+
+static void jit_YUYV422toYUV422P(JITContext *s, BodyParams param) {
+    struct yuyv422toyuv422p y422to422p = param.u.y422to422p;
+
+    jit_out_jmp(s, jit_ret_addr);
+}
+
+static void jit_YUYV422PtoYUV422P(JITContext *s, BodyParams param) {
+    struct yuyv422ptoyuv420p y422pto420p = param.u.y422pto420p;
+
+    jit_out_jmp(s, jit_ret_addr);
+}
+
+static void jit_YUYV422toYUV420P(JITContext *s, BodyParams param) {
+    struct yuyv422toyuv420p y422to420p = param.u.y422to420p;
+
+    jit_out_jmp(s, jit_ret_addr);
+}
+
 void jit_x86_64_body(JITContext *s, BodyType body_type, BodyParams param) {
     // prepare body pointer;
     s->code_gen_body = s->code_ptr;
@@ -545,14 +588,19 @@ void jit_x86_64_body(JITContext *s, BodyType body_type, BodyParams param) {
             jit_x86_64_add_two(s, param);
             break;
         case YUYV422_motion_detect:  // detect motion occured;
+            jit_YUYV422_motion_detect(s, param);
             break;
         case YUYV422toRGB888INT:     // YUYV422 format to RGB888 format;
+            jit_YUYV422toRGB888INT(s, param);
             break;
         case YUYV422toYUV422P:       // YUYV422 format to YUV422P format;
+            jit_YUYV422toYUV422P(s, param);
             break;
         case YUYV422PtoYUV422P:      // YUYV422P format to YUV422P format;
+            jit_YUYV422PtoYUV422P(s, param);
             break;
         case YUYV422toYUV420P:       // packed YUYV422 to planar YUV422P;
+            jit_YUYV422toYUV420P(s, param);
             break;
         default:
             jit_abort();
