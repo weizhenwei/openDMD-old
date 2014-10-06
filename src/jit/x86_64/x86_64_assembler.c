@@ -42,6 +42,7 @@
 #include "src/jit/x86_64/x86_64_assembler.h"
 
 #include <assert.h>
+#include <stdio.h>
 #include <stdint.h>
 #include <stddef.h>
 
@@ -551,30 +552,35 @@ static void jit_x86_64_add_two(JITContext *s, BodyParams param) {
 
 static void jit_YUYV422_motion_detect(JITContext *s, BodyParams param) {
     struct motion_detect_param  detect = param.u.detect;
+    printf("detect message:%p\n", &detect);
 
     jit_out_jmp(s, jit_ret_addr);
 }
 
 static void jit_YUYV422toRGB888INT(JITContext *s, BodyParams param) {
     struct rgb888int  rgb888 = param.u.rgb888;
+    printf("rgb888 message:%p\n", &rgb888);
 
     jit_out_jmp(s, jit_ret_addr);
 }
 
 static void jit_YUYV422toYUV422P(JITContext *s, BodyParams param) {
     struct yuyv422toyuv422p y422to422p = param.u.y422to422p;
+    printf("y422to422p message:%p\n", &y422to422p);
 
     jit_out_jmp(s, jit_ret_addr);
 }
 
 static void jit_YUYV422PtoYUV422P(JITContext *s, BodyParams param) {
     struct yuyv422ptoyuv420p y422pto420p = param.u.y422pto420p;
+    printf("y422pto420p message:%p\n", &y422pto420p);
 
     jit_out_jmp(s, jit_ret_addr);
 }
 
 static void jit_YUYV422toYUV420P(JITContext *s, BodyParams param) {
     struct yuyv422toyuv420p y422to420p = param.u.y422to420p;
+    printf("y422to420p message:%p\n", &y422to420p);
 
     jit_out_jmp(s, jit_ret_addr);
 }
