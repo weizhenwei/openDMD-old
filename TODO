@@ -1,3 +1,8 @@
+2014.10.06:
+    rewrite config parsing with flex and bison;
+    rewrite key section to jit code;
+    place obj file at the right place;
+
 2014.09.18:
     My Raspberry Pi is running now, I am so happy!
 

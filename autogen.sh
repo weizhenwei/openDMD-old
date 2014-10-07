@@ -15,7 +15,7 @@ echo "autoconf ..."
 $AUTOCONF
 
 echo "automake ..."
-$AUTOMAKE --force-missing --add-missing
+$AUTOMAKE --force-missing --add-missing --copy
 
 echo "configure ..."
 ./configure --enable-debug --enable-jit --disable-web --disable-gcov

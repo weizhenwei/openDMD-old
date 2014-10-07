@@ -15,6 +15,7 @@
 
 @SET_MAKE@
 
+
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -35,8 +36,9 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-subdir = libortp/src
-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
+subdir = src/webserver
+DIST_COMMON = $(include_HEADERS) $(srcdir)/Makefile.am \
+	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -72,24 +74,15 @@ am__uninstall_files_from_dir = { \
     || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
-am__installdirs = "$(DESTDIR)$(libdir)"
+am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"
 LIBRARIES = $(lib_LIBRARIES)
 AR = ar
 ARFLAGS = cru
-libortp_a_AR = $(AR) $(ARFLAGS)
-libortp_a_LIBADD =
-am_libortp_a_OBJECTS = str_utils.$(OBJEXT) port.$(OBJEXT) \
-	logging.$(OBJEXT) rtpparse.$(OBJEXT) rtpsession.$(OBJEXT) \
-	rtpsession_inet.$(OBJEXT) jitterctl.$(OBJEXT) \
-	rtpsignaltable.$(OBJEXT) rtptimer.$(OBJEXT) \
-	posixtimer.$(OBJEXT) ortp.$(OBJEXT) scheduler.$(OBJEXT) \
-	avprofile.$(OBJEXT) sessionset.$(OBJEXT) \
-	telephonyevents.$(OBJEXT) payloadtype.$(OBJEXT) \
-	rtpprofile.$(OBJEXT) rtcp.$(OBJEXT) utils.$(OBJEXT) \
-	rtcpparse.$(OBJEXT) event.$(OBJEXT) stun.$(OBJEXT) \
-	stun_udp.$(OBJEXT) ortp_srtp.$(OBJEXT) b64.$(OBJEXT) \
-	zrtp.$(OBJEXT) netsim.$(OBJEXT)
-libortp_a_OBJECTS = $(am_libortp_a_OBJECTS)
+libwebserver_a_AR = $(AR) $(ARFLAGS)
+libwebserver_a_LIBADD =
+am_libwebserver_a_OBJECTS = socket_utils.$(OBJEXT) \
+	http_utils.$(OBJEXT) webserver_process.$(OBJEXT)
+libwebserver_a_OBJECTS = $(am_libwebserver_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -98,8 +91,9 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(libortp_a_SOURCES)
-DIST_SOURCES = $(libortp_a_SOURCES)
+SOURCES = $(libwebserver_a_SOURCES)
+DIST_SOURCES = $(libwebserver_a_SOURCES)
+HEADERS = $(include_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -210,38 +204,16 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
-INCLUDES = -I$(top_srcdir)/libortp/include -I$(top_srcdir)/libortp
-lib_LIBRARIES = libortp.a
+lib_LIBRARIES = libwebserver.a
+INCLUDES = -I$(top_srcdir)/libjpeg -I$(top_srcdir)/libsqlite/src \
+           -I$(top_srcdir)/libortp/include -I$(top_srcdir)/libortp \
+           -I$(top_srcdir)/libx264 -I$(top_srcdir)/libx264/output
 
-# libortp_a_LIBADD= -lm -lpthread -lrt
-libortp_a_SOURCES = str_utils.c	\
-			port.c \
-			logging.c \
-			rtpparse.c  \
-			rtpsession.c \
-			rtpsession_inet.c \
-			rtpsession_priv.h \
-			jitterctl.c jitterctl.h \
-			rtpsignaltable.c  \
-			rtptimer.c	rtptimer.h \
-			posixtimer.c \
-			ortp.c \
-			scheduler.c scheduler.h \
-			avprofile.c  \
-			sessionset.c  \
-			telephonyevents.c  \
-			payloadtype.c \
-			rtpprofile.c \
-			rtcp.c  \
-			utils.c utils.h \
-			rtcpparse.c \
-			event.c \
-			stun.c stun_udp.c \
-			ortp_srtp.c \
-			b64.c \
-			zrtp.c \
-			netsim.c
+libwebserver_a_SOURCES = socket_utils.h socket_utils.c \
+                         http_response-inl.h http_utils.h http_utils.c \
+                         webserver_process.h webserver_process.c
 
+include_HEADERS = socket_utils.h http_utils.h webserver_process.h
 all: all-am
 
 .SUFFIXES:
@@ -255,9 +227,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign libortp/src/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign src/webserver/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign libortp/src/Makefile
+	  $(AUTOMAKE) --foreign src/webserver/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -306,10 +278,10 @@ uninstall-libLIBRARIES:
 
 clean-libLIBRARIES:
 	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
-libortp.a: $(libortp_a_OBJECTS) $(libortp_a_DEPENDENCIES) $(EXTRA_libortp_a_DEPENDENCIES) 
-	-rm -f libortp.a
-	$(libortp_a_AR) libortp.a $(libortp_a_OBJECTS) $(libortp_a_LIBADD)
-	$(RANLIB) libortp.a
+libwebserver.a: $(libwebserver_a_OBJECTS) $(libwebserver_a_DEPENDENCIES) $(EXTRA_libwebserver_a_DEPENDENCIES) 
+	-rm -f libwebserver.a
+	$(libwebserver_a_AR) libwebserver.a $(libwebserver_a_OBJECTS) $(libwebserver_a_LIBADD)
+	$(RANLIB) libwebserver.a
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -317,33 +289,9 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/avprofile.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/b64.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/event.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jitterctl.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/logging.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/netsim.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ortp.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ortp_srtp.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/payloadtype.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/port.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/posixtimer.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtcp.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtcpparse.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtpparse.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtpprofile.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtpsession.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtpsession_inet.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtpsignaltable.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtptimer.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scheduler.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sessionset.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/str_utils.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stun.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stun_udp.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/telephonyevents.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utils.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zrtp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/http_utils.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/socket_utils.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/webserver_process.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -358,6 +306,24 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
+install-includeHEADERS: $(include_HEADERS)
+	@$(NORMAL_INSTALL)
+	test -z "$(includedir)" || $(MKDIR_P) "$(DESTDIR)$(includedir)"
+	@list='$(include_HEADERS)'; test -n "$(includedir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(includedir)'"; \
+	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(includedir)" || exit $$?; \
+	done
+
+uninstall-includeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(include_HEADERS)'; test -n "$(includedir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(includedir)'; $(am__uninstall_files_from_dir)
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -443,9 +409,9 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LIBRARIES)
+all-am: Makefile $(LIBRARIES) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -500,7 +466,7 @@ info: info-am
 
 info-am:
 
-install-data-am:
+install-data-am: install-includeHEADERS
 
 install-dvi: install-dvi-am
 
@@ -545,7 +511,7 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-libLIBRARIES
+uninstall-am: uninstall-includeHEADERS uninstall-libLIBRARIES
 
 .MAKE: install-am install-strip
 
@@ -554,13 +520,14 @@ uninstall-am: uninstall-libLIBRARIES
 	distclean-generic distclean-tags distdir dvi dvi-am html \
 	html-am info info-am install install-am install-data \
 	install-data-am install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-libLIBRARIES install-man install-pdf \
-	install-pdf-am install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
+	install-exec-am install-html install-html-am \
+	install-includeHEADERS install-info install-info-am \
+	install-libLIBRARIES install-man install-pdf install-pdf-am \
+	install-ps install-ps-am install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
-	uninstall-am uninstall-libLIBRARIES
+	uninstall-am uninstall-includeHEADERS uninstall-libLIBRARIES
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

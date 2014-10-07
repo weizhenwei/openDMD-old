@@ -1,19 +1,25 @@
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = jit
+SUBDIRS = client server jit webserver
 
 bin_PROGRAMS = opendmd
 
 INCLUDES = -I$(top_srcdir)/libjpeg -I$(top_srcdir)/libsqlite/src \
-       -I$(top_srcdir)/libortp/include -I$(top_srcdir)/libortp \
-       -I$(top_srcdir)/libx264 -I$(top_srcdir)/libx264/output \
-       -I$(top_srcdir)/src/client -I$(top_srcdir)/src/server \
-       -I$(top_srcdir)/src/webserver -I$(top_srcdir)/src/jit
+           -I$(top_srcdir)/libortp/include -I$(top_srcdir)/libortp \
+           -I$(top_srcdir)/libx264 -I$(top_srcdir)/libx264/output \
+           -I$(top_srcdir)/src/client -I$(top_srcdir)/src/server
 
-opendmd_LDADD = $(top_srcdir)/libjpeg/libjpeg.a \
-        $(top_srcdir)/libortp/src/libortp.a \
-        $(top_srcdir)/libsqlite/src/libsqlite3.a \
-        $(top_srcdir)/libx264/libx264.a
+#  opendmd_LDADD = $(top_srcdir)/libjpeg/libjpeg.a \
+#          $(top_srcdir)/libortp/src/libortp.a \
+#          $(top_srcdir)/libsqlite/src/libsqlite3.a \
+#          $(top_srcdir)/libx264/libx264.a \
+#          $(top_srcdir)/src/client/libclient.a \
+#          $(top_srcdir)/src/server/libserver.a
+
+ opendmd_LDADD = $(top_srcdir)/libjpeg/libjpeg.a \
+         $(top_srcdir)/libortp/src/libortp.a \
+         $(top_srcdir)/libsqlite/src/libsqlite3.a \
+         $(top_srcdir)/libx264/libx264.a
 
 # Warning: system library should be assigned here using LIBS;
 # using opendmd_LDFLAGS at here doesn't work!
@@ -21,21 +27,16 @@ opendmd_LDADD = $(top_srcdir)/libjpeg/libjpeg.a \
 # -lrt for function clock_gettime()
 LIBS=-lm -lpthread -lrt -ldl
 
-# jit specific files
-JITFILES := jit/jit.h jit/jit.c
-if HAVE_X86_64
-    JITFILES += jit/x86_64/x86_64_assembler.h jit/x86_64/x86_64_assembler.c
-endif
-if HAVE_ARM
-    JITFILES += jit/arm/arm_assembler.h jit/arm/arm_assembler.c
+#jit specific lib
+if HAVE_JIT
+opendmd_LDADD += $(top_srcdir)/src/jit/libjit.a
+INCLUDES += -I$(top_srcdir)/src/jit
 endif
 
-# web specific files
-WEBFILES :=
-if HAVE_WEB
-WEBFILES += webserver/socket_utils.h webserver/socket_utils.c \
-            webserver/http_utils.h webserver/http_utils.c \
-            webserver/webserver_process.h webserver/webserver_process.c
+# web specific lib
+if HAVE_WEBSERVER
+opendmd_LDADD += $(top_srcdir)/src/webserver/libwebserver.a
+INCLUDES += -I$(top_srcdir)/src/webserver
 endif
 
 opendmd_SOURCES = main.c \
@@ -43,16 +44,14 @@ opendmd_SOURCES = main.c \
           global_context.c parser.h parser.c v4l2_utils.h v4l2_utils.c \
           signal_handler.h signal_handler.c statistics.h statistics.c \
           sqlite_utils.h sqlite_utils.c \
-          client/video.h client/video.c client/image_convert.h \
-          client/image_convert.c client/image_capture.h client/image_capture.c \
-          client/picture_thread.h client/picture_thread.c \
-          client/flv_muxer.h client/flv_muxer.c \
-          client/libx264.h client/libx264.c \
-          client/video_thread.h client/video_thread.c \
-          client/rtp_send.h client/rtp_send.c \
-          server/rtp_recv.h server/rtp_recv.c \
-          server/rtp_server.h server/rtp_server.c \
-          $(JITFILES) \
-          ${WEBFILES}
-
+          client/flv_muxer.c client/flv_muxer.h \
+          client/image_capture.c client/image_capture.h \
+          client/image_convert.c client/image_convert.h \
+          client/libx264.c client/libx264.h \
+          client/rtp_send.c client/rtp_send.h \
+          client/picture_thread.c client/picture_thread.h \
+          client/video.c client/video.h \
+          client/video_thread.c client/video_thread.h \
+          server/rtp_recv.c server/rtp_recv.h \
+          server/rtp_server.c server/rtp_server.h
 

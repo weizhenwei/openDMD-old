@@ -17,7 +17,10 @@ AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE(opendmd, 0.0.1)
 
 # Checks for programs.
-AC_PROG_CC
+AC_PROG_CC         # for c compiler
+# AC_PROG_LIBTOOL    # for libtool
+AC_PROG_LEX   # for flex
+AC_PROG_YACC  # for bison
 
 # for static library generation
 AC_PROG_RANLIB
@@ -84,9 +87,9 @@ LDFLAGS=
 
 # add --enable-debug option.
 AC_ARG_ENABLE( [debug], AS_HELP_STRING([--enable-debug], [enable debug mode(default=no)]),
-	      [],
-	      [enable_debug=no]
-	      )
+          [],
+          [enable_debug=no]
+          )
 AS_IF([test "x$enable_debug" = "xyes"], [CFLAGS+="-DDEBUG "],
       [test "x$enable_debug" = "xno"], [CFLAGS+=" "],
       [echo "enable-debug with wrong value"]
@@ -95,10 +98,10 @@ AS_IF([test "x$enable_debug" = "xyes"], [CFLAGS+="-DDEBUG "],
 
 # add --enable-gcov option.
 AC_ARG_ENABLE( [gcov], 
-	      AS_HELP_STRING([--enable-gcov], [enable gcov code-coverage(default=no)]),
-	      [],
-	      [enable_gcov=no]
-	      )
+          AS_HELP_STRING([--enable-gcov], [enable gcov code-coverage(default=no)]),
+          [],
+          [enable_gcov=no]
+          )
 # add code-coverage info to gcc options;
 AS_IF([test "x$enable_gcov" = "xyes"], [CFLAGS+="-fprofile-arcs -ftest-coverage "
        LDFLAGS+="-lgcov "],
@@ -108,26 +111,27 @@ AS_IF([test "x$enable_gcov" = "xyes"], [CFLAGS+="-fprofile-arcs -ftest-coverage 
 
 # add --enable-jit option.
 AC_ARG_ENABLE( [jit], 
-	      AS_HELP_STRING([--enable-jit], [enable jit(default=no)]),
-	      [],
-	      [enable_jit=no]
-	      )
+          AS_HELP_STRING([--enable-jit], [enable jit(default=no)]),
+          [],
+          [enable_jit=no]
+          )
 AS_IF([test "x$enable_jit" = "xyes"], [CFLAGS+="-DJIT "],
       [test "x$enable_jit" = "xno"], [CFLAGS+=" "],
       [echo "enable-jit with wrong value"]
       )
+AM_CONDITIONAL([HAVE_JIT], [test "x$enable_jit" = xyes])
 
 # add --enable-jit option.
 AC_ARG_ENABLE( [web], 
-	      AS_HELP_STRING([--enable-web], [enable web admin(default=no)]),
-	      [],
-	      [enable_web=no]
-	      )
+          AS_HELP_STRING([--enable-web], [enable web admin(default=no)]),
+          [],
+          [enable_web=no]
+          )
 AS_IF([test "x$enable_web" = "xyes"], [CFLAGS+="-DWEB "],
       [test "x$enable_web" = "xno"], [CFLAGS+=" "],
       [echo "enable-web with wrong value"]
       )
-AM_CONDITIONAL([HAVE_WEB], [test "x$enable_web" = xyes])
+AM_CONDITIONAL([HAVE_WEBSERVER], [test "x$enable_web" = xyes])
 
 # choose specific host architecture
 AM_CONDITIONAL([HAVE_X86_64], [test "x$host_cpu" = xx86_64])
@@ -150,6 +154,10 @@ AC_CONFIG_FILES([Makefile
                  libx264/encoder/Makefile
                  libx264/output/Makefile
                  src/Makefile
+                 src/client/Makefile
+                 src/server/Makefile
                  src/jit/Makefile
-                 src/jit/test/Makefile])
+                 src/jit/test/Makefile
+                 src/webserver/Makefile
+                 ])
 AC_OUTPUT
