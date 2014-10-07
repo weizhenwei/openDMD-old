@@ -45,7 +45,7 @@
 #include <linux/limits.h>   // for PATH_MAX
 #include <stdint.h>
 
-#include <ortp/ortp.h>
+#include "ortp/ortp.h"
 
 /////////////////////////////////////////////////////////////
 // Common default settings                                 //

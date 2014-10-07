@@ -16,10 +16,10 @@ INCLUDES = -I$(top_srcdir)/libjpeg -I$(top_srcdir)/libsqlite/src \
 #          $(top_srcdir)/src/client/libclient.a \
 #          $(top_srcdir)/src/server/libserver.a
 
- opendmd_LDADD = $(top_srcdir)/libjpeg/libjpeg.a \
-         $(top_srcdir)/libortp/src/libortp.a \
-         $(top_srcdir)/libsqlite/src/libsqlite3.a \
-         $(top_srcdir)/libx264/libx264.a
+opendmd_LDADD = $(top_srcdir)/libjpeg/libjpeg.a \
+                $(top_srcdir)/libortp/src/libortp.a \
+                $(top_srcdir)/libsqlite/src/libsqlite3.a \
+                $(top_srcdir)/libx264/libx264.a
 
 # Warning: system library should be assigned here using LIBS;
 # using opendmd_LDFLAGS at here doesn't work!

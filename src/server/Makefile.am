@@ -2,8 +2,6 @@ AUTOMAKE_OPTIONS = foreign
 
 noinst_LIBRARIES = libserver.a
 
-INCLUDES = -I$(top_srcdir)/libortp/include -I$(top_srcdir)/libortp
-
 INCLUDES = -I$(top_srcdir)/libjpeg -I$(top_srcdir)/libsqlite/src \
            -I$(top_srcdir)/libortp/include -I$(top_srcdir)/libortp \
            -I$(top_srcdir)/libx264 -I$(top_srcdir)/libx264/output \

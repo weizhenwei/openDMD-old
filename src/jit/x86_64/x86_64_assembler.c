@@ -46,6 +46,8 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#include "src/global_context.h"
+
 static const int jit_target_reg_alloc_order[] = {
     JIT_REG_RBP,
     JIT_REG_RBX,
@@ -560,6 +562,13 @@ static void jit_YUYV422_motion_detect(JITContext *s, BodyParams param) {
 static void jit_YUYV422toRGB888INT(JITContext *s, BodyParams param) {
     struct rgb888int  rgb888 = param.u.rgb888;
     printf("rgb888 message:%p\n", &rgb888);
+    // int DIFF = global.client.diff_pixels;
+    // int ABSY = global.client.diff_deviation;
+    // int ABSCbCr = global.client.diff_deviation;
+    int client_offset = offsetof(struct global_context, client);
+    int diff_pixels_offset = offsetof(struct client_context, diff_pixels);
+    printf("client_offset = %d \n", client_offset);
+    printf("diff_pixels_offset = %d \n", diff_pixels_offset);
 
     jit_out_jmp(s, jit_ret_addr);
 }
@@ -612,3 +621,4 @@ void jit_x86_64_body(JITContext *s, BodyType body_type, BodyParams param) {
             jit_abort();
     }
 }
+
