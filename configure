@@ -606,14 +606,12 @@ ac_header_list=
 ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
+HAVE_WEBSERVER_FALSE
+HAVE_WEBSERVER_TRUE
 HAVE_ARM_FALSE
 HAVE_ARM_TRUE
 HAVE_X86_64_FALSE
 HAVE_X86_64_TRUE
-HAVE_WEBSERVER_FALSE
-HAVE_WEBSERVER_TRUE
-HAVE_JIT_FALSE
-HAVE_JIT_TRUE
 POW_LIB
 LIBOBJS
 ALLOCA
@@ -722,7 +720,6 @@ enable_option_checking
 enable_dependency_tracking
 enable_debug
 enable_gcov
-enable_jit
 enable_web
 '
       ac_precious_vars='build_alias
@@ -1361,7 +1358,6 @@ Optional Features:
   --enable-dependency-tracking   do not reject slow dependency extractors
   --enable-debug          enable debug mode(default=no)
   --enable-gcov           enable gcov code-coverage(default=no)
-  --enable-jit            enable jit(default=no)
   --enable-web            enable web admin(default=no)
 
 Some influential environment variables:
@@ -6331,32 +6327,38 @@ else
 fi
 
 # add --enable-jit option.
-# Check whether --enable-jit was given.
-if test "${enable_jit+set}" = set; then :
-  enableval=$enable_jit;
-else
-  enable_jit=no
+# AC_ARG_ENABLE( [jit],
+#           AS_HELP_STRING([--enable-jit], [enable jit(default=no)]),
+#           [],
+#           [enable_jit=no]
+#           )
+# AS_IF([test "x$enable_jit" = "xyes"], [CFLAGS+="-DJIT "],
+#       [test "x$enable_jit" = "xno"], [CFLAGS+=" "],
+#       [echo "enable-jit with wrong value"]
+#       )
+# AM_CONDITIONAL([HAVE_JIT], [test "x$enable_jit" = xyes])
 
+# choose specific host architecture
+ if test "x$host_cpu" = xx86_64; then
+  HAVE_X86_64_TRUE=
+  HAVE_X86_64_FALSE='#'
+else
+  HAVE_X86_64_TRUE='#'
+  HAVE_X86_64_FALSE=
 fi
 
-if test "x$enable_jit" = "xyes"; then :
-  CFLAGS+="-DJIT "
-elif test "x$enable_jit" = "xno"; then :
-  CFLAGS+=" "
+ if test "x$host_cpu" = xarm; then
+  HAVE_ARM_TRUE=
+  HAVE_ARM_FALSE='#'
 else
-  echo "enable-jit with wrong value"
-
-fi
- if test "x$enable_jit" = xyes; then
-  HAVE_JIT_TRUE=
-  HAVE_JIT_FALSE='#'
-else
-  HAVE_JIT_TRUE='#'
-  HAVE_JIT_FALSE=
+  HAVE_ARM_TRUE='#'
+  HAVE_ARM_FALSE=
 fi
 
 
-# add --enable-jit option.
+
+
+# add --enable-web option.
 # Check whether --enable-web was given.
 if test "${enable_web+set}" = set; then :
   enableval=$enable_web;
@@ -6380,25 +6382,6 @@ else
   HAVE_WEBSERVER_TRUE='#'
   HAVE_WEBSERVER_FALSE=
 fi
-
-
-# choose specific host architecture
- if test "x$host_cpu" = xx86_64; then
-  HAVE_X86_64_TRUE=
-  HAVE_X86_64_FALSE='#'
-else
-  HAVE_X86_64_TRUE='#'
-  HAVE_X86_64_FALSE=
-fi
-
- if test "x$host_cpu" = xarm; then
-  HAVE_ARM_TRUE=
-  HAVE_ARM_FALSE='#'
-else
-  HAVE_ARM_TRUE='#'
-  HAVE_ARM_FALSE=
-fi
-
 
 
 #Attention: this is import, list the Makefile need to generate
@@ -6529,20 +6512,16 @@ if test -z "${am__fastdepCC_TRUE}" && test -z "${am__fastdepCC_FALSE}"; then
   as_fn_error $? "conditional \"am__fastdepCC\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
-if test -z "${HAVE_JIT_TRUE}" && test -z "${HAVE_JIT_FALSE}"; then
-  as_fn_error $? "conditional \"HAVE_JIT\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
-if test -z "${HAVE_WEBSERVER_TRUE}" && test -z "${HAVE_WEBSERVER_FALSE}"; then
-  as_fn_error $? "conditional \"HAVE_WEBSERVER\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
 if test -z "${HAVE_X86_64_TRUE}" && test -z "${HAVE_X86_64_FALSE}"; then
   as_fn_error $? "conditional \"HAVE_X86_64\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAVE_ARM_TRUE}" && test -z "${HAVE_ARM_FALSE}"; then
   as_fn_error $? "conditional \"HAVE_ARM\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${HAVE_WEBSERVER_TRUE}" && test -z "${HAVE_WEBSERVER_FALSE}"; then
+  as_fn_error $? "conditional \"HAVE_WEBSERVER\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 

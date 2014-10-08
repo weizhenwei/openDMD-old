@@ -28,10 +28,10 @@ opendmd_LDADD = $(top_srcdir)/libjpeg/libjpeg.a \
 LIBS=-lm -lpthread -lrt -ldl
 
 #jit specific lib
-if HAVE_JIT
-opendmd_LDADD += $(top_srcdir)/src/jit/libjit.a
-INCLUDES += -I$(top_srcdir)/src/jit
-endif
+# if HAVE_JIT
+# opendmd_LDADD += $(top_srcdir)/src/jit/libjit.a
+# INCLUDES += -I$(top_srcdir)/src/jit
+# endif
 
 # web specific lib
 if HAVE_WEBSERVER

@@ -38,12 +38,14 @@ target_triplet = @target@
 bin_PROGRAMS = opendmd$(EXEEXT)
 
 #jit specific lib
-@HAVE_JIT_TRUE@am__append_1 = $(top_srcdir)/src/jit/libjit.a
-@HAVE_JIT_TRUE@am__append_2 = -I$(top_srcdir)/src/jit
+# if HAVE_JIT
+# opendmd_LDADD += $(top_srcdir)/src/jit/libjit.a
+# INCLUDES += -I$(top_srcdir)/src/jit
+# endif
 
 # web specific lib
-@HAVE_WEBSERVER_TRUE@am__append_3 = $(top_srcdir)/src/webserver/libwebserver.a
-@HAVE_WEBSERVER_TRUE@am__append_4 = -I$(top_srcdir)/src/webserver
+@HAVE_WEBSERVER_TRUE@am__append_1 = $(top_srcdir)/src/webserver/libwebserver.a
+@HAVE_WEBSERVER_TRUE@am__append_2 = -I$(top_srcdir)/src/webserver
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -68,8 +70,7 @@ opendmd_OBJECTS = $(am_opendmd_OBJECTS)
 opendmd_DEPENDENCIES = $(top_srcdir)/libjpeg/libjpeg.a \
 	$(top_srcdir)/libortp/src/libortp.a \
 	$(top_srcdir)/libsqlite/src/libsqlite3.a \
-	$(top_srcdir)/libx264/libx264.a $(am__append_1) \
-	$(am__append_3)
+	$(top_srcdir)/libx264/libx264.a $(am__append_1)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -238,7 +239,7 @@ INCLUDES = -I$(top_srcdir)/libjpeg -I$(top_srcdir)/libsqlite/src \
 	-I$(top_srcdir)/libortp/include -I$(top_srcdir)/libortp \
 	-I$(top_srcdir)/libx264 -I$(top_srcdir)/libx264/output \
 	-I$(top_srcdir)/src/client -I$(top_srcdir)/src/server \
-	$(am__append_2) $(am__append_4)
+	$(am__append_2)
 
 #  opendmd_LDADD = $(top_srcdir)/libjpeg/libjpeg.a \
 #          $(top_srcdir)/libortp/src/libortp.a \
@@ -249,8 +250,7 @@ INCLUDES = -I$(top_srcdir)/libjpeg -I$(top_srcdir)/libsqlite/src \
 opendmd_LDADD = $(top_srcdir)/libjpeg/libjpeg.a \
 	$(top_srcdir)/libortp/src/libortp.a \
 	$(top_srcdir)/libsqlite/src/libsqlite3.a \
-	$(top_srcdir)/libx264/libx264.a $(am__append_1) \
-	$(am__append_3)
+	$(top_srcdir)/libx264/libx264.a $(am__append_1)
 opendmd_SOURCES = main.c \
           config.h config.c log.h log.c path.h path.c global_context.h \
           global_context.c parser.h parser.c v4l2_utils.h v4l2_utils.c \

@@ -18,5 +18,5 @@ echo "automake ..."
 $AUTOMAKE --force-missing --add-missing --copy
 
 echo "configure ..."
-./configure --enable-debug --enable-jit --disable-web --disable-gcov
+./configure --enable-debug --disable-web --disable-gcov
 

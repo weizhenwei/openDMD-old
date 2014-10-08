@@ -110,18 +110,24 @@ AS_IF([test "x$enable_gcov" = "xyes"], [CFLAGS+="-fprofile-arcs -ftest-coverage 
       )
 
 # add --enable-jit option.
-AC_ARG_ENABLE( [jit], 
-          AS_HELP_STRING([--enable-jit], [enable jit(default=no)]),
-          [],
-          [enable_jit=no]
-          )
-AS_IF([test "x$enable_jit" = "xyes"], [CFLAGS+="-DJIT "],
-      [test "x$enable_jit" = "xno"], [CFLAGS+=" "],
-      [echo "enable-jit with wrong value"]
-      )
-AM_CONDITIONAL([HAVE_JIT], [test "x$enable_jit" = xyes])
+# AC_ARG_ENABLE( [jit], 
+#           AS_HELP_STRING([--enable-jit], [enable jit(default=no)]),
+#           [],
+#           [enable_jit=no]
+#           )
+# AS_IF([test "x$enable_jit" = "xyes"], [CFLAGS+="-DJIT "],
+#       [test "x$enable_jit" = "xno"], [CFLAGS+=" "],
+#       [echo "enable-jit with wrong value"]
+#       )
+# AM_CONDITIONAL([HAVE_JIT], [test "x$enable_jit" = xyes])
 
-# add --enable-jit option.
+# choose specific host architecture
+AM_CONDITIONAL([HAVE_X86_64], [test "x$host_cpu" = xx86_64])
+AM_CONDITIONAL([HAVE_ARM], [test "x$host_cpu" = xarm])
+
+
+
+# add --enable-web option.
 AC_ARG_ENABLE( [web], 
           AS_HELP_STRING([--enable-web], [enable web admin(default=no)]),
           [],
@@ -132,11 +138,6 @@ AS_IF([test "x$enable_web" = "xyes"], [CFLAGS+="-DWEB "],
       [echo "enable-web with wrong value"]
       )
 AM_CONDITIONAL([HAVE_WEBSERVER], [test "x$enable_web" = xyes])
-
-# choose specific host architecture
-AM_CONDITIONAL([HAVE_X86_64], [test "x$host_cpu" = xx86_64])
-AM_CONDITIONAL([HAVE_ARM], [test "x$host_cpu" = xarm])
-
 
 #Attention: this is import, list the Makefile need to generate
 AC_CONFIG_FILES([Makefile
