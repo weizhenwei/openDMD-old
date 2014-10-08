@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = client server jit webserver
+SUBDIRS = client server webserver
 
 bin_PROGRAMS = opendmd
 

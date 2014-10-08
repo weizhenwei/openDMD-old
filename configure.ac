@@ -157,8 +157,6 @@ AC_CONFIG_FILES([Makefile
                  src/Makefile
                  src/client/Makefile
                  src/server/Makefile
-                 src/jit/Makefile
-                 src/jit/test/Makefile
                  src/webserver/Makefile
                  ])
 AC_OUTPUT

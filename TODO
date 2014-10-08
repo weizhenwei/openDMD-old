@@ -1,9 +1,6 @@
 2014.10.08:
     1. rewrite config parsing with flex and bison;
     2. place obj file at the right place;
-    3. Urgent: make configurable dir more convenient;
-               there is a base dir, and then picture dir, video dir,
-               database dir and web dir are all sub dirs of base dir;
     4. Urgent: websever remaining problems:
                1). add signal handling to websever process.
                2). add logout function on webpage;

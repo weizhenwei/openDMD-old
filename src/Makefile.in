@@ -234,7 +234,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
-SUBDIRS = client server jit webserver
+SUBDIRS = client server webserver
 INCLUDES = -I$(top_srcdir)/libjpeg -I$(top_srcdir)/libsqlite/src \
 	-I$(top_srcdir)/libortp/include -I$(top_srcdir)/libortp \
 	-I$(top_srcdir)/libx264 -I$(top_srcdir)/libx264/output \
