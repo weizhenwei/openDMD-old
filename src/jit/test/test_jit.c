@@ -41,13 +41,35 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <stdint.h>
+#include <stddef.h>
 
 #include "src/jit/jit.h"
+#include "src/global_context.h"
 
 #if 0
 # define tcg_qemu_tb_exec(env, tb_ptr) \
     ((uintptr_t (*)(void *, void *))tcg_ctx.code_gen_prologue)(env, tb_ptr)
 #endif
+
+static void jit_YUYV422_motion_detect(JITContext *s, BodyParams param) {
+    struct motion_detect_param  detect = param.u.detect;
+    printf("detect message:%p\n", &detect);
+
+    // int DIFF = global.client.diff_pixels;
+    // int ABSY = global.client.diff_deviation;
+    // int ABSCbCr = global.client.diff_deviation;
+    int client_offset = offsetof(struct global_context, client);
+    int diff_pixels_offset = offsetof(struct client_context, diff_pixels);
+    printf("client_offset = %d \n", client_offset);
+    printf("diff_pixels_offset = %d \n", diff_pixels_offset);
+
+    // ATTENTION: remember to type conversion &global to (uint8 *);
+    int diff =  *(int *)((uint8_t *)&global + client_offset
+            + diff_pixels_offset);
+    int global_diff = global.client.diff_pixels;
+    printf("diff = %d, global_diff = %d\n", diff, global_diff);
+}
 
 int main(int argc, char *argv[]) {
     struct add_param add = {1, 2};
@@ -60,6 +82,9 @@ int main(int argc, char *argv[]) {
     int ret = jit_exec(jit_ctx, jit_ctx->code_gen_body);
     assert(ret == 3);
     jit_release(jit_ctx);
+
+    init_default_global();
+    jit_YUYV422_motion_detect(jit_ctx, param);
 
     return 0;
 }
