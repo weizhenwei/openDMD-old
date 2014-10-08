@@ -398,8 +398,6 @@ static void manage_cmdline() {
 }
 
 int main(int argc, char *argv[]) {
-    int ret = -1;
-
     // set locale according current environment;
     setlocale(LC_ALL, "");
 
@@ -417,6 +415,8 @@ int main(int argc, char *argv[]) {
     init();
 
 #if defined(WEB)
+    int ret = -1;
+
     // fork webserver process;
     ret = webserver_fork();
     assert(ret == 0);

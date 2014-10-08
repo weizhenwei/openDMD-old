@@ -51,11 +51,9 @@
 // Common default settings                                 //
 /////////////////////////////////////////////////////////////
 #define DEFAULT_RELEASE_PID_FILE "/var/run/opendmd/opendmd.pid"
-// #define DEFAULT_DEBUG_PID_FILE "/home/wzw/opendmd/opendmd.pid"
 #define DEFAULT_DEBUG_PID_FILE "opendmd.pid"
 
 #define DEFAULT_RELEASE_CFG_FILE "/var/run/opendmd/opendmd.cfg"
-// #define DEFAULT_DEBUG_CFG_FILE "/home/wzw/opendmd/opendmd.cfg"
 #define DEFAULT_DEBUG_CFG_FILE "config/opendmd.cfg"
 
 #define LOCAL_IP "0.0.0.0"
@@ -88,18 +86,12 @@
 #define DEFAULT_DIFF_DEVIATION 20
 
 #define DEFAULT_RELEASE_STORE_DIR "/tmp/opendmd"
-#define DEFAULT_DEBUG_STORE_DIR "/home/wzw/opendmd/client_repo"
 
 #define DEFAULT_X264_FPS 25
-
-#define DEFAULT_DATABASE_REPO "/home/wzw/opendmd/database"
-
 
 /////////////////////////////////////////////////////////////
 // Server default settings                                 //
 /////////////////////////////////////////////////////////////
-
-#define SERVER_REPO "/home/wzw/opendmd/server_repo"
 
 // for thread synchronization;
 extern unsigned int total_thread;

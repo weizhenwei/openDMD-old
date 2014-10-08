@@ -581,8 +581,7 @@ int encode_yuv420p(uint8_t *yuv420p, int width, int height,
     x264_encoder_encode(encoder, &nals, &nnal, &pic_in, &pic_out);
 
     // write to file or network;
-    write_nals_wzw(h264file, nals, nnal);
-    // write_nals(h264file, nals, nnal, param, &pic_out);
+    write_nals(h264file, nals, nnal, param, &pic_out);
 
     // WARNING: remember to free pic_in;
     x264_picture_clean(&pic_in);

@@ -141,19 +141,6 @@ static void init_default_client() {
     // TODO(weizhenwei): need more optimization;
     const char *home = getenv("HOME");
     sprintf(global.client.client_repo, "%s/opendmd/client_repo", home);
-#if 0
-#if defined(DEBUG)
-    assert(strlen(DEFAULT_DEBUG_STORE_DIR) < PATH_MAX);
-    strncpy(global.client.client_repo, DEFAULT_DEBUG_STORE_DIR,
-            strlen(DEFAULT_DEBUG_STORE_DIR));
-    global.client.client_repo[strlen(DEFAULT_DEBUG_STORE_DIR)] = '\0';
-#else
-    assert(strlen(DEFAULT_RELEASE_STORE_DIR) < PATH_MAX);
-    strncpy(global.client.client_repo, DEFAULT_RELEASE_STORE_DIR,
-            strlen(DEFAULT_RELEASE_STORE_DIR));
-    global.client.client_repo[strlen(DEFAULT_RELEASE_STORE_DIR)] = '\0';
-#endif
-#endif
 
     // initialize rtpsession associated;
     init_client_rtp();
@@ -163,12 +150,6 @@ static void init_default_server() {
     // TODO(weizhenwei): need more optimization;
     const char *home = getenv("HOME");
     sprintf(global.server.server_repo, "%s/opendmd/server_repo", home);
-#if 0
-    assert(strlen(SERVER_REPO) < PATH_MAX);
-    strncpy(global.server.server_repo, SERVER_REPO,
-            strlen(SERVER_REPO));
-    global.server.server_repo[strlen(SERVER_REPO)] = '\0';
-#endif
 
     global.server.user_ts = 0;
     global.server.client_scale = CLIENT_SCALE;
@@ -182,6 +163,8 @@ static void init_default_server() {
 }
 
 void init_default_global() {
+    const char *home = getenv("HOME");
+
     // basic global information
 
     global.cluster_mode = CLUSTER_SINGLETON;
@@ -231,10 +214,7 @@ void init_default_global() {
     global.x264_fps = DEFAULT_X264_FPS;
 
     // database file repository;
-    assert(strlen(DEFAULT_DATABASE_REPO) < PATH_MAX);
-    strncpy(global.database_repo, DEFAULT_DATABASE_REPO,
-            strlen(DEFAULT_DATABASE_REPO));
-    global.database_repo[strlen(DEFAULT_DATABASE_REPO)] = '\0';
+    sprintf(global.database_repo, "%s/opendmd/database", home);
 
     // webserver associated;
     global.webserver_pid = -1;
