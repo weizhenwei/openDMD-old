@@ -1,0 +1,22 @@
+programming skills that openDMD used:
+    1. linux syslog: for the log utility;
+    2. linux V4L2 API: for capturing picture from video camera;
+    3. config file mechanism: for making program configurable;
+    4. linux signal mechanism: for signal handling;
+    5. linux directory and file operation;
+    6. multiple thread programming, including synchronization, communicaiton.
+    7. multiple process, including signal handling, fork, etc.
+    8. bisic graph transformation: rgb888, packed yuyv422, planar yuyv422p, 
+                                   planar yuyv420p, etc.
+    9. flv video format specification. 
+    10. rtp protocol specification, rtp package sending and receiving;
+    11. h264 specification;
+    12. linux networking programming: epoll, socket, http protocol, etc;
+    13. sqlite database, manual and C API;
+
+
+libraries skills that openDMD used:
+    1. libjpeg, a open source implementation of jpeg format operation;
+    2. libx264, a open source implementation of H264 specification;
+    3. libortp, a open source implementation of rtp protocol specification;
+    3. libsqlite, sqlite database;
