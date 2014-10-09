@@ -61,13 +61,11 @@ PROGRAMS = $(bin_PROGRAMS)
 am_opendmd_OBJECTS = main.$(OBJEXT) config.$(OBJEXT) log.$(OBJEXT) \
 	path.$(OBJEXT) global_context.$(OBJEXT) parser.$(OBJEXT) \
 	v4l2_utils.$(OBJEXT) signal_handler.$(OBJEXT) \
-	statistics.$(OBJEXT) sqlite_utils.$(OBJEXT) \
-	flv_muxer.$(OBJEXT) image_capture.$(OBJEXT) \
-	image_convert.$(OBJEXT) libx264.$(OBJEXT) rtp_send.$(OBJEXT) \
-	picture_thread.$(OBJEXT) video.$(OBJEXT) \
-	video_thread.$(OBJEXT) rtp_recv.$(OBJEXT) rtp_server.$(OBJEXT)
+	statistics.$(OBJEXT) sqlite_utils.$(OBJEXT)
 opendmd_OBJECTS = $(am_opendmd_OBJECTS)
-opendmd_DEPENDENCIES = $(top_srcdir)/libjpeg/libjpeg.a \
+opendmd_DEPENDENCIES = $(top_srcdir)/src/client/libclient.a \
+	$(top_srcdir)/src/server/libserver.a \
+	$(top_srcdir)/libjpeg/libjpeg.a \
 	$(top_srcdir)/libortp/src/libortp.a \
 	$(top_srcdir)/libsqlite/src/libsqlite3.a \
 	$(top_srcdir)/libx264/libx264.a $(am__append_1)
@@ -241,31 +239,25 @@ INCLUDES = -I$(top_srcdir)/libjpeg -I$(top_srcdir)/libsqlite/src \
 	-I$(top_srcdir)/src/client -I$(top_srcdir)/src/server \
 	$(am__append_2)
 
-#  opendmd_LDADD = $(top_srcdir)/libjpeg/libjpeg.a \
-#          $(top_srcdir)/libortp/src/libortp.a \
-#          $(top_srcdir)/libsqlite/src/libsqlite3.a \
-#          $(top_srcdir)/libx264/libx264.a \
-#          $(top_srcdir)/src/client/libclient.a \
-#          $(top_srcdir)/src/server/libserver.a
-opendmd_LDADD = $(top_srcdir)/libjpeg/libjpeg.a \
+# WARNING: there is an important problems here!
+#          libclient.a and libserver.a depend on libjpeg.a, etc,
+#          so libclient.a and libserver.a must replace ahead of
+#          other libraries.
+opendmd_LDADD = $(top_srcdir)/src/client/libclient.a \
+	$(top_srcdir)/src/server/libserver.a \
+	$(top_srcdir)/libjpeg/libjpeg.a \
 	$(top_srcdir)/libortp/src/libortp.a \
 	$(top_srcdir)/libsqlite/src/libsqlite3.a \
 	$(top_srcdir)/libx264/libx264.a $(am__append_1)
+
+# source files in ./src dirctory;
+# source files in ./src/client is in libclient.a
+# source files in ./src/server is in libserver.a
 opendmd_SOURCES = main.c \
           config.h config.c log.h log.c path.h path.c global_context.h \
           global_context.c parser.h parser.c v4l2_utils.h v4l2_utils.c \
           signal_handler.h signal_handler.c statistics.h statistics.c \
-          sqlite_utils.h sqlite_utils.c \
-          client/flv_muxer.c client/flv_muxer.h \
-          client/image_capture.c client/image_capture.h \
-          client/image_convert.c client/image_convert.h \
-          client/libx264.c client/libx264.h \
-          client/rtp_send.c client/rtp_send.h \
-          client/picture_thread.c client/picture_thread.h \
-          client/video.c client/video.h \
-          client/video_thread.c client/video_thread.h \
-          server/rtp_recv.c server/rtp_recv.h \
-          server/rtp_server.c server/rtp_server.h
+          sqlite_utils.h sqlite_utils.c
 
 all: all-recursive
 
@@ -349,25 +341,15 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/config.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flv_muxer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/global_context.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/image_capture.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/image_convert.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libx264.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/log.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/path.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/picture_thread.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtp_recv.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtp_send.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rtp_server.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/signal_handler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sqlite_utils.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/statistics.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/v4l2_utils.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/video.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/video_thread.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -382,146 +364,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
-
-flv_muxer.o: client/flv_muxer.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT flv_muxer.o -MD -MP -MF $(DEPDIR)/flv_muxer.Tpo -c -o flv_muxer.o `test -f 'client/flv_muxer.c' || echo '$(srcdir)/'`client/flv_muxer.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/flv_muxer.Tpo $(DEPDIR)/flv_muxer.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='client/flv_muxer.c' object='flv_muxer.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o flv_muxer.o `test -f 'client/flv_muxer.c' || echo '$(srcdir)/'`client/flv_muxer.c
-
-flv_muxer.obj: client/flv_muxer.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT flv_muxer.obj -MD -MP -MF $(DEPDIR)/flv_muxer.Tpo -c -o flv_muxer.obj `if test -f 'client/flv_muxer.c'; then $(CYGPATH_W) 'client/flv_muxer.c'; else $(CYGPATH_W) '$(srcdir)/client/flv_muxer.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/flv_muxer.Tpo $(DEPDIR)/flv_muxer.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='client/flv_muxer.c' object='flv_muxer.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o flv_muxer.obj `if test -f 'client/flv_muxer.c'; then $(CYGPATH_W) 'client/flv_muxer.c'; else $(CYGPATH_W) '$(srcdir)/client/flv_muxer.c'; fi`
-
-image_capture.o: client/image_capture.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT image_capture.o -MD -MP -MF $(DEPDIR)/image_capture.Tpo -c -o image_capture.o `test -f 'client/image_capture.c' || echo '$(srcdir)/'`client/image_capture.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/image_capture.Tpo $(DEPDIR)/image_capture.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='client/image_capture.c' object='image_capture.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o image_capture.o `test -f 'client/image_capture.c' || echo '$(srcdir)/'`client/image_capture.c
-
-image_capture.obj: client/image_capture.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT image_capture.obj -MD -MP -MF $(DEPDIR)/image_capture.Tpo -c -o image_capture.obj `if test -f 'client/image_capture.c'; then $(CYGPATH_W) 'client/image_capture.c'; else $(CYGPATH_W) '$(srcdir)/client/image_capture.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/image_capture.Tpo $(DEPDIR)/image_capture.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='client/image_capture.c' object='image_capture.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o image_capture.obj `if test -f 'client/image_capture.c'; then $(CYGPATH_W) 'client/image_capture.c'; else $(CYGPATH_W) '$(srcdir)/client/image_capture.c'; fi`
-
-image_convert.o: client/image_convert.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT image_convert.o -MD -MP -MF $(DEPDIR)/image_convert.Tpo -c -o image_convert.o `test -f 'client/image_convert.c' || echo '$(srcdir)/'`client/image_convert.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/image_convert.Tpo $(DEPDIR)/image_convert.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='client/image_convert.c' object='image_convert.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o image_convert.o `test -f 'client/image_convert.c' || echo '$(srcdir)/'`client/image_convert.c
-
-image_convert.obj: client/image_convert.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT image_convert.obj -MD -MP -MF $(DEPDIR)/image_convert.Tpo -c -o image_convert.obj `if test -f 'client/image_convert.c'; then $(CYGPATH_W) 'client/image_convert.c'; else $(CYGPATH_W) '$(srcdir)/client/image_convert.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/image_convert.Tpo $(DEPDIR)/image_convert.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='client/image_convert.c' object='image_convert.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o image_convert.obj `if test -f 'client/image_convert.c'; then $(CYGPATH_W) 'client/image_convert.c'; else $(CYGPATH_W) '$(srcdir)/client/image_convert.c'; fi`
-
-libx264.o: client/libx264.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libx264.o -MD -MP -MF $(DEPDIR)/libx264.Tpo -c -o libx264.o `test -f 'client/libx264.c' || echo '$(srcdir)/'`client/libx264.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libx264.Tpo $(DEPDIR)/libx264.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='client/libx264.c' object='libx264.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libx264.o `test -f 'client/libx264.c' || echo '$(srcdir)/'`client/libx264.c
-
-libx264.obj: client/libx264.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libx264.obj -MD -MP -MF $(DEPDIR)/libx264.Tpo -c -o libx264.obj `if test -f 'client/libx264.c'; then $(CYGPATH_W) 'client/libx264.c'; else $(CYGPATH_W) '$(srcdir)/client/libx264.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libx264.Tpo $(DEPDIR)/libx264.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='client/libx264.c' object='libx264.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libx264.obj `if test -f 'client/libx264.c'; then $(CYGPATH_W) 'client/libx264.c'; else $(CYGPATH_W) '$(srcdir)/client/libx264.c'; fi`
-
-rtp_send.o: client/rtp_send.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rtp_send.o -MD -MP -MF $(DEPDIR)/rtp_send.Tpo -c -o rtp_send.o `test -f 'client/rtp_send.c' || echo '$(srcdir)/'`client/rtp_send.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/rtp_send.Tpo $(DEPDIR)/rtp_send.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='client/rtp_send.c' object='rtp_send.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rtp_send.o `test -f 'client/rtp_send.c' || echo '$(srcdir)/'`client/rtp_send.c
-
-rtp_send.obj: client/rtp_send.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rtp_send.obj -MD -MP -MF $(DEPDIR)/rtp_send.Tpo -c -o rtp_send.obj `if test -f 'client/rtp_send.c'; then $(CYGPATH_W) 'client/rtp_send.c'; else $(CYGPATH_W) '$(srcdir)/client/rtp_send.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/rtp_send.Tpo $(DEPDIR)/rtp_send.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='client/rtp_send.c' object='rtp_send.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rtp_send.obj `if test -f 'client/rtp_send.c'; then $(CYGPATH_W) 'client/rtp_send.c'; else $(CYGPATH_W) '$(srcdir)/client/rtp_send.c'; fi`
-
-picture_thread.o: client/picture_thread.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT picture_thread.o -MD -MP -MF $(DEPDIR)/picture_thread.Tpo -c -o picture_thread.o `test -f 'client/picture_thread.c' || echo '$(srcdir)/'`client/picture_thread.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/picture_thread.Tpo $(DEPDIR)/picture_thread.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='client/picture_thread.c' object='picture_thread.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o picture_thread.o `test -f 'client/picture_thread.c' || echo '$(srcdir)/'`client/picture_thread.c
-
-picture_thread.obj: client/picture_thread.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT picture_thread.obj -MD -MP -MF $(DEPDIR)/picture_thread.Tpo -c -o picture_thread.obj `if test -f 'client/picture_thread.c'; then $(CYGPATH_W) 'client/picture_thread.c'; else $(CYGPATH_W) '$(srcdir)/client/picture_thread.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/picture_thread.Tpo $(DEPDIR)/picture_thread.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='client/picture_thread.c' object='picture_thread.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o picture_thread.obj `if test -f 'client/picture_thread.c'; then $(CYGPATH_W) 'client/picture_thread.c'; else $(CYGPATH_W) '$(srcdir)/client/picture_thread.c'; fi`
-
-video.o: client/video.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT video.o -MD -MP -MF $(DEPDIR)/video.Tpo -c -o video.o `test -f 'client/video.c' || echo '$(srcdir)/'`client/video.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/video.Tpo $(DEPDIR)/video.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='client/video.c' object='video.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o video.o `test -f 'client/video.c' || echo '$(srcdir)/'`client/video.c
-
-video.obj: client/video.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT video.obj -MD -MP -MF $(DEPDIR)/video.Tpo -c -o video.obj `if test -f 'client/video.c'; then $(CYGPATH_W) 'client/video.c'; else $(CYGPATH_W) '$(srcdir)/client/video.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/video.Tpo $(DEPDIR)/video.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='client/video.c' object='video.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o video.obj `if test -f 'client/video.c'; then $(CYGPATH_W) 'client/video.c'; else $(CYGPATH_W) '$(srcdir)/client/video.c'; fi`
-
-video_thread.o: client/video_thread.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT video_thread.o -MD -MP -MF $(DEPDIR)/video_thread.Tpo -c -o video_thread.o `test -f 'client/video_thread.c' || echo '$(srcdir)/'`client/video_thread.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/video_thread.Tpo $(DEPDIR)/video_thread.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='client/video_thread.c' object='video_thread.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o video_thread.o `test -f 'client/video_thread.c' || echo '$(srcdir)/'`client/video_thread.c
-
-video_thread.obj: client/video_thread.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT video_thread.obj -MD -MP -MF $(DEPDIR)/video_thread.Tpo -c -o video_thread.obj `if test -f 'client/video_thread.c'; then $(CYGPATH_W) 'client/video_thread.c'; else $(CYGPATH_W) '$(srcdir)/client/video_thread.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/video_thread.Tpo $(DEPDIR)/video_thread.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='client/video_thread.c' object='video_thread.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o video_thread.obj `if test -f 'client/video_thread.c'; then $(CYGPATH_W) 'client/video_thread.c'; else $(CYGPATH_W) '$(srcdir)/client/video_thread.c'; fi`
-
-rtp_recv.o: server/rtp_recv.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rtp_recv.o -MD -MP -MF $(DEPDIR)/rtp_recv.Tpo -c -o rtp_recv.o `test -f 'server/rtp_recv.c' || echo '$(srcdir)/'`server/rtp_recv.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/rtp_recv.Tpo $(DEPDIR)/rtp_recv.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='server/rtp_recv.c' object='rtp_recv.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rtp_recv.o `test -f 'server/rtp_recv.c' || echo '$(srcdir)/'`server/rtp_recv.c
-
-rtp_recv.obj: server/rtp_recv.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rtp_recv.obj -MD -MP -MF $(DEPDIR)/rtp_recv.Tpo -c -o rtp_recv.obj `if test -f 'server/rtp_recv.c'; then $(CYGPATH_W) 'server/rtp_recv.c'; else $(CYGPATH_W) '$(srcdir)/server/rtp_recv.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/rtp_recv.Tpo $(DEPDIR)/rtp_recv.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='server/rtp_recv.c' object='rtp_recv.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rtp_recv.obj `if test -f 'server/rtp_recv.c'; then $(CYGPATH_W) 'server/rtp_recv.c'; else $(CYGPATH_W) '$(srcdir)/server/rtp_recv.c'; fi`
-
-rtp_server.o: server/rtp_server.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rtp_server.o -MD -MP -MF $(DEPDIR)/rtp_server.Tpo -c -o rtp_server.o `test -f 'server/rtp_server.c' || echo '$(srcdir)/'`server/rtp_server.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/rtp_server.Tpo $(DEPDIR)/rtp_server.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='server/rtp_server.c' object='rtp_server.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rtp_server.o `test -f 'server/rtp_server.c' || echo '$(srcdir)/'`server/rtp_server.c
-
-rtp_server.obj: server/rtp_server.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rtp_server.obj -MD -MP -MF $(DEPDIR)/rtp_server.Tpo -c -o rtp_server.obj `if test -f 'server/rtp_server.c'; then $(CYGPATH_W) 'server/rtp_server.c'; else $(CYGPATH_W) '$(srcdir)/server/rtp_server.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/rtp_server.Tpo $(DEPDIR)/rtp_server.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='server/rtp_server.c' object='rtp_server.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rtp_server.obj `if test -f 'server/rtp_server.c'; then $(CYGPATH_W) 'server/rtp_server.c'; else $(CYGPATH_W) '$(srcdir)/server/rtp_server.c'; fi`
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run `make' without going through this Makefile.
