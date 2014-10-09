@@ -135,7 +135,7 @@ LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
 LIBOBJS = @LIBOBJS@
 
 # TODO: gcc options when linking with dlopen library: -rdynamic -ldl
-LIBS = -lpthread -ldl -lgcov
+LIBS = -lpthread -ldl
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@

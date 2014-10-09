@@ -6325,6 +6325,7 @@ else
   echo "enable-gcov with wrong value"
 
 fi
+# AM_CONDITIONAL([HAVE_GCOV], [test "x$enable_gcov" = xyes])
 
 # add --enable-jit option.
 # AC_ARG_ENABLE( [jit],

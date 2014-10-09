@@ -25,7 +25,7 @@ opendmd_LDADD = $(top_srcdir)/libjpeg/libjpeg.a \
 # using opendmd_LDFLAGS at here doesn't work!
 # using LDFLAGS in configure.ac doesn't work, either!
 # -lrt for function clock_gettime()
-LIBS=-lm -lpthread -lrt -ldl
+LIBS = -lm -lpthread -lrt -ldl
 
 #jit specific lib
 # if HAVE_JIT

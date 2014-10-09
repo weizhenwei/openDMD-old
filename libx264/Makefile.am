@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS = foreign
 
 SUBDIRS = common encoder output
 
-lib_LIBRARIES=libx264.a
+noinst_LIBRARIES=libx264.a
 
 INCLUDES = -I$(top_srcdir)/libx264 -I$(top_srcdir)/libx264/common \
 		   -I$(top_srcdir)/libx264/encoder -I$(top_srcdir)/libx264/output

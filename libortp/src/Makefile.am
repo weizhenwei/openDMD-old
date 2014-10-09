@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS = foreign
 
 INCLUDES = -I$(top_srcdir)/libortp/include -I$(top_srcdir)/libortp
 
-lib_LIBRARIES = libortp.a
+noinst_LIBRARIES = libortp.a
 
 # libortp_a_LIBADD= -lm -lpthread -lrt
 

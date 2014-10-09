@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-lib_LIBRARIES = libjpeg.a
+noinst_LIBRARIES = libjpeg.a
 
 libjpeg_a_SOURCES = jaricom.c jcapimin.c jcapistd.c jcarith.c jccoefct.c \
 		     jccolor.c jcdctmgr.c jchuff.c jcinit.c jcmainct.c \

@@ -108,6 +108,7 @@ AS_IF([test "x$enable_gcov" = "xyes"], [CFLAGS+="-fprofile-arcs -ftest-coverage 
       [test "x$enable_gcov" = "xno"], [CFLAGS+=" " LDFLAGS+=" "],
       [echo "enable-gcov with wrong value"]
       )
+# AM_CONDITIONAL([HAVE_GCOV], [test "x$enable_gcov" = xyes])
 
 # add --enable-jit option.
 # AC_ARG_ENABLE( [jit], 
