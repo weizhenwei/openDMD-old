@@ -246,6 +246,7 @@ conf_DATA = doc/config/client.cfg  \
             doc/config/webserver.cfg
 
 doc_DATA = doc/dev/4.tech_review.txt
+EXTRA_DIST = tools
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
