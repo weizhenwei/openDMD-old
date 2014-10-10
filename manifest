@@ -1,40 +1,358 @@
-manifest of src directory:
+.
+├── ./aclocal.m4
+├── ./autogen.sh*
+├── ./autom4te.cache/
+│   ├── ./autom4te.cache/output.0
+│   ├── ./autom4te.cache/output.1
+│   ├── ./autom4te.cache/requests
+│   ├── ./autom4te.cache/traces.0
+│   └── ./autom4te.cache/traces.1
+├── ./config.guess*
+├── ./config.h.in
+├── ./config.sub*
+├── ./configure*
+├── ./configure.ac
+├── ./cscope.files
+├── ./cscope.out
+├── ./depcomp*
+├── ./doc/
+│   ├── ./doc/config/
+│   │   ├── ./doc/config/client.cfg
+│   │   ├── ./doc/config/opendmd.cfg
+│   │   ├── ./doc/config/reference.cfg
+│   │   ├── ./doc/config/server.cfg
+│   │   └── ./doc/config/webserver.cfg
+│   ├── ./doc/dev/
+│   │   ├── ./doc/dev/1.add_config_item.txt
+│   │   ├── ./doc/dev/2.GoogleC++StyleGuide_EN.pdf
+│   │   ├── ./doc/dev/3.GoogleC++StyleGuide_ZH.pdf
+│   │   └── ./doc/dev/4.tech_review.txt
+│   └── ./doc/www/
+│       ├── ./doc/www/favicon.ico
+│       ├── ./doc/www/index.html
+│       └── ./doc/www/main.html
+├── ./install-sh*
+├── ./libjpeg/
+│   ├── ./libjpeg/cderror.h
+│   ├── ./libjpeg/cdjpeg.h
+│   ├── ./libjpeg/jaricom.c
+│   ├── ./libjpeg/jcapimin.c
+│   ├── ./libjpeg/jcapistd.c
+│   ├── ./libjpeg/jcarith.c
+│   ├── ./libjpeg/jccoefct.c
+│   ├── ./libjpeg/jccolor.c
+│   ├── ./libjpeg/jcdctmgr.c
+│   ├── ./libjpeg/jchuff.c
+│   ├── ./libjpeg/jcinit.c
+│   ├── ./libjpeg/jcmainct.c
+│   ├── ./libjpeg/jcmarker.c
+│   ├── ./libjpeg/jcmaster.c
+│   ├── ./libjpeg/jcomapi.c
+│   ├── ./libjpeg/jconfig.h
+│   ├── ./libjpeg/jcparam.c
+│   ├── ./libjpeg/jcprepct.c
+│   ├── ./libjpeg/jcsample.c
+│   ├── ./libjpeg/jctrans.c
+│   ├── ./libjpeg/jdapimin.c
+│   ├── ./libjpeg/jdapistd.c
+│   ├── ./libjpeg/jdarith.c
+│   ├── ./libjpeg/jdatadst.c
+│   ├── ./libjpeg/jdatasrc.c
+│   ├── ./libjpeg/jdcoefct.c
+│   ├── ./libjpeg/jdcolor.c
+│   ├── ./libjpeg/jdct.h
+│   ├── ./libjpeg/jddctmgr.c
+│   ├── ./libjpeg/jdhuff.c
+│   ├── ./libjpeg/jdinput.c
+│   ├── ./libjpeg/jdmainct.c
+│   ├── ./libjpeg/jdmarker.c
+│   ├── ./libjpeg/jdmaster.c
+│   ├── ./libjpeg/jdmerge.c
+│   ├── ./libjpeg/jdpostct.c
+│   ├── ./libjpeg/jdsample.c
+│   ├── ./libjpeg/jdtrans.c
+│   ├── ./libjpeg/jerror.c
+│   ├── ./libjpeg/jerror.h
+│   ├── ./libjpeg/jfdctflt.c
+│   ├── ./libjpeg/jfdctfst.c
+│   ├── ./libjpeg/jfdctint.c
+│   ├── ./libjpeg/jidctflt.c
+│   ├── ./libjpeg/jidctfst.c
+│   ├── ./libjpeg/jidctint.c
+│   ├── ./libjpeg/jinclude.h
+│   ├── ./libjpeg/jmemansi.c
+│   ├── ./libjpeg/jmemmgr.c
+│   ├── ./libjpeg/jmemnobs.c
+│   ├── ./libjpeg/jmemsys.h
+│   ├── ./libjpeg/jmorecfg.h
+│   ├── ./libjpeg/jpegint.h
+│   ├── ./libjpeg/jpeglib.h
+│   ├── ./libjpeg/jquant1.c
+│   ├── ./libjpeg/jquant2.c
+│   ├── ./libjpeg/jutils.c
+│   ├── ./libjpeg/jversion.h
+│   ├── ./libjpeg/Makefile.am
+│   ├── ./libjpeg/Makefile.in
+│   ├── ./libjpeg/README
+│   └── ./libjpeg/transupp.h
+├── ./libortp/
+│   ├── ./libortp/include/
+│   │   ├── ./libortp/include/Makefile.am
+│   │   ├── ./libortp/include/Makefile.in
+│   │   └── ./libortp/include/ortp/
+│   │       ├── ./libortp/include/ortp/b64.h
+│   │       ├── ./libortp/include/ortp/event.h
+│   │       ├── ./libortp/include/ortp/logging.h
+│   │       ├── ./libortp/include/ortp/Makefile.am
+│   │       ├── ./libortp/include/ortp/Makefile.in
+│   │       ├── ./libortp/include/ortp/ortp.h
+│   │       ├── ./libortp/include/ortp/ortp_srtp.h
+│   │       ├── ./libortp/include/ortp/payloadtype.h
+│   │       ├── ./libortp/include/ortp/port.h
+│   │       ├── ./libortp/include/ortp/rtcp.h
+│   │       ├── ./libortp/include/ortp/rtp.h
+│   │       ├── ./libortp/include/ortp/rtpprofile.h
+│   │       ├── ./libortp/include/ortp/rtpsession.h
+│   │       ├── ./libortp/include/ortp/rtpsignaltable.h
+│   │       ├── ./libortp/include/ortp/sessionset.h
+│   │       ├── ./libortp/include/ortp/str_utils.h
+│   │       ├── ./libortp/include/ortp/stun.h
+│   │       ├── ./libortp/include/ortp/stun_udp.h
+│   │       ├── ./libortp/include/ortp/telephonyevents.h
+│   │       └── ./libortp/include/ortp/zrtp.h
+│   ├── ./libortp/Makefile.am
+│   ├── ./libortp/Makefile.in
+│   ├── ./libortp/ortp-config.h
+│   ├── ./libortp/README
+│   ├── ./libortp/src/
+│   │   ├── ./libortp/src/avprofile.c
+│   │   ├── ./libortp/src/b64.c
+│   │   ├── ./libortp/src/event.c
+│   │   ├── ./libortp/src/jitterctl.c
+│   │   ├── ./libortp/src/jitterctl.h
+│   │   ├── ./libortp/src/logging.c
+│   │   ├── ./libortp/src/Makefile.am
+│   │   ├── ./libortp/src/Makefile.in
+│   │   ├── ./libortp/src/netsim.c
+│   │   ├── ./libortp/src/ortp.c
+│   │   ├── ./libortp/src/ortp_srtp.c
+│   │   ├── ./libortp/src/payloadtype.c
+│   │   ├── ./libortp/src/port.c
+│   │   ├── ./libortp/src/posixtimer.c
+│   │   ├── ./libortp/src/rtcp.c
+│   │   ├── ./libortp/src/rtcpparse.c
+│   │   ├── ./libortp/src/rtpparse.c
+│   │   ├── ./libortp/src/rtpprofile.c
+│   │   ├── ./libortp/src/rtpsession.c
+│   │   ├── ./libortp/src/rtpsession_inet.c
+│   │   ├── ./libortp/src/rtpsession_priv.h
+│   │   ├── ./libortp/src/rtpsignaltable.c
+│   │   ├── ./libortp/src/rtptimer.c
+│   │   ├── ./libortp/src/rtptimer.h
+│   │   ├── ./libortp/src/scheduler.c
+│   │   ├── ./libortp/src/scheduler.h
+│   │   ├── ./libortp/src/sessionset.c
+│   │   ├── ./libortp/src/str_utils.c
+│   │   ├── ./libortp/src/stun.c
+│   │   ├── ./libortp/src/stun_udp.c
+│   │   ├── ./libortp/src/telephonyevents.c
+│   │   ├── ./libortp/src/utils.c
+│   │   ├── ./libortp/src/utils.h
+│   │   └── ./libortp/src/zrtp.c
+│   ├── ./libortp/test/
+│   │   ├── ./libortp/test/Makefile.am
+│   │   ├── ./libortp/test/Makefile.in
+│   │   ├── ./libortp/test/mrtprecv.c
+│   │   ├── ./libortp/test/recv.h264
+│   │   ├── ./libortp/test/recv_test.c
+│   │   ├── ./libortp/test/rtp_recv.c
+│   │   ├── ./libortp/test/rtp_recv.h
+│   │   ├── ./libortp/test/rtp_send.c
+│   │   ├── ./libortp/test/rtp_send.h
+│   │   ├── ./libortp/test/send.h264
+│   │   ├── ./libortp/test/send_test.c
+│   │   └── ./libortp/test/test.mp4
+│   └── ./libortp/TODO
+├── ./libsqlite/
+│   ├── ./libsqlite/Makefile.am
+│   ├── ./libsqlite/Makefile.in
+│   ├── ./libsqlite/README
+│   ├── ./libsqlite/src/
+│   │   ├── ./libsqlite/src/Makefile.am
+│   │   ├── ./libsqlite/src/Makefile.in
+│   │   ├── ./libsqlite/src/shell.c
+│   │   ├── ./libsqlite/src/sqlite3.c
+│   │   ├── ./libsqlite/src/sqlite3ext.h
+│   │   └── ./libsqlite/src/sqlite3.h
+│   └── ./libsqlite/test/
+│       ├── ./libsqlite/test/Makefile.am
+│       ├── ./libsqlite/test/Makefile.in
+│       ├── ./libsqlite/test/sqlite.db
+│       ├── ./libsqlite/test/test_basic.c
+│       └── ./libsqlite/test/test_select.c
+├── ./libx264/
+│   ├── ./libx264/common/
+│   │   ├── ./libx264/common/bitstream.c
+│   │   ├── ./libx264/common/bitstream.h
+│   │   ├── ./libx264/common/cabac.c
+│   │   ├── ./libx264/common/cabac.h
+│   │   ├── ./libx264/common/common.c
+│   │   ├── ./libx264/common/common.h
+│   │   ├── ./libx264/common/cpu.c
+│   │   ├── ./libx264/common/cpu.h
+│   │   ├── ./libx264/common/dct.c
+│   │   ├── ./libx264/common/dct.h
+│   │   ├── ./libx264/common/deblock.c
+│   │   ├── ./libx264/common/frame.c
+│   │   ├── ./libx264/common/frame.h
+│   │   ├── ./libx264/common/macroblock.c
+│   │   ├── ./libx264/common/macroblock.h
+│   │   ├── ./libx264/common/Makefile.am
+│   │   ├── ./libx264/common/Makefile.in
+│   │   ├── ./libx264/common/mc.c
+│   │   ├── ./libx264/common/mc.h
+│   │   ├── ./libx264/common/mvpred.c
+│   │   ├── ./libx264/common/osdep.c
+│   │   ├── ./libx264/common/osdep.h
+│   │   ├── ./libx264/common/pixel.c
+│   │   ├── ./libx264/common/pixel.h
+│   │   ├── ./libx264/common/predict.c
+│   │   ├── ./libx264/common/predict.h
+│   │   ├── ./libx264/common/quant.c
+│   │   ├── ./libx264/common/quant.h
+│   │   ├── ./libx264/common/rectangle.c
+│   │   ├── ./libx264/common/rectangle.h
+│   │   ├── ./libx264/common/set.c
+│   │   ├── ./libx264/common/set.h
+│   │   ├── ./libx264/common/threadpool.c
+│   │   ├── ./libx264/common/threadpool.h
+│   │   └── ./libx264/common/vlc.c
+│   ├── ./libx264/encoder/
+│   │   ├── ./libx264/encoder/analyse.c
+│   │   ├── ./libx264/encoder/analyse.h
+│   │   ├── ./libx264/encoder/cabac.c
+│   │   ├── ./libx264/encoder/cavlc.c
+│   │   ├── ./libx264/encoder/encoder.c
+│   │   ├── ./libx264/encoder/lookahead.c
+│   │   ├── ./libx264/encoder/macroblock.c
+│   │   ├── ./libx264/encoder/macroblock.h
+│   │   ├── ./libx264/encoder/Makefile.am
+│   │   ├── ./libx264/encoder/Makefile.in
+│   │   ├── ./libx264/encoder/me.c
+│   │   ├── ./libx264/encoder/me.h
+│   │   ├── ./libx264/encoder/ratecontrol.c
+│   │   ├── ./libx264/encoder/ratecontrol.h
+│   │   ├── ./libx264/encoder/rdo.c
+│   │   ├── ./libx264/encoder/set.c
+│   │   ├── ./libx264/encoder/set.h
+│   │   └── ./libx264/encoder/slicetype.c
+│   ├── ./libx264/Makefile.am
+│   ├── ./libx264/Makefile.in
+│   ├── ./libx264/output/
+│   │   ├── ./libx264/output/flv_bytestream.c
+│   │   ├── ./libx264/output/flv_bytestream.h
+│   │   ├── ./libx264/output/flv.c
+│   │   ├── ./libx264/output/Makefile.am
+│   │   ├── ./libx264/output/Makefile.in
+│   │   ├── ./libx264/output/matroska.c
+│   │   ├── ./libx264/output/matroska_ebml.c
+│   │   ├── ./libx264/output/matroska_ebml.h
+│   │   ├── ./libx264/output/mp4.c
+│   │   ├── ./libx264/output/mp4_lsmash.c
+│   │   ├── ./libx264/output/output.h
+│   │   └── ./libx264/output/raw.c
+│   ├── ./libx264/README
+│   ├── ./libx264/x264cli.h
+│   ├── ./libx264/x264_config.h
+│   └── ./libx264/x264.h
+├── ./LICENSE
+├── ./Makefile.am
+├── ./Makefile.in
+├── ./manifest
+├── ./missing*
+├── ./README.md
+├── ./src/
+│   ├── ./src/client/
+│   │   ├── ./src/client/flv_muxer.c
+│   │   ├── ./src/client/flv_muxer.h
+│   │   ├── ./src/client/image_capture.c
+│   │   ├── ./src/client/image_capture.h
+│   │   ├── ./src/client/image_convert.c
+│   │   ├── ./src/client/image_convert.h
+│   │   ├── ./src/client/libx264.c
+│   │   ├── ./src/client/libx264.h
+│   │   ├── ./src/client/Makefile.am
+│   │   ├── ./src/client/Makefile.in
+│   │   ├── ./src/client/picture_thread.c
+│   │   ├── ./src/client/picture_thread.h
+│   │   ├── ./src/client/rtp_send.c
+│   │   ├── ./src/client/rtp_send.h
+│   │   ├── ./src/client/video.c
+│   │   ├── ./src/client/video.h
+│   │   ├── ./src/client/video_thread.c
+│   │   └── ./src/client/video_thread.h
+│   ├── ./src/config.c
+│   ├── ./src/config.h
+│   ├── ./src/global_context.c
+│   ├── ./src/global_context.h
+│   ├── ./src/jit/
+│   │   ├── ./src/jit/arm/
+│   │   │   ├── ./src/jit/arm/arm_assembler.c
+│   │   │   └── ./src/jit/arm/arm_assembler.h
+│   │   ├── ./src/jit/jit.c
+│   │   ├── ./src/jit/jit.h
+│   │   ├── ./src/jit/Makefile.am
+│   │   ├── ./src/jit/Makefile.in
+│   │   ├── ./src/jit/README
+│   │   ├── ./src/jit/test/
+│   │   │   ├── ./src/jit/test/Makefile.am
+│   │   │   ├── ./src/jit/test/Makefile.in
+│   │   │   └── ./src/jit/test/test_jit.c
+│   │   └── ./src/jit/x86_64/
+│   │       ├── ./src/jit/x86_64/x86_64_assembler.c
+│   │       └── ./src/jit/x86_64/x86_64_assembler.h
+│   ├── ./src/log.c
+│   ├── ./src/log.h
+│   ├── ./src/main.c
+│   ├── ./src/Makefile.am
+│   ├── ./src/Makefile.in
+│   ├── ./src/parser.c
+│   ├── ./src/parser.h
+│   ├── ./src/path.c
+│   ├── ./src/path.h
+│   ├── ./src/server/
+│   │   ├── ./src/server/Makefile.am
+│   │   ├── ./src/server/Makefile.in
+│   │   ├── ./src/server/rtp_recv.c
+│   │   ├── ./src/server/rtp_recv.h
+│   │   ├── ./src/server/rtp_server.c
+│   │   └── ./src/server/rtp_server.h
+│   ├── ./src/signal_handler.c
+│   ├── ./src/signal_handler.h
+│   ├── ./src/sqlite_utils.c
+│   ├── ./src/sqlite_utils.h
+│   ├── ./src/statistics.c
+│   ├── ./src/statistics.h
+│   ├── ./src/v4l2_utils.c
+│   ├── ./src/v4l2_utils.h
+│   └── ./src/webserver/
+│       ├── ./src/webserver/http_response-inl.h
+│       ├── ./src/webserver/http_utils.c
+│       ├── ./src/webserver/http_utils.h
+│       ├── ./src/webserver/Makefile.am
+│       ├── ./src/webserver/Makefile.in
+│       ├── ./src/webserver/socket_utils.c
+│       ├── ./src/webserver/socket_utils.h
+│       ├── ./src/webserver/test/
+│       │   └── ./src/webserver/test/test.pl*
+│       ├── ./src/webserver/webserver_process.c
+│       └── ./src/webserver/webserver_process.h
+├── ./TODO
+└── ./tools/
+    ├── ./tools/clean-code-coverage.sh*
+    ├── ./tools/code-coverage.sh*
+    ├── ./tools/cpplint.py*
+    ├── ./tools/refresh_manifest.sh*
+    └── ./tools/total_lines.sh*
 
-src/config.c
-src/config.h: parse config file;
-
-src/global_context.c
-src/global_context.h: define global controlling variable;
-
-src/image_capture.c
-src/image_capture.h: capture image from v4l2, and convert to jpeg or h264;
-
-src/image_convert.c
-src/image_convert.h: convert image to RGB888 or YUV420P;
-
-src/libx264.c
-src/libx264.h: encode image (in YUV420P format) to h264 format;
-
-src/log.c
-src/log.h: log utils of the project;
-
-src/path.c
-src/path.h: filepath generation;
-
-src/picture_thread.c
-src/picture_thread.h: picture manipulation thread;
-
-src/signal.c
-src/signal.h: signal handling of the project;
-
-src/v4l2_utils.c
-src/v4l2_utils.h: linux v4l2 manipulation of the project;
-
-src/video.c
-src/video.h: video capture using linux v4l2;
-
-src/video_thread.c
-src/video_thread.h: video encode thread;
-
-
-src/main.c: main entry of the project;
+28 directories, 327 files
