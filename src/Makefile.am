@@ -47,3 +47,6 @@ opendmd_SOURCES = main.c \
           signal_handler.h signal_handler.c statistics.h statistics.c \
           sqlite_utils.h sqlite_utils.c
 
+include_HEADERS = config.h log.h path.h global_context.h parser.h \
+                  v4l2_utils.h signal_handler.h statistics.h sqlite_utils.h
+

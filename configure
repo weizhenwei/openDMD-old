@@ -5108,6 +5108,16 @@ _ACEOF
 ;;
   esac
 
+ac_fn_c_check_type "$LINENO" "ptrdiff_t" "ac_cv_type_ptrdiff_t" "$ac_includes_default"
+if test "x$ac_cv_type_ptrdiff_t" = xyes; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE_PTRDIFF_T 1
+_ACEOF
+
+
+fi
+
 
 # Checks for library functions.
 # The Ultrix 4.2 mips builtin alloca declared by alloca.h only works

@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-noinst_LIBRARIES = libclient.a
+lib_LIBRARIES = libclient.a
 
 INCLUDES = -I$(top_srcdir)/libjpeg -I$(top_srcdir)/libsqlite/src \
            -I$(top_srcdir)/libortp/include -I$(top_srcdir)/libortp \

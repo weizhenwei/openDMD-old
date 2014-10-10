@@ -182,11 +182,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
-include_HEADERS = str_utils.h rtpsession.h rtp.h port.h logging.h \
-				ortp.h telephonyevents.h sessionset.h payloadtype.h \
-				rtpprofile.h rtpsignaltable.h rtcp.h event.h \
-				stun.h stun_udp.h ortp_srtp.h zrtp.h b64.h
-
+include_HEADERS = rtpsession.h rtp.h ortp.h rtcp.h ortp_srtp.h
 all: all-am
 
 .SUFFIXES:
@@ -438,6 +434,11 @@ uninstall-am: uninstall-includeHEADERS
 	mostlyclean mostlyclean-generic pdf pdf-am ps ps-am tags \
 	uninstall uninstall-am uninstall-includeHEADERS
 
+
+# include_HEADERS=str_utils.h rtpsession.h rtp.h port.h logging.h \
+#                 ortp.h telephonyevents.h sessionset.h payloadtype.h \
+#                 rtpprofile.h rtpsignaltable.h rtcp.h event.h \
+#                 stun.h stun_udp.h ortp_srtp.h zrtp.h b64.h
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
