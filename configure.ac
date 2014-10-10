@@ -19,8 +19,8 @@ AM_INIT_AUTOMAKE(opendmd, 0.0.1)
 # Checks for programs.
 AC_PROG_CC         # for c compiler
 # AC_PROG_LIBTOOL    # for libtool
-AC_PROG_LEX   # for flex
-AC_PROG_YACC  # for bison
+# AC_PROG_LEX   # for flex
+# AC_PROG_YACC  # for bison
 
 # for static library generation
 AC_PROG_RANLIB
