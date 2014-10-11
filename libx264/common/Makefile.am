@@ -2,7 +2,8 @@ AUTOMAKE_OPTIONS = foreign
 
 noinst_LIBRARIES=libcommon.a
 
-INCLUDES = -I$(top_srcdir)/libx264
+INCLUDES = -I$(top_srcdir)/libx264 -I$(top_srcdir)/libx264/common \
+           -I$(top_srcdir)/libx264/encoder
 
 libcommon_a_SOURCES = bitstream.h bitstream.c \
                       cabac.h cabac.c \
@@ -20,5 +21,5 @@ libcommon_a_SOURCES = bitstream.h bitstream.c \
                       quant.h quant.c \
                       rectangle.h rectangle.c \
                       set.h set.c \
-                      vlc.c
+                      threadpool.h vlc.c
 

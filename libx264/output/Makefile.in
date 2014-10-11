@@ -51,7 +51,8 @@ ARFLAGS = cru
 liboutput_a_AR = $(AR) $(ARFLAGS)
 liboutput_a_LIBADD =
 am_liboutput_a_OBJECTS = flv_bytestream.$(OBJEXT) flv.$(OBJEXT) \
-	raw.$(OBJEXT)
+	matroska.$(OBJEXT) matroska_ebml.$(OBJEXT) mp4.$(OBJEXT) \
+	mp4_lsmash.$(OBJEXT) raw.$(OBJEXT)
 liboutput_a_OBJECTS = $(am_liboutput_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -169,13 +170,12 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
 noinst_LIBRARIES = liboutput.a
-INCLUDES = -I$(top_srcdir)/libx264
+INCLUDES = -I$(top_srcdir)/libx264 -I$(top_srcdir)/libx264/common \
+           -I$(top_srcdir)/libx264/encoder
 
-# liboutput_a_SOURCES = flv_bytestream.c  flv_bytestream.h \
-#                       flv.c matroska.c  matroska_ebml.c  matroska_ebml.h \
-#                       mp4.c  mp4_lsmash.c  output.h  raw.c
 liboutput_a_SOURCES = flv_bytestream.c  flv_bytestream.h \
-                      flv.c output.h  raw.c
+                      flv.c matroska.c  matroska_ebml.c  matroska_ebml.h \
+                      mp4.c  mp4_lsmash.c  output.h  raw.c
 
 all: all-am
 
@@ -227,6 +227,10 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flv.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flv_bytestream.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/matroska.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/matroska_ebml.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mp4.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mp4_lsmash.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/raw.Po@am__quote@
 
 .c.o:

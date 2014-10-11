@@ -11,5 +11,5 @@ conf_DATA = doc/config/client.cfg  \
 docdir = $(prefix)/doc
 doc_DATA = doc/dev/4.tech_review.txt
 
-EXTRA_DIST = tools
+EXTRA_DIST = tools doc
 

@@ -39,5 +39,5 @@ libx264_a_LIBADD = common/mc.o \
                    output/flv.o \
                    output/raw.o
 
-include_HEADERS = x264.h
+include_HEADERS = x264.h x264cli.h  x264_config.h
 
