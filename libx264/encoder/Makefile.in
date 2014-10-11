@@ -53,7 +53,7 @@ libencoder_a_LIBADD =
 am_libencoder_a_OBJECTS = analyse.$(OBJEXT) cabac.$(OBJEXT) \
 	cavlc.$(OBJEXT) encoder.$(OBJEXT) lookahead.$(OBJEXT) \
 	macroblock.$(OBJEXT) me.$(OBJEXT) ratecontrol.$(OBJEXT) \
-	set.$(OBJEXT) rdo.$(OBJEXT) slicetype.$(OBJEXT)
+	set.$(OBJEXT)
 libencoder_a_OBJECTS = $(am_libencoder_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -180,8 +180,9 @@ libencoder_a_SOURCES = analyse.h analyse.c \
                        macroblock.h macroblock.c \
                        me.h me.c \
                        ratecontrol.h ratecontrol.c \
-                       set.h set.c rdo.c slicetype.c
+                       set.h set.c
 
+EXTRA_DIST = rdo.c slicetype.c
 all: all-am
 
 .SUFFIXES:
@@ -238,9 +239,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/macroblock.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/me.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ratecontrol.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rdo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/set.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/slicetype.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

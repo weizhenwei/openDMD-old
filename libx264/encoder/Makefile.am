@@ -11,6 +11,8 @@ libencoder_a_SOURCES = analyse.h analyse.c \
                        macroblock.h macroblock.c \
                        me.h me.c \
                        ratecontrol.h ratecontrol.c \
-                       set.h set.c rdo.c slicetype.c
+                       set.h set.c
+
+EXTRA_DIST = rdo.c slicetype.c
 
 
