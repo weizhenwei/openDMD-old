@@ -5,18 +5,20 @@ AUTOHEADER=autoheader
 AUTOCONF=autoconf
 AUTOMAKE=automake
 
-echo "aclocal ..."
+echo "Running aclocal..."
 $ACLOCAL
 
-echo "autoheader ..."
+echo "Running autoheader..."
 $AUTOHEADER
 
-echo "autoconf ..."
+echo "Running autoconf..."
 $AUTOCONF
 
-echo "automake ..."
+echo "Running automake..."
 $AUTOMAKE --force-missing --add-missing --copy
 
-echo "configure ..."
-./configure --prefix=`pwd`/install --enable-debug --disable-web --disable-gcov
+echo "Regenerate configure file done!"
+
+# echo "configure ..."
+# ./configure --prefix=`pwd`/install --enable-debug --disable-web --disable-gcov
 
