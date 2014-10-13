@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.68])
-AC_INIT([opendmd], [0.0.1], [weizhenwei1988@gmail.com])
+AC_INIT([openDMD], [0.0.1], [weizhenwei1988@gmail.com])
 AC_CONFIG_SRCDIR([src/main.c])
 AC_CONFIG_HEADERS([config.h])
 
@@ -14,7 +14,7 @@ AC_CONFIG_HEADERS([config.h])
 #         target_cpu,   target_vender, target_os
 AC_CANONICAL_SYSTEM
 
-AM_INIT_AUTOMAKE(opendmd, 0.0.1)
+AM_INIT_AUTOMAKE(openDMD, 0.0.1)
 
 # Checks for programs.
 AC_PROG_CC         # for c compiler
