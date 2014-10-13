@@ -33,10 +33,10 @@ LIBS = -lm -lpthread -lrt -ldl
 # endif
 
 # web specific lib
-if HAVE_WEBSERVER
+# if HAVE_WEBSERVER
 opendmd_LDADD += $(top_srcdir)/src/webserver/libwebserver.a
 INCLUDES += -I$(top_srcdir)/src/webserver
-endif
+# endif
 
 # source files in ./src dirctory;
 # source files in ./src/client is in libclient.a

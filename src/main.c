@@ -76,6 +76,7 @@
 // for cmd line control
 static unsigned int show_statistics = 0;
 static unsigned int clean_statistics = 0;
+static unsigned int start_webadmin = 0;
 
 static void clean(void) {
     dmd_closelog();
@@ -299,6 +300,7 @@ static void usage(const char *progname) {
     fprintf(stdout, "  -d, --daemonize,        Run opendmd in daemon mode\n");
     fprintf(stdout, "  -v, --version,          Display the version number\n");
     fprintf(stdout, "  -s, --show-statistics,  Show historical statistics\n");
+    fprintf(stdout, "  -w, --start-webadmin,   Start web administration UI\n");
     fprintf(stdout, "  -c, --clean-statistics, Clean historical statistics\n");
     fprintf(stdout, "  -h, --help,             Display this help message\n");
 }
@@ -311,13 +313,14 @@ static int parse_cmdline(int argc, char *argv[]) {
         {"daemonize",          no_argument,        0, 'd'},
         {"version",            no_argument,        0, 'v'},
         {"show-statistics",    no_argument,        0, 's'},
+        {"start-webadmin",     no_argument,        0, 'w'},
         {"clean-statistics",   no_argument,        0, 'c'},
         {"help",               no_argument,        0, 'h'},
         {0, 0, 0, 0},
     };
 
     // man 3 getopt_long for more information about getopt_long;
-    while ((c = getopt_long(argc, argv, "p:f:dvsch", long_options, NULL))
+    while ((c = getopt_long(argc, argv, "p:f:dvswch", long_options, NULL))
             != EOF) {
         switch (c) {
             case 'v':
@@ -326,6 +329,9 @@ static int parse_cmdline(int argc, char *argv[]) {
                 break;
             case 's':
                 show_statistics = 1;
+                break;
+            case '2':
+                start_webadmin = 1;
                 break;
             case 'c':
                 clean_statistics = 1;
@@ -398,6 +404,8 @@ static void manage_cmdline() {
 }
 
 int main(int argc, char *argv[]) {
+    int ret = -1;
+
     // set locale according current environment;
     setlocale(LC_ALL, "");
 
@@ -414,13 +422,11 @@ int main(int argc, char *argv[]) {
 
     init();
 
-#if defined(WEB)
-    int ret = -1;
-
-    // fork webserver process;
-    ret = webserver_fork();
-    assert(ret == 0);
-#endif
+    // fork webui process;
+    if (start_webadmin == 1) {
+        ret = webserver_fork();
+        assert(ret == 0);
+    }
 
     // slave or singleton do the capturing work;
     if (global.cluster_mode == CLUSTER_CLIENT
@@ -448,11 +454,12 @@ int main(int argc, char *argv[]) {
     }
 
 end:
-#if defined(WEB)
+
     // kill webserver process;
-    ret = kill(global.webserver_pid, SIGKILL);
-    assert(ret == 0);
-#endif
+    if (start_webadmin == 1) {
+        ret = kill(global.webserver_pid, SIGKILL);
+        assert(ret == 0);
+    }
 
     release_default_global();
     clean();

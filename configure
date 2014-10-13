@@ -606,8 +606,6 @@ ac_header_list=
 ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
-HAVE_WEBSERVER_FALSE
-HAVE_WEBSERVER_TRUE
 HAVE_ARM_FALSE
 HAVE_ARM_TRUE
 HAVE_X86_64_FALSE
@@ -715,7 +713,6 @@ enable_option_checking
 enable_dependency_tracking
 enable_debug
 enable_gcov
-enable_web
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1351,7 +1348,6 @@ Optional Features:
   --enable-dependency-tracking   do not reject slow dependency extractors
   --enable-debug          enable debug mode(default=no)
   --enable-gcov           enable gcov code-coverage(default=no)
-  --enable-web            enable web admin(default=no)
 
 Some influential environment variables:
   CC          C compiler command
@@ -6156,32 +6152,17 @@ fi
 
 
 
-
-# add --enable-web option.
-# Check whether --enable-web was given.
-if test "${enable_web+set}" = set; then :
-  enableval=$enable_web;
-else
-  enable_web=no
-
-fi
-
-if test "x$enable_web" = "xyes"; then :
-  CFLAGS+="-DWEB "
-elif test "x$enable_web" = "xno"; then :
-  CFLAGS+=" "
-else
-  echo "enable-web with wrong value"
-
-fi
- if test "x$enable_web" = xyes; then
-  HAVE_WEBSERVER_TRUE=
-  HAVE_WEBSERVER_FALSE='#'
-else
-  HAVE_WEBSERVER_TRUE='#'
-  HAVE_WEBSERVER_FALSE=
-fi
-
+# # add --enable-web option.
+# AC_ARG_ENABLE( [web],
+#           AS_HELP_STRING([--enable-web], [enable web admin(default=no)]),
+#           [],
+#           [enable_web=no]
+#           )
+# AS_IF([test "x$enable_web" = "xyes"], [CFLAGS+="-DWEB "],
+#       [test "x$enable_web" = "xno"], [CFLAGS+=" "],
+#       [echo "enable-web with wrong value"]
+#       )
+# AM_CONDITIONAL([HAVE_WEBSERVER], [test "x$enable_web" = xyes])
 
 #Attention: this is import, list the Makefile need to generate
 ac_config_files="$ac_config_files Makefile libjpeg/Makefile libortp/Makefile libortp/include/Makefile libortp/include/ortp/Makefile libortp/src/Makefile libortp/test/Makefile libsqlite/Makefile libsqlite/src/Makefile libsqlite/test/Makefile libx264/Makefile libx264/common/Makefile libx264/encoder/Makefile libx264/output/Makefile src/Makefile src/client/Makefile src/server/Makefile src/webserver/Makefile"
@@ -6317,10 +6298,6 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAVE_ARM_TRUE}" && test -z "${HAVE_ARM_FALSE}"; then
   as_fn_error $? "conditional \"HAVE_ARM\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
-if test -z "${HAVE_WEBSERVER_TRUE}" && test -z "${HAVE_WEBSERVER_FALSE}"; then
-  as_fn_error $? "conditional \"HAVE_WEBSERVER\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 

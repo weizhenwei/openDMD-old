@@ -37,16 +37,6 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 bin_PROGRAMS = opendmd$(EXEEXT)
-
-#jit specific lib
-# if HAVE_JIT
-# opendmd_LDADD += $(top_srcdir)/src/jit/libjit.a
-# INCLUDES += -I$(top_srcdir)/src/jit
-# endif
-
-# web specific lib
-@HAVE_WEBSERVER_TRUE@am__append_1 = $(top_srcdir)/src/webserver/libwebserver.a
-@HAVE_WEBSERVER_TRUE@am__append_2 = -I$(top_srcdir)/src/webserver
 subdir = src
 DIST_COMMON = $(include_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
@@ -70,7 +60,8 @@ opendmd_DEPENDENCIES = $(top_srcdir)/src/client/libclient.a \
 	$(top_srcdir)/libjpeg/libjpeg.a \
 	$(top_srcdir)/libortp/src/libortp.a \
 	$(top_srcdir)/libsqlite/src/libsqlite3.a \
-	$(top_srcdir)/libx264/libx264.a $(am__append_1)
+	$(top_srcdir)/libx264/libx264.a \
+	$(top_srcdir)/src/webserver/libwebserver.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -262,18 +253,29 @@ INCLUDES = -I$(top_srcdir)/libjpeg -I$(top_srcdir)/libsqlite/src \
 	-I$(top_srcdir)/libortp/include -I$(top_srcdir)/libortp \
 	-I$(top_srcdir)/libx264 -I$(top_srcdir)/libx264/output \
 	-I$(top_srcdir)/src/client -I$(top_srcdir)/src/server \
-	$(am__append_2)
+	-I$(top_srcdir)/src/webserver
 
 # WARNING: there is an important problems here!
 #          libclient.a and libserver.a depend on libjpeg.a, etc,
 #          so libclient.a and libserver.a must replace ahead of
 #          other libraries.
+
+#jit specific lib
+# if HAVE_JIT
+# opendmd_LDADD += $(top_srcdir)/src/jit/libjit.a
+# INCLUDES += -I$(top_srcdir)/src/jit
+# endif
+
+# web specific lib
+# if HAVE_WEBSERVER
 opendmd_LDADD = $(top_srcdir)/src/client/libclient.a \
 	$(top_srcdir)/src/server/libserver.a \
 	$(top_srcdir)/libjpeg/libjpeg.a \
 	$(top_srcdir)/libortp/src/libortp.a \
 	$(top_srcdir)/libsqlite/src/libsqlite3.a \
-	$(top_srcdir)/libx264/libx264.a $(am__append_1)
+	$(top_srcdir)/libx264/libx264.a \
+	$(top_srcdir)/src/webserver/libwebserver.a
+# endif
 
 # source files in ./src dirctory;
 # source files in ./src/client is in libclient.a
