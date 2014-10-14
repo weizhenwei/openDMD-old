@@ -36,7 +36,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-bin_PROGRAMS = opendmd$(EXEEXT)
+bin_PROGRAMS = openDMD$(EXEEXT)
 subdir = src
 DIST_COMMON = $(include_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
@@ -50,12 +50,12 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(includedir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_opendmd_OBJECTS = main.$(OBJEXT) config.$(OBJEXT) log.$(OBJEXT) \
+am_openDMD_OBJECTS = main.$(OBJEXT) config.$(OBJEXT) log.$(OBJEXT) \
 	path.$(OBJEXT) global_context.$(OBJEXT) parser.$(OBJEXT) \
 	v4l2_utils.$(OBJEXT) signal_handler.$(OBJEXT) \
 	statistics.$(OBJEXT) sqlite_utils.$(OBJEXT)
-opendmd_OBJECTS = $(am_opendmd_OBJECTS)
-opendmd_DEPENDENCIES = $(top_srcdir)/src/client/libclient.a \
+openDMD_OBJECTS = $(am_openDMD_OBJECTS)
+openDMD_DEPENDENCIES = $(top_srcdir)/src/client/libclient.a \
 	$(top_srcdir)/src/server/libserver.a \
 	$(top_srcdir)/libjpeg/libjpeg.a \
 	$(top_srcdir)/libortp/src/libortp.a \
@@ -70,8 +70,8 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(opendmd_SOURCES)
-DIST_SOURCES = $(opendmd_SOURCES)
+SOURCES = $(openDMD_SOURCES)
+DIST_SOURCES = $(openDMD_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-dvi-recursive install-exec-recursive \
@@ -171,7 +171,7 @@ LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
 
 # Warning: system library should be assigned here using LIBS;
-# using opendmd_LDFLAGS at here doesn't work!
+# using openDMD_LDFLAGS at here doesn't work!
 # using LDFLAGS in configure.ac doesn't work, either!
 # -lrt for function clock_gettime()
 LIBS = -lm -lpthread -lrt -ldl
@@ -262,13 +262,13 @@ INCLUDES = -I$(top_srcdir)/libjpeg -I$(top_srcdir)/libsqlite/src \
 
 #jit specific lib
 # if HAVE_JIT
-# opendmd_LDADD += $(top_srcdir)/src/jit/libjit.a
+# openDMD_LDADD += $(top_srcdir)/src/jit/libjit.a
 # INCLUDES += -I$(top_srcdir)/src/jit
 # endif
 
 # web specific lib
 # if HAVE_WEBSERVER
-opendmd_LDADD = $(top_srcdir)/src/client/libclient.a \
+openDMD_LDADD = $(top_srcdir)/src/client/libclient.a \
 	$(top_srcdir)/src/server/libserver.a \
 	$(top_srcdir)/libjpeg/libjpeg.a \
 	$(top_srcdir)/libortp/src/libortp.a \
@@ -280,7 +280,7 @@ opendmd_LDADD = $(top_srcdir)/src/client/libclient.a \
 # source files in ./src dirctory;
 # source files in ./src/client is in libclient.a
 # source files in ./src/server is in libserver.a
-opendmd_SOURCES = main.c \
+openDMD_SOURCES = main.c \
           config.h config.c log.h log.c path.h path.c global_context.h \
           global_context.c parser.h parser.c v4l2_utils.h v4l2_utils.c \
           signal_handler.h signal_handler.c statistics.h statistics.c \
@@ -360,9 +360,9 @@ uninstall-binPROGRAMS:
 
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
-opendmd$(EXEEXT): $(opendmd_OBJECTS) $(opendmd_DEPENDENCIES) $(EXTRA_opendmd_DEPENDENCIES) 
-	@rm -f opendmd$(EXEEXT)
-	$(LINK) $(opendmd_OBJECTS) $(opendmd_LDADD) $(LIBS)
+openDMD$(EXEEXT): $(openDMD_OBJECTS) $(openDMD_DEPENDENCIES) $(EXTRA_openDMD_DEPENDENCIES) 
+	@rm -f openDMD$(EXEEXT)
+	$(LINK) $(openDMD_OBJECTS) $(openDMD_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
