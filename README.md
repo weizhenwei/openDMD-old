@@ -30,7 +30,7 @@ Download && Config && Build && Install
 
 Run
 ---
-        ./opendmd -f opendmd.cfg
+        ./openDMD -f openDMD.cfg
 
 
 About config file

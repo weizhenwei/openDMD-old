@@ -11,7 +11,7 @@ mrtprecv_LDADD = $(top_srcdir)/libortp/src/libortp.a
 
 
 # Warning: system library should be assigned here using LIBS;
-# using opendmd_LDFLAGS at here doesn't work!
+# using openDMD_LDFLAGS at here doesn't work!
 LIBS = -lrt
 
 sendtest_SOURCES = rtp_send.h rtp_send.c send_test.c

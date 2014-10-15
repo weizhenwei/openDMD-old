@@ -90,7 +90,7 @@ static int insert_values(sqlite3 *db) {
     snprintf(sql, sizeof(sql),
             "%s", "INSERT INTO detected_motions(id, des, start_time, "
             "end_time, video_path) VALUES(20140823, \"first motion\", "
-            "20140817, 20140817, \"/home/wzw/opendmd/video/a.flv\")");
+            "20140817, 20140817, \"/home/wzw/openDMD/video/a.flv\")");
 
     const char *begin_transaction = "BEGIN;";
     const char *commit_transaction = "COMMIT;";

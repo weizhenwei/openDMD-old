@@ -5,7 +5,7 @@ SUBDIRS = libjpeg libortp libsqlite libx264 src
 confdir = $(prefix)/config
 conf_DATA = doc/config/client.cfg  \
             doc/config/server.cfg  \
-            doc/config/opendmd.cfg \
+            doc/config/openDMD.cfg \
             doc/config/webserver.cfg
 
 docdir = $(prefix)/doc

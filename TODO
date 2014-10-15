@@ -6,7 +6,7 @@ The following problems remained to solve at next version!
                2). add logout function on webpage;
                3). make webpage more beautiful;
                4). make project configurable through webpage;
-    5. jit code is frozen for next opendmd version;
+    5. jit code is frozen for next openDMD version;
 
 2014.10.08:
     1. rewrite config parsing with flex and bison;
@@ -16,7 +16,7 @@ The following problems remained to solve at next version!
                2). add logout function on webpage;
                3). make webpage more beautiful;
                4). make project configurable through webpage;
-    5. jit code is frozen for next opendmd version;
+    5. jit code is frozen for next openDMD version;
 
 2014.10.06:
     rewrite config parsing with flex and bison;
@@ -112,7 +112,7 @@ The following problems remained to solve at next version!
     Urgent: dump statistics to persist storage, using sqlite database;
     Urgent: add email notification mechanism;
     Urgent: BUG to fix: when working_mode is not "all",
-            assert violation when running opendmd!
+            assert violation when running openDMD!
 
 2014.08.15:
     Urgent: continue working on libx264!

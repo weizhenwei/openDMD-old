@@ -2,7 +2,7 @@ How to add an config item to config file;
 
 1. add comment/annotation and key, value to config file, eg,
    # webserver root to place static webserver file such as html, css, etc.
-   webserver_root /var/www/opendmd
+   webserver_root /var/www/openDMD
 
 2. add config item at struct global_context, eg,
    struct global_context {

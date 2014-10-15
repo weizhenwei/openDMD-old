@@ -112,7 +112,7 @@ LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
 
 # Warning: system library should be assigned here using LIBS;
-# using opendmd_LDFLAGS at here doesn't work!
+# using openDMD_LDFLAGS at here doesn't work!
 LIBS = -lrt
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
