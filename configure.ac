@@ -5,6 +5,7 @@ AC_PREREQ([2.68])
 AC_INIT([openDMD], [0.0.1], [weizhenwei1988@gmail.com])
 AC_CONFIG_SRCDIR([src/main.c])
 AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_MACRO_DIR([m4])
 
 # get system canonical system message,
 # such as build, host, target;
@@ -18,12 +19,11 @@ AM_INIT_AUTOMAKE(openDMD, 0.0.1)
 
 # Checks for programs.
 AC_PROG_CC         # for c compiler
-# AC_PROG_LIBTOOL    # for libtool
-# AC_PROG_LEX   # for flex
-# AC_PROG_YACC  # for bison
-
-# for static library generation
-AC_PROG_RANLIB
+AC_PROG_LIBTOOL    # for libtool, used to generate dynamic library;
+LT_INIT            # for replace AC_PROG_RANLIB
+# AC_PROG_LEX      # for flex, for lexical analyze;
+# AC_PROG_YACC     # for bison, for syntax parsing;
+# AC_PROG_RANLIB   # for static library generation
 
 # for libx264 needed Macro
 AC_DEFINE(HAVE_GPL, 0, [have GPL(no)])

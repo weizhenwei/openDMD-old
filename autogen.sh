@@ -3,6 +3,7 @@
 ACLOCAL=aclocal
 AUTOHEADER=autoheader
 AUTOCONF=autoconf
+LIBTOOL=libtoolize
 AUTOMAKE=automake
 
 echo "Running aclocal..."
@@ -13,6 +14,9 @@ $AUTOHEADER
 
 echo "Running autoconf..."
 $AUTOCONF
+
+echo "Running libtoolize..."
+$LIBTOOL --automake --copy --force
 
 echo "Running automake..."
 $AUTOMAKE --force-missing --add-missing --copy
