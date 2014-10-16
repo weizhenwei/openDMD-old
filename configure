@@ -569,7 +569,7 @@ MAKEFLAGS=
 
 # Identity of this package.
 PACKAGE_NAME='openDMD'
-PACKAGE_TARNAME='opendmd'
+PACKAGE_TARNAME='openDMD'
 PACKAGE_VERSION='0.0.1'
 PACKAGE_STRING='openDMD 0.0.1'
 PACKAGE_BUGREPORT='weizhenwei1988@gmail.com'
@@ -1348,7 +1348,7 @@ Fine tuning of the installation directories:
   --infodir=DIR           info documentation [DATAROOTDIR/info]
   --localedir=DIR         locale-dependent data [DATAROOTDIR/locale]
   --mandir=DIR            man documentation [DATAROOTDIR/man]
-  --docdir=DIR            documentation root [DATAROOTDIR/doc/opendmd]
+  --docdir=DIR            documentation root [DATAROOTDIR/doc/openDMD]
   --htmldir=DIR           html documentation [DOCDIR]
   --dvidir=DIR            dvi documentation [DOCDIR]
   --pdfdir=DIR            pdf documentation [DOCDIR]

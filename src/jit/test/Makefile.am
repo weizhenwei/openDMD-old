@@ -13,7 +13,7 @@ test_jit_LDADD = $(top_srcdir)/libjpeg/libjpeg.a \
                  $(top_srcdir)/libx264/libx264.a
 
 # Warning: system library should be assigned here using LIBS;
-# using opendmd_LDFLAGS at here doesn't work!
+# using openDMD_LDFLAGS at here doesn't work!
 # using LDFLAGS in configure.ac doesn't work, either!
 # -lrt for function clock_gettime()
 LIBS=-lm -lpthread -lrt -ldl
