@@ -15,6 +15,7 @@
 
 @SET_MAKE@
 
+
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -49,9 +50,13 @@ LIBRARIES = $(noinst_LIBRARIES)
 ARFLAGS = cru
 liboutput_a_AR = $(AR) $(ARFLAGS)
 liboutput_a_LIBADD =
-am_liboutput_a_OBJECTS = flv_bytestream.$(OBJEXT) flv.$(OBJEXT) \
-	raw.$(OBJEXT)
+am_liboutput_a_OBJECTS = liboutput_a-flv_bytestream.$(OBJEXT) \
+	liboutput_a-flv.$(OBJEXT) liboutput_a-raw.$(OBJEXT)
 liboutput_a_OBJECTS = $(am_liboutput_a_OBJECTS)
+LTLIBRARIES = $(noinst_LTLIBRARIES)
+liboutput_la_LIBADD =
+am_liboutput_la_OBJECTS = flv_bytestream.lo flv.lo raw.lo
+liboutput_la_OBJECTS = $(am_liboutput_la_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -65,8 +70,8 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(liboutput_a_SOURCES)
-DIST_SOURCES = $(liboutput_a_SOURCES)
+SOURCES = $(liboutput_a_SOURCES) $(liboutput_la_SOURCES)
+DIST_SOURCES = $(liboutput_a_SOURCES) $(liboutput_la_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -190,12 +195,19 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
-noinst_LIBRARIES = liboutput.a
 INCLUDES = -I$(top_srcdir)/libx264 -I$(top_srcdir)/libx264/common \
            -I$(top_srcdir)/libx264/encoder
 
+noinst_LIBRARIES = liboutput.a
+# to remove the automake complain:
+#         object 'foo.$(OBJEXT)' created both with libtool and without
+liboutput_a_CFLAGS = $(AM_CFLAGS)
 liboutput_a_SOURCES = flv_bytestream.c  flv_bytestream.h \
                       flv.c output.h  raw.c
+
+noinst_LTLIBRARIES = liboutput.la
+liboutput_la_SOURCES = flv_bytestream.c  flv_bytestream.h \
+                       flv.c output.h  raw.c
 
 all: all-am
 
@@ -239,15 +251,29 @@ liboutput.a: $(liboutput_a_OBJECTS) $(liboutput_a_DEPENDENCIES) $(EXTRA_liboutpu
 	$(liboutput_a_AR) liboutput.a $(liboutput_a_OBJECTS) $(liboutput_a_LIBADD)
 	$(RANLIB) liboutput.a
 
+clean-noinstLTLIBRARIES:
+	-test -z "$(noinst_LTLIBRARIES)" || rm -f $(noinst_LTLIBRARIES)
+	@list='$(noinst_LTLIBRARIES)'; for p in $$list; do \
+	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
+	  test "$$dir" != "$$p" || dir=.; \
+	  echo "rm -f \"$${dir}/so_locations\""; \
+	  rm -f "$${dir}/so_locations"; \
+	done
+liboutput.la: $(liboutput_la_OBJECTS) $(liboutput_la_DEPENDENCIES) $(EXTRA_liboutput_la_DEPENDENCIES) 
+	$(LINK)  $(liboutput_la_OBJECTS) $(liboutput_la_LIBADD) $(LIBS)
+
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flv.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flv_bytestream.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/raw.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flv.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flv_bytestream.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liboutput_a-flv.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liboutput_a-flv_bytestream.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liboutput_a-raw.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/raw.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -269,6 +295,48 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
+
+liboutput_a-flv_bytestream.o: flv_bytestream.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liboutput_a_CFLAGS) $(CFLAGS) -MT liboutput_a-flv_bytestream.o -MD -MP -MF $(DEPDIR)/liboutput_a-flv_bytestream.Tpo -c -o liboutput_a-flv_bytestream.o `test -f 'flv_bytestream.c' || echo '$(srcdir)/'`flv_bytestream.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/liboutput_a-flv_bytestream.Tpo $(DEPDIR)/liboutput_a-flv_bytestream.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='flv_bytestream.c' object='liboutput_a-flv_bytestream.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liboutput_a_CFLAGS) $(CFLAGS) -c -o liboutput_a-flv_bytestream.o `test -f 'flv_bytestream.c' || echo '$(srcdir)/'`flv_bytestream.c
+
+liboutput_a-flv_bytestream.obj: flv_bytestream.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liboutput_a_CFLAGS) $(CFLAGS) -MT liboutput_a-flv_bytestream.obj -MD -MP -MF $(DEPDIR)/liboutput_a-flv_bytestream.Tpo -c -o liboutput_a-flv_bytestream.obj `if test -f 'flv_bytestream.c'; then $(CYGPATH_W) 'flv_bytestream.c'; else $(CYGPATH_W) '$(srcdir)/flv_bytestream.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/liboutput_a-flv_bytestream.Tpo $(DEPDIR)/liboutput_a-flv_bytestream.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='flv_bytestream.c' object='liboutput_a-flv_bytestream.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liboutput_a_CFLAGS) $(CFLAGS) -c -o liboutput_a-flv_bytestream.obj `if test -f 'flv_bytestream.c'; then $(CYGPATH_W) 'flv_bytestream.c'; else $(CYGPATH_W) '$(srcdir)/flv_bytestream.c'; fi`
+
+liboutput_a-flv.o: flv.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liboutput_a_CFLAGS) $(CFLAGS) -MT liboutput_a-flv.o -MD -MP -MF $(DEPDIR)/liboutput_a-flv.Tpo -c -o liboutput_a-flv.o `test -f 'flv.c' || echo '$(srcdir)/'`flv.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/liboutput_a-flv.Tpo $(DEPDIR)/liboutput_a-flv.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='flv.c' object='liboutput_a-flv.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liboutput_a_CFLAGS) $(CFLAGS) -c -o liboutput_a-flv.o `test -f 'flv.c' || echo '$(srcdir)/'`flv.c
+
+liboutput_a-flv.obj: flv.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liboutput_a_CFLAGS) $(CFLAGS) -MT liboutput_a-flv.obj -MD -MP -MF $(DEPDIR)/liboutput_a-flv.Tpo -c -o liboutput_a-flv.obj `if test -f 'flv.c'; then $(CYGPATH_W) 'flv.c'; else $(CYGPATH_W) '$(srcdir)/flv.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/liboutput_a-flv.Tpo $(DEPDIR)/liboutput_a-flv.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='flv.c' object='liboutput_a-flv.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liboutput_a_CFLAGS) $(CFLAGS) -c -o liboutput_a-flv.obj `if test -f 'flv.c'; then $(CYGPATH_W) 'flv.c'; else $(CYGPATH_W) '$(srcdir)/flv.c'; fi`
+
+liboutput_a-raw.o: raw.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liboutput_a_CFLAGS) $(CFLAGS) -MT liboutput_a-raw.o -MD -MP -MF $(DEPDIR)/liboutput_a-raw.Tpo -c -o liboutput_a-raw.o `test -f 'raw.c' || echo '$(srcdir)/'`raw.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/liboutput_a-raw.Tpo $(DEPDIR)/liboutput_a-raw.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='raw.c' object='liboutput_a-raw.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liboutput_a_CFLAGS) $(CFLAGS) -c -o liboutput_a-raw.o `test -f 'raw.c' || echo '$(srcdir)/'`raw.c
+
+liboutput_a-raw.obj: raw.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liboutput_a_CFLAGS) $(CFLAGS) -MT liboutput_a-raw.obj -MD -MP -MF $(DEPDIR)/liboutput_a-raw.Tpo -c -o liboutput_a-raw.obj `if test -f 'raw.c'; then $(CYGPATH_W) 'raw.c'; else $(CYGPATH_W) '$(srcdir)/raw.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/liboutput_a-raw.Tpo $(DEPDIR)/liboutput_a-raw.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='raw.c' object='liboutput_a-raw.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liboutput_a_CFLAGS) $(CFLAGS) -c -o liboutput_a-raw.obj `if test -f 'raw.c'; then $(CYGPATH_W) 'raw.c'; else $(CYGPATH_W) '$(srcdir)/raw.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -360,7 +428,7 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LIBRARIES)
+all-am: Makefile $(LIBRARIES) $(LTLIBRARIES)
 installdirs:
 install: install-am
 install-exec: install-exec-am
@@ -395,7 +463,7 @@ maintainer-clean-generic:
 clean: clean-am
 
 clean-am: clean-generic clean-libtool clean-noinstLIBRARIES \
-	mostlyclean-am
+	clean-noinstLTLIBRARIES mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -466,17 +534,18 @@ uninstall-am:
 .MAKE: install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
-	clean-libtool clean-noinstLIBRARIES ctags distclean \
-	distclean-compile distclean-generic distclean-libtool \
-	distclean-tags distdir dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am install-dvi \
-	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-info install-info-am install-man \
-	install-pdf install-pdf-am install-ps install-ps-am \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	pdf pdf-am ps ps-am tags uninstall uninstall-am
+	clean-libtool clean-noinstLIBRARIES clean-noinstLTLIBRARIES \
+	ctags distclean distclean-compile distclean-generic \
+	distclean-libtool distclean-tags distdir dvi dvi-am html \
+	html-am info info-am install install-am install-data \
+	install-data-am install-dvi install-dvi-am install-exec \
+	install-exec-am install-html install-html-am install-info \
+	install-info-am install-man install-pdf install-pdf-am \
+	install-ps install-ps-am install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags uninstall uninstall-am
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

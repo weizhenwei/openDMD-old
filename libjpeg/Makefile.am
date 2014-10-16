@@ -3,6 +3,9 @@ AUTOMAKE_OPTIONS = foreign
 ACLOCAL_AMFLAGS = "-I m4"
 
 lib_LIBRARIES = libjpeg.a
+# to remove the automake complain:
+#         object 'foo.$(OBJEXT)' created both with libtool and without
+libjpeg_a_CFLAGS = $(AM_CFLAGS)
 libjpeg_a_SOURCES = jaricom.c jcapimin.c jcapistd.c jcarith.c jccoefct.c \
                     jccolor.c jcdctmgr.c jchuff.c jcinit.c jcmainct.c \
                     jcmarker.c jcmaster.c jcomapi.c jcparam.c jcprepct.c \
@@ -15,9 +18,6 @@ libjpeg_a_SOURCES = jaricom.c jcapimin.c jcapistd.c jcarith.c jccoefct.c \
                     jmemnobs.c jerror.h jmorecfg.h jpeglib.h cderror.h \
                     cdjpeg.h jdct.h jinclude.h jmemsys.h jpegint.h \
                     jversion.h transupp.h jconfig.h
-# to remove the automake complain:
-#         object 'foo.$(OBJEXT)' created both with libtool and without
-libjpeg_a_CFLAGS = $(AM_CFLAGS)
 
 lib_LTLIBRARIES = libjpeg.la
 libjpeg_la_SOURCES = jaricom.c jcapimin.c jcapistd.c jcarith.c jccoefct.c \

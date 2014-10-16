@@ -9,6 +9,9 @@ INCLUDES = -I$(top_srcdir)/libx264 -I$(top_srcdir)/libx264/common \
 
 #this method can work, but ugly.
 libx264_a_SOURCES = x264.h x264_config.h x264cli.h
+# to remove the automake complain:
+#         object 'foo.$(OBJEXT)' created both with libtool and without
+libx264_a_CFLAGS = $(AM_CFLAGS)
 libx264_a_LIBADD = common/mc.o \
                    common/predict.o \
                    common/pixel.o \
@@ -38,6 +41,39 @@ libx264_a_LIBADD = common/mc.o \
                    output/flv_bytestream.o \
                    output/flv.o \
                    output/raw.o
+
+lib_LTLIBRARIES=libx264.la
+#this method can work, but ugly.
+libx264_la_SOURCES = x264.h x264_config.h x264cli.h
+libx264_la_LIBADD = common/mc.lo \
+                    common/predict.lo \
+                    common/pixel.lo \
+                    common/macroblock.lo \
+                    common/frame.lo \
+                    common/dct.lo \
+                    common/cpu.lo \
+                    common/cabac.lo \
+                    common/common.lo \
+                    common/osdep.lo \
+                    common/rectangle.lo \
+                    common/set.lo \
+                    common/quant.lo \
+                    common/deblock.lo \
+                    common/vlc.lo \
+                    common/mvpred.lo \
+                    common/bitstream.lo \
+                    encoder/analyse.lo \
+                    encoder/me.lo \
+                    encoder/ratecontrol.lo \
+                    encoder/set.lo \
+                    encoder/macroblock.lo \
+                    encoder/cabac.lo \
+                    encoder/cavlc.lo \
+                    encoder/encoder.lo \
+                    encoder/lookahead.lo \
+                    output/flv_bytestream.lo \
+                    output/flv.lo \
+                    output/raw.lo
 
 include_HEADERS = x264.h x264cli.h  x264_config.h
 
