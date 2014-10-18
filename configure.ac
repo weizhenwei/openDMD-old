@@ -127,19 +127,6 @@ AS_IF([test "x$enable_gcov" = "xyes"], [CFLAGS+="-fprofile-arcs -ftest-coverage 
 AM_CONDITIONAL([HAVE_X86_64], [test "x$host_cpu" = xx86_64])
 AM_CONDITIONAL([HAVE_ARM], [test "x$host_cpu" = xarm])
 
-
-# # add --enable-web option.
-# AC_ARG_ENABLE( [web], 
-#           AS_HELP_STRING([--enable-web], [enable web admin(default=no)]),
-#           [],
-#           [enable_web=no]
-#           )
-# AS_IF([test "x$enable_web" = "xyes"], [CFLAGS+="-DWEB "],
-#       [test "x$enable_web" = "xno"], [CFLAGS+=" "],
-#       [echo "enable-web with wrong value"]
-#       )
-# AM_CONDITIONAL([HAVE_WEBSERVER], [test "x$enable_web" = xyes])
-
 #Attention: this is import, list the Makefile need to generate
 AC_CONFIG_FILES([Makefile
                  libjpeg/Makefile

@@ -21,8 +21,10 @@ $LIBTOOL --automake --copy --force
 echo "Running automake..."
 $AUTOMAKE --force-missing --add-missing --copy
 
-echo "Regenerate configure file done!"
+# echo "Regenerate configure file done!"
 
-# echo "configure ..."
-# ./configure --prefix=`pwd`/install --enable-debug --disable-gcov
+echo "configure ..."
+./configure --prefix=`pwd`/install --enable-debug --disable-gcov
+
+echo "Regenerate configure file done!"
 

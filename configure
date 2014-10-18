@@ -569,7 +569,7 @@ MAKEFLAGS=
 
 # Identity of this package.
 PACKAGE_NAME='openDMD'
-PACKAGE_TARNAME='openDMD'
+PACKAGE_TARNAME='opendmd'
 PACKAGE_VERSION='0.0.1'
 PACKAGE_STRING='openDMD 0.0.1'
 PACKAGE_BUGREPORT='weizhenwei1988@gmail.com'
@@ -1348,7 +1348,7 @@ Fine tuning of the installation directories:
   --infodir=DIR           info documentation [DATAROOTDIR/info]
   --localedir=DIR         locale-dependent data [DATAROOTDIR/locale]
   --mandir=DIR            man documentation [DATAROOTDIR/man]
-  --docdir=DIR            documentation root [DATAROOTDIR/doc/openDMD]
+  --docdir=DIR            documentation root [DATAROOTDIR/doc/opendmd]
   --htmldir=DIR           html documentation [DOCDIR]
   --dvidir=DIR            dvi documentation [DOCDIR]
   --pdfdir=DIR            pdf documentation [DOCDIR]
@@ -13232,19 +13232,6 @@ else
   HAVE_ARM_FALSE=
 fi
 
-
-
-# # add --enable-web option.
-# AC_ARG_ENABLE( [web],
-#           AS_HELP_STRING([--enable-web], [enable web admin(default=no)]),
-#           [],
-#           [enable_web=no]
-#           )
-# AS_IF([test "x$enable_web" = "xyes"], [CFLAGS+="-DWEB "],
-#       [test "x$enable_web" = "xno"], [CFLAGS+=" "],
-#       [echo "enable-web with wrong value"]
-#       )
-# AM_CONDITIONAL([HAVE_WEBSERVER], [test "x$enable_web" = xyes])
 
 #Attention: this is import, list the Makefile need to generate
 ac_config_files="$ac_config_files Makefile libjpeg/Makefile libortp/Makefile libortp/include/Makefile libortp/include/ortp/Makefile libortp/src/Makefile libortp/test/Makefile libsqlite/Makefile libsqlite/src/Makefile libsqlite/test/Makefile libx264/Makefile libx264/common/Makefile libx264/encoder/Makefile libx264/output/Makefile src/Makefile src/client/Makefile src/server/Makefile src/webserver/Makefile"

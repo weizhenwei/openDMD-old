@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS=foreign
 
-lib_LIBRARIES = libwebserver.a
+noinst_LIBRARIES = libwebserver.a
 
 INCLUDES = -I$(top_srcdir)/libjpeg -I$(top_srcdir)/libsqlite/src \
            -I$(top_srcdir)/libortp/include -I$(top_srcdir)/libortp \
