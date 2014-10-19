@@ -18,7 +18,8 @@ AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE(openDMD, 0.0.1)
 
 # Checks for programs.
-AC_PROG_CC         # for c compiler
+AC_PROG_CC         # for c compiler;
+AC_PROG_LN_S       # for symbol link;
 AC_PROG_LIBTOOL    # for libtool, used to generate dynamic library;
 LT_INIT            # for replace AC_PROG_RANLIB
 # AC_PROG_LEX      # for flex, for lexical analyze;

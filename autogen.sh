@@ -7,7 +7,7 @@ LIBTOOL=libtoolize
 AUTOMAKE=automake
 
 echo "Running aclocal..."
-$ACLOCAL
+$ACLOCAL -I m4
 
 echo "Running autoheader..."
 $AUTOHEADER

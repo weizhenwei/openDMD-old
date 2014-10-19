@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS = foreign
 
 SUBDIRS = client server webserver
 
-bin_PROGRAMS = openDMD
+sbin_PROGRAMS = openDMD
 
 INCLUDES = -I$(top_srcdir)/libjpeg -I$(top_srcdir)/libsqlite/src \
            -I$(top_srcdir)/libortp/include -I$(top_srcdir)/libortp \
@@ -26,26 +26,25 @@ openDMD_LDADD = $(top_srcdir)/src/client/flv_muxer.o \
                 $(top_srcdir)/src/webserver/http_utils.o \
                 $(top_srcdir)/src/webserver/socket_utils.o \
                 $(top_srcdir)/src/webserver/webserver_process.o \
-                -L$(top_srcdir)/libjpeg/.libs -ljpeg \
-                -L$(top_srcdir)/libortp/src/.libs -lortp \
-                -L$(top_srcdir)/libsqlite/src/.libs -lsqlite3 \
-                -L$(top_srcdir)/libx264/.libs -lx264
+                $(top_srcdir)/libjpeg/libjpeg.la \
+                $(top_srcdir)/libortp/src/libortp.la \
+                $(top_srcdir)/libsqlite/src/libsqlite3.la \
+                $(top_srcdir)/libx264/libx264.la \
+                -lm -lpthread -lrt -ldl
+
+openDMD_LDFLAGS = -export-dynamic
 
 #                -L$(top_srcdir)/libjpeg -ljpeg
 #                -L$(top_srcdir)/libortp/src -lortp
 #                -L$(top_srcdir)/libsqlite/src -lsqlite3
 #                -L$(top_srcdir)/libx264 -lx264
 #
-#                $(top_srcdir)/libjpeg/libjpeg.a 
-#                $(top_srcdir)/libortp/src/libortp.a 
-#                $(top_srcdir)/libsqlite/src/libsqlite3.a 
-#                $(top_srcdir)/libx264/libx264.a
 
 # Warning: system library should be assigned here using LIBS;
 # using openDMD_LDFLAGS at here doesn't work!
 # using LDFLAGS in configure.ac doesn't work, either!
 # -lrt for function clock_gettime()
-LIBS = -lm -lpthread -lrt -ldl
+# LIBS = -lm -lpthread -lrt -ldl
 
 # source files in ./src dirctory;
 # source files in ./src/client is in openDMD_LDADD src/client/*.o

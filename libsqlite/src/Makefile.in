@@ -17,7 +17,6 @@
 
 
 
-
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -77,21 +76,14 @@ am__uninstall_files_from_dir = { \
     || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
-am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(libdir)" \
-	"$(DESTDIR)$(includedir)"
-LIBRARIES = $(lib_LIBRARIES)
-ARFLAGS = cru
-libsqlite3_a_AR = $(AR) $(ARFLAGS)
-libsqlite3_a_LIBADD =
-am_libsqlite3_a_OBJECTS = libsqlite3_a-sqlite3.$(OBJEXT)
-libsqlite3_a_OBJECTS = $(am_libsqlite3_a_OBJECTS)
+am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libsqlite3_la_LIBADD =
 am_libsqlite3_la_OBJECTS = libsqlite3_la-sqlite3.lo
 libsqlite3_la_OBJECTS = $(am_libsqlite3_la_OBJECTS)
 libsqlite3_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libsqlite3_la_CFLAGS) \
-	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+	$(CFLAGS) $(libsqlite3_la_LDFLAGS) $(LDFLAGS) -o $@
 PROGRAMS = $(noinst_PROGRAMS)
 am_sqlite3_OBJECTS = shell.$(OBJEXT) sqlite3.$(OBJEXT)
 sqlite3_OBJECTS = $(am_sqlite3_OBJECTS)
@@ -109,10 +101,8 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(libsqlite3_a_SOURCES) $(libsqlite3_la_SOURCES) \
-	$(sqlite3_SOURCES)
-DIST_SOURCES = $(libsqlite3_a_SOURCES) $(libsqlite3_la_SOURCES) \
-	$(sqlite3_SOURCES)
+SOURCES = $(libsqlite3_la_SOURCES) $(sqlite3_SOURCES)
+DIST_SOURCES = $(libsqlite3_la_SOURCES) $(sqlite3_SOURCES)
 HEADERS = $(include_HEADERS)
 ETAGS = etags
 CTAGS = ctags
@@ -239,15 +229,17 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
-lib_LIBRARIES = libsqlite3.a
-# to remove the automake complain:
-#         object 'foo.$(OBJEXT)' created both with libtool and without
-libsqlite3_a_CFLAGS = $(AM_CFLAGS)
-libsqlite3_a_SOURCES = sqlite3.c sqlite3.h
+
+# lib_LIBRARIES = libsqlite3.a
+# # to remove the automake complain:
+# #         object 'foo.$(OBJEXT)' created both with libtool and without
+# libsqlite3_a_CFLAGS = $(AM_CFLAGS)
+# libsqlite3_a_SOURCES = sqlite3.c sqlite3.h
 lib_LTLIBRARIES = libsqlite3.la
 # to remove the automake complain:
 #         object 'foo.$(OBJEXT)' created both with libtool and without
 libsqlite3_la_CFLAGS = $(AM_CFLAGS)
+libsqlite3_la_LDFLAGS = -avoid-version -no-undefined
 libsqlite3_la_SOURCES = sqlite3.c sqlite3.h
 include_HEADERS = sqlite3.h
 sqlite3_SOURCES = shell.c  sqlite3.c  sqlite3ext.h  sqlite3.h
@@ -285,40 +277,6 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
-install-libLIBRARIES: $(lib_LIBRARIES)
-	@$(NORMAL_INSTALL)
-	test -z "$(libdir)" || $(MKDIR_P) "$(DESTDIR)$(libdir)"
-	@list='$(lib_LIBRARIES)'; test -n "$(libdir)" || list=; \
-	list2=; for p in $$list; do \
-	  if test -f $$p; then \
-	    list2="$$list2 $$p"; \
-	  else :; fi; \
-	done; \
-	test -z "$$list2" || { \
-	  echo " $(INSTALL_DATA) $$list2 '$(DESTDIR)$(libdir)'"; \
-	  $(INSTALL_DATA) $$list2 "$(DESTDIR)$(libdir)" || exit $$?; }
-	@$(POST_INSTALL)
-	@list='$(lib_LIBRARIES)'; test -n "$(libdir)" || list=; \
-	for p in $$list; do \
-	  if test -f $$p; then \
-	    $(am__strip_dir) \
-	    echo " ( cd '$(DESTDIR)$(libdir)' && $(RANLIB) $$f )"; \
-	    ( cd "$(DESTDIR)$(libdir)" && $(RANLIB) $$f ) || exit $$?; \
-	  else :; fi; \
-	done
-
-uninstall-libLIBRARIES:
-	@$(NORMAL_UNINSTALL)
-	@list='$(lib_LIBRARIES)'; test -n "$(libdir)" || list=; \
-	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
-	dir='$(DESTDIR)$(libdir)'; $(am__uninstall_files_from_dir)
-
-clean-libLIBRARIES:
-	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
-libsqlite3.a: $(libsqlite3_a_OBJECTS) $(libsqlite3_a_DEPENDENCIES) $(EXTRA_libsqlite3_a_DEPENDENCIES) 
-	-rm -f libsqlite3.a
-	$(libsqlite3_a_AR) libsqlite3.a $(libsqlite3_a_OBJECTS) $(libsqlite3_a_LIBADD)
-	$(RANLIB) libsqlite3.a
 install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
 	test -z "$(libdir)" || $(MKDIR_P) "$(DESTDIR)$(libdir)"
@@ -371,7 +329,6 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libsqlite3_a-sqlite3.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libsqlite3_la-sqlite3.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/shell.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sqlite3.Po@am__quote@
@@ -396,20 +353,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
-
-libsqlite3_a-sqlite3.o: sqlite3.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsqlite3_a_CFLAGS) $(CFLAGS) -MT libsqlite3_a-sqlite3.o -MD -MP -MF $(DEPDIR)/libsqlite3_a-sqlite3.Tpo -c -o libsqlite3_a-sqlite3.o `test -f 'sqlite3.c' || echo '$(srcdir)/'`sqlite3.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libsqlite3_a-sqlite3.Tpo $(DEPDIR)/libsqlite3_a-sqlite3.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='sqlite3.c' object='libsqlite3_a-sqlite3.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsqlite3_a_CFLAGS) $(CFLAGS) -c -o libsqlite3_a-sqlite3.o `test -f 'sqlite3.c' || echo '$(srcdir)/'`sqlite3.c
-
-libsqlite3_a-sqlite3.obj: sqlite3.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsqlite3_a_CFLAGS) $(CFLAGS) -MT libsqlite3_a-sqlite3.obj -MD -MP -MF $(DEPDIR)/libsqlite3_a-sqlite3.Tpo -c -o libsqlite3_a-sqlite3.obj `if test -f 'sqlite3.c'; then $(CYGPATH_W) 'sqlite3.c'; else $(CYGPATH_W) '$(srcdir)/sqlite3.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libsqlite3_a-sqlite3.Tpo $(DEPDIR)/libsqlite3_a-sqlite3.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='sqlite3.c' object='libsqlite3_a-sqlite3.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsqlite3_a_CFLAGS) $(CFLAGS) -c -o libsqlite3_a-sqlite3.obj `if test -f 'sqlite3.c'; then $(CYGPATH_W) 'sqlite3.c'; else $(CYGPATH_W) '$(srcdir)/sqlite3.c'; fi`
 
 libsqlite3_la-sqlite3.lo: sqlite3.c
 @am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsqlite3_la_CFLAGS) $(CFLAGS) -MT libsqlite3_la-sqlite3.lo -MD -MP -MF $(DEPDIR)/libsqlite3_la-sqlite3.Tpo -c -o libsqlite3_la-sqlite3.lo `test -f 'sqlite3.c' || echo '$(srcdir)/'`sqlite3.c
@@ -526,9 +469,9 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LIBRARIES) $(LTLIBRARIES) $(PROGRAMS) $(HEADERS)
+all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -563,8 +506,8 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic clean-libLIBRARIES clean-libLTLIBRARIES \
-	clean-libtool clean-noinstPROGRAMS mostlyclean-am
+clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
+	clean-noinstPROGRAMS mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -590,7 +533,7 @@ install-dvi: install-dvi-am
 
 install-dvi-am:
 
-install-exec-am: install-libLIBRARIES install-libLTLIBRARIES
+install-exec-am: install-libLTLIBRARIES
 
 install-html: install-html-am
 
@@ -630,26 +573,24 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-includeHEADERS uninstall-libLIBRARIES \
-	uninstall-libLTLIBRARIES
+uninstall-am: uninstall-includeHEADERS uninstall-libLTLIBRARIES
 
 .MAKE: install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
-	clean-libLIBRARIES clean-libLTLIBRARIES clean-libtool \
-	clean-noinstPROGRAMS ctags distclean distclean-compile \
-	distclean-generic distclean-libtool distclean-tags distdir dvi \
-	dvi-am html html-am info info-am install install-am \
-	install-data install-data-am install-dvi install-dvi-am \
-	install-exec install-exec-am install-html install-html-am \
+	clean-libLTLIBRARIES clean-libtool clean-noinstPROGRAMS ctags \
+	distclean distclean-compile distclean-generic \
+	distclean-libtool distclean-tags distdir dvi dvi-am html \
+	html-am info info-am install install-am install-data \
+	install-data-am install-dvi install-dvi-am install-exec \
+	install-exec-am install-html install-html-am \
 	install-includeHEADERS install-info install-info-am \
-	install-libLIBRARIES install-libLTLIBRARIES install-man \
-	install-pdf install-pdf-am install-ps install-ps-am \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	pdf pdf-am ps ps-am tags uninstall uninstall-am \
-	uninstall-includeHEADERS uninstall-libLIBRARIES \
+	install-libLTLIBRARIES install-man install-pdf install-pdf-am \
+	install-ps install-ps-am install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags uninstall uninstall-am uninstall-includeHEADERS \
 	uninstall-libLTLIBRARIES
 
 
