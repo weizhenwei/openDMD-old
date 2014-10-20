@@ -54,7 +54,7 @@
 #define DEFAULT_DEBUG_PID_FILE "opendmd.pid"
 
 #define DEFAULT_RELEASE_CFG_FILE "/var/run/opendmd/opendmd.cfg"
-#define DEFAULT_DEBUG_CFG_FILE "config/opendmd.cfg"
+#define DEFAULT_DEBUG_CFG_FILE "doc/config/opendmd.cfg"
 
 #define LOCAL_IP "0.0.0.0"
 #define LOCAL_PORT 8000
