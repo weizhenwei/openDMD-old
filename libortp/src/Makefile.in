@@ -73,25 +73,27 @@ am__uninstall_files_from_dir = { \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
 am__installdirs = "$(DESTDIR)$(libdir)"
-LTLIBRARIES = $(lib_LTLIBRARIES)
-libortp_la_LIBADD =
-am_libortp_la_OBJECTS = libortp_la-str_utils.lo libortp_la-port.lo \
-	libortp_la-logging.lo libortp_la-rtpparse.lo \
-	libortp_la-rtpsession.lo libortp_la-rtpsession_inet.lo \
-	libortp_la-jitterctl.lo libortp_la-rtpsignaltable.lo \
-	libortp_la-rtptimer.lo libortp_la-posixtimer.lo \
-	libortp_la-ortp.lo libortp_la-scheduler.lo \
-	libortp_la-avprofile.lo libortp_la-sessionset.lo \
-	libortp_la-telephonyevents.lo libortp_la-payloadtype.lo \
-	libortp_la-rtpprofile.lo libortp_la-rtcp.lo \
-	libortp_la-utils.lo libortp_la-rtcpparse.lo \
-	libortp_la-event.lo libortp_la-stun.lo libortp_la-stun_udp.lo \
-	libortp_la-ortp_srtp.lo libortp_la-b64.lo libortp_la-zrtp.lo \
-	libortp_la-netsim.lo
-libortp_la_OBJECTS = $(am_libortp_la_OBJECTS)
-libortp_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libortp_la_CFLAGS) \
-	$(CFLAGS) $(libortp_la_LDFLAGS) $(LDFLAGS) -o $@
+LIBRARIES = $(lib_LIBRARIES)
+ARFLAGS = cru
+libortp_a_AR = $(AR) $(ARFLAGS)
+libortp_a_LIBADD =
+am_libortp_a_OBJECTS = libortp_a-str_utils.$(OBJEXT) \
+	libortp_a-port.$(OBJEXT) libortp_a-logging.$(OBJEXT) \
+	libortp_a-rtpparse.$(OBJEXT) libortp_a-rtpsession.$(OBJEXT) \
+	libortp_a-rtpsession_inet.$(OBJEXT) \
+	libortp_a-jitterctl.$(OBJEXT) \
+	libortp_a-rtpsignaltable.$(OBJEXT) \
+	libortp_a-rtptimer.$(OBJEXT) libortp_a-posixtimer.$(OBJEXT) \
+	libortp_a-ortp.$(OBJEXT) libortp_a-scheduler.$(OBJEXT) \
+	libortp_a-avprofile.$(OBJEXT) libortp_a-sessionset.$(OBJEXT) \
+	libortp_a-telephonyevents.$(OBJEXT) \
+	libortp_a-payloadtype.$(OBJEXT) libortp_a-rtpprofile.$(OBJEXT) \
+	libortp_a-rtcp.$(OBJEXT) libortp_a-utils.$(OBJEXT) \
+	libortp_a-rtcpparse.$(OBJEXT) libortp_a-event.$(OBJEXT) \
+	libortp_a-stun.$(OBJEXT) libortp_a-stun_udp.$(OBJEXT) \
+	libortp_a-ortp_srtp.$(OBJEXT) libortp_a-b64.$(OBJEXT) \
+	libortp_a-zrtp.$(OBJEXT) libortp_a-netsim.$(OBJEXT)
+libortp_a_OBJECTS = $(am_libortp_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -105,8 +107,8 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(libortp_la_SOURCES)
-DIST_SOURCES = $(libortp_la_SOURCES)
+SOURCES = $(libortp_a_SOURCES)
+DIST_SOURCES = $(libortp_a_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -232,71 +234,38 @@ top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
 ACLOCAL_AMFLAGS = "-I m4"
 INCLUDES = -I$(top_srcdir)/libortp/include -I$(top_srcdir)/libortp
-
-# lib_LIBRARIES = libortp.a
-# # libortp_a_LIBADD= -lm -lpthread -lrt
-# # to remove the automake complain:
-# #         object 'foo.$(OBJEXT)' created both with libtool and without
-# libortp_a_CFLAGS = $(AM_CFLAGS)
-# libortp_a_SOURCES = str_utils.c \
-#                     port.c \
-#                     logging.c \
-#                     rtpparse.c  \
-#                     rtpsession.c \
-#                     rtpsession_inet.c \
-#                     rtpsession_priv.h \
-#                     jitterctl.c jitterctl.h \
-#                     rtpsignaltable.c  \
-#                     rtptimer.c rtptimer.h \
-#                     posixtimer.c \
-#                     ortp.c \
-#                     scheduler.c scheduler.h \
-#                     avprofile.c  \
-#                     sessionset.c  \
-#                     telephonyevents.c  \
-#                     payloadtype.c \
-#                     rtpprofile.c \
-#                     rtcp.c  \
-#                     utils.c utils.h \
-#                     rtcpparse.c \
-#                     event.c \
-#                     stun.c stun_udp.c \
-#                     ortp_srtp.c \
-#                     b64.c \
-#                     zrtp.c \
-#                     netsim.c
-
-# libortp_la_LIBADD= -lm -lpthread -lrt
-lib_LTLIBRARIES = libortp.la
-libortp_la_CFLAGS = $(AM_CFLAGS)
-libortp_la_LDFLAGS = -avoid-version -no-undefined
-libortp_la_SOURCES = str_utils.c \
-                     port.c \
-                     logging.c \
-                     rtpparse.c  \
-                     rtpsession.c \
-                     rtpsession_inet.c \
-                     rtpsession_priv.h \
-                     jitterctl.c jitterctl.h \
-                     rtpsignaltable.c  \
-                     rtptimer.c rtptimer.h \
-                     posixtimer.c \
-                     ortp.c \
-                     scheduler.c scheduler.h \
-                     avprofile.c  \
-                     sessionset.c  \
-                     telephonyevents.c  \
-                     payloadtype.c \
-                     rtpprofile.c \
-                     rtcp.c  \
-                     utils.c utils.h \
-                     rtcpparse.c \
-                     event.c \
-                     stun.c stun_udp.c \
-                     ortp_srtp.c \
-                     b64.c \
-                     zrtp.c \
-                     netsim.c
+lib_LIBRARIES = libortp.a
+# libortp_a_LIBADD= -lm -lpthread -lrt
+# to remove the automake complain:
+#         object 'foo.$(OBJEXT)' created both with libtool and without
+libortp_a_CFLAGS = $(AM_CFLAGS)
+libortp_a_SOURCES = str_utils.c \
+                    port.c \
+                    logging.c \
+                    rtpparse.c  \
+                    rtpsession.c \
+                    rtpsession_inet.c \
+                    rtpsession_priv.h \
+                    jitterctl.c jitterctl.h \
+                    rtpsignaltable.c  \
+                    rtptimer.c rtptimer.h \
+                    posixtimer.c \
+                    ortp.c \
+                    scheduler.c scheduler.h \
+                    avprofile.c  \
+                    sessionset.c  \
+                    telephonyevents.c  \
+                    payloadtype.c \
+                    rtpprofile.c \
+                    rtcp.c  \
+                    utils.c utils.h \
+                    rtcpparse.c \
+                    event.c \
+                    stun.c stun_udp.c \
+                    ortp_srtp.c \
+                    b64.c \
+                    zrtp.c \
+                    netsim.c
 
 all: all-am
 
@@ -332,39 +301,40 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
-install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+install-libLIBRARIES: $(lib_LIBRARIES)
 	@$(NORMAL_INSTALL)
 	test -z "$(libdir)" || $(MKDIR_P) "$(DESTDIR)$(libdir)"
-	@list='$(lib_LTLIBRARIES)'; test -n "$(libdir)" || list=; \
+	@list='$(lib_LIBRARIES)'; test -n "$(libdir)" || list=; \
 	list2=; for p in $$list; do \
 	  if test -f $$p; then \
 	    list2="$$list2 $$p"; \
 	  else :; fi; \
 	done; \
 	test -z "$$list2" || { \
-	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 '$(DESTDIR)$(libdir)'"; \
-	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 "$(DESTDIR)$(libdir)"; \
-	}
-
-uninstall-libLTLIBRARIES:
-	@$(NORMAL_UNINSTALL)
-	@list='$(lib_LTLIBRARIES)'; test -n "$(libdir)" || list=; \
+	  echo " $(INSTALL_DATA) $$list2 '$(DESTDIR)$(libdir)'"; \
+	  $(INSTALL_DATA) $$list2 "$(DESTDIR)$(libdir)" || exit $$?; }
+	@$(POST_INSTALL)
+	@list='$(lib_LIBRARIES)'; test -n "$(libdir)" || list=; \
 	for p in $$list; do \
-	  $(am__strip_dir) \
-	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f '$(DESTDIR)$(libdir)/$$f'"; \
-	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f "$(DESTDIR)$(libdir)/$$f"; \
+	  if test -f $$p; then \
+	    $(am__strip_dir) \
+	    echo " ( cd '$(DESTDIR)$(libdir)' && $(RANLIB) $$f )"; \
+	    ( cd "$(DESTDIR)$(libdir)" && $(RANLIB) $$f ) || exit $$?; \
+	  else :; fi; \
 	done
 
-clean-libLTLIBRARIES:
-	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
-	  test "$$dir" != "$$p" || dir=.; \
-	  echo "rm -f \"$${dir}/so_locations\""; \
-	  rm -f "$${dir}/so_locations"; \
-	done
-libortp.la: $(libortp_la_OBJECTS) $(libortp_la_DEPENDENCIES) $(EXTRA_libortp_la_DEPENDENCIES) 
-	$(libortp_la_LINK) -rpath $(libdir) $(libortp_la_OBJECTS) $(libortp_la_LIBADD) $(LIBS)
+uninstall-libLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	@list='$(lib_LIBRARIES)'; test -n "$(libdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(libdir)'; $(am__uninstall_files_from_dir)
+
+clean-libLIBRARIES:
+	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
+libortp.a: $(libortp_a_OBJECTS) $(libortp_a_DEPENDENCIES) $(EXTRA_libortp_a_DEPENDENCIES) 
+	-rm -f libortp.a
+	$(libortp_a_AR) libortp.a $(libortp_a_OBJECTS) $(libortp_a_LIBADD)
+	$(RANLIB) libortp.a
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -372,33 +342,33 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_la-avprofile.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_la-b64.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_la-event.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_la-jitterctl.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_la-logging.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_la-netsim.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_la-ortp.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_la-ortp_srtp.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_la-payloadtype.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_la-port.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_la-posixtimer.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_la-rtcp.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_la-rtcpparse.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_la-rtpparse.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_la-rtpprofile.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_la-rtpsession.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_la-rtpsession_inet.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_la-rtpsignaltable.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_la-rtptimer.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_la-scheduler.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_la-sessionset.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_la-str_utils.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_la-stun.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_la-stun_udp.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_la-telephonyevents.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_la-utils.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_la-zrtp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_a-avprofile.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_a-b64.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_a-event.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_a-jitterctl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_a-logging.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_a-netsim.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_a-ortp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_a-ortp_srtp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_a-payloadtype.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_a-port.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_a-posixtimer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_a-rtcp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_a-rtcpparse.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_a-rtpparse.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_a-rtpprofile.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_a-rtpsession.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_a-rtpsession_inet.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_a-rtpsignaltable.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_a-rtptimer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_a-scheduler.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_a-sessionset.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_a-str_utils.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_a-stun.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_a-stun_udp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_a-telephonyevents.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_a-utils.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libortp_a-zrtp.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -421,194 +391,383 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
-libortp_la-str_utils.lo: str_utils.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -MT libortp_la-str_utils.lo -MD -MP -MF $(DEPDIR)/libortp_la-str_utils.Tpo -c -o libortp_la-str_utils.lo `test -f 'str_utils.c' || echo '$(srcdir)/'`str_utils.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_la-str_utils.Tpo $(DEPDIR)/libortp_la-str_utils.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='str_utils.c' object='libortp_la-str_utils.lo' libtool=yes @AMDEPBACKSLASH@
+libortp_a-str_utils.o: str_utils.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-str_utils.o -MD -MP -MF $(DEPDIR)/libortp_a-str_utils.Tpo -c -o libortp_a-str_utils.o `test -f 'str_utils.c' || echo '$(srcdir)/'`str_utils.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-str_utils.Tpo $(DEPDIR)/libortp_a-str_utils.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='str_utils.c' object='libortp_a-str_utils.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -c -o libortp_la-str_utils.lo `test -f 'str_utils.c' || echo '$(srcdir)/'`str_utils.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-str_utils.o `test -f 'str_utils.c' || echo '$(srcdir)/'`str_utils.c
 
-libortp_la-port.lo: port.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -MT libortp_la-port.lo -MD -MP -MF $(DEPDIR)/libortp_la-port.Tpo -c -o libortp_la-port.lo `test -f 'port.c' || echo '$(srcdir)/'`port.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_la-port.Tpo $(DEPDIR)/libortp_la-port.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='port.c' object='libortp_la-port.lo' libtool=yes @AMDEPBACKSLASH@
+libortp_a-str_utils.obj: str_utils.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-str_utils.obj -MD -MP -MF $(DEPDIR)/libortp_a-str_utils.Tpo -c -o libortp_a-str_utils.obj `if test -f 'str_utils.c'; then $(CYGPATH_W) 'str_utils.c'; else $(CYGPATH_W) '$(srcdir)/str_utils.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-str_utils.Tpo $(DEPDIR)/libortp_a-str_utils.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='str_utils.c' object='libortp_a-str_utils.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -c -o libortp_la-port.lo `test -f 'port.c' || echo '$(srcdir)/'`port.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-str_utils.obj `if test -f 'str_utils.c'; then $(CYGPATH_W) 'str_utils.c'; else $(CYGPATH_W) '$(srcdir)/str_utils.c'; fi`
 
-libortp_la-logging.lo: logging.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -MT libortp_la-logging.lo -MD -MP -MF $(DEPDIR)/libortp_la-logging.Tpo -c -o libortp_la-logging.lo `test -f 'logging.c' || echo '$(srcdir)/'`logging.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_la-logging.Tpo $(DEPDIR)/libortp_la-logging.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='logging.c' object='libortp_la-logging.lo' libtool=yes @AMDEPBACKSLASH@
+libortp_a-port.o: port.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-port.o -MD -MP -MF $(DEPDIR)/libortp_a-port.Tpo -c -o libortp_a-port.o `test -f 'port.c' || echo '$(srcdir)/'`port.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-port.Tpo $(DEPDIR)/libortp_a-port.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='port.c' object='libortp_a-port.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -c -o libortp_la-logging.lo `test -f 'logging.c' || echo '$(srcdir)/'`logging.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-port.o `test -f 'port.c' || echo '$(srcdir)/'`port.c
 
-libortp_la-rtpparse.lo: rtpparse.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -MT libortp_la-rtpparse.lo -MD -MP -MF $(DEPDIR)/libortp_la-rtpparse.Tpo -c -o libortp_la-rtpparse.lo `test -f 'rtpparse.c' || echo '$(srcdir)/'`rtpparse.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_la-rtpparse.Tpo $(DEPDIR)/libortp_la-rtpparse.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rtpparse.c' object='libortp_la-rtpparse.lo' libtool=yes @AMDEPBACKSLASH@
+libortp_a-port.obj: port.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-port.obj -MD -MP -MF $(DEPDIR)/libortp_a-port.Tpo -c -o libortp_a-port.obj `if test -f 'port.c'; then $(CYGPATH_W) 'port.c'; else $(CYGPATH_W) '$(srcdir)/port.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-port.Tpo $(DEPDIR)/libortp_a-port.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='port.c' object='libortp_a-port.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -c -o libortp_la-rtpparse.lo `test -f 'rtpparse.c' || echo '$(srcdir)/'`rtpparse.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-port.obj `if test -f 'port.c'; then $(CYGPATH_W) 'port.c'; else $(CYGPATH_W) '$(srcdir)/port.c'; fi`
 
-libortp_la-rtpsession.lo: rtpsession.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -MT libortp_la-rtpsession.lo -MD -MP -MF $(DEPDIR)/libortp_la-rtpsession.Tpo -c -o libortp_la-rtpsession.lo `test -f 'rtpsession.c' || echo '$(srcdir)/'`rtpsession.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_la-rtpsession.Tpo $(DEPDIR)/libortp_la-rtpsession.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rtpsession.c' object='libortp_la-rtpsession.lo' libtool=yes @AMDEPBACKSLASH@
+libortp_a-logging.o: logging.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-logging.o -MD -MP -MF $(DEPDIR)/libortp_a-logging.Tpo -c -o libortp_a-logging.o `test -f 'logging.c' || echo '$(srcdir)/'`logging.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-logging.Tpo $(DEPDIR)/libortp_a-logging.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='logging.c' object='libortp_a-logging.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -c -o libortp_la-rtpsession.lo `test -f 'rtpsession.c' || echo '$(srcdir)/'`rtpsession.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-logging.o `test -f 'logging.c' || echo '$(srcdir)/'`logging.c
 
-libortp_la-rtpsession_inet.lo: rtpsession_inet.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -MT libortp_la-rtpsession_inet.lo -MD -MP -MF $(DEPDIR)/libortp_la-rtpsession_inet.Tpo -c -o libortp_la-rtpsession_inet.lo `test -f 'rtpsession_inet.c' || echo '$(srcdir)/'`rtpsession_inet.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_la-rtpsession_inet.Tpo $(DEPDIR)/libortp_la-rtpsession_inet.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rtpsession_inet.c' object='libortp_la-rtpsession_inet.lo' libtool=yes @AMDEPBACKSLASH@
+libortp_a-logging.obj: logging.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-logging.obj -MD -MP -MF $(DEPDIR)/libortp_a-logging.Tpo -c -o libortp_a-logging.obj `if test -f 'logging.c'; then $(CYGPATH_W) 'logging.c'; else $(CYGPATH_W) '$(srcdir)/logging.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-logging.Tpo $(DEPDIR)/libortp_a-logging.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='logging.c' object='libortp_a-logging.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -c -o libortp_la-rtpsession_inet.lo `test -f 'rtpsession_inet.c' || echo '$(srcdir)/'`rtpsession_inet.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-logging.obj `if test -f 'logging.c'; then $(CYGPATH_W) 'logging.c'; else $(CYGPATH_W) '$(srcdir)/logging.c'; fi`
 
-libortp_la-jitterctl.lo: jitterctl.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -MT libortp_la-jitterctl.lo -MD -MP -MF $(DEPDIR)/libortp_la-jitterctl.Tpo -c -o libortp_la-jitterctl.lo `test -f 'jitterctl.c' || echo '$(srcdir)/'`jitterctl.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_la-jitterctl.Tpo $(DEPDIR)/libortp_la-jitterctl.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jitterctl.c' object='libortp_la-jitterctl.lo' libtool=yes @AMDEPBACKSLASH@
+libortp_a-rtpparse.o: rtpparse.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-rtpparse.o -MD -MP -MF $(DEPDIR)/libortp_a-rtpparse.Tpo -c -o libortp_a-rtpparse.o `test -f 'rtpparse.c' || echo '$(srcdir)/'`rtpparse.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-rtpparse.Tpo $(DEPDIR)/libortp_a-rtpparse.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rtpparse.c' object='libortp_a-rtpparse.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -c -o libortp_la-jitterctl.lo `test -f 'jitterctl.c' || echo '$(srcdir)/'`jitterctl.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-rtpparse.o `test -f 'rtpparse.c' || echo '$(srcdir)/'`rtpparse.c
 
-libortp_la-rtpsignaltable.lo: rtpsignaltable.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -MT libortp_la-rtpsignaltable.lo -MD -MP -MF $(DEPDIR)/libortp_la-rtpsignaltable.Tpo -c -o libortp_la-rtpsignaltable.lo `test -f 'rtpsignaltable.c' || echo '$(srcdir)/'`rtpsignaltable.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_la-rtpsignaltable.Tpo $(DEPDIR)/libortp_la-rtpsignaltable.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rtpsignaltable.c' object='libortp_la-rtpsignaltable.lo' libtool=yes @AMDEPBACKSLASH@
+libortp_a-rtpparse.obj: rtpparse.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-rtpparse.obj -MD -MP -MF $(DEPDIR)/libortp_a-rtpparse.Tpo -c -o libortp_a-rtpparse.obj `if test -f 'rtpparse.c'; then $(CYGPATH_W) 'rtpparse.c'; else $(CYGPATH_W) '$(srcdir)/rtpparse.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-rtpparse.Tpo $(DEPDIR)/libortp_a-rtpparse.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rtpparse.c' object='libortp_a-rtpparse.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -c -o libortp_la-rtpsignaltable.lo `test -f 'rtpsignaltable.c' || echo '$(srcdir)/'`rtpsignaltable.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-rtpparse.obj `if test -f 'rtpparse.c'; then $(CYGPATH_W) 'rtpparse.c'; else $(CYGPATH_W) '$(srcdir)/rtpparse.c'; fi`
 
-libortp_la-rtptimer.lo: rtptimer.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -MT libortp_la-rtptimer.lo -MD -MP -MF $(DEPDIR)/libortp_la-rtptimer.Tpo -c -o libortp_la-rtptimer.lo `test -f 'rtptimer.c' || echo '$(srcdir)/'`rtptimer.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_la-rtptimer.Tpo $(DEPDIR)/libortp_la-rtptimer.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rtptimer.c' object='libortp_la-rtptimer.lo' libtool=yes @AMDEPBACKSLASH@
+libortp_a-rtpsession.o: rtpsession.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-rtpsession.o -MD -MP -MF $(DEPDIR)/libortp_a-rtpsession.Tpo -c -o libortp_a-rtpsession.o `test -f 'rtpsession.c' || echo '$(srcdir)/'`rtpsession.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-rtpsession.Tpo $(DEPDIR)/libortp_a-rtpsession.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rtpsession.c' object='libortp_a-rtpsession.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -c -o libortp_la-rtptimer.lo `test -f 'rtptimer.c' || echo '$(srcdir)/'`rtptimer.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-rtpsession.o `test -f 'rtpsession.c' || echo '$(srcdir)/'`rtpsession.c
 
-libortp_la-posixtimer.lo: posixtimer.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -MT libortp_la-posixtimer.lo -MD -MP -MF $(DEPDIR)/libortp_la-posixtimer.Tpo -c -o libortp_la-posixtimer.lo `test -f 'posixtimer.c' || echo '$(srcdir)/'`posixtimer.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_la-posixtimer.Tpo $(DEPDIR)/libortp_la-posixtimer.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='posixtimer.c' object='libortp_la-posixtimer.lo' libtool=yes @AMDEPBACKSLASH@
+libortp_a-rtpsession.obj: rtpsession.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-rtpsession.obj -MD -MP -MF $(DEPDIR)/libortp_a-rtpsession.Tpo -c -o libortp_a-rtpsession.obj `if test -f 'rtpsession.c'; then $(CYGPATH_W) 'rtpsession.c'; else $(CYGPATH_W) '$(srcdir)/rtpsession.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-rtpsession.Tpo $(DEPDIR)/libortp_a-rtpsession.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rtpsession.c' object='libortp_a-rtpsession.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -c -o libortp_la-posixtimer.lo `test -f 'posixtimer.c' || echo '$(srcdir)/'`posixtimer.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-rtpsession.obj `if test -f 'rtpsession.c'; then $(CYGPATH_W) 'rtpsession.c'; else $(CYGPATH_W) '$(srcdir)/rtpsession.c'; fi`
 
-libortp_la-ortp.lo: ortp.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -MT libortp_la-ortp.lo -MD -MP -MF $(DEPDIR)/libortp_la-ortp.Tpo -c -o libortp_la-ortp.lo `test -f 'ortp.c' || echo '$(srcdir)/'`ortp.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_la-ortp.Tpo $(DEPDIR)/libortp_la-ortp.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ortp.c' object='libortp_la-ortp.lo' libtool=yes @AMDEPBACKSLASH@
+libortp_a-rtpsession_inet.o: rtpsession_inet.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-rtpsession_inet.o -MD -MP -MF $(DEPDIR)/libortp_a-rtpsession_inet.Tpo -c -o libortp_a-rtpsession_inet.o `test -f 'rtpsession_inet.c' || echo '$(srcdir)/'`rtpsession_inet.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-rtpsession_inet.Tpo $(DEPDIR)/libortp_a-rtpsession_inet.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rtpsession_inet.c' object='libortp_a-rtpsession_inet.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -c -o libortp_la-ortp.lo `test -f 'ortp.c' || echo '$(srcdir)/'`ortp.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-rtpsession_inet.o `test -f 'rtpsession_inet.c' || echo '$(srcdir)/'`rtpsession_inet.c
 
-libortp_la-scheduler.lo: scheduler.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -MT libortp_la-scheduler.lo -MD -MP -MF $(DEPDIR)/libortp_la-scheduler.Tpo -c -o libortp_la-scheduler.lo `test -f 'scheduler.c' || echo '$(srcdir)/'`scheduler.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_la-scheduler.Tpo $(DEPDIR)/libortp_la-scheduler.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='scheduler.c' object='libortp_la-scheduler.lo' libtool=yes @AMDEPBACKSLASH@
+libortp_a-rtpsession_inet.obj: rtpsession_inet.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-rtpsession_inet.obj -MD -MP -MF $(DEPDIR)/libortp_a-rtpsession_inet.Tpo -c -o libortp_a-rtpsession_inet.obj `if test -f 'rtpsession_inet.c'; then $(CYGPATH_W) 'rtpsession_inet.c'; else $(CYGPATH_W) '$(srcdir)/rtpsession_inet.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-rtpsession_inet.Tpo $(DEPDIR)/libortp_a-rtpsession_inet.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rtpsession_inet.c' object='libortp_a-rtpsession_inet.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -c -o libortp_la-scheduler.lo `test -f 'scheduler.c' || echo '$(srcdir)/'`scheduler.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-rtpsession_inet.obj `if test -f 'rtpsession_inet.c'; then $(CYGPATH_W) 'rtpsession_inet.c'; else $(CYGPATH_W) '$(srcdir)/rtpsession_inet.c'; fi`
 
-libortp_la-avprofile.lo: avprofile.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -MT libortp_la-avprofile.lo -MD -MP -MF $(DEPDIR)/libortp_la-avprofile.Tpo -c -o libortp_la-avprofile.lo `test -f 'avprofile.c' || echo '$(srcdir)/'`avprofile.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_la-avprofile.Tpo $(DEPDIR)/libortp_la-avprofile.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='avprofile.c' object='libortp_la-avprofile.lo' libtool=yes @AMDEPBACKSLASH@
+libortp_a-jitterctl.o: jitterctl.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-jitterctl.o -MD -MP -MF $(DEPDIR)/libortp_a-jitterctl.Tpo -c -o libortp_a-jitterctl.o `test -f 'jitterctl.c' || echo '$(srcdir)/'`jitterctl.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-jitterctl.Tpo $(DEPDIR)/libortp_a-jitterctl.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jitterctl.c' object='libortp_a-jitterctl.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -c -o libortp_la-avprofile.lo `test -f 'avprofile.c' || echo '$(srcdir)/'`avprofile.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-jitterctl.o `test -f 'jitterctl.c' || echo '$(srcdir)/'`jitterctl.c
 
-libortp_la-sessionset.lo: sessionset.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -MT libortp_la-sessionset.lo -MD -MP -MF $(DEPDIR)/libortp_la-sessionset.Tpo -c -o libortp_la-sessionset.lo `test -f 'sessionset.c' || echo '$(srcdir)/'`sessionset.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_la-sessionset.Tpo $(DEPDIR)/libortp_la-sessionset.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='sessionset.c' object='libortp_la-sessionset.lo' libtool=yes @AMDEPBACKSLASH@
+libortp_a-jitterctl.obj: jitterctl.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-jitterctl.obj -MD -MP -MF $(DEPDIR)/libortp_a-jitterctl.Tpo -c -o libortp_a-jitterctl.obj `if test -f 'jitterctl.c'; then $(CYGPATH_W) 'jitterctl.c'; else $(CYGPATH_W) '$(srcdir)/jitterctl.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-jitterctl.Tpo $(DEPDIR)/libortp_a-jitterctl.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jitterctl.c' object='libortp_a-jitterctl.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -c -o libortp_la-sessionset.lo `test -f 'sessionset.c' || echo '$(srcdir)/'`sessionset.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-jitterctl.obj `if test -f 'jitterctl.c'; then $(CYGPATH_W) 'jitterctl.c'; else $(CYGPATH_W) '$(srcdir)/jitterctl.c'; fi`
 
-libortp_la-telephonyevents.lo: telephonyevents.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -MT libortp_la-telephonyevents.lo -MD -MP -MF $(DEPDIR)/libortp_la-telephonyevents.Tpo -c -o libortp_la-telephonyevents.lo `test -f 'telephonyevents.c' || echo '$(srcdir)/'`telephonyevents.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_la-telephonyevents.Tpo $(DEPDIR)/libortp_la-telephonyevents.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='telephonyevents.c' object='libortp_la-telephonyevents.lo' libtool=yes @AMDEPBACKSLASH@
+libortp_a-rtpsignaltable.o: rtpsignaltable.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-rtpsignaltable.o -MD -MP -MF $(DEPDIR)/libortp_a-rtpsignaltable.Tpo -c -o libortp_a-rtpsignaltable.o `test -f 'rtpsignaltable.c' || echo '$(srcdir)/'`rtpsignaltable.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-rtpsignaltable.Tpo $(DEPDIR)/libortp_a-rtpsignaltable.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rtpsignaltable.c' object='libortp_a-rtpsignaltable.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -c -o libortp_la-telephonyevents.lo `test -f 'telephonyevents.c' || echo '$(srcdir)/'`telephonyevents.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-rtpsignaltable.o `test -f 'rtpsignaltable.c' || echo '$(srcdir)/'`rtpsignaltable.c
 
-libortp_la-payloadtype.lo: payloadtype.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -MT libortp_la-payloadtype.lo -MD -MP -MF $(DEPDIR)/libortp_la-payloadtype.Tpo -c -o libortp_la-payloadtype.lo `test -f 'payloadtype.c' || echo '$(srcdir)/'`payloadtype.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_la-payloadtype.Tpo $(DEPDIR)/libortp_la-payloadtype.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='payloadtype.c' object='libortp_la-payloadtype.lo' libtool=yes @AMDEPBACKSLASH@
+libortp_a-rtpsignaltable.obj: rtpsignaltable.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-rtpsignaltable.obj -MD -MP -MF $(DEPDIR)/libortp_a-rtpsignaltable.Tpo -c -o libortp_a-rtpsignaltable.obj `if test -f 'rtpsignaltable.c'; then $(CYGPATH_W) 'rtpsignaltable.c'; else $(CYGPATH_W) '$(srcdir)/rtpsignaltable.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-rtpsignaltable.Tpo $(DEPDIR)/libortp_a-rtpsignaltable.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rtpsignaltable.c' object='libortp_a-rtpsignaltable.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -c -o libortp_la-payloadtype.lo `test -f 'payloadtype.c' || echo '$(srcdir)/'`payloadtype.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-rtpsignaltable.obj `if test -f 'rtpsignaltable.c'; then $(CYGPATH_W) 'rtpsignaltable.c'; else $(CYGPATH_W) '$(srcdir)/rtpsignaltable.c'; fi`
 
-libortp_la-rtpprofile.lo: rtpprofile.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -MT libortp_la-rtpprofile.lo -MD -MP -MF $(DEPDIR)/libortp_la-rtpprofile.Tpo -c -o libortp_la-rtpprofile.lo `test -f 'rtpprofile.c' || echo '$(srcdir)/'`rtpprofile.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_la-rtpprofile.Tpo $(DEPDIR)/libortp_la-rtpprofile.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rtpprofile.c' object='libortp_la-rtpprofile.lo' libtool=yes @AMDEPBACKSLASH@
+libortp_a-rtptimer.o: rtptimer.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-rtptimer.o -MD -MP -MF $(DEPDIR)/libortp_a-rtptimer.Tpo -c -o libortp_a-rtptimer.o `test -f 'rtptimer.c' || echo '$(srcdir)/'`rtptimer.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-rtptimer.Tpo $(DEPDIR)/libortp_a-rtptimer.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rtptimer.c' object='libortp_a-rtptimer.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -c -o libortp_la-rtpprofile.lo `test -f 'rtpprofile.c' || echo '$(srcdir)/'`rtpprofile.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-rtptimer.o `test -f 'rtptimer.c' || echo '$(srcdir)/'`rtptimer.c
 
-libortp_la-rtcp.lo: rtcp.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -MT libortp_la-rtcp.lo -MD -MP -MF $(DEPDIR)/libortp_la-rtcp.Tpo -c -o libortp_la-rtcp.lo `test -f 'rtcp.c' || echo '$(srcdir)/'`rtcp.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_la-rtcp.Tpo $(DEPDIR)/libortp_la-rtcp.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rtcp.c' object='libortp_la-rtcp.lo' libtool=yes @AMDEPBACKSLASH@
+libortp_a-rtptimer.obj: rtptimer.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-rtptimer.obj -MD -MP -MF $(DEPDIR)/libortp_a-rtptimer.Tpo -c -o libortp_a-rtptimer.obj `if test -f 'rtptimer.c'; then $(CYGPATH_W) 'rtptimer.c'; else $(CYGPATH_W) '$(srcdir)/rtptimer.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-rtptimer.Tpo $(DEPDIR)/libortp_a-rtptimer.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rtptimer.c' object='libortp_a-rtptimer.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -c -o libortp_la-rtcp.lo `test -f 'rtcp.c' || echo '$(srcdir)/'`rtcp.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-rtptimer.obj `if test -f 'rtptimer.c'; then $(CYGPATH_W) 'rtptimer.c'; else $(CYGPATH_W) '$(srcdir)/rtptimer.c'; fi`
 
-libortp_la-utils.lo: utils.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -MT libortp_la-utils.lo -MD -MP -MF $(DEPDIR)/libortp_la-utils.Tpo -c -o libortp_la-utils.lo `test -f 'utils.c' || echo '$(srcdir)/'`utils.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_la-utils.Tpo $(DEPDIR)/libortp_la-utils.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='utils.c' object='libortp_la-utils.lo' libtool=yes @AMDEPBACKSLASH@
+libortp_a-posixtimer.o: posixtimer.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-posixtimer.o -MD -MP -MF $(DEPDIR)/libortp_a-posixtimer.Tpo -c -o libortp_a-posixtimer.o `test -f 'posixtimer.c' || echo '$(srcdir)/'`posixtimer.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-posixtimer.Tpo $(DEPDIR)/libortp_a-posixtimer.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='posixtimer.c' object='libortp_a-posixtimer.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -c -o libortp_la-utils.lo `test -f 'utils.c' || echo '$(srcdir)/'`utils.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-posixtimer.o `test -f 'posixtimer.c' || echo '$(srcdir)/'`posixtimer.c
 
-libortp_la-rtcpparse.lo: rtcpparse.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -MT libortp_la-rtcpparse.lo -MD -MP -MF $(DEPDIR)/libortp_la-rtcpparse.Tpo -c -o libortp_la-rtcpparse.lo `test -f 'rtcpparse.c' || echo '$(srcdir)/'`rtcpparse.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_la-rtcpparse.Tpo $(DEPDIR)/libortp_la-rtcpparse.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rtcpparse.c' object='libortp_la-rtcpparse.lo' libtool=yes @AMDEPBACKSLASH@
+libortp_a-posixtimer.obj: posixtimer.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-posixtimer.obj -MD -MP -MF $(DEPDIR)/libortp_a-posixtimer.Tpo -c -o libortp_a-posixtimer.obj `if test -f 'posixtimer.c'; then $(CYGPATH_W) 'posixtimer.c'; else $(CYGPATH_W) '$(srcdir)/posixtimer.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-posixtimer.Tpo $(DEPDIR)/libortp_a-posixtimer.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='posixtimer.c' object='libortp_a-posixtimer.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -c -o libortp_la-rtcpparse.lo `test -f 'rtcpparse.c' || echo '$(srcdir)/'`rtcpparse.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-posixtimer.obj `if test -f 'posixtimer.c'; then $(CYGPATH_W) 'posixtimer.c'; else $(CYGPATH_W) '$(srcdir)/posixtimer.c'; fi`
 
-libortp_la-event.lo: event.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -MT libortp_la-event.lo -MD -MP -MF $(DEPDIR)/libortp_la-event.Tpo -c -o libortp_la-event.lo `test -f 'event.c' || echo '$(srcdir)/'`event.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_la-event.Tpo $(DEPDIR)/libortp_la-event.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='event.c' object='libortp_la-event.lo' libtool=yes @AMDEPBACKSLASH@
+libortp_a-ortp.o: ortp.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-ortp.o -MD -MP -MF $(DEPDIR)/libortp_a-ortp.Tpo -c -o libortp_a-ortp.o `test -f 'ortp.c' || echo '$(srcdir)/'`ortp.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-ortp.Tpo $(DEPDIR)/libortp_a-ortp.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ortp.c' object='libortp_a-ortp.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -c -o libortp_la-event.lo `test -f 'event.c' || echo '$(srcdir)/'`event.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-ortp.o `test -f 'ortp.c' || echo '$(srcdir)/'`ortp.c
 
-libortp_la-stun.lo: stun.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -MT libortp_la-stun.lo -MD -MP -MF $(DEPDIR)/libortp_la-stun.Tpo -c -o libortp_la-stun.lo `test -f 'stun.c' || echo '$(srcdir)/'`stun.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_la-stun.Tpo $(DEPDIR)/libortp_la-stun.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='stun.c' object='libortp_la-stun.lo' libtool=yes @AMDEPBACKSLASH@
+libortp_a-ortp.obj: ortp.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-ortp.obj -MD -MP -MF $(DEPDIR)/libortp_a-ortp.Tpo -c -o libortp_a-ortp.obj `if test -f 'ortp.c'; then $(CYGPATH_W) 'ortp.c'; else $(CYGPATH_W) '$(srcdir)/ortp.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-ortp.Tpo $(DEPDIR)/libortp_a-ortp.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ortp.c' object='libortp_a-ortp.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -c -o libortp_la-stun.lo `test -f 'stun.c' || echo '$(srcdir)/'`stun.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-ortp.obj `if test -f 'ortp.c'; then $(CYGPATH_W) 'ortp.c'; else $(CYGPATH_W) '$(srcdir)/ortp.c'; fi`
 
-libortp_la-stun_udp.lo: stun_udp.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -MT libortp_la-stun_udp.lo -MD -MP -MF $(DEPDIR)/libortp_la-stun_udp.Tpo -c -o libortp_la-stun_udp.lo `test -f 'stun_udp.c' || echo '$(srcdir)/'`stun_udp.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_la-stun_udp.Tpo $(DEPDIR)/libortp_la-stun_udp.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='stun_udp.c' object='libortp_la-stun_udp.lo' libtool=yes @AMDEPBACKSLASH@
+libortp_a-scheduler.o: scheduler.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-scheduler.o -MD -MP -MF $(DEPDIR)/libortp_a-scheduler.Tpo -c -o libortp_a-scheduler.o `test -f 'scheduler.c' || echo '$(srcdir)/'`scheduler.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-scheduler.Tpo $(DEPDIR)/libortp_a-scheduler.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='scheduler.c' object='libortp_a-scheduler.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -c -o libortp_la-stun_udp.lo `test -f 'stun_udp.c' || echo '$(srcdir)/'`stun_udp.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-scheduler.o `test -f 'scheduler.c' || echo '$(srcdir)/'`scheduler.c
 
-libortp_la-ortp_srtp.lo: ortp_srtp.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -MT libortp_la-ortp_srtp.lo -MD -MP -MF $(DEPDIR)/libortp_la-ortp_srtp.Tpo -c -o libortp_la-ortp_srtp.lo `test -f 'ortp_srtp.c' || echo '$(srcdir)/'`ortp_srtp.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_la-ortp_srtp.Tpo $(DEPDIR)/libortp_la-ortp_srtp.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ortp_srtp.c' object='libortp_la-ortp_srtp.lo' libtool=yes @AMDEPBACKSLASH@
+libortp_a-scheduler.obj: scheduler.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-scheduler.obj -MD -MP -MF $(DEPDIR)/libortp_a-scheduler.Tpo -c -o libortp_a-scheduler.obj `if test -f 'scheduler.c'; then $(CYGPATH_W) 'scheduler.c'; else $(CYGPATH_W) '$(srcdir)/scheduler.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-scheduler.Tpo $(DEPDIR)/libortp_a-scheduler.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='scheduler.c' object='libortp_a-scheduler.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -c -o libortp_la-ortp_srtp.lo `test -f 'ortp_srtp.c' || echo '$(srcdir)/'`ortp_srtp.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-scheduler.obj `if test -f 'scheduler.c'; then $(CYGPATH_W) 'scheduler.c'; else $(CYGPATH_W) '$(srcdir)/scheduler.c'; fi`
 
-libortp_la-b64.lo: b64.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -MT libortp_la-b64.lo -MD -MP -MF $(DEPDIR)/libortp_la-b64.Tpo -c -o libortp_la-b64.lo `test -f 'b64.c' || echo '$(srcdir)/'`b64.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_la-b64.Tpo $(DEPDIR)/libortp_la-b64.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='b64.c' object='libortp_la-b64.lo' libtool=yes @AMDEPBACKSLASH@
+libortp_a-avprofile.o: avprofile.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-avprofile.o -MD -MP -MF $(DEPDIR)/libortp_a-avprofile.Tpo -c -o libortp_a-avprofile.o `test -f 'avprofile.c' || echo '$(srcdir)/'`avprofile.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-avprofile.Tpo $(DEPDIR)/libortp_a-avprofile.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='avprofile.c' object='libortp_a-avprofile.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -c -o libortp_la-b64.lo `test -f 'b64.c' || echo '$(srcdir)/'`b64.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-avprofile.o `test -f 'avprofile.c' || echo '$(srcdir)/'`avprofile.c
 
-libortp_la-zrtp.lo: zrtp.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -MT libortp_la-zrtp.lo -MD -MP -MF $(DEPDIR)/libortp_la-zrtp.Tpo -c -o libortp_la-zrtp.lo `test -f 'zrtp.c' || echo '$(srcdir)/'`zrtp.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_la-zrtp.Tpo $(DEPDIR)/libortp_la-zrtp.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='zrtp.c' object='libortp_la-zrtp.lo' libtool=yes @AMDEPBACKSLASH@
+libortp_a-avprofile.obj: avprofile.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-avprofile.obj -MD -MP -MF $(DEPDIR)/libortp_a-avprofile.Tpo -c -o libortp_a-avprofile.obj `if test -f 'avprofile.c'; then $(CYGPATH_W) 'avprofile.c'; else $(CYGPATH_W) '$(srcdir)/avprofile.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-avprofile.Tpo $(DEPDIR)/libortp_a-avprofile.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='avprofile.c' object='libortp_a-avprofile.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -c -o libortp_la-zrtp.lo `test -f 'zrtp.c' || echo '$(srcdir)/'`zrtp.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-avprofile.obj `if test -f 'avprofile.c'; then $(CYGPATH_W) 'avprofile.c'; else $(CYGPATH_W) '$(srcdir)/avprofile.c'; fi`
 
-libortp_la-netsim.lo: netsim.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -MT libortp_la-netsim.lo -MD -MP -MF $(DEPDIR)/libortp_la-netsim.Tpo -c -o libortp_la-netsim.lo `test -f 'netsim.c' || echo '$(srcdir)/'`netsim.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_la-netsim.Tpo $(DEPDIR)/libortp_la-netsim.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='netsim.c' object='libortp_la-netsim.lo' libtool=yes @AMDEPBACKSLASH@
+libortp_a-sessionset.o: sessionset.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-sessionset.o -MD -MP -MF $(DEPDIR)/libortp_a-sessionset.Tpo -c -o libortp_a-sessionset.o `test -f 'sessionset.c' || echo '$(srcdir)/'`sessionset.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-sessionset.Tpo $(DEPDIR)/libortp_a-sessionset.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='sessionset.c' object='libortp_a-sessionset.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_la_CFLAGS) $(CFLAGS) -c -o libortp_la-netsim.lo `test -f 'netsim.c' || echo '$(srcdir)/'`netsim.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-sessionset.o `test -f 'sessionset.c' || echo '$(srcdir)/'`sessionset.c
+
+libortp_a-sessionset.obj: sessionset.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-sessionset.obj -MD -MP -MF $(DEPDIR)/libortp_a-sessionset.Tpo -c -o libortp_a-sessionset.obj `if test -f 'sessionset.c'; then $(CYGPATH_W) 'sessionset.c'; else $(CYGPATH_W) '$(srcdir)/sessionset.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-sessionset.Tpo $(DEPDIR)/libortp_a-sessionset.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='sessionset.c' object='libortp_a-sessionset.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-sessionset.obj `if test -f 'sessionset.c'; then $(CYGPATH_W) 'sessionset.c'; else $(CYGPATH_W) '$(srcdir)/sessionset.c'; fi`
+
+libortp_a-telephonyevents.o: telephonyevents.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-telephonyevents.o -MD -MP -MF $(DEPDIR)/libortp_a-telephonyevents.Tpo -c -o libortp_a-telephonyevents.o `test -f 'telephonyevents.c' || echo '$(srcdir)/'`telephonyevents.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-telephonyevents.Tpo $(DEPDIR)/libortp_a-telephonyevents.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='telephonyevents.c' object='libortp_a-telephonyevents.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-telephonyevents.o `test -f 'telephonyevents.c' || echo '$(srcdir)/'`telephonyevents.c
+
+libortp_a-telephonyevents.obj: telephonyevents.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-telephonyevents.obj -MD -MP -MF $(DEPDIR)/libortp_a-telephonyevents.Tpo -c -o libortp_a-telephonyevents.obj `if test -f 'telephonyevents.c'; then $(CYGPATH_W) 'telephonyevents.c'; else $(CYGPATH_W) '$(srcdir)/telephonyevents.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-telephonyevents.Tpo $(DEPDIR)/libortp_a-telephonyevents.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='telephonyevents.c' object='libortp_a-telephonyevents.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-telephonyevents.obj `if test -f 'telephonyevents.c'; then $(CYGPATH_W) 'telephonyevents.c'; else $(CYGPATH_W) '$(srcdir)/telephonyevents.c'; fi`
+
+libortp_a-payloadtype.o: payloadtype.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-payloadtype.o -MD -MP -MF $(DEPDIR)/libortp_a-payloadtype.Tpo -c -o libortp_a-payloadtype.o `test -f 'payloadtype.c' || echo '$(srcdir)/'`payloadtype.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-payloadtype.Tpo $(DEPDIR)/libortp_a-payloadtype.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='payloadtype.c' object='libortp_a-payloadtype.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-payloadtype.o `test -f 'payloadtype.c' || echo '$(srcdir)/'`payloadtype.c
+
+libortp_a-payloadtype.obj: payloadtype.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-payloadtype.obj -MD -MP -MF $(DEPDIR)/libortp_a-payloadtype.Tpo -c -o libortp_a-payloadtype.obj `if test -f 'payloadtype.c'; then $(CYGPATH_W) 'payloadtype.c'; else $(CYGPATH_W) '$(srcdir)/payloadtype.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-payloadtype.Tpo $(DEPDIR)/libortp_a-payloadtype.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='payloadtype.c' object='libortp_a-payloadtype.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-payloadtype.obj `if test -f 'payloadtype.c'; then $(CYGPATH_W) 'payloadtype.c'; else $(CYGPATH_W) '$(srcdir)/payloadtype.c'; fi`
+
+libortp_a-rtpprofile.o: rtpprofile.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-rtpprofile.o -MD -MP -MF $(DEPDIR)/libortp_a-rtpprofile.Tpo -c -o libortp_a-rtpprofile.o `test -f 'rtpprofile.c' || echo '$(srcdir)/'`rtpprofile.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-rtpprofile.Tpo $(DEPDIR)/libortp_a-rtpprofile.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rtpprofile.c' object='libortp_a-rtpprofile.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-rtpprofile.o `test -f 'rtpprofile.c' || echo '$(srcdir)/'`rtpprofile.c
+
+libortp_a-rtpprofile.obj: rtpprofile.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-rtpprofile.obj -MD -MP -MF $(DEPDIR)/libortp_a-rtpprofile.Tpo -c -o libortp_a-rtpprofile.obj `if test -f 'rtpprofile.c'; then $(CYGPATH_W) 'rtpprofile.c'; else $(CYGPATH_W) '$(srcdir)/rtpprofile.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-rtpprofile.Tpo $(DEPDIR)/libortp_a-rtpprofile.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rtpprofile.c' object='libortp_a-rtpprofile.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-rtpprofile.obj `if test -f 'rtpprofile.c'; then $(CYGPATH_W) 'rtpprofile.c'; else $(CYGPATH_W) '$(srcdir)/rtpprofile.c'; fi`
+
+libortp_a-rtcp.o: rtcp.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-rtcp.o -MD -MP -MF $(DEPDIR)/libortp_a-rtcp.Tpo -c -o libortp_a-rtcp.o `test -f 'rtcp.c' || echo '$(srcdir)/'`rtcp.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-rtcp.Tpo $(DEPDIR)/libortp_a-rtcp.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rtcp.c' object='libortp_a-rtcp.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-rtcp.o `test -f 'rtcp.c' || echo '$(srcdir)/'`rtcp.c
+
+libortp_a-rtcp.obj: rtcp.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-rtcp.obj -MD -MP -MF $(DEPDIR)/libortp_a-rtcp.Tpo -c -o libortp_a-rtcp.obj `if test -f 'rtcp.c'; then $(CYGPATH_W) 'rtcp.c'; else $(CYGPATH_W) '$(srcdir)/rtcp.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-rtcp.Tpo $(DEPDIR)/libortp_a-rtcp.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rtcp.c' object='libortp_a-rtcp.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-rtcp.obj `if test -f 'rtcp.c'; then $(CYGPATH_W) 'rtcp.c'; else $(CYGPATH_W) '$(srcdir)/rtcp.c'; fi`
+
+libortp_a-utils.o: utils.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-utils.o -MD -MP -MF $(DEPDIR)/libortp_a-utils.Tpo -c -o libortp_a-utils.o `test -f 'utils.c' || echo '$(srcdir)/'`utils.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-utils.Tpo $(DEPDIR)/libortp_a-utils.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='utils.c' object='libortp_a-utils.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-utils.o `test -f 'utils.c' || echo '$(srcdir)/'`utils.c
+
+libortp_a-utils.obj: utils.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-utils.obj -MD -MP -MF $(DEPDIR)/libortp_a-utils.Tpo -c -o libortp_a-utils.obj `if test -f 'utils.c'; then $(CYGPATH_W) 'utils.c'; else $(CYGPATH_W) '$(srcdir)/utils.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-utils.Tpo $(DEPDIR)/libortp_a-utils.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='utils.c' object='libortp_a-utils.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-utils.obj `if test -f 'utils.c'; then $(CYGPATH_W) 'utils.c'; else $(CYGPATH_W) '$(srcdir)/utils.c'; fi`
+
+libortp_a-rtcpparse.o: rtcpparse.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-rtcpparse.o -MD -MP -MF $(DEPDIR)/libortp_a-rtcpparse.Tpo -c -o libortp_a-rtcpparse.o `test -f 'rtcpparse.c' || echo '$(srcdir)/'`rtcpparse.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-rtcpparse.Tpo $(DEPDIR)/libortp_a-rtcpparse.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rtcpparse.c' object='libortp_a-rtcpparse.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-rtcpparse.o `test -f 'rtcpparse.c' || echo '$(srcdir)/'`rtcpparse.c
+
+libortp_a-rtcpparse.obj: rtcpparse.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-rtcpparse.obj -MD -MP -MF $(DEPDIR)/libortp_a-rtcpparse.Tpo -c -o libortp_a-rtcpparse.obj `if test -f 'rtcpparse.c'; then $(CYGPATH_W) 'rtcpparse.c'; else $(CYGPATH_W) '$(srcdir)/rtcpparse.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-rtcpparse.Tpo $(DEPDIR)/libortp_a-rtcpparse.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rtcpparse.c' object='libortp_a-rtcpparse.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-rtcpparse.obj `if test -f 'rtcpparse.c'; then $(CYGPATH_W) 'rtcpparse.c'; else $(CYGPATH_W) '$(srcdir)/rtcpparse.c'; fi`
+
+libortp_a-event.o: event.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-event.o -MD -MP -MF $(DEPDIR)/libortp_a-event.Tpo -c -o libortp_a-event.o `test -f 'event.c' || echo '$(srcdir)/'`event.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-event.Tpo $(DEPDIR)/libortp_a-event.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='event.c' object='libortp_a-event.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-event.o `test -f 'event.c' || echo '$(srcdir)/'`event.c
+
+libortp_a-event.obj: event.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-event.obj -MD -MP -MF $(DEPDIR)/libortp_a-event.Tpo -c -o libortp_a-event.obj `if test -f 'event.c'; then $(CYGPATH_W) 'event.c'; else $(CYGPATH_W) '$(srcdir)/event.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-event.Tpo $(DEPDIR)/libortp_a-event.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='event.c' object='libortp_a-event.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-event.obj `if test -f 'event.c'; then $(CYGPATH_W) 'event.c'; else $(CYGPATH_W) '$(srcdir)/event.c'; fi`
+
+libortp_a-stun.o: stun.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-stun.o -MD -MP -MF $(DEPDIR)/libortp_a-stun.Tpo -c -o libortp_a-stun.o `test -f 'stun.c' || echo '$(srcdir)/'`stun.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-stun.Tpo $(DEPDIR)/libortp_a-stun.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='stun.c' object='libortp_a-stun.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-stun.o `test -f 'stun.c' || echo '$(srcdir)/'`stun.c
+
+libortp_a-stun.obj: stun.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-stun.obj -MD -MP -MF $(DEPDIR)/libortp_a-stun.Tpo -c -o libortp_a-stun.obj `if test -f 'stun.c'; then $(CYGPATH_W) 'stun.c'; else $(CYGPATH_W) '$(srcdir)/stun.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-stun.Tpo $(DEPDIR)/libortp_a-stun.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='stun.c' object='libortp_a-stun.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-stun.obj `if test -f 'stun.c'; then $(CYGPATH_W) 'stun.c'; else $(CYGPATH_W) '$(srcdir)/stun.c'; fi`
+
+libortp_a-stun_udp.o: stun_udp.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-stun_udp.o -MD -MP -MF $(DEPDIR)/libortp_a-stun_udp.Tpo -c -o libortp_a-stun_udp.o `test -f 'stun_udp.c' || echo '$(srcdir)/'`stun_udp.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-stun_udp.Tpo $(DEPDIR)/libortp_a-stun_udp.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='stun_udp.c' object='libortp_a-stun_udp.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-stun_udp.o `test -f 'stun_udp.c' || echo '$(srcdir)/'`stun_udp.c
+
+libortp_a-stun_udp.obj: stun_udp.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-stun_udp.obj -MD -MP -MF $(DEPDIR)/libortp_a-stun_udp.Tpo -c -o libortp_a-stun_udp.obj `if test -f 'stun_udp.c'; then $(CYGPATH_W) 'stun_udp.c'; else $(CYGPATH_W) '$(srcdir)/stun_udp.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-stun_udp.Tpo $(DEPDIR)/libortp_a-stun_udp.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='stun_udp.c' object='libortp_a-stun_udp.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-stun_udp.obj `if test -f 'stun_udp.c'; then $(CYGPATH_W) 'stun_udp.c'; else $(CYGPATH_W) '$(srcdir)/stun_udp.c'; fi`
+
+libortp_a-ortp_srtp.o: ortp_srtp.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-ortp_srtp.o -MD -MP -MF $(DEPDIR)/libortp_a-ortp_srtp.Tpo -c -o libortp_a-ortp_srtp.o `test -f 'ortp_srtp.c' || echo '$(srcdir)/'`ortp_srtp.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-ortp_srtp.Tpo $(DEPDIR)/libortp_a-ortp_srtp.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ortp_srtp.c' object='libortp_a-ortp_srtp.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-ortp_srtp.o `test -f 'ortp_srtp.c' || echo '$(srcdir)/'`ortp_srtp.c
+
+libortp_a-ortp_srtp.obj: ortp_srtp.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-ortp_srtp.obj -MD -MP -MF $(DEPDIR)/libortp_a-ortp_srtp.Tpo -c -o libortp_a-ortp_srtp.obj `if test -f 'ortp_srtp.c'; then $(CYGPATH_W) 'ortp_srtp.c'; else $(CYGPATH_W) '$(srcdir)/ortp_srtp.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-ortp_srtp.Tpo $(DEPDIR)/libortp_a-ortp_srtp.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ortp_srtp.c' object='libortp_a-ortp_srtp.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-ortp_srtp.obj `if test -f 'ortp_srtp.c'; then $(CYGPATH_W) 'ortp_srtp.c'; else $(CYGPATH_W) '$(srcdir)/ortp_srtp.c'; fi`
+
+libortp_a-b64.o: b64.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-b64.o -MD -MP -MF $(DEPDIR)/libortp_a-b64.Tpo -c -o libortp_a-b64.o `test -f 'b64.c' || echo '$(srcdir)/'`b64.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-b64.Tpo $(DEPDIR)/libortp_a-b64.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='b64.c' object='libortp_a-b64.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-b64.o `test -f 'b64.c' || echo '$(srcdir)/'`b64.c
+
+libortp_a-b64.obj: b64.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-b64.obj -MD -MP -MF $(DEPDIR)/libortp_a-b64.Tpo -c -o libortp_a-b64.obj `if test -f 'b64.c'; then $(CYGPATH_W) 'b64.c'; else $(CYGPATH_W) '$(srcdir)/b64.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-b64.Tpo $(DEPDIR)/libortp_a-b64.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='b64.c' object='libortp_a-b64.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-b64.obj `if test -f 'b64.c'; then $(CYGPATH_W) 'b64.c'; else $(CYGPATH_W) '$(srcdir)/b64.c'; fi`
+
+libortp_a-zrtp.o: zrtp.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-zrtp.o -MD -MP -MF $(DEPDIR)/libortp_a-zrtp.Tpo -c -o libortp_a-zrtp.o `test -f 'zrtp.c' || echo '$(srcdir)/'`zrtp.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-zrtp.Tpo $(DEPDIR)/libortp_a-zrtp.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='zrtp.c' object='libortp_a-zrtp.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-zrtp.o `test -f 'zrtp.c' || echo '$(srcdir)/'`zrtp.c
+
+libortp_a-zrtp.obj: zrtp.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-zrtp.obj -MD -MP -MF $(DEPDIR)/libortp_a-zrtp.Tpo -c -o libortp_a-zrtp.obj `if test -f 'zrtp.c'; then $(CYGPATH_W) 'zrtp.c'; else $(CYGPATH_W) '$(srcdir)/zrtp.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-zrtp.Tpo $(DEPDIR)/libortp_a-zrtp.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='zrtp.c' object='libortp_a-zrtp.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-zrtp.obj `if test -f 'zrtp.c'; then $(CYGPATH_W) 'zrtp.c'; else $(CYGPATH_W) '$(srcdir)/zrtp.c'; fi`
+
+libortp_a-netsim.o: netsim.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-netsim.o -MD -MP -MF $(DEPDIR)/libortp_a-netsim.Tpo -c -o libortp_a-netsim.o `test -f 'netsim.c' || echo '$(srcdir)/'`netsim.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-netsim.Tpo $(DEPDIR)/libortp_a-netsim.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='netsim.c' object='libortp_a-netsim.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-netsim.o `test -f 'netsim.c' || echo '$(srcdir)/'`netsim.c
+
+libortp_a-netsim.obj: netsim.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -MT libortp_a-netsim.obj -MD -MP -MF $(DEPDIR)/libortp_a-netsim.Tpo -c -o libortp_a-netsim.obj `if test -f 'netsim.c'; then $(CYGPATH_W) 'netsim.c'; else $(CYGPATH_W) '$(srcdir)/netsim.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libortp_a-netsim.Tpo $(DEPDIR)/libortp_a-netsim.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='netsim.c' object='libortp_a-netsim.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libortp_a_CFLAGS) $(CFLAGS) -c -o libortp_a-netsim.obj `if test -f 'netsim.c'; then $(CYGPATH_W) 'netsim.c'; else $(CYGPATH_W) '$(srcdir)/netsim.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -700,7 +859,7 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LTLIBRARIES)
+all-am: Makefile $(LIBRARIES)
 installdirs:
 	for dir in "$(DESTDIR)$(libdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
@@ -737,7 +896,7 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
+clean-am: clean-generic clean-libLIBRARIES clean-libtool \
 	mostlyclean-am
 
 distclean: distclean-am
@@ -764,7 +923,7 @@ install-dvi: install-dvi-am
 
 install-dvi-am:
 
-install-exec-am: install-libLTLIBRARIES
+install-exec-am: install-libLIBRARIES
 
 install-html: install-html-am
 
@@ -804,24 +963,56 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-libLTLIBRARIES
+uninstall-am: uninstall-libLIBRARIES
 
 .MAKE: install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
-	clean-libLTLIBRARIES clean-libtool ctags distclean \
+	clean-libLIBRARIES clean-libtool ctags distclean \
 	distclean-compile distclean-generic distclean-libtool \
 	distclean-tags distdir dvi dvi-am html html-am info info-am \
 	install install-am install-data install-data-am install-dvi \
 	install-dvi-am install-exec install-exec-am install-html \
 	install-html-am install-info install-info-am \
-	install-libLTLIBRARIES install-man install-pdf install-pdf-am \
+	install-libLIBRARIES install-man install-pdf install-pdf-am \
 	install-ps install-ps-am install-strip installcheck \
 	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am uninstall-libLTLIBRARIES
+	tags uninstall uninstall-am uninstall-libLIBRARIES
 
+
+# libortp_la_LIBADD= -lm -lpthread -lrt
+# lib_LTLIBRARIES = libortp.la
+# libortp_la_CFLAGS = $(AM_CFLAGS)
+# libortp_la_LDFLAGS = -avoid-version -no-undefined
+# libortp_la_SOURCES = str_utils.c \
+#                      port.c \
+#                      logging.c \
+#                      rtpparse.c  \
+#                      rtpsession.c \
+#                      rtpsession_inet.c \
+#                      rtpsession_priv.h \
+#                      jitterctl.c jitterctl.h \
+#                      rtpsignaltable.c  \
+#                      rtptimer.c rtptimer.h \
+#                      posixtimer.c \
+#                      ortp.c \
+#                      scheduler.c scheduler.h \
+#                      avprofile.c  \
+#                      sessionset.c  \
+#                      telephonyevents.c  \
+#                      payloadtype.c \
+#                      rtpprofile.c \
+#                      rtcp.c  \
+#                      utils.c utils.h \
+#                      rtcpparse.c \
+#                      event.c \
+#                      stun.c stun_udp.c \
+#                      ortp_srtp.c \
+#                      b64.c \
+#                      zrtp.c \
+#                      netsim.c
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -26,13 +26,16 @@ openDMD_LDADD = $(top_srcdir)/src/client/flv_muxer.o \
                 $(top_srcdir)/src/webserver/http_utils.o \
                 $(top_srcdir)/src/webserver/socket_utils.o \
                 $(top_srcdir)/src/webserver/webserver_process.o \
-                $(top_srcdir)/libjpeg/libjpeg.la \
-                $(top_srcdir)/libortp/src/libortp.la \
-                $(top_srcdir)/libsqlite/src/libsqlite3.la \
-                $(top_srcdir)/libx264/libx264.la \
-                -lm -lpthread -lrt -ldl
+                $(top_srcdir)/libjpeg/libjpeg.a \
+                $(top_srcdir)/libortp/src/libortp.a \
+                $(top_srcdir)/libsqlite/src/libsqlite3.a \
+                $(top_srcdir)/libx264/libx264.a 
 
-openDMD_LDFLAGS = -export-dynamic
+#                 $(top_srcdir)/libjpeg/libjpeg.la 
+#                 $(top_srcdir)/libortp/src/libortp.la 
+#                 $(top_srcdir)/libsqlite/src/libsqlite3.la 
+#                 $(top_srcdir)/libx264/libx264.la 
+#                 -lm -lpthread -lrt -ldl
 
 #                -L$(top_srcdir)/libjpeg -ljpeg
 #                -L$(top_srcdir)/libortp/src -lortp
@@ -44,7 +47,8 @@ openDMD_LDFLAGS = -export-dynamic
 # using openDMD_LDFLAGS at here doesn't work!
 # using LDFLAGS in configure.ac doesn't work, either!
 # -lrt for function clock_gettime()
-# LIBS = -lm -lpthread -lrt -ldl
+# LIBS = -lm -lpthread -lrt -ldl -ljpeg -lortp -lsqlite3 -lx264
+LIBS = -lm -lpthread -lrt -ldl
 
 # source files in ./src dirctory;
 # source files in ./src/client is in openDMD_LDADD src/client/*.o

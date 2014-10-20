@@ -75,22 +75,21 @@ am__uninstall_files_from_dir = { \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"
-LTLIBRARIES = $(lib_LTLIBRARIES)
-libx264_la_DEPENDENCIES = common/mc.lo common/predict.lo \
-	common/pixel.lo common/macroblock.lo common/frame.lo \
-	common/dct.lo common/cpu.lo common/cabac.lo common/common.lo \
-	common/osdep.lo common/rectangle.lo common/set.lo \
-	common/quant.lo common/deblock.lo common/vlc.lo \
-	common/mvpred.lo common/bitstream.lo encoder/analyse.lo \
-	encoder/me.lo encoder/ratecontrol.lo encoder/set.lo \
-	encoder/macroblock.lo encoder/cabac.lo encoder/cavlc.lo \
-	encoder/encoder.lo encoder/lookahead.lo \
-	output/flv_bytestream.lo output/flv.lo output/raw.lo
-am_libx264_la_OBJECTS =
-libx264_la_OBJECTS = $(am_libx264_la_OBJECTS)
-libx264_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libx264_la_CFLAGS) \
-	$(CFLAGS) $(libx264_la_LDFLAGS) $(LDFLAGS) -o $@
+LIBRARIES = $(lib_LIBRARIES)
+ARFLAGS = cru
+libx264_a_AR = $(AR) $(ARFLAGS)
+libx264_a_DEPENDENCIES = common/mc.o common/predict.o common/pixel.o \
+	common/macroblock.o common/frame.o common/dct.o common/cpu.o \
+	common/cabac.o common/common.o common/osdep.o \
+	common/rectangle.o common/set.o common/quant.o \
+	common/deblock.o common/vlc.o common/mvpred.o \
+	common/bitstream.o encoder/analyse.o encoder/me.o \
+	encoder/ratecontrol.o encoder/set.o encoder/macroblock.o \
+	encoder/cabac.o encoder/cavlc.o encoder/encoder.o \
+	encoder/lookahead.o output/flv_bytestream.o output/flv.o \
+	output/raw.o
+am_libx264_a_OBJECTS =
+libx264_a_OBJECTS = $(am_libx264_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -101,8 +100,8 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(libx264_la_SOURCES)
-DIST_SOURCES = $(libx264_la_SOURCES)
+SOURCES = $(libx264_a_SOURCES)
+DIST_SOURCES = $(libx264_a_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-dvi-recursive install-exec-recursive \
@@ -269,77 +268,77 @@ SUBDIRS = common encoder output
 INCLUDES = -I$(top_srcdir)/libx264 -I$(top_srcdir)/libx264/common \
            -I$(top_srcdir)/libx264/encoder -I$(top_srcdir)/libx264/output
 
-
-# lib_LIBRARIES=libx264.a
-# #this method can work, but ugly.
-# libx264_a_SOURCES = x264.h x264_config.h x264cli.h
-# # to remove the automake complain:
-# #         object 'foo.$(OBJEXT)' created both with libtool and without
-# libx264_a_CFLAGS = $(AM_CFLAGS)
-# libx264_a_LIBADD = common/mc.o \
-#                    common/predict.o \
-#                    common/pixel.o \
-#                    common/macroblock.o \
-#                    common/frame.o \
-#                    common/dct.o \
-#                    common/cpu.o \
-#                    common/cabac.o \
-#                    common/common.o \
-#                    common/osdep.o \
-#                    common/rectangle.o \
-#                    common/set.o \
-#                    common/quant.o \
-#                    common/deblock.o \
-#                    common/vlc.o \
-#                    common/mvpred.o \
-#                    common/bitstream.o \
-#                    encoder/analyse.o \
-#                    encoder/me.o \
-#                    encoder/ratecontrol.o \
-#                    encoder/set.o \
-#                    encoder/macroblock.o \
-#                    encoder/cabac.o \
-#                    encoder/cavlc.o \
-#                    encoder/encoder.o \
-#                    encoder/lookahead.o \
-#                    output/flv_bytestream.o \
-#                    output/flv.o \
-#                    output/raw.o
-lib_LTLIBRARIES = libx264.la
-libx264_la_CFLAGS = $(AM_CFLAGS)
-libx264_la_LDFLAGS = -avoid-version -no-undefined
+lib_LIBRARIES = libx264.a
 #this method can work, but ugly.
-libx264_la_SOURCES = x264.h x264_config.h x264cli.h
-libx264_la_LIBADD = common/mc.lo \
-                    common/predict.lo \
-                    common/pixel.lo \
-                    common/macroblock.lo \
-                    common/frame.lo \
-                    common/dct.lo \
-                    common/cpu.lo \
-                    common/cabac.lo \
-                    common/common.lo \
-                    common/osdep.lo \
-                    common/rectangle.lo \
-                    common/set.lo \
-                    common/quant.lo \
-                    common/deblock.lo \
-                    common/vlc.lo \
-                    common/mvpred.lo \
-                    common/bitstream.lo \
-                    encoder/analyse.lo \
-                    encoder/me.lo \
-                    encoder/ratecontrol.lo \
-                    encoder/set.lo \
-                    encoder/macroblock.lo \
-                    encoder/cabac.lo \
-                    encoder/cavlc.lo \
-                    encoder/encoder.lo \
-                    encoder/lookahead.lo \
-                    output/flv_bytestream.lo \
-                    output/flv.lo \
-                    output/raw.lo
+libx264_a_SOURCES = x264.h x264_config.h x264cli.h
+# to remove the automake complain:
+#         object 'foo.$(OBJEXT)' created both with libtool and without
+libx264_a_CFLAGS = $(AM_CFLAGS)
+libx264_a_LIBADD = common/mc.o \
+                   common/predict.o \
+                   common/pixel.o \
+                   common/macroblock.o \
+                   common/frame.o \
+                   common/dct.o \
+                   common/cpu.o \
+                   common/cabac.o \
+                   common/common.o \
+                   common/osdep.o \
+                   common/rectangle.o \
+                   common/set.o \
+                   common/quant.o \
+                   common/deblock.o \
+                   common/vlc.o \
+                   common/mvpred.o \
+                   common/bitstream.o \
+                   encoder/analyse.o \
+                   encoder/me.o \
+                   encoder/ratecontrol.o \
+                   encoder/set.o \
+                   encoder/macroblock.o \
+                   encoder/cabac.o \
+                   encoder/cavlc.o \
+                   encoder/encoder.o \
+                   encoder/lookahead.o \
+                   output/flv_bytestream.o \
+                   output/flv.o \
+                   output/raw.o
 
+
+# lib_LTLIBRARIES=libx264.la
+# libx264_la_CFLAGS = $(AM_CFLAGS)
+# libx264_la_LDFLAGS = -avoid-version -no-undefined
+# #this method can work, but ugly.
+# libx264_la_SOURCES = x264.h x264_config.h x264cli.h
+# libx264_la_LIBADD = common/mc.lo \
+#                     common/predict.lo \
+#                     common/pixel.lo \
+#                     common/macroblock.lo \
+#                     common/frame.lo \
+#                     common/dct.lo \
+#                     common/cpu.lo \
+#                     common/cabac.lo \
+#                     common/common.lo \
+#                     common/osdep.lo \
+#                     common/rectangle.lo \
+#                     common/set.lo \
+#                     common/quant.lo \
+#                     common/deblock.lo \
+#                     common/vlc.lo \
+#                     common/mvpred.lo \
+#                     common/bitstream.lo \
+#                     encoder/analyse.lo \
+#                     encoder/me.lo \
+#                     encoder/ratecontrol.lo \
+#                     encoder/set.lo \
+#                     encoder/macroblock.lo \
+#                     encoder/cabac.lo \
+#                     encoder/cavlc.lo \
+#                     encoder/encoder.lo \
+#                     encoder/lookahead.lo \
+#                     output/flv_bytestream.lo \
+#                     output/flv.lo \
+#                     output/raw.lo
 include_HEADERS = x264.h x264cli.h  x264_config.h
 all: all-recursive
 
@@ -374,39 +373,40 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
-install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+install-libLIBRARIES: $(lib_LIBRARIES)
 	@$(NORMAL_INSTALL)
 	test -z "$(libdir)" || $(MKDIR_P) "$(DESTDIR)$(libdir)"
-	@list='$(lib_LTLIBRARIES)'; test -n "$(libdir)" || list=; \
+	@list='$(lib_LIBRARIES)'; test -n "$(libdir)" || list=; \
 	list2=; for p in $$list; do \
 	  if test -f $$p; then \
 	    list2="$$list2 $$p"; \
 	  else :; fi; \
 	done; \
 	test -z "$$list2" || { \
-	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 '$(DESTDIR)$(libdir)'"; \
-	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 "$(DESTDIR)$(libdir)"; \
-	}
-
-uninstall-libLTLIBRARIES:
-	@$(NORMAL_UNINSTALL)
-	@list='$(lib_LTLIBRARIES)'; test -n "$(libdir)" || list=; \
+	  echo " $(INSTALL_DATA) $$list2 '$(DESTDIR)$(libdir)'"; \
+	  $(INSTALL_DATA) $$list2 "$(DESTDIR)$(libdir)" || exit $$?; }
+	@$(POST_INSTALL)
+	@list='$(lib_LIBRARIES)'; test -n "$(libdir)" || list=; \
 	for p in $$list; do \
-	  $(am__strip_dir) \
-	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f '$(DESTDIR)$(libdir)/$$f'"; \
-	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f "$(DESTDIR)$(libdir)/$$f"; \
+	  if test -f $$p; then \
+	    $(am__strip_dir) \
+	    echo " ( cd '$(DESTDIR)$(libdir)' && $(RANLIB) $$f )"; \
+	    ( cd "$(DESTDIR)$(libdir)" && $(RANLIB) $$f ) || exit $$?; \
+	  else :; fi; \
 	done
 
-clean-libLTLIBRARIES:
-	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
-	  test "$$dir" != "$$p" || dir=.; \
-	  echo "rm -f \"$${dir}/so_locations\""; \
-	  rm -f "$${dir}/so_locations"; \
-	done
-libx264.la: $(libx264_la_OBJECTS) $(libx264_la_DEPENDENCIES) $(EXTRA_libx264_la_DEPENDENCIES) 
-	$(libx264_la_LINK) -rpath $(libdir) $(libx264_la_OBJECTS) $(libx264_la_LIBADD) $(LIBS)
+uninstall-libLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	@list='$(lib_LIBRARIES)'; test -n "$(libdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(libdir)'; $(am__uninstall_files_from_dir)
+
+clean-libLIBRARIES:
+	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
+libx264.a: $(libx264_a_OBJECTS) $(libx264_a_DEPENDENCIES) $(EXTRA_libx264_a_DEPENDENCIES) 
+	-rm -f libx264.a
+	$(libx264_a_AR) libx264.a $(libx264_a_OBJECTS) $(libx264_a_LIBADD)
+	$(RANLIB) libx264.a
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -633,7 +633,7 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-recursive
-all-am: Makefile $(LTLIBRARIES) $(HEADERS)
+all-am: Makefile $(LIBRARIES) $(HEADERS)
 installdirs: installdirs-recursive
 installdirs-am:
 	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"; do \
@@ -671,7 +671,7 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-recursive
 
-clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
+clean-am: clean-generic clean-libLIBRARIES clean-libtool \
 	mostlyclean-am
 
 distclean: distclean-recursive
@@ -697,7 +697,7 @@ install-dvi: install-dvi-recursive
 
 install-dvi-am:
 
-install-exec-am: install-libLTLIBRARIES
+install-exec-am: install-libLIBRARIES
 
 install-html: install-html-recursive
 
@@ -736,27 +736,27 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-includeHEADERS uninstall-libLTLIBRARIES
+uninstall-am: uninstall-includeHEADERS uninstall-libLIBRARIES
 
 .MAKE: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) ctags-recursive \
 	install-am install-strip tags-recursive
 
 .PHONY: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) CTAGS GTAGS \
 	all all-am check check-am clean clean-generic \
-	clean-libLTLIBRARIES clean-libtool ctags ctags-recursive \
+	clean-libLIBRARIES clean-libtool ctags ctags-recursive \
 	distclean distclean-compile distclean-generic \
 	distclean-libtool distclean-tags distdir dvi dvi-am html \
 	html-am info info-am install install-am install-data \
 	install-data-am install-dvi install-dvi-am install-exec \
 	install-exec-am install-html install-html-am \
 	install-includeHEADERS install-info install-info-am \
-	install-libLTLIBRARIES install-man install-pdf install-pdf-am \
+	install-libLIBRARIES install-man install-pdf install-pdf-am \
 	install-ps install-ps-am install-strip installcheck \
 	installcheck-am installdirs installdirs-am maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	tags tags-recursive uninstall uninstall-am \
-	uninstall-includeHEADERS uninstall-libLTLIBRARIES
+	uninstall-includeHEADERS uninstall-libLIBRARIES
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
