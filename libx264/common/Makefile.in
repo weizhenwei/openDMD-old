@@ -15,7 +15,6 @@
 
 @SET_MAKE@
 
-
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -47,48 +46,33 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 LIBRARIES = $(noinst_LIBRARIES)
+AR = ar
 ARFLAGS = cru
 libcommon_a_AR = $(AR) $(ARFLAGS)
 libcommon_a_LIBADD =
-am_libcommon_a_OBJECTS = libcommon_a-bitstream.$(OBJEXT) \
-	libcommon_a-cabac.$(OBJEXT) libcommon_a-common.$(OBJEXT) \
-	libcommon_a-cpu.$(OBJEXT) libcommon_a-dct.$(OBJEXT) \
-	libcommon_a-deblock.$(OBJEXT) libcommon_a-frame.$(OBJEXT) \
-	libcommon_a-macroblock.$(OBJEXT) libcommon_a-mc.$(OBJEXT) \
-	libcommon_a-mvpred.$(OBJEXT) libcommon_a-osdep.$(OBJEXT) \
-	libcommon_a-pixel.$(OBJEXT) libcommon_a-predict.$(OBJEXT) \
-	libcommon_a-quant.$(OBJEXT) libcommon_a-rectangle.$(OBJEXT) \
-	libcommon_a-set.$(OBJEXT) libcommon_a-vlc.$(OBJEXT)
+am_libcommon_a_OBJECTS = bitstream.$(OBJEXT) cabac.$(OBJEXT) \
+	common.$(OBJEXT) cpu.$(OBJEXT) dct.$(OBJEXT) deblock.$(OBJEXT) \
+	frame.$(OBJEXT) macroblock.$(OBJEXT) mc.$(OBJEXT) \
+	mvpred.$(OBJEXT) osdep.$(OBJEXT) pixel.$(OBJEXT) \
+	predict.$(OBJEXT) quant.$(OBJEXT) rectangle.$(OBJEXT) \
+	set.$(OBJEXT) vlc.$(OBJEXT)
 libcommon_a_OBJECTS = $(am_libcommon_a_OBJECTS)
-LTLIBRARIES = $(noinst_LTLIBRARIES)
-libcommon_la_LIBADD =
-am_libcommon_la_OBJECTS = bitstream.lo cabac.lo common.lo cpu.lo \
-	dct.lo deblock.lo frame.lo macroblock.lo mc.lo mvpred.lo \
-	osdep.lo pixel.lo predict.lo quant.lo rectangle.lo set.lo \
-	vlc.lo
-libcommon_la_OBJECTS = $(am_libcommon_la_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
-LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
-SOURCES = $(libcommon_a_SOURCES) $(libcommon_la_SOURCES)
-DIST_SOURCES = $(libcommon_a_SOURCES) $(libcommon_la_SOURCES)
+LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+SOURCES = $(libcommon_a_SOURCES)
+DIST_SOURCES = $(libcommon_a_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 ALLOCA = @ALLOCA@
 AMTAR = @AMTAR@
-AR = @AR@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -101,38 +85,24 @@ CPPFLAGS = @CPPFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
-DLLTOOL = @DLLTOOL@
-DSYMUTIL = @DSYMUTIL@
-DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
-FGREP = @FGREP@
 GREP = @GREP@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
-LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
-LIBTOOL = @LIBTOOL@
-LIPO = @LIPO@
-LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
-MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
-NM = @NM@
-NMEDIT = @NMEDIT@
-OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
-OTOOL = @OTOOL@
-OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -143,7 +113,6 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 POW_LIB = @POW_LIB@
 RANLIB = @RANLIB@
-SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -152,9 +121,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
-ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
-ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
@@ -211,7 +178,7 @@ INCLUDES = -I$(top_srcdir)/libx264 -I$(top_srcdir)/libx264/common \
 noinst_LIBRARIES = libcommon.a
 # to remove the automake complain:
 #         object 'foo.$(OBJEXT)' created both with libtool and without
-libcommon_a_CFLAGS = $(AM_CFLAGS)
+# libcommon_a_CFLAGS = $(AM_CFLAGS)
 libcommon_a_SOURCES = bitstream.h bitstream.c \
                       cabac.h cabac.c \
                       common.h common.c \
@@ -230,29 +197,10 @@ libcommon_a_SOURCES = bitstream.h bitstream.c \
                       set.h set.c \
                       threadpool.h vlc.c
 
-noinst_LTLIBRARIES = libcommon.la
-libcommon_la_SOURCES = bitstream.h bitstream.c \
-                       cabac.h cabac.c \
-                       common.h common.c \
-                       cpu.h cpu.c \
-                       dct.h dct.c \
-                       deblock.c \
-                       frame.h frame.c \
-                       macroblock.h macroblock.c \
-                       mc.h mc.c \
-                       mvpred.c \
-                       osdep.h osdep.c \
-                       pixel.h pixel.c \
-                       predict.h predict.c \
-                       quant.h quant.c \
-                       rectangle.h rectangle.c \
-                       set.h set.c \
-                       threadpool.h vlc.c
-
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .c .lo .o .obj
+.SUFFIXES: .c .o .obj
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -291,57 +239,29 @@ libcommon.a: $(libcommon_a_OBJECTS) $(libcommon_a_DEPENDENCIES) $(EXTRA_libcommo
 	$(libcommon_a_AR) libcommon.a $(libcommon_a_OBJECTS) $(libcommon_a_LIBADD)
 	$(RANLIB) libcommon.a
 
-clean-noinstLTLIBRARIES:
-	-test -z "$(noinst_LTLIBRARIES)" || rm -f $(noinst_LTLIBRARIES)
-	@list='$(noinst_LTLIBRARIES)'; for p in $$list; do \
-	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
-	  test "$$dir" != "$$p" || dir=.; \
-	  echo "rm -f \"$${dir}/so_locations\""; \
-	  rm -f "$${dir}/so_locations"; \
-	done
-libcommon.la: $(libcommon_la_OBJECTS) $(libcommon_la_DEPENDENCIES) $(EXTRA_libcommon_la_DEPENDENCIES) 
-	$(LINK)  $(libcommon_la_OBJECTS) $(libcommon_la_LIBADD) $(LIBS)
-
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bitstream.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cabac.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/common.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cpu.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dct.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/deblock.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/frame.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_a-bitstream.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_a-cabac.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_a-common.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_a-cpu.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_a-dct.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_a-deblock.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_a-frame.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_a-macroblock.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_a-mc.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_a-mvpred.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_a-osdep.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_a-pixel.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_a-predict.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_a-quant.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_a-rectangle.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_a-set.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcommon_a-vlc.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/macroblock.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mc.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mvpred.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/osdep.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pixel.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/predict.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quant.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rectangle.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/set.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vlc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bitstream.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cabac.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/common.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cpu.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dct.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/deblock.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/frame.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/macroblock.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mvpred.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/osdep.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pixel.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/predict.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quant.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rectangle.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/set.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vlc.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -356,257 +276,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
-
-.c.lo:
-@am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
-
-libcommon_a-bitstream.o: bitstream.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-bitstream.o -MD -MP -MF $(DEPDIR)/libcommon_a-bitstream.Tpo -c -o libcommon_a-bitstream.o `test -f 'bitstream.c' || echo '$(srcdir)/'`bitstream.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-bitstream.Tpo $(DEPDIR)/libcommon_a-bitstream.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bitstream.c' object='libcommon_a-bitstream.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-bitstream.o `test -f 'bitstream.c' || echo '$(srcdir)/'`bitstream.c
-
-libcommon_a-bitstream.obj: bitstream.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-bitstream.obj -MD -MP -MF $(DEPDIR)/libcommon_a-bitstream.Tpo -c -o libcommon_a-bitstream.obj `if test -f 'bitstream.c'; then $(CYGPATH_W) 'bitstream.c'; else $(CYGPATH_W) '$(srcdir)/bitstream.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-bitstream.Tpo $(DEPDIR)/libcommon_a-bitstream.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bitstream.c' object='libcommon_a-bitstream.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-bitstream.obj `if test -f 'bitstream.c'; then $(CYGPATH_W) 'bitstream.c'; else $(CYGPATH_W) '$(srcdir)/bitstream.c'; fi`
-
-libcommon_a-cabac.o: cabac.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-cabac.o -MD -MP -MF $(DEPDIR)/libcommon_a-cabac.Tpo -c -o libcommon_a-cabac.o `test -f 'cabac.c' || echo '$(srcdir)/'`cabac.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-cabac.Tpo $(DEPDIR)/libcommon_a-cabac.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cabac.c' object='libcommon_a-cabac.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-cabac.o `test -f 'cabac.c' || echo '$(srcdir)/'`cabac.c
-
-libcommon_a-cabac.obj: cabac.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-cabac.obj -MD -MP -MF $(DEPDIR)/libcommon_a-cabac.Tpo -c -o libcommon_a-cabac.obj `if test -f 'cabac.c'; then $(CYGPATH_W) 'cabac.c'; else $(CYGPATH_W) '$(srcdir)/cabac.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-cabac.Tpo $(DEPDIR)/libcommon_a-cabac.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cabac.c' object='libcommon_a-cabac.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-cabac.obj `if test -f 'cabac.c'; then $(CYGPATH_W) 'cabac.c'; else $(CYGPATH_W) '$(srcdir)/cabac.c'; fi`
-
-libcommon_a-common.o: common.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-common.o -MD -MP -MF $(DEPDIR)/libcommon_a-common.Tpo -c -o libcommon_a-common.o `test -f 'common.c' || echo '$(srcdir)/'`common.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-common.Tpo $(DEPDIR)/libcommon_a-common.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='common.c' object='libcommon_a-common.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-common.o `test -f 'common.c' || echo '$(srcdir)/'`common.c
-
-libcommon_a-common.obj: common.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-common.obj -MD -MP -MF $(DEPDIR)/libcommon_a-common.Tpo -c -o libcommon_a-common.obj `if test -f 'common.c'; then $(CYGPATH_W) 'common.c'; else $(CYGPATH_W) '$(srcdir)/common.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-common.Tpo $(DEPDIR)/libcommon_a-common.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='common.c' object='libcommon_a-common.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-common.obj `if test -f 'common.c'; then $(CYGPATH_W) 'common.c'; else $(CYGPATH_W) '$(srcdir)/common.c'; fi`
-
-libcommon_a-cpu.o: cpu.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-cpu.o -MD -MP -MF $(DEPDIR)/libcommon_a-cpu.Tpo -c -o libcommon_a-cpu.o `test -f 'cpu.c' || echo '$(srcdir)/'`cpu.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-cpu.Tpo $(DEPDIR)/libcommon_a-cpu.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cpu.c' object='libcommon_a-cpu.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-cpu.o `test -f 'cpu.c' || echo '$(srcdir)/'`cpu.c
-
-libcommon_a-cpu.obj: cpu.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-cpu.obj -MD -MP -MF $(DEPDIR)/libcommon_a-cpu.Tpo -c -o libcommon_a-cpu.obj `if test -f 'cpu.c'; then $(CYGPATH_W) 'cpu.c'; else $(CYGPATH_W) '$(srcdir)/cpu.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-cpu.Tpo $(DEPDIR)/libcommon_a-cpu.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cpu.c' object='libcommon_a-cpu.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-cpu.obj `if test -f 'cpu.c'; then $(CYGPATH_W) 'cpu.c'; else $(CYGPATH_W) '$(srcdir)/cpu.c'; fi`
-
-libcommon_a-dct.o: dct.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-dct.o -MD -MP -MF $(DEPDIR)/libcommon_a-dct.Tpo -c -o libcommon_a-dct.o `test -f 'dct.c' || echo '$(srcdir)/'`dct.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-dct.Tpo $(DEPDIR)/libcommon_a-dct.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dct.c' object='libcommon_a-dct.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-dct.o `test -f 'dct.c' || echo '$(srcdir)/'`dct.c
-
-libcommon_a-dct.obj: dct.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-dct.obj -MD -MP -MF $(DEPDIR)/libcommon_a-dct.Tpo -c -o libcommon_a-dct.obj `if test -f 'dct.c'; then $(CYGPATH_W) 'dct.c'; else $(CYGPATH_W) '$(srcdir)/dct.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-dct.Tpo $(DEPDIR)/libcommon_a-dct.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dct.c' object='libcommon_a-dct.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-dct.obj `if test -f 'dct.c'; then $(CYGPATH_W) 'dct.c'; else $(CYGPATH_W) '$(srcdir)/dct.c'; fi`
-
-libcommon_a-deblock.o: deblock.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-deblock.o -MD -MP -MF $(DEPDIR)/libcommon_a-deblock.Tpo -c -o libcommon_a-deblock.o `test -f 'deblock.c' || echo '$(srcdir)/'`deblock.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-deblock.Tpo $(DEPDIR)/libcommon_a-deblock.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='deblock.c' object='libcommon_a-deblock.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-deblock.o `test -f 'deblock.c' || echo '$(srcdir)/'`deblock.c
-
-libcommon_a-deblock.obj: deblock.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-deblock.obj -MD -MP -MF $(DEPDIR)/libcommon_a-deblock.Tpo -c -o libcommon_a-deblock.obj `if test -f 'deblock.c'; then $(CYGPATH_W) 'deblock.c'; else $(CYGPATH_W) '$(srcdir)/deblock.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-deblock.Tpo $(DEPDIR)/libcommon_a-deblock.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='deblock.c' object='libcommon_a-deblock.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-deblock.obj `if test -f 'deblock.c'; then $(CYGPATH_W) 'deblock.c'; else $(CYGPATH_W) '$(srcdir)/deblock.c'; fi`
-
-libcommon_a-frame.o: frame.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-frame.o -MD -MP -MF $(DEPDIR)/libcommon_a-frame.Tpo -c -o libcommon_a-frame.o `test -f 'frame.c' || echo '$(srcdir)/'`frame.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-frame.Tpo $(DEPDIR)/libcommon_a-frame.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='frame.c' object='libcommon_a-frame.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-frame.o `test -f 'frame.c' || echo '$(srcdir)/'`frame.c
-
-libcommon_a-frame.obj: frame.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-frame.obj -MD -MP -MF $(DEPDIR)/libcommon_a-frame.Tpo -c -o libcommon_a-frame.obj `if test -f 'frame.c'; then $(CYGPATH_W) 'frame.c'; else $(CYGPATH_W) '$(srcdir)/frame.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-frame.Tpo $(DEPDIR)/libcommon_a-frame.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='frame.c' object='libcommon_a-frame.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-frame.obj `if test -f 'frame.c'; then $(CYGPATH_W) 'frame.c'; else $(CYGPATH_W) '$(srcdir)/frame.c'; fi`
-
-libcommon_a-macroblock.o: macroblock.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-macroblock.o -MD -MP -MF $(DEPDIR)/libcommon_a-macroblock.Tpo -c -o libcommon_a-macroblock.o `test -f 'macroblock.c' || echo '$(srcdir)/'`macroblock.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-macroblock.Tpo $(DEPDIR)/libcommon_a-macroblock.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='macroblock.c' object='libcommon_a-macroblock.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-macroblock.o `test -f 'macroblock.c' || echo '$(srcdir)/'`macroblock.c
-
-libcommon_a-macroblock.obj: macroblock.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-macroblock.obj -MD -MP -MF $(DEPDIR)/libcommon_a-macroblock.Tpo -c -o libcommon_a-macroblock.obj `if test -f 'macroblock.c'; then $(CYGPATH_W) 'macroblock.c'; else $(CYGPATH_W) '$(srcdir)/macroblock.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-macroblock.Tpo $(DEPDIR)/libcommon_a-macroblock.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='macroblock.c' object='libcommon_a-macroblock.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-macroblock.obj `if test -f 'macroblock.c'; then $(CYGPATH_W) 'macroblock.c'; else $(CYGPATH_W) '$(srcdir)/macroblock.c'; fi`
-
-libcommon_a-mc.o: mc.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-mc.o -MD -MP -MF $(DEPDIR)/libcommon_a-mc.Tpo -c -o libcommon_a-mc.o `test -f 'mc.c' || echo '$(srcdir)/'`mc.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-mc.Tpo $(DEPDIR)/libcommon_a-mc.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='mc.c' object='libcommon_a-mc.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-mc.o `test -f 'mc.c' || echo '$(srcdir)/'`mc.c
-
-libcommon_a-mc.obj: mc.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-mc.obj -MD -MP -MF $(DEPDIR)/libcommon_a-mc.Tpo -c -o libcommon_a-mc.obj `if test -f 'mc.c'; then $(CYGPATH_W) 'mc.c'; else $(CYGPATH_W) '$(srcdir)/mc.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-mc.Tpo $(DEPDIR)/libcommon_a-mc.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='mc.c' object='libcommon_a-mc.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-mc.obj `if test -f 'mc.c'; then $(CYGPATH_W) 'mc.c'; else $(CYGPATH_W) '$(srcdir)/mc.c'; fi`
-
-libcommon_a-mvpred.o: mvpred.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-mvpred.o -MD -MP -MF $(DEPDIR)/libcommon_a-mvpred.Tpo -c -o libcommon_a-mvpred.o `test -f 'mvpred.c' || echo '$(srcdir)/'`mvpred.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-mvpred.Tpo $(DEPDIR)/libcommon_a-mvpred.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='mvpred.c' object='libcommon_a-mvpred.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-mvpred.o `test -f 'mvpred.c' || echo '$(srcdir)/'`mvpred.c
-
-libcommon_a-mvpred.obj: mvpred.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-mvpred.obj -MD -MP -MF $(DEPDIR)/libcommon_a-mvpred.Tpo -c -o libcommon_a-mvpred.obj `if test -f 'mvpred.c'; then $(CYGPATH_W) 'mvpred.c'; else $(CYGPATH_W) '$(srcdir)/mvpred.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-mvpred.Tpo $(DEPDIR)/libcommon_a-mvpred.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='mvpred.c' object='libcommon_a-mvpred.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-mvpred.obj `if test -f 'mvpred.c'; then $(CYGPATH_W) 'mvpred.c'; else $(CYGPATH_W) '$(srcdir)/mvpred.c'; fi`
-
-libcommon_a-osdep.o: osdep.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-osdep.o -MD -MP -MF $(DEPDIR)/libcommon_a-osdep.Tpo -c -o libcommon_a-osdep.o `test -f 'osdep.c' || echo '$(srcdir)/'`osdep.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-osdep.Tpo $(DEPDIR)/libcommon_a-osdep.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='osdep.c' object='libcommon_a-osdep.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-osdep.o `test -f 'osdep.c' || echo '$(srcdir)/'`osdep.c
-
-libcommon_a-osdep.obj: osdep.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-osdep.obj -MD -MP -MF $(DEPDIR)/libcommon_a-osdep.Tpo -c -o libcommon_a-osdep.obj `if test -f 'osdep.c'; then $(CYGPATH_W) 'osdep.c'; else $(CYGPATH_W) '$(srcdir)/osdep.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-osdep.Tpo $(DEPDIR)/libcommon_a-osdep.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='osdep.c' object='libcommon_a-osdep.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-osdep.obj `if test -f 'osdep.c'; then $(CYGPATH_W) 'osdep.c'; else $(CYGPATH_W) '$(srcdir)/osdep.c'; fi`
-
-libcommon_a-pixel.o: pixel.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-pixel.o -MD -MP -MF $(DEPDIR)/libcommon_a-pixel.Tpo -c -o libcommon_a-pixel.o `test -f 'pixel.c' || echo '$(srcdir)/'`pixel.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-pixel.Tpo $(DEPDIR)/libcommon_a-pixel.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pixel.c' object='libcommon_a-pixel.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-pixel.o `test -f 'pixel.c' || echo '$(srcdir)/'`pixel.c
-
-libcommon_a-pixel.obj: pixel.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-pixel.obj -MD -MP -MF $(DEPDIR)/libcommon_a-pixel.Tpo -c -o libcommon_a-pixel.obj `if test -f 'pixel.c'; then $(CYGPATH_W) 'pixel.c'; else $(CYGPATH_W) '$(srcdir)/pixel.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-pixel.Tpo $(DEPDIR)/libcommon_a-pixel.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pixel.c' object='libcommon_a-pixel.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-pixel.obj `if test -f 'pixel.c'; then $(CYGPATH_W) 'pixel.c'; else $(CYGPATH_W) '$(srcdir)/pixel.c'; fi`
-
-libcommon_a-predict.o: predict.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-predict.o -MD -MP -MF $(DEPDIR)/libcommon_a-predict.Tpo -c -o libcommon_a-predict.o `test -f 'predict.c' || echo '$(srcdir)/'`predict.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-predict.Tpo $(DEPDIR)/libcommon_a-predict.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='predict.c' object='libcommon_a-predict.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-predict.o `test -f 'predict.c' || echo '$(srcdir)/'`predict.c
-
-libcommon_a-predict.obj: predict.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-predict.obj -MD -MP -MF $(DEPDIR)/libcommon_a-predict.Tpo -c -o libcommon_a-predict.obj `if test -f 'predict.c'; then $(CYGPATH_W) 'predict.c'; else $(CYGPATH_W) '$(srcdir)/predict.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-predict.Tpo $(DEPDIR)/libcommon_a-predict.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='predict.c' object='libcommon_a-predict.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-predict.obj `if test -f 'predict.c'; then $(CYGPATH_W) 'predict.c'; else $(CYGPATH_W) '$(srcdir)/predict.c'; fi`
-
-libcommon_a-quant.o: quant.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-quant.o -MD -MP -MF $(DEPDIR)/libcommon_a-quant.Tpo -c -o libcommon_a-quant.o `test -f 'quant.c' || echo '$(srcdir)/'`quant.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-quant.Tpo $(DEPDIR)/libcommon_a-quant.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='quant.c' object='libcommon_a-quant.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-quant.o `test -f 'quant.c' || echo '$(srcdir)/'`quant.c
-
-libcommon_a-quant.obj: quant.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-quant.obj -MD -MP -MF $(DEPDIR)/libcommon_a-quant.Tpo -c -o libcommon_a-quant.obj `if test -f 'quant.c'; then $(CYGPATH_W) 'quant.c'; else $(CYGPATH_W) '$(srcdir)/quant.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-quant.Tpo $(DEPDIR)/libcommon_a-quant.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='quant.c' object='libcommon_a-quant.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-quant.obj `if test -f 'quant.c'; then $(CYGPATH_W) 'quant.c'; else $(CYGPATH_W) '$(srcdir)/quant.c'; fi`
-
-libcommon_a-rectangle.o: rectangle.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-rectangle.o -MD -MP -MF $(DEPDIR)/libcommon_a-rectangle.Tpo -c -o libcommon_a-rectangle.o `test -f 'rectangle.c' || echo '$(srcdir)/'`rectangle.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-rectangle.Tpo $(DEPDIR)/libcommon_a-rectangle.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rectangle.c' object='libcommon_a-rectangle.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-rectangle.o `test -f 'rectangle.c' || echo '$(srcdir)/'`rectangle.c
-
-libcommon_a-rectangle.obj: rectangle.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-rectangle.obj -MD -MP -MF $(DEPDIR)/libcommon_a-rectangle.Tpo -c -o libcommon_a-rectangle.obj `if test -f 'rectangle.c'; then $(CYGPATH_W) 'rectangle.c'; else $(CYGPATH_W) '$(srcdir)/rectangle.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-rectangle.Tpo $(DEPDIR)/libcommon_a-rectangle.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rectangle.c' object='libcommon_a-rectangle.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-rectangle.obj `if test -f 'rectangle.c'; then $(CYGPATH_W) 'rectangle.c'; else $(CYGPATH_W) '$(srcdir)/rectangle.c'; fi`
-
-libcommon_a-set.o: set.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-set.o -MD -MP -MF $(DEPDIR)/libcommon_a-set.Tpo -c -o libcommon_a-set.o `test -f 'set.c' || echo '$(srcdir)/'`set.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-set.Tpo $(DEPDIR)/libcommon_a-set.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='set.c' object='libcommon_a-set.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-set.o `test -f 'set.c' || echo '$(srcdir)/'`set.c
-
-libcommon_a-set.obj: set.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-set.obj -MD -MP -MF $(DEPDIR)/libcommon_a-set.Tpo -c -o libcommon_a-set.obj `if test -f 'set.c'; then $(CYGPATH_W) 'set.c'; else $(CYGPATH_W) '$(srcdir)/set.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-set.Tpo $(DEPDIR)/libcommon_a-set.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='set.c' object='libcommon_a-set.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-set.obj `if test -f 'set.c'; then $(CYGPATH_W) 'set.c'; else $(CYGPATH_W) '$(srcdir)/set.c'; fi`
-
-libcommon_a-vlc.o: vlc.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-vlc.o -MD -MP -MF $(DEPDIR)/libcommon_a-vlc.Tpo -c -o libcommon_a-vlc.o `test -f 'vlc.c' || echo '$(srcdir)/'`vlc.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-vlc.Tpo $(DEPDIR)/libcommon_a-vlc.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='vlc.c' object='libcommon_a-vlc.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-vlc.o `test -f 'vlc.c' || echo '$(srcdir)/'`vlc.c
-
-libcommon_a-vlc.obj: vlc.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -MT libcommon_a-vlc.obj -MD -MP -MF $(DEPDIR)/libcommon_a-vlc.Tpo -c -o libcommon_a-vlc.obj `if test -f 'vlc.c'; then $(CYGPATH_W) 'vlc.c'; else $(CYGPATH_W) '$(srcdir)/vlc.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libcommon_a-vlc.Tpo $(DEPDIR)/libcommon_a-vlc.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='vlc.c' object='libcommon_a-vlc.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcommon_a_CFLAGS) $(CFLAGS) -c -o libcommon_a-vlc.obj `if test -f 'vlc.c'; then $(CYGPATH_W) 'vlc.c'; else $(CYGPATH_W) '$(srcdir)/vlc.c'; fi`
-
-mostlyclean-libtool:
-	-rm -f *.lo
-
-clean-libtool:
-	-rm -rf .libs _libs
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -692,7 +361,7 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LIBRARIES) $(LTLIBRARIES)
+all-am: Makefile $(LIBRARIES)
 installdirs:
 install: install-am
 install-exec: install-exec-am
@@ -726,8 +395,7 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic clean-libtool clean-noinstLIBRARIES \
-	clean-noinstLTLIBRARIES mostlyclean-am
+clean-am: clean-generic clean-noinstLIBRARIES mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -782,8 +450,7 @@ maintainer-clean-am: distclean-am maintainer-clean-generic
 
 mostlyclean: mostlyclean-am
 
-mostlyclean-am: mostlyclean-compile mostlyclean-generic \
-	mostlyclean-libtool
+mostlyclean-am: mostlyclean-compile mostlyclean-generic
 
 pdf: pdf-am
 
@@ -798,9 +465,8 @@ uninstall-am:
 .MAKE: install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
-	clean-libtool clean-noinstLIBRARIES clean-noinstLTLIBRARIES \
-	ctags distclean distclean-compile distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am html \
+	clean-noinstLIBRARIES ctags distclean distclean-compile \
+	distclean-generic distclean-tags distdir dvi dvi-am html \
 	html-am info info-am install install-am install-data \
 	install-data-am install-dvi install-dvi-am install-exec \
 	install-exec-am install-html install-html-am install-info \
@@ -808,9 +474,28 @@ uninstall-am:
 	install-ps install-ps-am install-strip installcheck \
 	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am
+	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
+	uninstall-am
 
+
+# noinst_LTLIBRARIES=libcommon.la
+# libcommon_la_SOURCES = bitstream.h bitstream.c \
+#                        cabac.h cabac.c \
+#                        common.h common.c \
+#                        cpu.h cpu.c \
+#                        dct.h dct.c \
+#                        deblock.c \
+#                        frame.h frame.c \
+#                        macroblock.h macroblock.c \
+#                        mc.h mc.c \
+#                        mvpred.c \
+#                        osdep.h osdep.c \
+#                        pixel.h pixel.c \
+#                        predict.h predict.c \
+#                        quant.h quant.c \
+#                        rectangle.h rectangle.c \
+#                        set.h set.c \
+#                        threadpool.h vlc.c
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

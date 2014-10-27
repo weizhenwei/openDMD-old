@@ -15,7 +15,6 @@
 
 @SET_MAKE@
 
-
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -47,43 +46,31 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 LIBRARIES = $(noinst_LIBRARIES)
+AR = ar
 ARFLAGS = cru
 libencoder_a_AR = $(AR) $(ARFLAGS)
 libencoder_a_LIBADD =
-am_libencoder_a_OBJECTS = libencoder_a-analyse.$(OBJEXT) \
-	libencoder_a-cabac.$(OBJEXT) libencoder_a-cavlc.$(OBJEXT) \
-	libencoder_a-encoder.$(OBJEXT) \
-	libencoder_a-lookahead.$(OBJEXT) \
-	libencoder_a-macroblock.$(OBJEXT) libencoder_a-me.$(OBJEXT) \
-	libencoder_a-ratecontrol.$(OBJEXT) libencoder_a-set.$(OBJEXT)
+am_libencoder_a_OBJECTS = analyse.$(OBJEXT) cabac.$(OBJEXT) \
+	cavlc.$(OBJEXT) encoder.$(OBJEXT) lookahead.$(OBJEXT) \
+	macroblock.$(OBJEXT) me.$(OBJEXT) ratecontrol.$(OBJEXT) \
+	set.$(OBJEXT)
 libencoder_a_OBJECTS = $(am_libencoder_a_OBJECTS)
-LTLIBRARIES = $(noinst_LTLIBRARIES)
-libencoder_la_LIBADD =
-am_libencoder_la_OBJECTS = analyse.lo cabac.lo cavlc.lo encoder.lo \
-	lookahead.lo macroblock.lo me.lo ratecontrol.lo set.lo
-libencoder_la_OBJECTS = $(am_libencoder_la_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
-LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
-SOURCES = $(libencoder_a_SOURCES) $(libencoder_la_SOURCES)
-DIST_SOURCES = $(libencoder_a_SOURCES) $(libencoder_la_SOURCES)
+LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+SOURCES = $(libencoder_a_SOURCES)
+DIST_SOURCES = $(libencoder_a_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 ALLOCA = @ALLOCA@
 AMTAR = @AMTAR@
-AR = @AR@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -96,38 +83,24 @@ CPPFLAGS = @CPPFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
-DLLTOOL = @DLLTOOL@
-DSYMUTIL = @DSYMUTIL@
-DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
-FGREP = @FGREP@
 GREP = @GREP@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
-LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
-LIBTOOL = @LIBTOOL@
-LIPO = @LIPO@
-LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
-MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
-NM = @NM@
-NMEDIT = @NMEDIT@
-OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
-OTOOL = @OTOOL@
-OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -138,7 +111,6 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 POW_LIB = @POW_LIB@
 RANLIB = @RANLIB@
-SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -147,9 +119,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
-ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
-ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
@@ -206,7 +176,7 @@ INCLUDES = -I$(top_srcdir)/libx264 -I$(top_srcdir)/libx264/common \
 noinst_LIBRARIES = libencoder.a
 # to remove the automake complain:
 #         object 'foo.$(OBJEXT)' created both with libtool and without
-libencoder_a_CFLAGS = $(AM_CFLAGS)
+# libencoder_a_CFLAGS = $(AM_CFLAGS)
 libencoder_a_SOURCES = analyse.h analyse.c \
                        cabac.c cavlc.c \
                        encoder.c lookahead.c \
@@ -215,20 +185,20 @@ libencoder_a_SOURCES = analyse.h analyse.c \
                        ratecontrol.h ratecontrol.c \
                        set.h set.c
 
-noinst_LTLIBRARIES = libencoder.la
-libencoder_la_SOURCES = analyse.h analyse.c \
-                        cabac.c cavlc.c \
-                        encoder.c lookahead.c \
-                        macroblock.h macroblock.c \
-                        me.h me.c \
-                        ratecontrol.h ratecontrol.c \
-                        set.h set.c
 
+# noinst_LTLIBRARIES=libencoder.la
+# libencoder_la_SOURCES = analyse.h analyse.c \
+#                         cabac.c cavlc.c \
+#                         encoder.c lookahead.c \
+#                         macroblock.h macroblock.c \
+#                         me.h me.c \
+#                         ratecontrol.h ratecontrol.c \
+#                         set.h set.c
 EXTRA_DIST = rdo.c slicetype.c
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .c .lo .o .obj
+.SUFFIXES: .c .o .obj
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -267,41 +237,21 @@ libencoder.a: $(libencoder_a_OBJECTS) $(libencoder_a_DEPENDENCIES) $(EXTRA_liben
 	$(libencoder_a_AR) libencoder.a $(libencoder_a_OBJECTS) $(libencoder_a_LIBADD)
 	$(RANLIB) libencoder.a
 
-clean-noinstLTLIBRARIES:
-	-test -z "$(noinst_LTLIBRARIES)" || rm -f $(noinst_LTLIBRARIES)
-	@list='$(noinst_LTLIBRARIES)'; for p in $$list; do \
-	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
-	  test "$$dir" != "$$p" || dir=.; \
-	  echo "rm -f \"$${dir}/so_locations\""; \
-	  rm -f "$${dir}/so_locations"; \
-	done
-libencoder.la: $(libencoder_la_OBJECTS) $(libencoder_la_DEPENDENCIES) $(EXTRA_libencoder_la_DEPENDENCIES) 
-	$(LINK)  $(libencoder_la_OBJECTS) $(libencoder_la_LIBADD) $(LIBS)
-
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/analyse.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cabac.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cavlc.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/encoder.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libencoder_a-analyse.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libencoder_a-cabac.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libencoder_a-cavlc.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libencoder_a-encoder.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libencoder_a-lookahead.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libencoder_a-macroblock.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libencoder_a-me.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libencoder_a-ratecontrol.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libencoder_a-set.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lookahead.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/macroblock.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/me.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ratecontrol.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/set.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/analyse.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cabac.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cavlc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/encoder.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lookahead.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/macroblock.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/me.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ratecontrol.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/set.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -316,145 +266,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
-
-.c.lo:
-@am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
-
-libencoder_a-analyse.o: analyse.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -MT libencoder_a-analyse.o -MD -MP -MF $(DEPDIR)/libencoder_a-analyse.Tpo -c -o libencoder_a-analyse.o `test -f 'analyse.c' || echo '$(srcdir)/'`analyse.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libencoder_a-analyse.Tpo $(DEPDIR)/libencoder_a-analyse.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='analyse.c' object='libencoder_a-analyse.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -c -o libencoder_a-analyse.o `test -f 'analyse.c' || echo '$(srcdir)/'`analyse.c
-
-libencoder_a-analyse.obj: analyse.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -MT libencoder_a-analyse.obj -MD -MP -MF $(DEPDIR)/libencoder_a-analyse.Tpo -c -o libencoder_a-analyse.obj `if test -f 'analyse.c'; then $(CYGPATH_W) 'analyse.c'; else $(CYGPATH_W) '$(srcdir)/analyse.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libencoder_a-analyse.Tpo $(DEPDIR)/libencoder_a-analyse.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='analyse.c' object='libencoder_a-analyse.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -c -o libencoder_a-analyse.obj `if test -f 'analyse.c'; then $(CYGPATH_W) 'analyse.c'; else $(CYGPATH_W) '$(srcdir)/analyse.c'; fi`
-
-libencoder_a-cabac.o: cabac.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -MT libencoder_a-cabac.o -MD -MP -MF $(DEPDIR)/libencoder_a-cabac.Tpo -c -o libencoder_a-cabac.o `test -f 'cabac.c' || echo '$(srcdir)/'`cabac.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libencoder_a-cabac.Tpo $(DEPDIR)/libencoder_a-cabac.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cabac.c' object='libencoder_a-cabac.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -c -o libencoder_a-cabac.o `test -f 'cabac.c' || echo '$(srcdir)/'`cabac.c
-
-libencoder_a-cabac.obj: cabac.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -MT libencoder_a-cabac.obj -MD -MP -MF $(DEPDIR)/libencoder_a-cabac.Tpo -c -o libencoder_a-cabac.obj `if test -f 'cabac.c'; then $(CYGPATH_W) 'cabac.c'; else $(CYGPATH_W) '$(srcdir)/cabac.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libencoder_a-cabac.Tpo $(DEPDIR)/libencoder_a-cabac.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cabac.c' object='libencoder_a-cabac.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -c -o libencoder_a-cabac.obj `if test -f 'cabac.c'; then $(CYGPATH_W) 'cabac.c'; else $(CYGPATH_W) '$(srcdir)/cabac.c'; fi`
-
-libencoder_a-cavlc.o: cavlc.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -MT libencoder_a-cavlc.o -MD -MP -MF $(DEPDIR)/libencoder_a-cavlc.Tpo -c -o libencoder_a-cavlc.o `test -f 'cavlc.c' || echo '$(srcdir)/'`cavlc.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libencoder_a-cavlc.Tpo $(DEPDIR)/libencoder_a-cavlc.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cavlc.c' object='libencoder_a-cavlc.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -c -o libencoder_a-cavlc.o `test -f 'cavlc.c' || echo '$(srcdir)/'`cavlc.c
-
-libencoder_a-cavlc.obj: cavlc.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -MT libencoder_a-cavlc.obj -MD -MP -MF $(DEPDIR)/libencoder_a-cavlc.Tpo -c -o libencoder_a-cavlc.obj `if test -f 'cavlc.c'; then $(CYGPATH_W) 'cavlc.c'; else $(CYGPATH_W) '$(srcdir)/cavlc.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libencoder_a-cavlc.Tpo $(DEPDIR)/libencoder_a-cavlc.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cavlc.c' object='libencoder_a-cavlc.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -c -o libencoder_a-cavlc.obj `if test -f 'cavlc.c'; then $(CYGPATH_W) 'cavlc.c'; else $(CYGPATH_W) '$(srcdir)/cavlc.c'; fi`
-
-libencoder_a-encoder.o: encoder.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -MT libencoder_a-encoder.o -MD -MP -MF $(DEPDIR)/libencoder_a-encoder.Tpo -c -o libencoder_a-encoder.o `test -f 'encoder.c' || echo '$(srcdir)/'`encoder.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libencoder_a-encoder.Tpo $(DEPDIR)/libencoder_a-encoder.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='encoder.c' object='libencoder_a-encoder.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -c -o libencoder_a-encoder.o `test -f 'encoder.c' || echo '$(srcdir)/'`encoder.c
-
-libencoder_a-encoder.obj: encoder.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -MT libencoder_a-encoder.obj -MD -MP -MF $(DEPDIR)/libencoder_a-encoder.Tpo -c -o libencoder_a-encoder.obj `if test -f 'encoder.c'; then $(CYGPATH_W) 'encoder.c'; else $(CYGPATH_W) '$(srcdir)/encoder.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libencoder_a-encoder.Tpo $(DEPDIR)/libencoder_a-encoder.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='encoder.c' object='libencoder_a-encoder.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -c -o libencoder_a-encoder.obj `if test -f 'encoder.c'; then $(CYGPATH_W) 'encoder.c'; else $(CYGPATH_W) '$(srcdir)/encoder.c'; fi`
-
-libencoder_a-lookahead.o: lookahead.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -MT libencoder_a-lookahead.o -MD -MP -MF $(DEPDIR)/libencoder_a-lookahead.Tpo -c -o libencoder_a-lookahead.o `test -f 'lookahead.c' || echo '$(srcdir)/'`lookahead.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libencoder_a-lookahead.Tpo $(DEPDIR)/libencoder_a-lookahead.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='lookahead.c' object='libencoder_a-lookahead.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -c -o libencoder_a-lookahead.o `test -f 'lookahead.c' || echo '$(srcdir)/'`lookahead.c
-
-libencoder_a-lookahead.obj: lookahead.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -MT libencoder_a-lookahead.obj -MD -MP -MF $(DEPDIR)/libencoder_a-lookahead.Tpo -c -o libencoder_a-lookahead.obj `if test -f 'lookahead.c'; then $(CYGPATH_W) 'lookahead.c'; else $(CYGPATH_W) '$(srcdir)/lookahead.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libencoder_a-lookahead.Tpo $(DEPDIR)/libencoder_a-lookahead.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='lookahead.c' object='libencoder_a-lookahead.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -c -o libencoder_a-lookahead.obj `if test -f 'lookahead.c'; then $(CYGPATH_W) 'lookahead.c'; else $(CYGPATH_W) '$(srcdir)/lookahead.c'; fi`
-
-libencoder_a-macroblock.o: macroblock.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -MT libencoder_a-macroblock.o -MD -MP -MF $(DEPDIR)/libencoder_a-macroblock.Tpo -c -o libencoder_a-macroblock.o `test -f 'macroblock.c' || echo '$(srcdir)/'`macroblock.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libencoder_a-macroblock.Tpo $(DEPDIR)/libencoder_a-macroblock.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='macroblock.c' object='libencoder_a-macroblock.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -c -o libencoder_a-macroblock.o `test -f 'macroblock.c' || echo '$(srcdir)/'`macroblock.c
-
-libencoder_a-macroblock.obj: macroblock.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -MT libencoder_a-macroblock.obj -MD -MP -MF $(DEPDIR)/libencoder_a-macroblock.Tpo -c -o libencoder_a-macroblock.obj `if test -f 'macroblock.c'; then $(CYGPATH_W) 'macroblock.c'; else $(CYGPATH_W) '$(srcdir)/macroblock.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libencoder_a-macroblock.Tpo $(DEPDIR)/libencoder_a-macroblock.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='macroblock.c' object='libencoder_a-macroblock.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -c -o libencoder_a-macroblock.obj `if test -f 'macroblock.c'; then $(CYGPATH_W) 'macroblock.c'; else $(CYGPATH_W) '$(srcdir)/macroblock.c'; fi`
-
-libencoder_a-me.o: me.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -MT libencoder_a-me.o -MD -MP -MF $(DEPDIR)/libencoder_a-me.Tpo -c -o libencoder_a-me.o `test -f 'me.c' || echo '$(srcdir)/'`me.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libencoder_a-me.Tpo $(DEPDIR)/libencoder_a-me.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='me.c' object='libencoder_a-me.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -c -o libencoder_a-me.o `test -f 'me.c' || echo '$(srcdir)/'`me.c
-
-libencoder_a-me.obj: me.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -MT libencoder_a-me.obj -MD -MP -MF $(DEPDIR)/libencoder_a-me.Tpo -c -o libencoder_a-me.obj `if test -f 'me.c'; then $(CYGPATH_W) 'me.c'; else $(CYGPATH_W) '$(srcdir)/me.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libencoder_a-me.Tpo $(DEPDIR)/libencoder_a-me.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='me.c' object='libencoder_a-me.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -c -o libencoder_a-me.obj `if test -f 'me.c'; then $(CYGPATH_W) 'me.c'; else $(CYGPATH_W) '$(srcdir)/me.c'; fi`
-
-libencoder_a-ratecontrol.o: ratecontrol.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -MT libencoder_a-ratecontrol.o -MD -MP -MF $(DEPDIR)/libencoder_a-ratecontrol.Tpo -c -o libencoder_a-ratecontrol.o `test -f 'ratecontrol.c' || echo '$(srcdir)/'`ratecontrol.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libencoder_a-ratecontrol.Tpo $(DEPDIR)/libencoder_a-ratecontrol.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ratecontrol.c' object='libencoder_a-ratecontrol.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -c -o libencoder_a-ratecontrol.o `test -f 'ratecontrol.c' || echo '$(srcdir)/'`ratecontrol.c
-
-libencoder_a-ratecontrol.obj: ratecontrol.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -MT libencoder_a-ratecontrol.obj -MD -MP -MF $(DEPDIR)/libencoder_a-ratecontrol.Tpo -c -o libencoder_a-ratecontrol.obj `if test -f 'ratecontrol.c'; then $(CYGPATH_W) 'ratecontrol.c'; else $(CYGPATH_W) '$(srcdir)/ratecontrol.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libencoder_a-ratecontrol.Tpo $(DEPDIR)/libencoder_a-ratecontrol.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ratecontrol.c' object='libencoder_a-ratecontrol.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -c -o libencoder_a-ratecontrol.obj `if test -f 'ratecontrol.c'; then $(CYGPATH_W) 'ratecontrol.c'; else $(CYGPATH_W) '$(srcdir)/ratecontrol.c'; fi`
-
-libencoder_a-set.o: set.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -MT libencoder_a-set.o -MD -MP -MF $(DEPDIR)/libencoder_a-set.Tpo -c -o libencoder_a-set.o `test -f 'set.c' || echo '$(srcdir)/'`set.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libencoder_a-set.Tpo $(DEPDIR)/libencoder_a-set.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='set.c' object='libencoder_a-set.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -c -o libencoder_a-set.o `test -f 'set.c' || echo '$(srcdir)/'`set.c
-
-libencoder_a-set.obj: set.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -MT libencoder_a-set.obj -MD -MP -MF $(DEPDIR)/libencoder_a-set.Tpo -c -o libencoder_a-set.obj `if test -f 'set.c'; then $(CYGPATH_W) 'set.c'; else $(CYGPATH_W) '$(srcdir)/set.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libencoder_a-set.Tpo $(DEPDIR)/libencoder_a-set.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='set.c' object='libencoder_a-set.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libencoder_a_CFLAGS) $(CFLAGS) -c -o libencoder_a-set.obj `if test -f 'set.c'; then $(CYGPATH_W) 'set.c'; else $(CYGPATH_W) '$(srcdir)/set.c'; fi`
-
-mostlyclean-libtool:
-	-rm -f *.lo
-
-clean-libtool:
-	-rm -rf .libs _libs
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -540,7 +351,7 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LIBRARIES) $(LTLIBRARIES)
+all-am: Makefile $(LIBRARIES)
 installdirs:
 install: install-am
 install-exec: install-exec-am
@@ -574,8 +385,7 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic clean-libtool clean-noinstLIBRARIES \
-	clean-noinstLTLIBRARIES mostlyclean-am
+clean-am: clean-generic clean-noinstLIBRARIES mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -630,8 +440,7 @@ maintainer-clean-am: distclean-am maintainer-clean-generic
 
 mostlyclean: mostlyclean-am
 
-mostlyclean-am: mostlyclean-compile mostlyclean-generic \
-	mostlyclean-libtool
+mostlyclean-am: mostlyclean-compile mostlyclean-generic
 
 pdf: pdf-am
 
@@ -646,9 +455,8 @@ uninstall-am:
 .MAKE: install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
-	clean-libtool clean-noinstLIBRARIES clean-noinstLTLIBRARIES \
-	ctags distclean distclean-compile distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am html \
+	clean-noinstLIBRARIES ctags distclean distclean-compile \
+	distclean-generic distclean-tags distdir dvi dvi-am html \
 	html-am info info-am install install-am install-data \
 	install-data-am install-dvi install-dvi-am install-exec \
 	install-exec-am install-html install-html-am install-info \
@@ -656,8 +464,8 @@ uninstall-am:
 	install-ps install-ps-am install-strip installcheck \
 	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am
+	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
+	uninstall-am
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

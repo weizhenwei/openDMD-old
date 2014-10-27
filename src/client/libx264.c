@@ -338,7 +338,7 @@ static int pack_nals(const char *h264file, x264_nal_t *nals, int nnal) {
 }
 
 // write nalu to flv file and/or network;
-static int write_nals_wzw(const char *h264file, x264_nal_t *nals, int nnal) {
+static int write_nals_abc(const char *h264file, x264_nal_t *nals, int nnal) {
     dmd_log(LOG_DEBUG, "in function %s, at the beginning\n", __func__);
     x264_nal_t *nal = nals;
     enum cluster_mode_t cluster_mode = global.cluster_mode;

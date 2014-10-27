@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS = foreign
 
 SUBDIRS = client server webserver
 
-sbin_PROGRAMS = openDMD
+bin_PROGRAMS = openDMD
 
 INCLUDES = -I$(top_srcdir)/libjpeg -I$(top_srcdir)/libsqlite/src \
            -I$(top_srcdir)/libortp/include -I$(top_srcdir)/libortp \
@@ -31,23 +31,10 @@ openDMD_LDADD = $(top_srcdir)/src/client/flv_muxer.o \
                 $(top_srcdir)/libsqlite/src/libsqlite3.a \
                 $(top_srcdir)/libx264/libx264.a 
 
-#                 $(top_srcdir)/libjpeg/libjpeg.la 
-#                 $(top_srcdir)/libortp/src/libortp.la 
-#                 $(top_srcdir)/libsqlite/src/libsqlite3.la 
-#                 $(top_srcdir)/libx264/libx264.la 
-#                 -lm -lpthread -lrt -ldl
-
-#                -L$(top_srcdir)/libjpeg -ljpeg
-#                -L$(top_srcdir)/libortp/src -lortp
-#                -L$(top_srcdir)/libsqlite/src -lsqlite3
-#                -L$(top_srcdir)/libx264 -lx264
-#
-
 # Warning: system library should be assigned here using LIBS;
 # using openDMD_LDFLAGS at here doesn't work!
 # using LDFLAGS in configure.ac doesn't work, either!
 # -lrt for function clock_gettime()
-# LIBS = -lm -lpthread -lrt -ldl -ljpeg -lortp -lsqlite3 -lx264
 LIBS = -lm -lpthread -lrt -ldl
 
 # source files in ./src dirctory;

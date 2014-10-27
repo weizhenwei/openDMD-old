@@ -10,7 +10,7 @@ lib_LIBRARIES=libx264.a
 libx264_a_SOURCES = x264.h x264_config.h x264cli.h
 # to remove the automake complain:
 #         object 'foo.$(OBJEXT)' created both with libtool and without
-libx264_a_CFLAGS = $(AM_CFLAGS)
+# libx264_a_CFLAGS = $(AM_CFLAGS)
 libx264_a_LIBADD = common/mc.o \
                    common/predict.o \
                    common/pixel.o \

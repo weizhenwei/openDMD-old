@@ -8,7 +8,7 @@ lib_LIBRARIES = libortp.a
 # libortp_a_LIBADD= -lm -lpthread -lrt
 # to remove the automake complain:
 #         object 'foo.$(OBJEXT)' created both with libtool and without
-libortp_a_CFLAGS = $(AM_CFLAGS)
+# libortp_a_CFLAGS = $(AM_CFLAGS)
 libortp_a_SOURCES = str_utils.c \
                     port.c \
                     logging.c \

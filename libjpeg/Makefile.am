@@ -5,7 +5,7 @@ ACLOCAL_AMFLAGS = "-I m4"
 lib_LIBRARIES = libjpeg.a
 # to remove the automake complain:
 #         object 'foo.$(OBJEXT)' created both with libtool and without
-libjpeg_a_CFLAGS = $(AM_CFLAGS)
+# libjpeg_a_CFLAGS = $(AM_CFLAGS)
 libjpeg_a_SOURCES = jaricom.c jcapimin.c jcapistd.c jcarith.c jccoefct.c \
                     jccolor.c jcdctmgr.c jchuff.c jcinit.c jcmainct.c \
                     jcmarker.c jcmaster.c jcomapi.c jcparam.c jcprepct.c \

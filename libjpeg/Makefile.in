@@ -76,33 +76,26 @@ am__uninstall_files_from_dir = { \
   }
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"
 LIBRARIES = $(lib_LIBRARIES)
+AR = ar
 ARFLAGS = cru
 libjpeg_a_AR = $(AR) $(ARFLAGS)
 libjpeg_a_LIBADD =
-am_libjpeg_a_OBJECTS = libjpeg_a-jaricom.$(OBJEXT) \
-	libjpeg_a-jcapimin.$(OBJEXT) libjpeg_a-jcapistd.$(OBJEXT) \
-	libjpeg_a-jcarith.$(OBJEXT) libjpeg_a-jccoefct.$(OBJEXT) \
-	libjpeg_a-jccolor.$(OBJEXT) libjpeg_a-jcdctmgr.$(OBJEXT) \
-	libjpeg_a-jchuff.$(OBJEXT) libjpeg_a-jcinit.$(OBJEXT) \
-	libjpeg_a-jcmainct.$(OBJEXT) libjpeg_a-jcmarker.$(OBJEXT) \
-	libjpeg_a-jcmaster.$(OBJEXT) libjpeg_a-jcomapi.$(OBJEXT) \
-	libjpeg_a-jcparam.$(OBJEXT) libjpeg_a-jcprepct.$(OBJEXT) \
-	libjpeg_a-jcsample.$(OBJEXT) libjpeg_a-jctrans.$(OBJEXT) \
-	libjpeg_a-jdapimin.$(OBJEXT) libjpeg_a-jdapistd.$(OBJEXT) \
-	libjpeg_a-jdarith.$(OBJEXT) libjpeg_a-jdatadst.$(OBJEXT) \
-	libjpeg_a-jdatasrc.$(OBJEXT) libjpeg_a-jdcoefct.$(OBJEXT) \
-	libjpeg_a-jdcolor.$(OBJEXT) libjpeg_a-jddctmgr.$(OBJEXT) \
-	libjpeg_a-jdhuff.$(OBJEXT) libjpeg_a-jdinput.$(OBJEXT) \
-	libjpeg_a-jdmainct.$(OBJEXT) libjpeg_a-jdmarker.$(OBJEXT) \
-	libjpeg_a-jdmaster.$(OBJEXT) libjpeg_a-jdmerge.$(OBJEXT) \
-	libjpeg_a-jdpostct.$(OBJEXT) libjpeg_a-jdsample.$(OBJEXT) \
-	libjpeg_a-jdtrans.$(OBJEXT) libjpeg_a-jerror.$(OBJEXT) \
-	libjpeg_a-jfdctflt.$(OBJEXT) libjpeg_a-jfdctfst.$(OBJEXT) \
-	libjpeg_a-jfdctint.$(OBJEXT) libjpeg_a-jidctflt.$(OBJEXT) \
-	libjpeg_a-jidctfst.$(OBJEXT) libjpeg_a-jidctint.$(OBJEXT) \
-	libjpeg_a-jquant1.$(OBJEXT) libjpeg_a-jquant2.$(OBJEXT) \
-	libjpeg_a-jutils.$(OBJEXT) libjpeg_a-jmemmgr.$(OBJEXT) \
-	libjpeg_a-jmemnobs.$(OBJEXT)
+am_libjpeg_a_OBJECTS = jaricom.$(OBJEXT) jcapimin.$(OBJEXT) \
+	jcapistd.$(OBJEXT) jcarith.$(OBJEXT) jccoefct.$(OBJEXT) \
+	jccolor.$(OBJEXT) jcdctmgr.$(OBJEXT) jchuff.$(OBJEXT) \
+	jcinit.$(OBJEXT) jcmainct.$(OBJEXT) jcmarker.$(OBJEXT) \
+	jcmaster.$(OBJEXT) jcomapi.$(OBJEXT) jcparam.$(OBJEXT) \
+	jcprepct.$(OBJEXT) jcsample.$(OBJEXT) jctrans.$(OBJEXT) \
+	jdapimin.$(OBJEXT) jdapistd.$(OBJEXT) jdarith.$(OBJEXT) \
+	jdatadst.$(OBJEXT) jdatasrc.$(OBJEXT) jdcoefct.$(OBJEXT) \
+	jdcolor.$(OBJEXT) jddctmgr.$(OBJEXT) jdhuff.$(OBJEXT) \
+	jdinput.$(OBJEXT) jdmainct.$(OBJEXT) jdmarker.$(OBJEXT) \
+	jdmaster.$(OBJEXT) jdmerge.$(OBJEXT) jdpostct.$(OBJEXT) \
+	jdsample.$(OBJEXT) jdtrans.$(OBJEXT) jerror.$(OBJEXT) \
+	jfdctflt.$(OBJEXT) jfdctfst.$(OBJEXT) jfdctint.$(OBJEXT) \
+	jidctflt.$(OBJEXT) jidctfst.$(OBJEXT) jidctint.$(OBJEXT) \
+	jquant1.$(OBJEXT) jquant2.$(OBJEXT) jutils.$(OBJEXT) \
+	jmemmgr.$(OBJEXT) jmemnobs.$(OBJEXT)
 libjpeg_a_OBJECTS = $(am_libjpeg_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -110,13 +103,8 @@ am__depfiles_maybe = depfiles
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
-LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
+LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(libjpeg_a_SOURCES)
 DIST_SOURCES = $(libjpeg_a_SOURCES)
 HEADERS = $(include_HEADERS)
@@ -126,7 +114,6 @@ DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 ALLOCA = @ALLOCA@
 AMTAR = @AMTAR@
-AR = @AR@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -139,38 +126,24 @@ CPPFLAGS = @CPPFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
-DLLTOOL = @DLLTOOL@
-DSYMUTIL = @DSYMUTIL@
-DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
-FGREP = @FGREP@
 GREP = @GREP@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
-LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
-LIBTOOL = @LIBTOOL@
-LIPO = @LIPO@
-LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
-MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
-NM = @NM@
-NMEDIT = @NMEDIT@
-OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
-OTOOL = @OTOOL@
-OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -181,7 +154,6 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 POW_LIB = @POW_LIB@
 RANLIB = @RANLIB@
-SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -190,9 +162,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
-ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
-ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
@@ -247,7 +217,7 @@ ACLOCAL_AMFLAGS = "-I m4"
 lib_LIBRARIES = libjpeg.a
 # to remove the automake complain:
 #         object 'foo.$(OBJEXT)' created both with libtool and without
-libjpeg_a_CFLAGS = $(AM_CFLAGS)
+# libjpeg_a_CFLAGS = $(AM_CFLAGS)
 libjpeg_a_SOURCES = jaricom.c jcapimin.c jcapistd.c jcarith.c jccoefct.c \
                     jccolor.c jcdctmgr.c jchuff.c jcinit.c jcmainct.c \
                     jcmarker.c jcmaster.c jcomapi.c jcparam.c jcprepct.c \
@@ -281,7 +251,7 @@ include_HEADERS = jerror.h jmorecfg.h jpeglib.h
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .c .lo .o .obj
+.SUFFIXES: .c .o .obj
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -353,52 +323,52 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jaricom.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jcapimin.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jcapistd.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jcarith.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jccoefct.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jccolor.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jcdctmgr.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jchuff.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jcinit.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jcmainct.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jcmarker.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jcmaster.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jcomapi.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jcparam.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jcprepct.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jcsample.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jctrans.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jdapimin.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jdapistd.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jdarith.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jdatadst.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jdatasrc.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jdcoefct.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jdcolor.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jddctmgr.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jdhuff.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jdinput.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jdmainct.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jdmarker.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jdmaster.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jdmerge.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jdpostct.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jdsample.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jdtrans.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jerror.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jfdctflt.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jfdctfst.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jfdctint.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jidctflt.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jidctfst.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jidctint.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jmemmgr.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jmemnobs.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jquant1.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jquant2.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjpeg_a-jutils.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jaricom.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jcapimin.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jcapistd.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jcarith.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jccoefct.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jccolor.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jcdctmgr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jchuff.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jcinit.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jcmainct.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jcmarker.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jcmaster.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jcomapi.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jcparam.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jcprepct.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jcsample.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jctrans.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdapimin.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdapistd.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdarith.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdatadst.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdatasrc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdcoefct.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdcolor.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jddctmgr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdhuff.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdinput.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdmainct.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdmarker.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdmaster.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdmerge.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdpostct.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdsample.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jdtrans.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jerror.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jfdctflt.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jfdctfst.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jfdctint.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jidctflt.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jidctfst.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jidctint.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jmemmgr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jmemnobs.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jquant1.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jquant2.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jutils.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -413,663 +383,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
-
-.c.lo:
-@am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
-
-libjpeg_a-jaricom.o: jaricom.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jaricom.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jaricom.Tpo -c -o libjpeg_a-jaricom.o `test -f 'jaricom.c' || echo '$(srcdir)/'`jaricom.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jaricom.Tpo $(DEPDIR)/libjpeg_a-jaricom.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jaricom.c' object='libjpeg_a-jaricom.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jaricom.o `test -f 'jaricom.c' || echo '$(srcdir)/'`jaricom.c
-
-libjpeg_a-jaricom.obj: jaricom.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jaricom.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jaricom.Tpo -c -o libjpeg_a-jaricom.obj `if test -f 'jaricom.c'; then $(CYGPATH_W) 'jaricom.c'; else $(CYGPATH_W) '$(srcdir)/jaricom.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jaricom.Tpo $(DEPDIR)/libjpeg_a-jaricom.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jaricom.c' object='libjpeg_a-jaricom.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jaricom.obj `if test -f 'jaricom.c'; then $(CYGPATH_W) 'jaricom.c'; else $(CYGPATH_W) '$(srcdir)/jaricom.c'; fi`
-
-libjpeg_a-jcapimin.o: jcapimin.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jcapimin.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jcapimin.Tpo -c -o libjpeg_a-jcapimin.o `test -f 'jcapimin.c' || echo '$(srcdir)/'`jcapimin.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jcapimin.Tpo $(DEPDIR)/libjpeg_a-jcapimin.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jcapimin.c' object='libjpeg_a-jcapimin.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jcapimin.o `test -f 'jcapimin.c' || echo '$(srcdir)/'`jcapimin.c
-
-libjpeg_a-jcapimin.obj: jcapimin.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jcapimin.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jcapimin.Tpo -c -o libjpeg_a-jcapimin.obj `if test -f 'jcapimin.c'; then $(CYGPATH_W) 'jcapimin.c'; else $(CYGPATH_W) '$(srcdir)/jcapimin.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jcapimin.Tpo $(DEPDIR)/libjpeg_a-jcapimin.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jcapimin.c' object='libjpeg_a-jcapimin.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jcapimin.obj `if test -f 'jcapimin.c'; then $(CYGPATH_W) 'jcapimin.c'; else $(CYGPATH_W) '$(srcdir)/jcapimin.c'; fi`
-
-libjpeg_a-jcapistd.o: jcapistd.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jcapistd.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jcapistd.Tpo -c -o libjpeg_a-jcapistd.o `test -f 'jcapistd.c' || echo '$(srcdir)/'`jcapistd.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jcapistd.Tpo $(DEPDIR)/libjpeg_a-jcapistd.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jcapistd.c' object='libjpeg_a-jcapistd.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jcapistd.o `test -f 'jcapistd.c' || echo '$(srcdir)/'`jcapistd.c
-
-libjpeg_a-jcapistd.obj: jcapistd.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jcapistd.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jcapistd.Tpo -c -o libjpeg_a-jcapistd.obj `if test -f 'jcapistd.c'; then $(CYGPATH_W) 'jcapistd.c'; else $(CYGPATH_W) '$(srcdir)/jcapistd.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jcapistd.Tpo $(DEPDIR)/libjpeg_a-jcapistd.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jcapistd.c' object='libjpeg_a-jcapistd.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jcapistd.obj `if test -f 'jcapistd.c'; then $(CYGPATH_W) 'jcapistd.c'; else $(CYGPATH_W) '$(srcdir)/jcapistd.c'; fi`
-
-libjpeg_a-jcarith.o: jcarith.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jcarith.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jcarith.Tpo -c -o libjpeg_a-jcarith.o `test -f 'jcarith.c' || echo '$(srcdir)/'`jcarith.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jcarith.Tpo $(DEPDIR)/libjpeg_a-jcarith.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jcarith.c' object='libjpeg_a-jcarith.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jcarith.o `test -f 'jcarith.c' || echo '$(srcdir)/'`jcarith.c
-
-libjpeg_a-jcarith.obj: jcarith.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jcarith.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jcarith.Tpo -c -o libjpeg_a-jcarith.obj `if test -f 'jcarith.c'; then $(CYGPATH_W) 'jcarith.c'; else $(CYGPATH_W) '$(srcdir)/jcarith.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jcarith.Tpo $(DEPDIR)/libjpeg_a-jcarith.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jcarith.c' object='libjpeg_a-jcarith.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jcarith.obj `if test -f 'jcarith.c'; then $(CYGPATH_W) 'jcarith.c'; else $(CYGPATH_W) '$(srcdir)/jcarith.c'; fi`
-
-libjpeg_a-jccoefct.o: jccoefct.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jccoefct.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jccoefct.Tpo -c -o libjpeg_a-jccoefct.o `test -f 'jccoefct.c' || echo '$(srcdir)/'`jccoefct.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jccoefct.Tpo $(DEPDIR)/libjpeg_a-jccoefct.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jccoefct.c' object='libjpeg_a-jccoefct.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jccoefct.o `test -f 'jccoefct.c' || echo '$(srcdir)/'`jccoefct.c
-
-libjpeg_a-jccoefct.obj: jccoefct.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jccoefct.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jccoefct.Tpo -c -o libjpeg_a-jccoefct.obj `if test -f 'jccoefct.c'; then $(CYGPATH_W) 'jccoefct.c'; else $(CYGPATH_W) '$(srcdir)/jccoefct.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jccoefct.Tpo $(DEPDIR)/libjpeg_a-jccoefct.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jccoefct.c' object='libjpeg_a-jccoefct.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jccoefct.obj `if test -f 'jccoefct.c'; then $(CYGPATH_W) 'jccoefct.c'; else $(CYGPATH_W) '$(srcdir)/jccoefct.c'; fi`
-
-libjpeg_a-jccolor.o: jccolor.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jccolor.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jccolor.Tpo -c -o libjpeg_a-jccolor.o `test -f 'jccolor.c' || echo '$(srcdir)/'`jccolor.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jccolor.Tpo $(DEPDIR)/libjpeg_a-jccolor.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jccolor.c' object='libjpeg_a-jccolor.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jccolor.o `test -f 'jccolor.c' || echo '$(srcdir)/'`jccolor.c
-
-libjpeg_a-jccolor.obj: jccolor.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jccolor.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jccolor.Tpo -c -o libjpeg_a-jccolor.obj `if test -f 'jccolor.c'; then $(CYGPATH_W) 'jccolor.c'; else $(CYGPATH_W) '$(srcdir)/jccolor.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jccolor.Tpo $(DEPDIR)/libjpeg_a-jccolor.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jccolor.c' object='libjpeg_a-jccolor.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jccolor.obj `if test -f 'jccolor.c'; then $(CYGPATH_W) 'jccolor.c'; else $(CYGPATH_W) '$(srcdir)/jccolor.c'; fi`
-
-libjpeg_a-jcdctmgr.o: jcdctmgr.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jcdctmgr.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jcdctmgr.Tpo -c -o libjpeg_a-jcdctmgr.o `test -f 'jcdctmgr.c' || echo '$(srcdir)/'`jcdctmgr.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jcdctmgr.Tpo $(DEPDIR)/libjpeg_a-jcdctmgr.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jcdctmgr.c' object='libjpeg_a-jcdctmgr.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jcdctmgr.o `test -f 'jcdctmgr.c' || echo '$(srcdir)/'`jcdctmgr.c
-
-libjpeg_a-jcdctmgr.obj: jcdctmgr.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jcdctmgr.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jcdctmgr.Tpo -c -o libjpeg_a-jcdctmgr.obj `if test -f 'jcdctmgr.c'; then $(CYGPATH_W) 'jcdctmgr.c'; else $(CYGPATH_W) '$(srcdir)/jcdctmgr.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jcdctmgr.Tpo $(DEPDIR)/libjpeg_a-jcdctmgr.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jcdctmgr.c' object='libjpeg_a-jcdctmgr.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jcdctmgr.obj `if test -f 'jcdctmgr.c'; then $(CYGPATH_W) 'jcdctmgr.c'; else $(CYGPATH_W) '$(srcdir)/jcdctmgr.c'; fi`
-
-libjpeg_a-jchuff.o: jchuff.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jchuff.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jchuff.Tpo -c -o libjpeg_a-jchuff.o `test -f 'jchuff.c' || echo '$(srcdir)/'`jchuff.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jchuff.Tpo $(DEPDIR)/libjpeg_a-jchuff.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jchuff.c' object='libjpeg_a-jchuff.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jchuff.o `test -f 'jchuff.c' || echo '$(srcdir)/'`jchuff.c
-
-libjpeg_a-jchuff.obj: jchuff.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jchuff.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jchuff.Tpo -c -o libjpeg_a-jchuff.obj `if test -f 'jchuff.c'; then $(CYGPATH_W) 'jchuff.c'; else $(CYGPATH_W) '$(srcdir)/jchuff.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jchuff.Tpo $(DEPDIR)/libjpeg_a-jchuff.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jchuff.c' object='libjpeg_a-jchuff.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jchuff.obj `if test -f 'jchuff.c'; then $(CYGPATH_W) 'jchuff.c'; else $(CYGPATH_W) '$(srcdir)/jchuff.c'; fi`
-
-libjpeg_a-jcinit.o: jcinit.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jcinit.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jcinit.Tpo -c -o libjpeg_a-jcinit.o `test -f 'jcinit.c' || echo '$(srcdir)/'`jcinit.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jcinit.Tpo $(DEPDIR)/libjpeg_a-jcinit.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jcinit.c' object='libjpeg_a-jcinit.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jcinit.o `test -f 'jcinit.c' || echo '$(srcdir)/'`jcinit.c
-
-libjpeg_a-jcinit.obj: jcinit.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jcinit.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jcinit.Tpo -c -o libjpeg_a-jcinit.obj `if test -f 'jcinit.c'; then $(CYGPATH_W) 'jcinit.c'; else $(CYGPATH_W) '$(srcdir)/jcinit.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jcinit.Tpo $(DEPDIR)/libjpeg_a-jcinit.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jcinit.c' object='libjpeg_a-jcinit.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jcinit.obj `if test -f 'jcinit.c'; then $(CYGPATH_W) 'jcinit.c'; else $(CYGPATH_W) '$(srcdir)/jcinit.c'; fi`
-
-libjpeg_a-jcmainct.o: jcmainct.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jcmainct.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jcmainct.Tpo -c -o libjpeg_a-jcmainct.o `test -f 'jcmainct.c' || echo '$(srcdir)/'`jcmainct.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jcmainct.Tpo $(DEPDIR)/libjpeg_a-jcmainct.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jcmainct.c' object='libjpeg_a-jcmainct.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jcmainct.o `test -f 'jcmainct.c' || echo '$(srcdir)/'`jcmainct.c
-
-libjpeg_a-jcmainct.obj: jcmainct.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jcmainct.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jcmainct.Tpo -c -o libjpeg_a-jcmainct.obj `if test -f 'jcmainct.c'; then $(CYGPATH_W) 'jcmainct.c'; else $(CYGPATH_W) '$(srcdir)/jcmainct.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jcmainct.Tpo $(DEPDIR)/libjpeg_a-jcmainct.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jcmainct.c' object='libjpeg_a-jcmainct.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jcmainct.obj `if test -f 'jcmainct.c'; then $(CYGPATH_W) 'jcmainct.c'; else $(CYGPATH_W) '$(srcdir)/jcmainct.c'; fi`
-
-libjpeg_a-jcmarker.o: jcmarker.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jcmarker.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jcmarker.Tpo -c -o libjpeg_a-jcmarker.o `test -f 'jcmarker.c' || echo '$(srcdir)/'`jcmarker.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jcmarker.Tpo $(DEPDIR)/libjpeg_a-jcmarker.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jcmarker.c' object='libjpeg_a-jcmarker.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jcmarker.o `test -f 'jcmarker.c' || echo '$(srcdir)/'`jcmarker.c
-
-libjpeg_a-jcmarker.obj: jcmarker.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jcmarker.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jcmarker.Tpo -c -o libjpeg_a-jcmarker.obj `if test -f 'jcmarker.c'; then $(CYGPATH_W) 'jcmarker.c'; else $(CYGPATH_W) '$(srcdir)/jcmarker.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jcmarker.Tpo $(DEPDIR)/libjpeg_a-jcmarker.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jcmarker.c' object='libjpeg_a-jcmarker.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jcmarker.obj `if test -f 'jcmarker.c'; then $(CYGPATH_W) 'jcmarker.c'; else $(CYGPATH_W) '$(srcdir)/jcmarker.c'; fi`
-
-libjpeg_a-jcmaster.o: jcmaster.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jcmaster.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jcmaster.Tpo -c -o libjpeg_a-jcmaster.o `test -f 'jcmaster.c' || echo '$(srcdir)/'`jcmaster.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jcmaster.Tpo $(DEPDIR)/libjpeg_a-jcmaster.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jcmaster.c' object='libjpeg_a-jcmaster.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jcmaster.o `test -f 'jcmaster.c' || echo '$(srcdir)/'`jcmaster.c
-
-libjpeg_a-jcmaster.obj: jcmaster.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jcmaster.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jcmaster.Tpo -c -o libjpeg_a-jcmaster.obj `if test -f 'jcmaster.c'; then $(CYGPATH_W) 'jcmaster.c'; else $(CYGPATH_W) '$(srcdir)/jcmaster.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jcmaster.Tpo $(DEPDIR)/libjpeg_a-jcmaster.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jcmaster.c' object='libjpeg_a-jcmaster.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jcmaster.obj `if test -f 'jcmaster.c'; then $(CYGPATH_W) 'jcmaster.c'; else $(CYGPATH_W) '$(srcdir)/jcmaster.c'; fi`
-
-libjpeg_a-jcomapi.o: jcomapi.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jcomapi.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jcomapi.Tpo -c -o libjpeg_a-jcomapi.o `test -f 'jcomapi.c' || echo '$(srcdir)/'`jcomapi.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jcomapi.Tpo $(DEPDIR)/libjpeg_a-jcomapi.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jcomapi.c' object='libjpeg_a-jcomapi.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jcomapi.o `test -f 'jcomapi.c' || echo '$(srcdir)/'`jcomapi.c
-
-libjpeg_a-jcomapi.obj: jcomapi.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jcomapi.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jcomapi.Tpo -c -o libjpeg_a-jcomapi.obj `if test -f 'jcomapi.c'; then $(CYGPATH_W) 'jcomapi.c'; else $(CYGPATH_W) '$(srcdir)/jcomapi.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jcomapi.Tpo $(DEPDIR)/libjpeg_a-jcomapi.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jcomapi.c' object='libjpeg_a-jcomapi.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jcomapi.obj `if test -f 'jcomapi.c'; then $(CYGPATH_W) 'jcomapi.c'; else $(CYGPATH_W) '$(srcdir)/jcomapi.c'; fi`
-
-libjpeg_a-jcparam.o: jcparam.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jcparam.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jcparam.Tpo -c -o libjpeg_a-jcparam.o `test -f 'jcparam.c' || echo '$(srcdir)/'`jcparam.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jcparam.Tpo $(DEPDIR)/libjpeg_a-jcparam.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jcparam.c' object='libjpeg_a-jcparam.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jcparam.o `test -f 'jcparam.c' || echo '$(srcdir)/'`jcparam.c
-
-libjpeg_a-jcparam.obj: jcparam.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jcparam.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jcparam.Tpo -c -o libjpeg_a-jcparam.obj `if test -f 'jcparam.c'; then $(CYGPATH_W) 'jcparam.c'; else $(CYGPATH_W) '$(srcdir)/jcparam.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jcparam.Tpo $(DEPDIR)/libjpeg_a-jcparam.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jcparam.c' object='libjpeg_a-jcparam.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jcparam.obj `if test -f 'jcparam.c'; then $(CYGPATH_W) 'jcparam.c'; else $(CYGPATH_W) '$(srcdir)/jcparam.c'; fi`
-
-libjpeg_a-jcprepct.o: jcprepct.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jcprepct.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jcprepct.Tpo -c -o libjpeg_a-jcprepct.o `test -f 'jcprepct.c' || echo '$(srcdir)/'`jcprepct.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jcprepct.Tpo $(DEPDIR)/libjpeg_a-jcprepct.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jcprepct.c' object='libjpeg_a-jcprepct.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jcprepct.o `test -f 'jcprepct.c' || echo '$(srcdir)/'`jcprepct.c
-
-libjpeg_a-jcprepct.obj: jcprepct.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jcprepct.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jcprepct.Tpo -c -o libjpeg_a-jcprepct.obj `if test -f 'jcprepct.c'; then $(CYGPATH_W) 'jcprepct.c'; else $(CYGPATH_W) '$(srcdir)/jcprepct.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jcprepct.Tpo $(DEPDIR)/libjpeg_a-jcprepct.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jcprepct.c' object='libjpeg_a-jcprepct.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jcprepct.obj `if test -f 'jcprepct.c'; then $(CYGPATH_W) 'jcprepct.c'; else $(CYGPATH_W) '$(srcdir)/jcprepct.c'; fi`
-
-libjpeg_a-jcsample.o: jcsample.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jcsample.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jcsample.Tpo -c -o libjpeg_a-jcsample.o `test -f 'jcsample.c' || echo '$(srcdir)/'`jcsample.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jcsample.Tpo $(DEPDIR)/libjpeg_a-jcsample.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jcsample.c' object='libjpeg_a-jcsample.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jcsample.o `test -f 'jcsample.c' || echo '$(srcdir)/'`jcsample.c
-
-libjpeg_a-jcsample.obj: jcsample.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jcsample.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jcsample.Tpo -c -o libjpeg_a-jcsample.obj `if test -f 'jcsample.c'; then $(CYGPATH_W) 'jcsample.c'; else $(CYGPATH_W) '$(srcdir)/jcsample.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jcsample.Tpo $(DEPDIR)/libjpeg_a-jcsample.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jcsample.c' object='libjpeg_a-jcsample.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jcsample.obj `if test -f 'jcsample.c'; then $(CYGPATH_W) 'jcsample.c'; else $(CYGPATH_W) '$(srcdir)/jcsample.c'; fi`
-
-libjpeg_a-jctrans.o: jctrans.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jctrans.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jctrans.Tpo -c -o libjpeg_a-jctrans.o `test -f 'jctrans.c' || echo '$(srcdir)/'`jctrans.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jctrans.Tpo $(DEPDIR)/libjpeg_a-jctrans.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jctrans.c' object='libjpeg_a-jctrans.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jctrans.o `test -f 'jctrans.c' || echo '$(srcdir)/'`jctrans.c
-
-libjpeg_a-jctrans.obj: jctrans.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jctrans.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jctrans.Tpo -c -o libjpeg_a-jctrans.obj `if test -f 'jctrans.c'; then $(CYGPATH_W) 'jctrans.c'; else $(CYGPATH_W) '$(srcdir)/jctrans.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jctrans.Tpo $(DEPDIR)/libjpeg_a-jctrans.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jctrans.c' object='libjpeg_a-jctrans.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jctrans.obj `if test -f 'jctrans.c'; then $(CYGPATH_W) 'jctrans.c'; else $(CYGPATH_W) '$(srcdir)/jctrans.c'; fi`
-
-libjpeg_a-jdapimin.o: jdapimin.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdapimin.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jdapimin.Tpo -c -o libjpeg_a-jdapimin.o `test -f 'jdapimin.c' || echo '$(srcdir)/'`jdapimin.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdapimin.Tpo $(DEPDIR)/libjpeg_a-jdapimin.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdapimin.c' object='libjpeg_a-jdapimin.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdapimin.o `test -f 'jdapimin.c' || echo '$(srcdir)/'`jdapimin.c
-
-libjpeg_a-jdapimin.obj: jdapimin.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdapimin.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jdapimin.Tpo -c -o libjpeg_a-jdapimin.obj `if test -f 'jdapimin.c'; then $(CYGPATH_W) 'jdapimin.c'; else $(CYGPATH_W) '$(srcdir)/jdapimin.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdapimin.Tpo $(DEPDIR)/libjpeg_a-jdapimin.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdapimin.c' object='libjpeg_a-jdapimin.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdapimin.obj `if test -f 'jdapimin.c'; then $(CYGPATH_W) 'jdapimin.c'; else $(CYGPATH_W) '$(srcdir)/jdapimin.c'; fi`
-
-libjpeg_a-jdapistd.o: jdapistd.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdapistd.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jdapistd.Tpo -c -o libjpeg_a-jdapistd.o `test -f 'jdapistd.c' || echo '$(srcdir)/'`jdapistd.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdapistd.Tpo $(DEPDIR)/libjpeg_a-jdapistd.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdapistd.c' object='libjpeg_a-jdapistd.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdapistd.o `test -f 'jdapistd.c' || echo '$(srcdir)/'`jdapistd.c
-
-libjpeg_a-jdapistd.obj: jdapistd.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdapistd.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jdapistd.Tpo -c -o libjpeg_a-jdapistd.obj `if test -f 'jdapistd.c'; then $(CYGPATH_W) 'jdapistd.c'; else $(CYGPATH_W) '$(srcdir)/jdapistd.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdapistd.Tpo $(DEPDIR)/libjpeg_a-jdapistd.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdapistd.c' object='libjpeg_a-jdapistd.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdapistd.obj `if test -f 'jdapistd.c'; then $(CYGPATH_W) 'jdapistd.c'; else $(CYGPATH_W) '$(srcdir)/jdapistd.c'; fi`
-
-libjpeg_a-jdarith.o: jdarith.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdarith.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jdarith.Tpo -c -o libjpeg_a-jdarith.o `test -f 'jdarith.c' || echo '$(srcdir)/'`jdarith.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdarith.Tpo $(DEPDIR)/libjpeg_a-jdarith.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdarith.c' object='libjpeg_a-jdarith.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdarith.o `test -f 'jdarith.c' || echo '$(srcdir)/'`jdarith.c
-
-libjpeg_a-jdarith.obj: jdarith.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdarith.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jdarith.Tpo -c -o libjpeg_a-jdarith.obj `if test -f 'jdarith.c'; then $(CYGPATH_W) 'jdarith.c'; else $(CYGPATH_W) '$(srcdir)/jdarith.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdarith.Tpo $(DEPDIR)/libjpeg_a-jdarith.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdarith.c' object='libjpeg_a-jdarith.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdarith.obj `if test -f 'jdarith.c'; then $(CYGPATH_W) 'jdarith.c'; else $(CYGPATH_W) '$(srcdir)/jdarith.c'; fi`
-
-libjpeg_a-jdatadst.o: jdatadst.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdatadst.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jdatadst.Tpo -c -o libjpeg_a-jdatadst.o `test -f 'jdatadst.c' || echo '$(srcdir)/'`jdatadst.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdatadst.Tpo $(DEPDIR)/libjpeg_a-jdatadst.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdatadst.c' object='libjpeg_a-jdatadst.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdatadst.o `test -f 'jdatadst.c' || echo '$(srcdir)/'`jdatadst.c
-
-libjpeg_a-jdatadst.obj: jdatadst.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdatadst.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jdatadst.Tpo -c -o libjpeg_a-jdatadst.obj `if test -f 'jdatadst.c'; then $(CYGPATH_W) 'jdatadst.c'; else $(CYGPATH_W) '$(srcdir)/jdatadst.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdatadst.Tpo $(DEPDIR)/libjpeg_a-jdatadst.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdatadst.c' object='libjpeg_a-jdatadst.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdatadst.obj `if test -f 'jdatadst.c'; then $(CYGPATH_W) 'jdatadst.c'; else $(CYGPATH_W) '$(srcdir)/jdatadst.c'; fi`
-
-libjpeg_a-jdatasrc.o: jdatasrc.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdatasrc.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jdatasrc.Tpo -c -o libjpeg_a-jdatasrc.o `test -f 'jdatasrc.c' || echo '$(srcdir)/'`jdatasrc.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdatasrc.Tpo $(DEPDIR)/libjpeg_a-jdatasrc.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdatasrc.c' object='libjpeg_a-jdatasrc.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdatasrc.o `test -f 'jdatasrc.c' || echo '$(srcdir)/'`jdatasrc.c
-
-libjpeg_a-jdatasrc.obj: jdatasrc.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdatasrc.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jdatasrc.Tpo -c -o libjpeg_a-jdatasrc.obj `if test -f 'jdatasrc.c'; then $(CYGPATH_W) 'jdatasrc.c'; else $(CYGPATH_W) '$(srcdir)/jdatasrc.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdatasrc.Tpo $(DEPDIR)/libjpeg_a-jdatasrc.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdatasrc.c' object='libjpeg_a-jdatasrc.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdatasrc.obj `if test -f 'jdatasrc.c'; then $(CYGPATH_W) 'jdatasrc.c'; else $(CYGPATH_W) '$(srcdir)/jdatasrc.c'; fi`
-
-libjpeg_a-jdcoefct.o: jdcoefct.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdcoefct.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jdcoefct.Tpo -c -o libjpeg_a-jdcoefct.o `test -f 'jdcoefct.c' || echo '$(srcdir)/'`jdcoefct.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdcoefct.Tpo $(DEPDIR)/libjpeg_a-jdcoefct.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdcoefct.c' object='libjpeg_a-jdcoefct.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdcoefct.o `test -f 'jdcoefct.c' || echo '$(srcdir)/'`jdcoefct.c
-
-libjpeg_a-jdcoefct.obj: jdcoefct.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdcoefct.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jdcoefct.Tpo -c -o libjpeg_a-jdcoefct.obj `if test -f 'jdcoefct.c'; then $(CYGPATH_W) 'jdcoefct.c'; else $(CYGPATH_W) '$(srcdir)/jdcoefct.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdcoefct.Tpo $(DEPDIR)/libjpeg_a-jdcoefct.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdcoefct.c' object='libjpeg_a-jdcoefct.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdcoefct.obj `if test -f 'jdcoefct.c'; then $(CYGPATH_W) 'jdcoefct.c'; else $(CYGPATH_W) '$(srcdir)/jdcoefct.c'; fi`
-
-libjpeg_a-jdcolor.o: jdcolor.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdcolor.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jdcolor.Tpo -c -o libjpeg_a-jdcolor.o `test -f 'jdcolor.c' || echo '$(srcdir)/'`jdcolor.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdcolor.Tpo $(DEPDIR)/libjpeg_a-jdcolor.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdcolor.c' object='libjpeg_a-jdcolor.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdcolor.o `test -f 'jdcolor.c' || echo '$(srcdir)/'`jdcolor.c
-
-libjpeg_a-jdcolor.obj: jdcolor.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdcolor.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jdcolor.Tpo -c -o libjpeg_a-jdcolor.obj `if test -f 'jdcolor.c'; then $(CYGPATH_W) 'jdcolor.c'; else $(CYGPATH_W) '$(srcdir)/jdcolor.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdcolor.Tpo $(DEPDIR)/libjpeg_a-jdcolor.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdcolor.c' object='libjpeg_a-jdcolor.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdcolor.obj `if test -f 'jdcolor.c'; then $(CYGPATH_W) 'jdcolor.c'; else $(CYGPATH_W) '$(srcdir)/jdcolor.c'; fi`
-
-libjpeg_a-jddctmgr.o: jddctmgr.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jddctmgr.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jddctmgr.Tpo -c -o libjpeg_a-jddctmgr.o `test -f 'jddctmgr.c' || echo '$(srcdir)/'`jddctmgr.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jddctmgr.Tpo $(DEPDIR)/libjpeg_a-jddctmgr.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jddctmgr.c' object='libjpeg_a-jddctmgr.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jddctmgr.o `test -f 'jddctmgr.c' || echo '$(srcdir)/'`jddctmgr.c
-
-libjpeg_a-jddctmgr.obj: jddctmgr.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jddctmgr.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jddctmgr.Tpo -c -o libjpeg_a-jddctmgr.obj `if test -f 'jddctmgr.c'; then $(CYGPATH_W) 'jddctmgr.c'; else $(CYGPATH_W) '$(srcdir)/jddctmgr.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jddctmgr.Tpo $(DEPDIR)/libjpeg_a-jddctmgr.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jddctmgr.c' object='libjpeg_a-jddctmgr.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jddctmgr.obj `if test -f 'jddctmgr.c'; then $(CYGPATH_W) 'jddctmgr.c'; else $(CYGPATH_W) '$(srcdir)/jddctmgr.c'; fi`
-
-libjpeg_a-jdhuff.o: jdhuff.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdhuff.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jdhuff.Tpo -c -o libjpeg_a-jdhuff.o `test -f 'jdhuff.c' || echo '$(srcdir)/'`jdhuff.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdhuff.Tpo $(DEPDIR)/libjpeg_a-jdhuff.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdhuff.c' object='libjpeg_a-jdhuff.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdhuff.o `test -f 'jdhuff.c' || echo '$(srcdir)/'`jdhuff.c
-
-libjpeg_a-jdhuff.obj: jdhuff.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdhuff.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jdhuff.Tpo -c -o libjpeg_a-jdhuff.obj `if test -f 'jdhuff.c'; then $(CYGPATH_W) 'jdhuff.c'; else $(CYGPATH_W) '$(srcdir)/jdhuff.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdhuff.Tpo $(DEPDIR)/libjpeg_a-jdhuff.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdhuff.c' object='libjpeg_a-jdhuff.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdhuff.obj `if test -f 'jdhuff.c'; then $(CYGPATH_W) 'jdhuff.c'; else $(CYGPATH_W) '$(srcdir)/jdhuff.c'; fi`
-
-libjpeg_a-jdinput.o: jdinput.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdinput.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jdinput.Tpo -c -o libjpeg_a-jdinput.o `test -f 'jdinput.c' || echo '$(srcdir)/'`jdinput.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdinput.Tpo $(DEPDIR)/libjpeg_a-jdinput.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdinput.c' object='libjpeg_a-jdinput.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdinput.o `test -f 'jdinput.c' || echo '$(srcdir)/'`jdinput.c
-
-libjpeg_a-jdinput.obj: jdinput.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdinput.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jdinput.Tpo -c -o libjpeg_a-jdinput.obj `if test -f 'jdinput.c'; then $(CYGPATH_W) 'jdinput.c'; else $(CYGPATH_W) '$(srcdir)/jdinput.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdinput.Tpo $(DEPDIR)/libjpeg_a-jdinput.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdinput.c' object='libjpeg_a-jdinput.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdinput.obj `if test -f 'jdinput.c'; then $(CYGPATH_W) 'jdinput.c'; else $(CYGPATH_W) '$(srcdir)/jdinput.c'; fi`
-
-libjpeg_a-jdmainct.o: jdmainct.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdmainct.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jdmainct.Tpo -c -o libjpeg_a-jdmainct.o `test -f 'jdmainct.c' || echo '$(srcdir)/'`jdmainct.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdmainct.Tpo $(DEPDIR)/libjpeg_a-jdmainct.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdmainct.c' object='libjpeg_a-jdmainct.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdmainct.o `test -f 'jdmainct.c' || echo '$(srcdir)/'`jdmainct.c
-
-libjpeg_a-jdmainct.obj: jdmainct.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdmainct.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jdmainct.Tpo -c -o libjpeg_a-jdmainct.obj `if test -f 'jdmainct.c'; then $(CYGPATH_W) 'jdmainct.c'; else $(CYGPATH_W) '$(srcdir)/jdmainct.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdmainct.Tpo $(DEPDIR)/libjpeg_a-jdmainct.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdmainct.c' object='libjpeg_a-jdmainct.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdmainct.obj `if test -f 'jdmainct.c'; then $(CYGPATH_W) 'jdmainct.c'; else $(CYGPATH_W) '$(srcdir)/jdmainct.c'; fi`
-
-libjpeg_a-jdmarker.o: jdmarker.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdmarker.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jdmarker.Tpo -c -o libjpeg_a-jdmarker.o `test -f 'jdmarker.c' || echo '$(srcdir)/'`jdmarker.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdmarker.Tpo $(DEPDIR)/libjpeg_a-jdmarker.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdmarker.c' object='libjpeg_a-jdmarker.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdmarker.o `test -f 'jdmarker.c' || echo '$(srcdir)/'`jdmarker.c
-
-libjpeg_a-jdmarker.obj: jdmarker.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdmarker.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jdmarker.Tpo -c -o libjpeg_a-jdmarker.obj `if test -f 'jdmarker.c'; then $(CYGPATH_W) 'jdmarker.c'; else $(CYGPATH_W) '$(srcdir)/jdmarker.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdmarker.Tpo $(DEPDIR)/libjpeg_a-jdmarker.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdmarker.c' object='libjpeg_a-jdmarker.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdmarker.obj `if test -f 'jdmarker.c'; then $(CYGPATH_W) 'jdmarker.c'; else $(CYGPATH_W) '$(srcdir)/jdmarker.c'; fi`
-
-libjpeg_a-jdmaster.o: jdmaster.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdmaster.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jdmaster.Tpo -c -o libjpeg_a-jdmaster.o `test -f 'jdmaster.c' || echo '$(srcdir)/'`jdmaster.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdmaster.Tpo $(DEPDIR)/libjpeg_a-jdmaster.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdmaster.c' object='libjpeg_a-jdmaster.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdmaster.o `test -f 'jdmaster.c' || echo '$(srcdir)/'`jdmaster.c
-
-libjpeg_a-jdmaster.obj: jdmaster.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdmaster.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jdmaster.Tpo -c -o libjpeg_a-jdmaster.obj `if test -f 'jdmaster.c'; then $(CYGPATH_W) 'jdmaster.c'; else $(CYGPATH_W) '$(srcdir)/jdmaster.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdmaster.Tpo $(DEPDIR)/libjpeg_a-jdmaster.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdmaster.c' object='libjpeg_a-jdmaster.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdmaster.obj `if test -f 'jdmaster.c'; then $(CYGPATH_W) 'jdmaster.c'; else $(CYGPATH_W) '$(srcdir)/jdmaster.c'; fi`
-
-libjpeg_a-jdmerge.o: jdmerge.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdmerge.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jdmerge.Tpo -c -o libjpeg_a-jdmerge.o `test -f 'jdmerge.c' || echo '$(srcdir)/'`jdmerge.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdmerge.Tpo $(DEPDIR)/libjpeg_a-jdmerge.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdmerge.c' object='libjpeg_a-jdmerge.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdmerge.o `test -f 'jdmerge.c' || echo '$(srcdir)/'`jdmerge.c
-
-libjpeg_a-jdmerge.obj: jdmerge.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdmerge.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jdmerge.Tpo -c -o libjpeg_a-jdmerge.obj `if test -f 'jdmerge.c'; then $(CYGPATH_W) 'jdmerge.c'; else $(CYGPATH_W) '$(srcdir)/jdmerge.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdmerge.Tpo $(DEPDIR)/libjpeg_a-jdmerge.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdmerge.c' object='libjpeg_a-jdmerge.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdmerge.obj `if test -f 'jdmerge.c'; then $(CYGPATH_W) 'jdmerge.c'; else $(CYGPATH_W) '$(srcdir)/jdmerge.c'; fi`
-
-libjpeg_a-jdpostct.o: jdpostct.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdpostct.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jdpostct.Tpo -c -o libjpeg_a-jdpostct.o `test -f 'jdpostct.c' || echo '$(srcdir)/'`jdpostct.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdpostct.Tpo $(DEPDIR)/libjpeg_a-jdpostct.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdpostct.c' object='libjpeg_a-jdpostct.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdpostct.o `test -f 'jdpostct.c' || echo '$(srcdir)/'`jdpostct.c
-
-libjpeg_a-jdpostct.obj: jdpostct.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdpostct.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jdpostct.Tpo -c -o libjpeg_a-jdpostct.obj `if test -f 'jdpostct.c'; then $(CYGPATH_W) 'jdpostct.c'; else $(CYGPATH_W) '$(srcdir)/jdpostct.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdpostct.Tpo $(DEPDIR)/libjpeg_a-jdpostct.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdpostct.c' object='libjpeg_a-jdpostct.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdpostct.obj `if test -f 'jdpostct.c'; then $(CYGPATH_W) 'jdpostct.c'; else $(CYGPATH_W) '$(srcdir)/jdpostct.c'; fi`
-
-libjpeg_a-jdsample.o: jdsample.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdsample.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jdsample.Tpo -c -o libjpeg_a-jdsample.o `test -f 'jdsample.c' || echo '$(srcdir)/'`jdsample.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdsample.Tpo $(DEPDIR)/libjpeg_a-jdsample.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdsample.c' object='libjpeg_a-jdsample.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdsample.o `test -f 'jdsample.c' || echo '$(srcdir)/'`jdsample.c
-
-libjpeg_a-jdsample.obj: jdsample.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdsample.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jdsample.Tpo -c -o libjpeg_a-jdsample.obj `if test -f 'jdsample.c'; then $(CYGPATH_W) 'jdsample.c'; else $(CYGPATH_W) '$(srcdir)/jdsample.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdsample.Tpo $(DEPDIR)/libjpeg_a-jdsample.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdsample.c' object='libjpeg_a-jdsample.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdsample.obj `if test -f 'jdsample.c'; then $(CYGPATH_W) 'jdsample.c'; else $(CYGPATH_W) '$(srcdir)/jdsample.c'; fi`
-
-libjpeg_a-jdtrans.o: jdtrans.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdtrans.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jdtrans.Tpo -c -o libjpeg_a-jdtrans.o `test -f 'jdtrans.c' || echo '$(srcdir)/'`jdtrans.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdtrans.Tpo $(DEPDIR)/libjpeg_a-jdtrans.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdtrans.c' object='libjpeg_a-jdtrans.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdtrans.o `test -f 'jdtrans.c' || echo '$(srcdir)/'`jdtrans.c
-
-libjpeg_a-jdtrans.obj: jdtrans.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jdtrans.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jdtrans.Tpo -c -o libjpeg_a-jdtrans.obj `if test -f 'jdtrans.c'; then $(CYGPATH_W) 'jdtrans.c'; else $(CYGPATH_W) '$(srcdir)/jdtrans.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jdtrans.Tpo $(DEPDIR)/libjpeg_a-jdtrans.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jdtrans.c' object='libjpeg_a-jdtrans.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jdtrans.obj `if test -f 'jdtrans.c'; then $(CYGPATH_W) 'jdtrans.c'; else $(CYGPATH_W) '$(srcdir)/jdtrans.c'; fi`
-
-libjpeg_a-jerror.o: jerror.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jerror.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jerror.Tpo -c -o libjpeg_a-jerror.o `test -f 'jerror.c' || echo '$(srcdir)/'`jerror.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jerror.Tpo $(DEPDIR)/libjpeg_a-jerror.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jerror.c' object='libjpeg_a-jerror.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jerror.o `test -f 'jerror.c' || echo '$(srcdir)/'`jerror.c
-
-libjpeg_a-jerror.obj: jerror.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jerror.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jerror.Tpo -c -o libjpeg_a-jerror.obj `if test -f 'jerror.c'; then $(CYGPATH_W) 'jerror.c'; else $(CYGPATH_W) '$(srcdir)/jerror.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jerror.Tpo $(DEPDIR)/libjpeg_a-jerror.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jerror.c' object='libjpeg_a-jerror.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jerror.obj `if test -f 'jerror.c'; then $(CYGPATH_W) 'jerror.c'; else $(CYGPATH_W) '$(srcdir)/jerror.c'; fi`
-
-libjpeg_a-jfdctflt.o: jfdctflt.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jfdctflt.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jfdctflt.Tpo -c -o libjpeg_a-jfdctflt.o `test -f 'jfdctflt.c' || echo '$(srcdir)/'`jfdctflt.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jfdctflt.Tpo $(DEPDIR)/libjpeg_a-jfdctflt.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jfdctflt.c' object='libjpeg_a-jfdctflt.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jfdctflt.o `test -f 'jfdctflt.c' || echo '$(srcdir)/'`jfdctflt.c
-
-libjpeg_a-jfdctflt.obj: jfdctflt.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jfdctflt.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jfdctflt.Tpo -c -o libjpeg_a-jfdctflt.obj `if test -f 'jfdctflt.c'; then $(CYGPATH_W) 'jfdctflt.c'; else $(CYGPATH_W) '$(srcdir)/jfdctflt.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jfdctflt.Tpo $(DEPDIR)/libjpeg_a-jfdctflt.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jfdctflt.c' object='libjpeg_a-jfdctflt.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jfdctflt.obj `if test -f 'jfdctflt.c'; then $(CYGPATH_W) 'jfdctflt.c'; else $(CYGPATH_W) '$(srcdir)/jfdctflt.c'; fi`
-
-libjpeg_a-jfdctfst.o: jfdctfst.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jfdctfst.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jfdctfst.Tpo -c -o libjpeg_a-jfdctfst.o `test -f 'jfdctfst.c' || echo '$(srcdir)/'`jfdctfst.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jfdctfst.Tpo $(DEPDIR)/libjpeg_a-jfdctfst.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jfdctfst.c' object='libjpeg_a-jfdctfst.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jfdctfst.o `test -f 'jfdctfst.c' || echo '$(srcdir)/'`jfdctfst.c
-
-libjpeg_a-jfdctfst.obj: jfdctfst.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jfdctfst.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jfdctfst.Tpo -c -o libjpeg_a-jfdctfst.obj `if test -f 'jfdctfst.c'; then $(CYGPATH_W) 'jfdctfst.c'; else $(CYGPATH_W) '$(srcdir)/jfdctfst.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jfdctfst.Tpo $(DEPDIR)/libjpeg_a-jfdctfst.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jfdctfst.c' object='libjpeg_a-jfdctfst.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jfdctfst.obj `if test -f 'jfdctfst.c'; then $(CYGPATH_W) 'jfdctfst.c'; else $(CYGPATH_W) '$(srcdir)/jfdctfst.c'; fi`
-
-libjpeg_a-jfdctint.o: jfdctint.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jfdctint.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jfdctint.Tpo -c -o libjpeg_a-jfdctint.o `test -f 'jfdctint.c' || echo '$(srcdir)/'`jfdctint.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jfdctint.Tpo $(DEPDIR)/libjpeg_a-jfdctint.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jfdctint.c' object='libjpeg_a-jfdctint.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jfdctint.o `test -f 'jfdctint.c' || echo '$(srcdir)/'`jfdctint.c
-
-libjpeg_a-jfdctint.obj: jfdctint.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jfdctint.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jfdctint.Tpo -c -o libjpeg_a-jfdctint.obj `if test -f 'jfdctint.c'; then $(CYGPATH_W) 'jfdctint.c'; else $(CYGPATH_W) '$(srcdir)/jfdctint.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jfdctint.Tpo $(DEPDIR)/libjpeg_a-jfdctint.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jfdctint.c' object='libjpeg_a-jfdctint.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jfdctint.obj `if test -f 'jfdctint.c'; then $(CYGPATH_W) 'jfdctint.c'; else $(CYGPATH_W) '$(srcdir)/jfdctint.c'; fi`
-
-libjpeg_a-jidctflt.o: jidctflt.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jidctflt.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jidctflt.Tpo -c -o libjpeg_a-jidctflt.o `test -f 'jidctflt.c' || echo '$(srcdir)/'`jidctflt.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jidctflt.Tpo $(DEPDIR)/libjpeg_a-jidctflt.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jidctflt.c' object='libjpeg_a-jidctflt.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jidctflt.o `test -f 'jidctflt.c' || echo '$(srcdir)/'`jidctflt.c
-
-libjpeg_a-jidctflt.obj: jidctflt.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jidctflt.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jidctflt.Tpo -c -o libjpeg_a-jidctflt.obj `if test -f 'jidctflt.c'; then $(CYGPATH_W) 'jidctflt.c'; else $(CYGPATH_W) '$(srcdir)/jidctflt.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jidctflt.Tpo $(DEPDIR)/libjpeg_a-jidctflt.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jidctflt.c' object='libjpeg_a-jidctflt.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jidctflt.obj `if test -f 'jidctflt.c'; then $(CYGPATH_W) 'jidctflt.c'; else $(CYGPATH_W) '$(srcdir)/jidctflt.c'; fi`
-
-libjpeg_a-jidctfst.o: jidctfst.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jidctfst.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jidctfst.Tpo -c -o libjpeg_a-jidctfst.o `test -f 'jidctfst.c' || echo '$(srcdir)/'`jidctfst.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jidctfst.Tpo $(DEPDIR)/libjpeg_a-jidctfst.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jidctfst.c' object='libjpeg_a-jidctfst.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jidctfst.o `test -f 'jidctfst.c' || echo '$(srcdir)/'`jidctfst.c
-
-libjpeg_a-jidctfst.obj: jidctfst.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jidctfst.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jidctfst.Tpo -c -o libjpeg_a-jidctfst.obj `if test -f 'jidctfst.c'; then $(CYGPATH_W) 'jidctfst.c'; else $(CYGPATH_W) '$(srcdir)/jidctfst.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jidctfst.Tpo $(DEPDIR)/libjpeg_a-jidctfst.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jidctfst.c' object='libjpeg_a-jidctfst.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jidctfst.obj `if test -f 'jidctfst.c'; then $(CYGPATH_W) 'jidctfst.c'; else $(CYGPATH_W) '$(srcdir)/jidctfst.c'; fi`
-
-libjpeg_a-jidctint.o: jidctint.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jidctint.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jidctint.Tpo -c -o libjpeg_a-jidctint.o `test -f 'jidctint.c' || echo '$(srcdir)/'`jidctint.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jidctint.Tpo $(DEPDIR)/libjpeg_a-jidctint.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jidctint.c' object='libjpeg_a-jidctint.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jidctint.o `test -f 'jidctint.c' || echo '$(srcdir)/'`jidctint.c
-
-libjpeg_a-jidctint.obj: jidctint.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jidctint.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jidctint.Tpo -c -o libjpeg_a-jidctint.obj `if test -f 'jidctint.c'; then $(CYGPATH_W) 'jidctint.c'; else $(CYGPATH_W) '$(srcdir)/jidctint.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jidctint.Tpo $(DEPDIR)/libjpeg_a-jidctint.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jidctint.c' object='libjpeg_a-jidctint.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jidctint.obj `if test -f 'jidctint.c'; then $(CYGPATH_W) 'jidctint.c'; else $(CYGPATH_W) '$(srcdir)/jidctint.c'; fi`
-
-libjpeg_a-jquant1.o: jquant1.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jquant1.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jquant1.Tpo -c -o libjpeg_a-jquant1.o `test -f 'jquant1.c' || echo '$(srcdir)/'`jquant1.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jquant1.Tpo $(DEPDIR)/libjpeg_a-jquant1.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jquant1.c' object='libjpeg_a-jquant1.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jquant1.o `test -f 'jquant1.c' || echo '$(srcdir)/'`jquant1.c
-
-libjpeg_a-jquant1.obj: jquant1.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jquant1.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jquant1.Tpo -c -o libjpeg_a-jquant1.obj `if test -f 'jquant1.c'; then $(CYGPATH_W) 'jquant1.c'; else $(CYGPATH_W) '$(srcdir)/jquant1.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jquant1.Tpo $(DEPDIR)/libjpeg_a-jquant1.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jquant1.c' object='libjpeg_a-jquant1.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jquant1.obj `if test -f 'jquant1.c'; then $(CYGPATH_W) 'jquant1.c'; else $(CYGPATH_W) '$(srcdir)/jquant1.c'; fi`
-
-libjpeg_a-jquant2.o: jquant2.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jquant2.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jquant2.Tpo -c -o libjpeg_a-jquant2.o `test -f 'jquant2.c' || echo '$(srcdir)/'`jquant2.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jquant2.Tpo $(DEPDIR)/libjpeg_a-jquant2.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jquant2.c' object='libjpeg_a-jquant2.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jquant2.o `test -f 'jquant2.c' || echo '$(srcdir)/'`jquant2.c
-
-libjpeg_a-jquant2.obj: jquant2.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jquant2.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jquant2.Tpo -c -o libjpeg_a-jquant2.obj `if test -f 'jquant2.c'; then $(CYGPATH_W) 'jquant2.c'; else $(CYGPATH_W) '$(srcdir)/jquant2.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jquant2.Tpo $(DEPDIR)/libjpeg_a-jquant2.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jquant2.c' object='libjpeg_a-jquant2.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jquant2.obj `if test -f 'jquant2.c'; then $(CYGPATH_W) 'jquant2.c'; else $(CYGPATH_W) '$(srcdir)/jquant2.c'; fi`
-
-libjpeg_a-jutils.o: jutils.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jutils.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jutils.Tpo -c -o libjpeg_a-jutils.o `test -f 'jutils.c' || echo '$(srcdir)/'`jutils.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jutils.Tpo $(DEPDIR)/libjpeg_a-jutils.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jutils.c' object='libjpeg_a-jutils.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jutils.o `test -f 'jutils.c' || echo '$(srcdir)/'`jutils.c
-
-libjpeg_a-jutils.obj: jutils.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jutils.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jutils.Tpo -c -o libjpeg_a-jutils.obj `if test -f 'jutils.c'; then $(CYGPATH_W) 'jutils.c'; else $(CYGPATH_W) '$(srcdir)/jutils.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jutils.Tpo $(DEPDIR)/libjpeg_a-jutils.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jutils.c' object='libjpeg_a-jutils.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jutils.obj `if test -f 'jutils.c'; then $(CYGPATH_W) 'jutils.c'; else $(CYGPATH_W) '$(srcdir)/jutils.c'; fi`
-
-libjpeg_a-jmemmgr.o: jmemmgr.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jmemmgr.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jmemmgr.Tpo -c -o libjpeg_a-jmemmgr.o `test -f 'jmemmgr.c' || echo '$(srcdir)/'`jmemmgr.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jmemmgr.Tpo $(DEPDIR)/libjpeg_a-jmemmgr.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jmemmgr.c' object='libjpeg_a-jmemmgr.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jmemmgr.o `test -f 'jmemmgr.c' || echo '$(srcdir)/'`jmemmgr.c
-
-libjpeg_a-jmemmgr.obj: jmemmgr.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jmemmgr.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jmemmgr.Tpo -c -o libjpeg_a-jmemmgr.obj `if test -f 'jmemmgr.c'; then $(CYGPATH_W) 'jmemmgr.c'; else $(CYGPATH_W) '$(srcdir)/jmemmgr.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jmemmgr.Tpo $(DEPDIR)/libjpeg_a-jmemmgr.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jmemmgr.c' object='libjpeg_a-jmemmgr.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jmemmgr.obj `if test -f 'jmemmgr.c'; then $(CYGPATH_W) 'jmemmgr.c'; else $(CYGPATH_W) '$(srcdir)/jmemmgr.c'; fi`
-
-libjpeg_a-jmemnobs.o: jmemnobs.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jmemnobs.o -MD -MP -MF $(DEPDIR)/libjpeg_a-jmemnobs.Tpo -c -o libjpeg_a-jmemnobs.o `test -f 'jmemnobs.c' || echo '$(srcdir)/'`jmemnobs.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jmemnobs.Tpo $(DEPDIR)/libjpeg_a-jmemnobs.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jmemnobs.c' object='libjpeg_a-jmemnobs.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jmemnobs.o `test -f 'jmemnobs.c' || echo '$(srcdir)/'`jmemnobs.c
-
-libjpeg_a-jmemnobs.obj: jmemnobs.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -MT libjpeg_a-jmemnobs.obj -MD -MP -MF $(DEPDIR)/libjpeg_a-jmemnobs.Tpo -c -o libjpeg_a-jmemnobs.obj `if test -f 'jmemnobs.c'; then $(CYGPATH_W) 'jmemnobs.c'; else $(CYGPATH_W) '$(srcdir)/jmemnobs.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjpeg_a-jmemnobs.Tpo $(DEPDIR)/libjpeg_a-jmemnobs.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='jmemnobs.c' object='libjpeg_a-jmemnobs.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjpeg_a_CFLAGS) $(CFLAGS) -c -o libjpeg_a-jmemnobs.obj `if test -f 'jmemnobs.c'; then $(CYGPATH_W) 'jmemnobs.c'; else $(CYGPATH_W) '$(srcdir)/jmemnobs.c'; fi`
-
-mostlyclean-libtool:
-	-rm -f *.lo
-
-clean-libtool:
-	-rm -rf .libs _libs
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)
 	test -z "$(includedir)" || $(MKDIR_P) "$(DESTDIR)$(includedir)"
@@ -1210,8 +523,7 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic clean-libLIBRARIES clean-libtool \
-	mostlyclean-am
+clean-am: clean-generic clean-libLIBRARIES mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -1266,8 +578,7 @@ maintainer-clean-am: distclean-am maintainer-clean-generic
 
 mostlyclean: mostlyclean-am
 
-mostlyclean-am: mostlyclean-compile mostlyclean-generic \
-	mostlyclean-libtool
+mostlyclean-am: mostlyclean-compile mostlyclean-generic
 
 pdf: pdf-am
 
@@ -1282,19 +593,18 @@ uninstall-am: uninstall-includeHEADERS uninstall-libLIBRARIES
 .MAKE: install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
-	clean-libLIBRARIES clean-libtool ctags distclean \
-	distclean-compile distclean-generic distclean-libtool \
-	distclean-tags distdir dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am install-dvi \
-	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-includeHEADERS install-info \
-	install-info-am install-libLIBRARIES install-man install-pdf \
-	install-pdf-am install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
+	clean-libLIBRARIES ctags distclean distclean-compile \
+	distclean-generic distclean-tags distdir dvi dvi-am html \
+	html-am info info-am install install-am install-data \
+	install-data-am install-dvi install-dvi-am install-exec \
+	install-exec-am install-html install-html-am \
+	install-includeHEADERS install-info install-info-am \
+	install-libLIBRARIES install-man install-pdf install-pdf-am \
+	install-ps install-ps-am install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am uninstall-includeHEADERS \
-	uninstall-libLIBRARIES
+	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
+	uninstall-am uninstall-includeHEADERS uninstall-libLIBRARIES
 
 
 #INSTINCLUDES = jerror.h jmorecfg.h jpeglib.h
