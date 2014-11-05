@@ -26,10 +26,10 @@ openDMD_LDADD = $(top_srcdir)/src/client/flv_muxer.o \
                 $(top_srcdir)/src/webserver/http_utils.o \
                 $(top_srcdir)/src/webserver/socket_utils.o \
                 $(top_srcdir)/src/webserver/webserver_process.o \
-                $(top_srcdir)/libjpeg/libjpeg.a \
-                $(top_srcdir)/libortp/src/libortp.a \
-                $(top_srcdir)/libsqlite/src/libsqlite3.a \
-                $(top_srcdir)/libx264/libx264.a 
+                $(top_srcdir)/libjpeg/libjpeg.la \
+                $(top_srcdir)/libortp/src/libortp.la \
+                $(top_srcdir)/libsqlite/src/libsqlite3.la \
+                $(top_srcdir)/libx264/libx264.la 
 
 # Warning: system library should be assigned here using LIBS;
 # using openDMD_LDFLAGS at here doesn't work!
