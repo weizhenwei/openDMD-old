@@ -47,12 +47,18 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
-am_test_basic_OBJECTS = test_basic.$(OBJEXT)
+am__test_basic_SOURCES_DIST = test_basic.c
+@ENABLE_DYNAMIC_FALSE@am_test_basic_OBJECTS = test_basic.$(OBJEXT)
+@ENABLE_DYNAMIC_TRUE@am_test_basic_OBJECTS = test_basic.$(OBJEXT)
 test_basic_OBJECTS = $(am_test_basic_OBJECTS)
-test_basic_DEPENDENCIES = $(top_srcdir)/libsqlite/src/libsqlite3.a
-am_test_select_OBJECTS = test_select.$(OBJEXT)
+@ENABLE_DYNAMIC_FALSE@test_basic_DEPENDENCIES = $(top_srcdir)/libsqlite/src/libsqlite3.a
+@ENABLE_DYNAMIC_TRUE@test_basic_DEPENDENCIES = $(top_srcdir)/libsqlite/src/libsqlite3.la
+am__test_select_SOURCES_DIST = test_select.c
+@ENABLE_DYNAMIC_FALSE@am_test_select_OBJECTS = test_select.$(OBJEXT)
+@ENABLE_DYNAMIC_TRUE@am_test_select_OBJECTS = test_select.$(OBJEXT)
 test_select_OBJECTS = $(am_test_select_OBJECTS)
-test_select_DEPENDENCIES = $(top_srcdir)/libsqlite/src/libsqlite3.a
+@ENABLE_DYNAMIC_FALSE@test_select_DEPENDENCIES = $(top_srcdir)/libsqlite/src/libsqlite3.a
+@ENABLE_DYNAMIC_TRUE@test_select_DEPENDENCIES = $(top_srcdir)/libsqlite/src/libsqlite3.la
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -67,7 +73,8 @@ LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 SOURCES = $(test_basic_SOURCES) $(test_select_SOURCES)
-DIST_SOURCES = $(test_basic_SOURCES) $(test_select_SOURCES)
+DIST_SOURCES = $(am__test_basic_SOURCES_DIST) \
+	$(am__test_select_SOURCES_DIST)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -192,10 +199,14 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
 INCLUDES = -I$(top_srcdir)/libsqlite/src
-test_basic_LDADD = $(top_srcdir)/libsqlite/src/libsqlite3.a
-test_basic_SOURCES = test_basic.c
-test_select_LDADD = $(top_srcdir)/libsqlite/src/libsqlite3.a
-test_select_SOURCES = test_select.c
+@ENABLE_DYNAMIC_FALSE@test_basic_LDADD = $(top_srcdir)/libsqlite/src/libsqlite3.a
+@ENABLE_DYNAMIC_TRUE@test_basic_LDADD = $(top_srcdir)/libsqlite/src/libsqlite3.la
+@ENABLE_DYNAMIC_FALSE@test_basic_SOURCES = test_basic.c
+@ENABLE_DYNAMIC_TRUE@test_basic_SOURCES = test_basic.c
+@ENABLE_DYNAMIC_FALSE@test_select_LDADD = $(top_srcdir)/libsqlite/src/libsqlite3.a
+@ENABLE_DYNAMIC_TRUE@test_select_LDADD = $(top_srcdir)/libsqlite/src/libsqlite3.la
+@ENABLE_DYNAMIC_FALSE@test_select_SOURCES = test_select.c
+@ENABLE_DYNAMIC_TRUE@test_select_SOURCES = test_select.c
 all: all-am
 
 .SUFFIXES:

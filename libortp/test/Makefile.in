@@ -50,13 +50,22 @@ CONFIG_CLEAN_VPATH_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
 am_mrtprecv_OBJECTS = mrtprecv.$(OBJEXT)
 mrtprecv_OBJECTS = $(am_mrtprecv_OBJECTS)
-mrtprecv_DEPENDENCIES = $(top_srcdir)/libortp/src/libortp.a
+@ENABLE_DYNAMIC_FALSE@mrtprecv_DEPENDENCIES =  \
+@ENABLE_DYNAMIC_FALSE@	$(top_srcdir)/libortp/src/libortp.a
+@ENABLE_DYNAMIC_TRUE@mrtprecv_DEPENDENCIES =  \
+@ENABLE_DYNAMIC_TRUE@	$(top_srcdir)/libortp/src/libortp.la
 am_recvtest_OBJECTS = rtp_recv.$(OBJEXT) recv_test.$(OBJEXT)
 recvtest_OBJECTS = $(am_recvtest_OBJECTS)
-recvtest_DEPENDENCIES = $(top_srcdir)/libortp/src/libortp.a
+@ENABLE_DYNAMIC_FALSE@recvtest_DEPENDENCIES =  \
+@ENABLE_DYNAMIC_FALSE@	$(top_srcdir)/libortp/src/libortp.a
+@ENABLE_DYNAMIC_TRUE@recvtest_DEPENDENCIES =  \
+@ENABLE_DYNAMIC_TRUE@	$(top_srcdir)/libortp/src/libortp.la
 am_sendtest_OBJECTS = rtp_send.$(OBJEXT) send_test.$(OBJEXT)
 sendtest_OBJECTS = $(am_sendtest_OBJECTS)
-sendtest_DEPENDENCIES = $(top_srcdir)/libortp/src/libortp.a
+@ENABLE_DYNAMIC_FALSE@sendtest_DEPENDENCIES =  \
+@ENABLE_DYNAMIC_FALSE@	$(top_srcdir)/libortp/src/libortp.a
+@ENABLE_DYNAMIC_TRUE@sendtest_DEPENDENCIES =  \
+@ENABLE_DYNAMIC_TRUE@	$(top_srcdir)/libortp/src/libortp.la
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -202,9 +211,12 @@ AUTOMAKE_OPTIONS = foreign
 INCLUDES = -I$(top_srcdir)/libortp/include -I$(top_srcdir)/libortp \
 		   -I$(top_srcdir)/libortp/src
 
-sendtest_LDADD = $(top_srcdir)/libortp/src/libortp.a
-recvtest_LDADD = $(top_srcdir)/libortp/src/libortp.a
-mrtprecv_LDADD = $(top_srcdir)/libortp/src/libortp.a
+@ENABLE_DYNAMIC_FALSE@sendtest_LDADD = $(top_srcdir)/libortp/src/libortp.a
+@ENABLE_DYNAMIC_TRUE@sendtest_LDADD = $(top_srcdir)/libortp/src/libortp.la
+@ENABLE_DYNAMIC_FALSE@recvtest_LDADD = $(top_srcdir)/libortp/src/libortp.a
+@ENABLE_DYNAMIC_TRUE@recvtest_LDADD = $(top_srcdir)/libortp/src/libortp.la
+@ENABLE_DYNAMIC_FALSE@mrtprecv_LDADD = $(top_srcdir)/libortp/src/libortp.a
+@ENABLE_DYNAMIC_TRUE@mrtprecv_LDADD = $(top_srcdir)/libortp/src/libortp.la
 sendtest_SOURCES = rtp_send.h rtp_send.c send_test.c
 recvtest_SOURCES = rtp_recv.h rtp_recv.c recv_test.c
 mrtprecv_SOURCES = mrtprecv.c

@@ -55,23 +55,42 @@ am_openDMD_OBJECTS = main.$(OBJEXT) config.$(OBJEXT) log.$(OBJEXT) \
 	v4l2_utils.$(OBJEXT) signal_handler.$(OBJEXT) \
 	statistics.$(OBJEXT) sqlite_utils.$(OBJEXT)
 openDMD_OBJECTS = $(am_openDMD_OBJECTS)
-openDMD_DEPENDENCIES = $(top_srcdir)/src/client/flv_muxer.o \
-	$(top_srcdir)/src/client/image_capture.o \
-	$(top_srcdir)/src/client/image_convert.o \
-	$(top_srcdir)/src/client/libx264.o \
-	$(top_srcdir)/src/client/picture_thread.o \
-	$(top_srcdir)/src/client/rtp_send.o \
-	$(top_srcdir)/src/client/video.o \
-	$(top_srcdir)/src/client/video_thread.o \
-	$(top_srcdir)/src/server/rtp_server.o \
-	$(top_srcdir)/src/server/rtp_recv.o \
-	$(top_srcdir)/src/webserver/http_utils.o \
-	$(top_srcdir)/src/webserver/socket_utils.o \
-	$(top_srcdir)/src/webserver/webserver_process.o \
-	$(top_srcdir)/libjpeg/libjpeg.la \
-	$(top_srcdir)/libortp/src/libortp.la \
-	$(top_srcdir)/libsqlite/src/libsqlite3.la \
-	$(top_srcdir)/libx264/libx264.la
+@ENABLE_DYNAMIC_FALSE@openDMD_DEPENDENCIES =  \
+@ENABLE_DYNAMIC_FALSE@	$(top_srcdir)/src/client/flv_muxer.o \
+@ENABLE_DYNAMIC_FALSE@	$(top_srcdir)/src/client/image_capture.o \
+@ENABLE_DYNAMIC_FALSE@	$(top_srcdir)/src/client/image_convert.o \
+@ENABLE_DYNAMIC_FALSE@	$(top_srcdir)/src/client/libx264.o \
+@ENABLE_DYNAMIC_FALSE@	$(top_srcdir)/src/client/picture_thread.o \
+@ENABLE_DYNAMIC_FALSE@	$(top_srcdir)/src/client/rtp_send.o \
+@ENABLE_DYNAMIC_FALSE@	$(top_srcdir)/src/client/video.o \
+@ENABLE_DYNAMIC_FALSE@	$(top_srcdir)/src/client/video_thread.o \
+@ENABLE_DYNAMIC_FALSE@	$(top_srcdir)/src/server/rtp_server.o \
+@ENABLE_DYNAMIC_FALSE@	$(top_srcdir)/src/server/rtp_recv.o \
+@ENABLE_DYNAMIC_FALSE@	$(top_srcdir)/src/webserver/http_utils.o \
+@ENABLE_DYNAMIC_FALSE@	$(top_srcdir)/src/webserver/socket_utils.o \
+@ENABLE_DYNAMIC_FALSE@	$(top_srcdir)/src/webserver/webserver_process.o \
+@ENABLE_DYNAMIC_FALSE@	$(top_srcdir)/libjpeg/libjpeg.a \
+@ENABLE_DYNAMIC_FALSE@	$(top_srcdir)/libortp/src/libortp.a \
+@ENABLE_DYNAMIC_FALSE@	$(top_srcdir)/libsqlite/src/libsqlite3.a \
+@ENABLE_DYNAMIC_FALSE@	$(top_srcdir)/libx264/libx264.a
+@ENABLE_DYNAMIC_TRUE@openDMD_DEPENDENCIES =  \
+@ENABLE_DYNAMIC_TRUE@	$(top_srcdir)/src/client/flv_muxer.o \
+@ENABLE_DYNAMIC_TRUE@	$(top_srcdir)/src/client/image_capture.o \
+@ENABLE_DYNAMIC_TRUE@	$(top_srcdir)/src/client/image_convert.o \
+@ENABLE_DYNAMIC_TRUE@	$(top_srcdir)/src/client/libx264.o \
+@ENABLE_DYNAMIC_TRUE@	$(top_srcdir)/src/client/picture_thread.o \
+@ENABLE_DYNAMIC_TRUE@	$(top_srcdir)/src/client/rtp_send.o \
+@ENABLE_DYNAMIC_TRUE@	$(top_srcdir)/src/client/video.o \
+@ENABLE_DYNAMIC_TRUE@	$(top_srcdir)/src/client/video_thread.o \
+@ENABLE_DYNAMIC_TRUE@	$(top_srcdir)/src/server/rtp_server.o \
+@ENABLE_DYNAMIC_TRUE@	$(top_srcdir)/src/server/rtp_recv.o \
+@ENABLE_DYNAMIC_TRUE@	$(top_srcdir)/src/webserver/http_utils.o \
+@ENABLE_DYNAMIC_TRUE@	$(top_srcdir)/src/webserver/socket_utils.o \
+@ENABLE_DYNAMIC_TRUE@	$(top_srcdir)/src/webserver/webserver_process.o \
+@ENABLE_DYNAMIC_TRUE@	$(top_srcdir)/libjpeg/libjpeg.la \
+@ENABLE_DYNAMIC_TRUE@	$(top_srcdir)/libortp/src/libortp.la \
+@ENABLE_DYNAMIC_TRUE@	$(top_srcdir)/libsqlite/src/libsqlite3.la \
+@ENABLE_DYNAMIC_TRUE@	$(top_srcdir)/libx264/libx264.la
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -288,27 +307,45 @@ INCLUDES = -I$(top_srcdir)/libjpeg -I$(top_srcdir)/libsqlite/src \
            -I$(top_srcdir)/src/client -I$(top_srcdir)/src/server \
            -I$(top_srcdir)/src/webserver
 
+@ENABLE_DYNAMIC_FALSE@openDMD_LDADD = $(top_srcdir)/src/client/flv_muxer.o \
+@ENABLE_DYNAMIC_FALSE@                $(top_srcdir)/src/client/image_capture.o \
+@ENABLE_DYNAMIC_FALSE@                $(top_srcdir)/src/client/image_convert.o \
+@ENABLE_DYNAMIC_FALSE@                $(top_srcdir)/src/client/libx264.o \
+@ENABLE_DYNAMIC_FALSE@                $(top_srcdir)/src/client/picture_thread.o \
+@ENABLE_DYNAMIC_FALSE@                $(top_srcdir)/src/client/rtp_send.o \
+@ENABLE_DYNAMIC_FALSE@                $(top_srcdir)/src/client/video.o \
+@ENABLE_DYNAMIC_FALSE@                $(top_srcdir)/src/client/video_thread.o \
+@ENABLE_DYNAMIC_FALSE@                $(top_srcdir)/src/server/rtp_server.o \
+@ENABLE_DYNAMIC_FALSE@                $(top_srcdir)/src/server/rtp_recv.o \
+@ENABLE_DYNAMIC_FALSE@                $(top_srcdir)/src/webserver/http_utils.o \
+@ENABLE_DYNAMIC_FALSE@                $(top_srcdir)/src/webserver/socket_utils.o \
+@ENABLE_DYNAMIC_FALSE@                $(top_srcdir)/src/webserver/webserver_process.o \
+@ENABLE_DYNAMIC_FALSE@                $(top_srcdir)/libjpeg/libjpeg.a \
+@ENABLE_DYNAMIC_FALSE@                $(top_srcdir)/libortp/src/libortp.a \
+@ENABLE_DYNAMIC_FALSE@                $(top_srcdir)/libsqlite/src/libsqlite3.a \
+@ENABLE_DYNAMIC_FALSE@                $(top_srcdir)/libx264/libx264.a 
+
 
 # WARNING: there is an important problems here!
 #          obj files at src/client and src/server depend on libjpeg.a, etc,
 #          so obj files at these two dir must place ahead of other libraries.
-openDMD_LDADD = $(top_srcdir)/src/client/flv_muxer.o \
-                $(top_srcdir)/src/client/image_capture.o \
-                $(top_srcdir)/src/client/image_convert.o \
-                $(top_srcdir)/src/client/libx264.o \
-                $(top_srcdir)/src/client/picture_thread.o \
-                $(top_srcdir)/src/client/rtp_send.o \
-                $(top_srcdir)/src/client/video.o \
-                $(top_srcdir)/src/client/video_thread.o \
-                $(top_srcdir)/src/server/rtp_server.o \
-                $(top_srcdir)/src/server/rtp_recv.o \
-                $(top_srcdir)/src/webserver/http_utils.o \
-                $(top_srcdir)/src/webserver/socket_utils.o \
-                $(top_srcdir)/src/webserver/webserver_process.o \
-                $(top_srcdir)/libjpeg/libjpeg.la \
-                $(top_srcdir)/libortp/src/libortp.la \
-                $(top_srcdir)/libsqlite/src/libsqlite3.la \
-                $(top_srcdir)/libx264/libx264.la 
+@ENABLE_DYNAMIC_TRUE@openDMD_LDADD = $(top_srcdir)/src/client/flv_muxer.o \
+@ENABLE_DYNAMIC_TRUE@                $(top_srcdir)/src/client/image_capture.o \
+@ENABLE_DYNAMIC_TRUE@                $(top_srcdir)/src/client/image_convert.o \
+@ENABLE_DYNAMIC_TRUE@                $(top_srcdir)/src/client/libx264.o \
+@ENABLE_DYNAMIC_TRUE@                $(top_srcdir)/src/client/picture_thread.o \
+@ENABLE_DYNAMIC_TRUE@                $(top_srcdir)/src/client/rtp_send.o \
+@ENABLE_DYNAMIC_TRUE@                $(top_srcdir)/src/client/video.o \
+@ENABLE_DYNAMIC_TRUE@                $(top_srcdir)/src/client/video_thread.o \
+@ENABLE_DYNAMIC_TRUE@                $(top_srcdir)/src/server/rtp_server.o \
+@ENABLE_DYNAMIC_TRUE@                $(top_srcdir)/src/server/rtp_recv.o \
+@ENABLE_DYNAMIC_TRUE@                $(top_srcdir)/src/webserver/http_utils.o \
+@ENABLE_DYNAMIC_TRUE@                $(top_srcdir)/src/webserver/socket_utils.o \
+@ENABLE_DYNAMIC_TRUE@                $(top_srcdir)/src/webserver/webserver_process.o \
+@ENABLE_DYNAMIC_TRUE@                $(top_srcdir)/libjpeg/libjpeg.la \
+@ENABLE_DYNAMIC_TRUE@                $(top_srcdir)/libortp/src/libortp.la \
+@ENABLE_DYNAMIC_TRUE@                $(top_srcdir)/libsqlite/src/libsqlite3.la \
+@ENABLE_DYNAMIC_TRUE@                $(top_srcdir)/libx264/libx264.la 
 
 
 # source files in ./src dirctory;

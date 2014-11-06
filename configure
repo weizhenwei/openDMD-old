@@ -620,6 +620,8 @@ HAVE_ARM_FALSE
 HAVE_ARM_TRUE
 HAVE_X86_64_FALSE
 HAVE_X86_64_TRUE
+ENABLE_DYNAMIC_FALSE
+ENABLE_DYNAMIC_TRUE
 POW_LIB
 LIBOBJS
 ALLOCA
@@ -748,6 +750,7 @@ with_sysroot
 enable_libtool_lock
 enable_debug
 enable_gcov
+enable_dynamic
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1388,6 +1391,7 @@ Optional Features:
   --disable-libtool-lock  avoid locking (might break parallel builds)
   --enable-debug          enable debug mode(default=no)
   --enable-gcov           enable gcov code-coverage(default=no)
+  --enable-dynamic        openDMD linked with dynamic library(default=no)
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -13306,6 +13310,32 @@ fi
 #       )
 # AM_CONDITIONAL([HAVE_JIT], [test "x$enable_jit" = xyes])
 
+# add --enable-dynamic option.
+# Check whether --enable-dynamic was given.
+if test "${enable_dynamic+set}" = set; then :
+  enableval=$enable_dynamic;
+else
+  enable_dynamic=no
+
+fi
+
+if test "x$enable_dynamic" = "xyes"; then :
+  LDFLAGS+=" "
+elif test "x$enable_dynamic" = "xno"; then :
+  LDFLAGS+="-static "
+else
+  echo "enable-dynamic with wrong value"
+
+fi
+ if test "x$enable_dynamic" = xyes; then
+  ENABLE_DYNAMIC_TRUE=
+  ENABLE_DYNAMIC_FALSE='#'
+else
+  ENABLE_DYNAMIC_TRUE='#'
+  ENABLE_DYNAMIC_FALSE=
+fi
+
+
 # choose specific host architecture
  if test "x$host_cpu" = xx86_64; then
   HAVE_X86_64_TRUE=
@@ -13450,6 +13480,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${am__fastdepCC_TRUE}" && test -z "${am__fastdepCC_FALSE}"; then
   as_fn_error $? "conditional \"am__fastdepCC\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${ENABLE_DYNAMIC_TRUE}" && test -z "${ENABLE_DYNAMIC_FALSE}"; then
+  as_fn_error $? "conditional \"ENABLE_DYNAMIC\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAVE_X86_64_TRUE}" && test -z "${HAVE_X86_64_FALSE}"; then

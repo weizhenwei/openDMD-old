@@ -24,7 +24,7 @@ $AUTOMAKE --force-missing --add-missing --copy
 echo "Regenerate configure file done!"
 
 echo "configure ..."
-./configure --prefix=`pwd`/install --enable-debug --disable-gcov
+./configure --prefix=`pwd`/install --enable-debug --disable-gcov --enable-dynamic
 
 echo "Regenerate configure file done!"
 

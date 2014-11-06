@@ -81,60 +81,128 @@ LIBRARIES = $(lib_LIBRARIES)
 ARFLAGS = cru
 libjpeg_a_AR = $(AR) $(ARFLAGS)
 libjpeg_a_LIBADD =
-am_libjpeg_a_OBJECTS = libjpeg_a-jaricom.$(OBJEXT) \
-	libjpeg_a-jcapimin.$(OBJEXT) libjpeg_a-jcapistd.$(OBJEXT) \
-	libjpeg_a-jcarith.$(OBJEXT) libjpeg_a-jccoefct.$(OBJEXT) \
-	libjpeg_a-jccolor.$(OBJEXT) libjpeg_a-jcdctmgr.$(OBJEXT) \
-	libjpeg_a-jchuff.$(OBJEXT) libjpeg_a-jcinit.$(OBJEXT) \
-	libjpeg_a-jcmainct.$(OBJEXT) libjpeg_a-jcmarker.$(OBJEXT) \
-	libjpeg_a-jcmaster.$(OBJEXT) libjpeg_a-jcomapi.$(OBJEXT) \
-	libjpeg_a-jcparam.$(OBJEXT) libjpeg_a-jcprepct.$(OBJEXT) \
-	libjpeg_a-jcsample.$(OBJEXT) libjpeg_a-jctrans.$(OBJEXT) \
-	libjpeg_a-jdapimin.$(OBJEXT) libjpeg_a-jdapistd.$(OBJEXT) \
-	libjpeg_a-jdarith.$(OBJEXT) libjpeg_a-jdatadst.$(OBJEXT) \
-	libjpeg_a-jdatasrc.$(OBJEXT) libjpeg_a-jdcoefct.$(OBJEXT) \
-	libjpeg_a-jdcolor.$(OBJEXT) libjpeg_a-jddctmgr.$(OBJEXT) \
-	libjpeg_a-jdhuff.$(OBJEXT) libjpeg_a-jdinput.$(OBJEXT) \
-	libjpeg_a-jdmainct.$(OBJEXT) libjpeg_a-jdmarker.$(OBJEXT) \
-	libjpeg_a-jdmaster.$(OBJEXT) libjpeg_a-jdmerge.$(OBJEXT) \
-	libjpeg_a-jdpostct.$(OBJEXT) libjpeg_a-jdsample.$(OBJEXT) \
-	libjpeg_a-jdtrans.$(OBJEXT) libjpeg_a-jerror.$(OBJEXT) \
-	libjpeg_a-jfdctflt.$(OBJEXT) libjpeg_a-jfdctfst.$(OBJEXT) \
-	libjpeg_a-jfdctint.$(OBJEXT) libjpeg_a-jidctflt.$(OBJEXT) \
-	libjpeg_a-jidctfst.$(OBJEXT) libjpeg_a-jidctint.$(OBJEXT) \
-	libjpeg_a-jquant1.$(OBJEXT) libjpeg_a-jquant2.$(OBJEXT) \
-	libjpeg_a-jutils.$(OBJEXT) libjpeg_a-jmemmgr.$(OBJEXT) \
-	libjpeg_a-jmemnobs.$(OBJEXT)
+am__libjpeg_a_SOURCES_DIST = jaricom.c jcapimin.c jcapistd.c jcarith.c \
+	jccoefct.c jccolor.c jcdctmgr.c jchuff.c jcinit.c jcmainct.c \
+	jcmarker.c jcmaster.c jcomapi.c jcparam.c jcprepct.c \
+	jcsample.c jctrans.c jdapimin.c jdapistd.c jdarith.c \
+	jdatadst.c jdatasrc.c jdcoefct.c jdcolor.c jddctmgr.c jdhuff.c \
+	jdinput.c jdmainct.c jdmarker.c jdmaster.c jdmerge.c \
+	jdpostct.c jdsample.c jdtrans.c jerror.c jfdctflt.c jfdctfst.c \
+	jfdctint.c jidctflt.c jidctfst.c jidctint.c jquant1.c \
+	jquant2.c jutils.c jmemmgr.c jmemnobs.c jerror.h jmorecfg.h \
+	jpeglib.h cderror.h cdjpeg.h jdct.h jinclude.h jmemsys.h \
+	jpegint.h jversion.h transupp.h jconfig.h
+@ENABLE_DYNAMIC_FALSE@am_libjpeg_a_OBJECTS =  \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jaricom.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jcapimin.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jcapistd.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jcarith.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jccoefct.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jccolor.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jcdctmgr.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jchuff.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jcinit.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jcmainct.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jcmarker.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jcmaster.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jcomapi.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jcparam.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jcprepct.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jcsample.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jctrans.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jdapimin.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jdapistd.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jdarith.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jdatadst.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jdatasrc.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jdcoefct.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jdcolor.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jddctmgr.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jdhuff.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jdinput.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jdmainct.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jdmarker.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jdmaster.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jdmerge.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jdpostct.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jdsample.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jdtrans.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jerror.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jfdctflt.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jfdctfst.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jfdctint.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jidctflt.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jidctfst.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jidctint.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jquant1.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jquant2.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jutils.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jmemmgr.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libjpeg_a-jmemnobs.$(OBJEXT)
 libjpeg_a_OBJECTS = $(am_libjpeg_a_OBJECTS)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libjpeg_la_LIBADD =
-am_libjpeg_la_OBJECTS = libjpeg_la-jaricom.lo libjpeg_la-jcapimin.lo \
-	libjpeg_la-jcapistd.lo libjpeg_la-jcarith.lo \
-	libjpeg_la-jccoefct.lo libjpeg_la-jccolor.lo \
-	libjpeg_la-jcdctmgr.lo libjpeg_la-jchuff.lo \
-	libjpeg_la-jcinit.lo libjpeg_la-jcmainct.lo \
-	libjpeg_la-jcmarker.lo libjpeg_la-jcmaster.lo \
-	libjpeg_la-jcomapi.lo libjpeg_la-jcparam.lo \
-	libjpeg_la-jcprepct.lo libjpeg_la-jcsample.lo \
-	libjpeg_la-jctrans.lo libjpeg_la-jdapimin.lo \
-	libjpeg_la-jdapistd.lo libjpeg_la-jdarith.lo \
-	libjpeg_la-jdatadst.lo libjpeg_la-jdatasrc.lo \
-	libjpeg_la-jdcoefct.lo libjpeg_la-jdcolor.lo \
-	libjpeg_la-jddctmgr.lo libjpeg_la-jdhuff.lo \
-	libjpeg_la-jdinput.lo libjpeg_la-jdmainct.lo \
-	libjpeg_la-jdmarker.lo libjpeg_la-jdmaster.lo \
-	libjpeg_la-jdmerge.lo libjpeg_la-jdpostct.lo \
-	libjpeg_la-jdsample.lo libjpeg_la-jdtrans.lo \
-	libjpeg_la-jerror.lo libjpeg_la-jfdctflt.lo \
-	libjpeg_la-jfdctfst.lo libjpeg_la-jfdctint.lo \
-	libjpeg_la-jidctflt.lo libjpeg_la-jidctfst.lo \
-	libjpeg_la-jidctint.lo libjpeg_la-jquant1.lo \
-	libjpeg_la-jquant2.lo libjpeg_la-jutils.lo \
-	libjpeg_la-jmemmgr.lo libjpeg_la-jmemnobs.lo
+am__libjpeg_la_SOURCES_DIST = jaricom.c jcapimin.c jcapistd.c \
+	jcarith.c jccoefct.c jccolor.c jcdctmgr.c jchuff.c jcinit.c \
+	jcmainct.c jcmarker.c jcmaster.c jcomapi.c jcparam.c \
+	jcprepct.c jcsample.c jctrans.c jdapimin.c jdapistd.c \
+	jdarith.c jdatadst.c jdatasrc.c jdcoefct.c jdcolor.c \
+	jddctmgr.c jdhuff.c jdinput.c jdmainct.c jdmarker.c jdmaster.c \
+	jdmerge.c jdpostct.c jdsample.c jdtrans.c jerror.c jfdctflt.c \
+	jfdctfst.c jfdctint.c jidctflt.c jidctfst.c jidctint.c \
+	jquant1.c jquant2.c jutils.c jmemmgr.c jmemnobs.c jerror.h \
+	jmorecfg.h jpeglib.h cderror.h cdjpeg.h jdct.h jinclude.h \
+	jmemsys.h jpegint.h jversion.h transupp.h jconfig.h
+@ENABLE_DYNAMIC_TRUE@am_libjpeg_la_OBJECTS = libjpeg_la-jaricom.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jcapimin.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jcapistd.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jcarith.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jccoefct.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jccolor.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jcdctmgr.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jchuff.lo libjpeg_la-jcinit.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jcmainct.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jcmarker.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jcmaster.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jcomapi.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jcparam.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jcprepct.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jcsample.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jctrans.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jdapimin.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jdapistd.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jdarith.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jdatadst.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jdatasrc.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jdcoefct.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jdcolor.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jddctmgr.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jdhuff.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jdinput.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jdmainct.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jdmarker.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jdmaster.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jdmerge.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jdpostct.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jdsample.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jdtrans.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jerror.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jfdctflt.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jfdctfst.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jfdctint.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jidctflt.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jidctfst.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jidctint.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jquant1.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jquant2.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jutils.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jmemmgr.lo \
+@ENABLE_DYNAMIC_TRUE@	libjpeg_la-jmemnobs.lo
 libjpeg_la_OBJECTS = $(am_libjpeg_la_OBJECTS)
 libjpeg_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libjpeg_la_CFLAGS) \
 	$(CFLAGS) $(libjpeg_la_LDFLAGS) $(LDFLAGS) -o $@
+@ENABLE_DYNAMIC_TRUE@am_libjpeg_la_rpath = -rpath $(libdir)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -149,7 +217,8 @@ LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 SOURCES = $(libjpeg_a_SOURCES) $(libjpeg_la_SOURCES)
-DIST_SOURCES = $(libjpeg_a_SOURCES) $(libjpeg_la_SOURCES)
+DIST_SOURCES = $(am__libjpeg_a_SOURCES_DIST) \
+	$(am__libjpeg_la_SOURCES_DIST)
 HEADERS = $(include_HEADERS)
 ETAGS = etags
 CTAGS = ctags
@@ -275,41 +344,41 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
 ACLOCAL_AMFLAGS = "-I m4"
-lib_LIBRARIES = libjpeg.a
+@ENABLE_DYNAMIC_TRUE@LIB_AC = 1
+@ENABLE_DYNAMIC_TRUE@LIB_REV = 0
+@ENABLE_DYNAMIC_TRUE@LIB_ANC = 1
+@ENABLE_DYNAMIC_TRUE@lib_LTLIBRARIES = libjpeg.la
+@ENABLE_DYNAMIC_TRUE@libjpeg_la_CFLAGS = $(AM_CFLAGS)
+@ENABLE_DYNAMIC_TRUE@libjpeg_la_LDFLAGS = -version-info ${LIB_AC}:${LIB_REV}:${LIB_ANC}
+@ENABLE_DYNAMIC_TRUE@libjpeg_la_SOURCES = jaricom.c jcapimin.c jcapistd.c jcarith.c jccoefct.c \
+@ENABLE_DYNAMIC_TRUE@                     jccolor.c jcdctmgr.c jchuff.c jcinit.c jcmainct.c \
+@ENABLE_DYNAMIC_TRUE@                     jcmarker.c jcmaster.c jcomapi.c jcparam.c jcprepct.c \
+@ENABLE_DYNAMIC_TRUE@                     jcsample.c jctrans.c jdapimin.c jdapistd.c jdarith.c \
+@ENABLE_DYNAMIC_TRUE@                     jdatadst.c jdatasrc.c jdcoefct.c jdcolor.c jddctmgr.c \
+@ENABLE_DYNAMIC_TRUE@                     jdhuff.c jdinput.c jdmainct.c jdmarker.c jdmaster.c \
+@ENABLE_DYNAMIC_TRUE@                     jdmerge.c jdpostct.c jdsample.c jdtrans.c jerror.c \
+@ENABLE_DYNAMIC_TRUE@                     jfdctflt.c  jfdctfst.c jfdctint.c jidctflt.c jidctfst.c \
+@ENABLE_DYNAMIC_TRUE@                     jidctint.c jquant1.c jquant2.c jutils.c jmemmgr.c \
+@ENABLE_DYNAMIC_TRUE@                     jmemnobs.c jerror.h jmorecfg.h jpeglib.h cderror.h \
+@ENABLE_DYNAMIC_TRUE@                     cdjpeg.h jdct.h jinclude.h jmemsys.h jpegint.h \
+@ENABLE_DYNAMIC_TRUE@                     jversion.h transupp.h jconfig.h
+
+@ENABLE_DYNAMIC_FALSE@lib_LIBRARIES = libjpeg.a
 # to remove the automake complain:
 #         object 'foo.$(OBJEXT)' created both with libtool and without
-libjpeg_a_CFLAGS = $(AM_CFLAGS)
-libjpeg_a_SOURCES = jaricom.c jcapimin.c jcapistd.c jcarith.c jccoefct.c \
-                    jccolor.c jcdctmgr.c jchuff.c jcinit.c jcmainct.c \
-                    jcmarker.c jcmaster.c jcomapi.c jcparam.c jcprepct.c \
-                    jcsample.c jctrans.c jdapimin.c jdapistd.c jdarith.c \
-                    jdatadst.c jdatasrc.c jdcoefct.c jdcolor.c jddctmgr.c \
-                    jdhuff.c jdinput.c jdmainct.c jdmarker.c jdmaster.c \
-                    jdmerge.c jdpostct.c jdsample.c jdtrans.c jerror.c \
-                    jfdctflt.c  jfdctfst.c jfdctint.c jidctflt.c jidctfst.c \
-                    jidctint.c jquant1.c jquant2.c jutils.c jmemmgr.c \
-                    jmemnobs.c jerror.h jmorecfg.h jpeglib.h cderror.h \
-                    cdjpeg.h jdct.h jinclude.h jmemsys.h jpegint.h \
-                    jversion.h transupp.h jconfig.h
-
-LIB_AC = 1
-LIB_REV = 0
-LIB_ANC = 1
-lib_LTLIBRARIES = libjpeg.la
-libjpeg_la_CFLAGS = $(AM_CFLAGS)
-libjpeg_la_LDFLAGS = -version-info ${LIB_AC}:${LIB_REV}:${LIB_ANC}
-libjpeg_la_SOURCES = jaricom.c jcapimin.c jcapistd.c jcarith.c jccoefct.c \
-                     jccolor.c jcdctmgr.c jchuff.c jcinit.c jcmainct.c \
-                     jcmarker.c jcmaster.c jcomapi.c jcparam.c jcprepct.c \
-                     jcsample.c jctrans.c jdapimin.c jdapistd.c jdarith.c \
-                     jdatadst.c jdatasrc.c jdcoefct.c jdcolor.c jddctmgr.c \
-                     jdhuff.c jdinput.c jdmainct.c jdmarker.c jdmaster.c \
-                     jdmerge.c jdpostct.c jdsample.c jdtrans.c jerror.c \
-                     jfdctflt.c  jfdctfst.c jfdctint.c jidctflt.c jidctfst.c \
-                     jidctint.c jquant1.c jquant2.c jutils.c jmemmgr.c \
-                     jmemnobs.c jerror.h jmorecfg.h jpeglib.h cderror.h \
-                     cdjpeg.h jdct.h jinclude.h jmemsys.h jpegint.h \
-                     jversion.h transupp.h jconfig.h
+@ENABLE_DYNAMIC_FALSE@libjpeg_a_CFLAGS = $(AM_CFLAGS)
+@ENABLE_DYNAMIC_FALSE@libjpeg_a_SOURCES = jaricom.c jcapimin.c jcapistd.c jcarith.c jccoefct.c \
+@ENABLE_DYNAMIC_FALSE@                    jccolor.c jcdctmgr.c jchuff.c jcinit.c jcmainct.c \
+@ENABLE_DYNAMIC_FALSE@                    jcmarker.c jcmaster.c jcomapi.c jcparam.c jcprepct.c \
+@ENABLE_DYNAMIC_FALSE@                    jcsample.c jctrans.c jdapimin.c jdapistd.c jdarith.c \
+@ENABLE_DYNAMIC_FALSE@                    jdatadst.c jdatasrc.c jdcoefct.c jdcolor.c jddctmgr.c \
+@ENABLE_DYNAMIC_FALSE@                    jdhuff.c jdinput.c jdmainct.c jdmarker.c jdmaster.c \
+@ENABLE_DYNAMIC_FALSE@                    jdmerge.c jdpostct.c jdsample.c jdtrans.c jerror.c \
+@ENABLE_DYNAMIC_FALSE@                    jfdctflt.c  jfdctfst.c jfdctint.c jidctflt.c jidctfst.c \
+@ENABLE_DYNAMIC_FALSE@                    jidctint.c jquant1.c jquant2.c jutils.c jmemmgr.c \
+@ENABLE_DYNAMIC_FALSE@                    jmemnobs.c jerror.h jmorecfg.h jpeglib.h cderror.h \
+@ENABLE_DYNAMIC_FALSE@                    cdjpeg.h jdct.h jinclude.h jmemsys.h jpegint.h \
+@ENABLE_DYNAMIC_FALSE@                    jversion.h transupp.h jconfig.h
 
 include_HEADERS = jerror.h jmorecfg.h jpeglib.h
 all: all-am
@@ -412,7 +481,7 @@ clean-libLTLIBRARIES:
 	  rm -f "$${dir}/so_locations"; \
 	done
 libjpeg.la: $(libjpeg_la_OBJECTS) $(libjpeg_la_DEPENDENCIES) $(EXTRA_libjpeg_la_DEPENDENCIES) 
-	$(libjpeg_la_LINK) -rpath $(libdir) $(libjpeg_la_OBJECTS) $(libjpeg_la_LIBADD) $(LIBS)
+	$(libjpeg_la_LINK) $(am_libjpeg_la_rpath) $(libjpeg_la_OBJECTS) $(libjpeg_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)

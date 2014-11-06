@@ -50,18 +50,30 @@ LIBRARIES = $(noinst_LIBRARIES)
 ARFLAGS = cru
 libencoder_a_AR = $(AR) $(ARFLAGS)
 libencoder_a_LIBADD =
-am_libencoder_a_OBJECTS = libencoder_a-analyse.$(OBJEXT) \
-	libencoder_a-cabac.$(OBJEXT) libencoder_a-cavlc.$(OBJEXT) \
-	libencoder_a-encoder.$(OBJEXT) \
-	libencoder_a-lookahead.$(OBJEXT) \
-	libencoder_a-macroblock.$(OBJEXT) libencoder_a-me.$(OBJEXT) \
-	libencoder_a-ratecontrol.$(OBJEXT) libencoder_a-set.$(OBJEXT)
+am__libencoder_a_SOURCES_DIST = analyse.h analyse.c cabac.c cavlc.c \
+	encoder.c lookahead.c macroblock.h macroblock.c me.h me.c \
+	ratecontrol.h ratecontrol.c set.h set.c
+@ENABLE_DYNAMIC_FALSE@am_libencoder_a_OBJECTS =  \
+@ENABLE_DYNAMIC_FALSE@	libencoder_a-analyse.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libencoder_a-cabac.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libencoder_a-cavlc.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libencoder_a-encoder.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libencoder_a-lookahead.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libencoder_a-macroblock.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libencoder_a-me.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libencoder_a-ratecontrol.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libencoder_a-set.$(OBJEXT)
 libencoder_a_OBJECTS = $(am_libencoder_a_OBJECTS)
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libencoder_la_LIBADD =
-am_libencoder_la_OBJECTS = analyse.lo cabac.lo cavlc.lo encoder.lo \
-	lookahead.lo macroblock.lo me.lo ratecontrol.lo set.lo
+am__libencoder_la_SOURCES_DIST = analyse.h analyse.c cabac.c cavlc.c \
+	encoder.c lookahead.c macroblock.h macroblock.c me.h me.c \
+	ratecontrol.h ratecontrol.c set.h set.c
+@ENABLE_DYNAMIC_TRUE@am_libencoder_la_OBJECTS = analyse.lo cabac.lo \
+@ENABLE_DYNAMIC_TRUE@	cavlc.lo encoder.lo lookahead.lo \
+@ENABLE_DYNAMIC_TRUE@	macroblock.lo me.lo ratecontrol.lo set.lo
 libencoder_la_OBJECTS = $(am_libencoder_la_OBJECTS)
+@ENABLE_DYNAMIC_TRUE@am_libencoder_la_rpath =
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -76,7 +88,8 @@ LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 SOURCES = $(libencoder_a_SOURCES) $(libencoder_la_SOURCES)
-DIST_SOURCES = $(libencoder_a_SOURCES) $(libencoder_la_SOURCES)
+DIST_SOURCES = $(am__libencoder_a_SOURCES_DIST) \
+	$(am__libencoder_la_SOURCES_DIST)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -203,26 +216,26 @@ AUTOMAKE_OPTIONS = foreign
 INCLUDES = -I$(top_srcdir)/libx264 -I$(top_srcdir)/libx264/common \
            -I$(top_srcdir)/libx264/encoder
 
-noinst_LIBRARIES = libencoder.a
+@ENABLE_DYNAMIC_TRUE@noinst_LTLIBRARIES = libencoder.la
+@ENABLE_DYNAMIC_TRUE@libencoder_la_SOURCES = analyse.h analyse.c \
+@ENABLE_DYNAMIC_TRUE@                        cabac.c cavlc.c \
+@ENABLE_DYNAMIC_TRUE@                        encoder.c lookahead.c \
+@ENABLE_DYNAMIC_TRUE@                        macroblock.h macroblock.c \
+@ENABLE_DYNAMIC_TRUE@                        me.h me.c \
+@ENABLE_DYNAMIC_TRUE@                        ratecontrol.h ratecontrol.c \
+@ENABLE_DYNAMIC_TRUE@                        set.h set.c
+
+@ENABLE_DYNAMIC_FALSE@noinst_LIBRARIES = libencoder.a
 # to remove the automake complain:
 #         object 'foo.$(OBJEXT)' created both with libtool and without
-libencoder_a_CFLAGS = $(AM_CFLAGS)
-libencoder_a_SOURCES = analyse.h analyse.c \
-                       cabac.c cavlc.c \
-                       encoder.c lookahead.c \
-                       macroblock.h macroblock.c \
-                       me.h me.c \
-                       ratecontrol.h ratecontrol.c \
-                       set.h set.c
-
-noinst_LTLIBRARIES = libencoder.la
-libencoder_la_SOURCES = analyse.h analyse.c \
-                        cabac.c cavlc.c \
-                        encoder.c lookahead.c \
-                        macroblock.h macroblock.c \
-                        me.h me.c \
-                        ratecontrol.h ratecontrol.c \
-                        set.h set.c
+@ENABLE_DYNAMIC_FALSE@libencoder_a_CFLAGS = $(AM_CFLAGS)
+@ENABLE_DYNAMIC_FALSE@libencoder_a_SOURCES = analyse.h analyse.c \
+@ENABLE_DYNAMIC_FALSE@                       cabac.c cavlc.c \
+@ENABLE_DYNAMIC_FALSE@                       encoder.c lookahead.c \
+@ENABLE_DYNAMIC_FALSE@                       macroblock.h macroblock.c \
+@ENABLE_DYNAMIC_FALSE@                       me.h me.c \
+@ENABLE_DYNAMIC_FALSE@                       ratecontrol.h ratecontrol.c \
+@ENABLE_DYNAMIC_FALSE@                       set.h set.c
 
 EXTRA_DIST = rdo.c slicetype.c
 all: all-am
@@ -276,7 +289,7 @@ clean-noinstLTLIBRARIES:
 	  rm -f "$${dir}/so_locations"; \
 	done
 libencoder.la: $(libencoder_la_OBJECTS) $(libencoder_la_DEPENDENCIES) $(EXTRA_libencoder_la_DEPENDENCIES) 
-	$(LINK)  $(libencoder_la_OBJECTS) $(libencoder_la_LIBADD) $(LIBS)
+	$(LINK) $(am_libencoder_la_rpath) $(libencoder_la_OBJECTS) $(libencoder_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)

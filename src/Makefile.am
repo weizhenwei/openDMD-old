@@ -10,6 +10,7 @@ INCLUDES = -I$(top_srcdir)/libjpeg -I$(top_srcdir)/libsqlite/src \
            -I$(top_srcdir)/src/client -I$(top_srcdir)/src/server \
            -I$(top_srcdir)/src/webserver
 
+if ENABLE_DYNAMIC
 # WARNING: there is an important problems here!
 #          obj files at src/client and src/server depend on libjpeg.a, etc,
 #          so obj files at these two dir must place ahead of other libraries.
@@ -30,6 +31,28 @@ openDMD_LDADD = $(top_srcdir)/src/client/flv_muxer.o \
                 $(top_srcdir)/libortp/src/libortp.la \
                 $(top_srcdir)/libsqlite/src/libsqlite3.la \
                 $(top_srcdir)/libx264/libx264.la 
+
+else
+
+openDMD_LDADD = $(top_srcdir)/src/client/flv_muxer.o \
+                $(top_srcdir)/src/client/image_capture.o \
+                $(top_srcdir)/src/client/image_convert.o \
+                $(top_srcdir)/src/client/libx264.o \
+                $(top_srcdir)/src/client/picture_thread.o \
+                $(top_srcdir)/src/client/rtp_send.o \
+                $(top_srcdir)/src/client/video.o \
+                $(top_srcdir)/src/client/video_thread.o \
+                $(top_srcdir)/src/server/rtp_server.o \
+                $(top_srcdir)/src/server/rtp_recv.o \
+                $(top_srcdir)/src/webserver/http_utils.o \
+                $(top_srcdir)/src/webserver/socket_utils.o \
+                $(top_srcdir)/src/webserver/webserver_process.o \
+                $(top_srcdir)/libjpeg/libjpeg.a \
+                $(top_srcdir)/libortp/src/libortp.a \
+                $(top_srcdir)/libsqlite/src/libsqlite3.a \
+                $(top_srcdir)/libx264/libx264.a 
+
+endif
 
 # Warning: system library should be assigned here using LIBS;
 # using openDMD_LDFLAGS at here doesn't work!

@@ -78,42 +78,78 @@ LIBRARIES = $(lib_LIBRARIES)
 ARFLAGS = cru
 libortp_a_AR = $(AR) $(ARFLAGS)
 libortp_a_LIBADD =
-am_libortp_a_OBJECTS = libortp_a-str_utils.$(OBJEXT) \
-	libortp_a-port.$(OBJEXT) libortp_a-logging.$(OBJEXT) \
-	libortp_a-rtpparse.$(OBJEXT) libortp_a-rtpsession.$(OBJEXT) \
-	libortp_a-rtpsession_inet.$(OBJEXT) \
-	libortp_a-jitterctl.$(OBJEXT) \
-	libortp_a-rtpsignaltable.$(OBJEXT) \
-	libortp_a-rtptimer.$(OBJEXT) libortp_a-posixtimer.$(OBJEXT) \
-	libortp_a-ortp.$(OBJEXT) libortp_a-scheduler.$(OBJEXT) \
-	libortp_a-avprofile.$(OBJEXT) libortp_a-sessionset.$(OBJEXT) \
-	libortp_a-telephonyevents.$(OBJEXT) \
-	libortp_a-payloadtype.$(OBJEXT) libortp_a-rtpprofile.$(OBJEXT) \
-	libortp_a-rtcp.$(OBJEXT) libortp_a-utils.$(OBJEXT) \
-	libortp_a-rtcpparse.$(OBJEXT) libortp_a-event.$(OBJEXT) \
-	libortp_a-stun.$(OBJEXT) libortp_a-stun_udp.$(OBJEXT) \
-	libortp_a-ortp_srtp.$(OBJEXT) libortp_a-b64.$(OBJEXT) \
-	libortp_a-zrtp.$(OBJEXT) libortp_a-netsim.$(OBJEXT)
+am__libortp_a_SOURCES_DIST = str_utils.c port.c logging.c rtpparse.c \
+	rtpsession.c rtpsession_inet.c rtpsession_priv.h jitterctl.c \
+	jitterctl.h rtpsignaltable.c rtptimer.c rtptimer.h \
+	posixtimer.c ortp.c scheduler.c scheduler.h avprofile.c \
+	sessionset.c telephonyevents.c payloadtype.c rtpprofile.c \
+	rtcp.c utils.c utils.h rtcpparse.c event.c stun.c stun_udp.c \
+	ortp_srtp.c b64.c zrtp.c netsim.c
+@ENABLE_DYNAMIC_FALSE@am_libortp_a_OBJECTS =  \
+@ENABLE_DYNAMIC_FALSE@	libortp_a-str_utils.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libortp_a-port.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libortp_a-logging.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libortp_a-rtpparse.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libortp_a-rtpsession.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libortp_a-rtpsession_inet.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libortp_a-jitterctl.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libortp_a-rtpsignaltable.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libortp_a-rtptimer.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libortp_a-posixtimer.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libortp_a-ortp.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libortp_a-scheduler.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libortp_a-avprofile.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libortp_a-sessionset.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libortp_a-telephonyevents.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libortp_a-payloadtype.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libortp_a-rtpprofile.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libortp_a-rtcp.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libortp_a-utils.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libortp_a-rtcpparse.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libortp_a-event.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libortp_a-stun.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libortp_a-stun_udp.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libortp_a-ortp_srtp.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libortp_a-b64.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libortp_a-zrtp.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libortp_a-netsim.$(OBJEXT)
 libortp_a_OBJECTS = $(am_libortp_a_OBJECTS)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libortp_la_DEPENDENCIES =
-am_libortp_la_OBJECTS = libortp_la-str_utils.lo libortp_la-port.lo \
-	libortp_la-logging.lo libortp_la-rtpparse.lo \
-	libortp_la-rtpsession.lo libortp_la-rtpsession_inet.lo \
-	libortp_la-jitterctl.lo libortp_la-rtpsignaltable.lo \
-	libortp_la-rtptimer.lo libortp_la-posixtimer.lo \
-	libortp_la-ortp.lo libortp_la-scheduler.lo \
-	libortp_la-avprofile.lo libortp_la-sessionset.lo \
-	libortp_la-telephonyevents.lo libortp_la-payloadtype.lo \
-	libortp_la-rtpprofile.lo libortp_la-rtcp.lo \
-	libortp_la-utils.lo libortp_la-rtcpparse.lo \
-	libortp_la-event.lo libortp_la-stun.lo libortp_la-stun_udp.lo \
-	libortp_la-ortp_srtp.lo libortp_la-b64.lo libortp_la-zrtp.lo \
-	libortp_la-netsim.lo
+am__libortp_la_SOURCES_DIST = str_utils.c port.c logging.c rtpparse.c \
+	rtpsession.c rtpsession_inet.c rtpsession_priv.h jitterctl.c \
+	jitterctl.h rtpsignaltable.c rtptimer.c rtptimer.h \
+	posixtimer.c ortp.c scheduler.c scheduler.h avprofile.c \
+	sessionset.c telephonyevents.c payloadtype.c rtpprofile.c \
+	rtcp.c utils.c utils.h rtcpparse.c event.c stun.c stun_udp.c \
+	ortp_srtp.c b64.c zrtp.c netsim.c
+@ENABLE_DYNAMIC_TRUE@am_libortp_la_OBJECTS = libortp_la-str_utils.lo \
+@ENABLE_DYNAMIC_TRUE@	libortp_la-port.lo libortp_la-logging.lo \
+@ENABLE_DYNAMIC_TRUE@	libortp_la-rtpparse.lo \
+@ENABLE_DYNAMIC_TRUE@	libortp_la-rtpsession.lo \
+@ENABLE_DYNAMIC_TRUE@	libortp_la-rtpsession_inet.lo \
+@ENABLE_DYNAMIC_TRUE@	libortp_la-jitterctl.lo \
+@ENABLE_DYNAMIC_TRUE@	libortp_la-rtpsignaltable.lo \
+@ENABLE_DYNAMIC_TRUE@	libortp_la-rtptimer.lo \
+@ENABLE_DYNAMIC_TRUE@	libortp_la-posixtimer.lo \
+@ENABLE_DYNAMIC_TRUE@	libortp_la-ortp.lo \
+@ENABLE_DYNAMIC_TRUE@	libortp_la-scheduler.lo \
+@ENABLE_DYNAMIC_TRUE@	libortp_la-avprofile.lo \
+@ENABLE_DYNAMIC_TRUE@	libortp_la-sessionset.lo \
+@ENABLE_DYNAMIC_TRUE@	libortp_la-telephonyevents.lo \
+@ENABLE_DYNAMIC_TRUE@	libortp_la-payloadtype.lo \
+@ENABLE_DYNAMIC_TRUE@	libortp_la-rtpprofile.lo \
+@ENABLE_DYNAMIC_TRUE@	libortp_la-rtcp.lo libortp_la-utils.lo \
+@ENABLE_DYNAMIC_TRUE@	libortp_la-rtcpparse.lo \
+@ENABLE_DYNAMIC_TRUE@	libortp_la-event.lo libortp_la-stun.lo \
+@ENABLE_DYNAMIC_TRUE@	libortp_la-stun_udp.lo \
+@ENABLE_DYNAMIC_TRUE@	libortp_la-ortp_srtp.lo libortp_la-b64.lo \
+@ENABLE_DYNAMIC_TRUE@	libortp_la-zrtp.lo libortp_la-netsim.lo
 libortp_la_OBJECTS = $(am_libortp_la_OBJECTS)
 libortp_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libortp_la_CFLAGS) \
 	$(CFLAGS) $(libortp_la_LDFLAGS) $(LDFLAGS) -o $@
+@ENABLE_DYNAMIC_TRUE@am_libortp_la_rpath = -rpath $(libdir)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -128,7 +164,8 @@ LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 SOURCES = $(libortp_a_SOURCES) $(libortp_la_SOURCES)
-DIST_SOURCES = $(libortp_a_SOURCES) $(libortp_la_SOURCES)
+DIST_SOURCES = $(am__libortp_a_SOURCES_DIST) \
+	$(am__libortp_la_SOURCES_DIST)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -254,73 +291,73 @@ top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
 ACLOCAL_AMFLAGS = "-I m4"
 INCLUDES = -I$(top_srcdir)/libortp/include -I$(top_srcdir)/libortp
-lib_LIBRARIES = libortp.a
+@ENABLE_DYNAMIC_TRUE@LIB_AC = 1
+@ENABLE_DYNAMIC_TRUE@LIB_REV = 0
+@ENABLE_DYNAMIC_TRUE@LIB_ANC = 1
+@ENABLE_DYNAMIC_TRUE@libortp_la_LIBADD = -lm -lpthread -lrt
+@ENABLE_DYNAMIC_TRUE@lib_LTLIBRARIES = libortp.la
+@ENABLE_DYNAMIC_TRUE@libortp_la_CFLAGS = $(AM_CFLAGS)
+@ENABLE_DYNAMIC_TRUE@libortp_la_LDFLAGS = -version-info ${LIB_AC}:${LIB_REV}:${LIB_ANC}
+@ENABLE_DYNAMIC_TRUE@libortp_la_SOURCES = str_utils.c \
+@ENABLE_DYNAMIC_TRUE@                     port.c \
+@ENABLE_DYNAMIC_TRUE@                     logging.c \
+@ENABLE_DYNAMIC_TRUE@                     rtpparse.c  \
+@ENABLE_DYNAMIC_TRUE@                     rtpsession.c \
+@ENABLE_DYNAMIC_TRUE@                     rtpsession_inet.c \
+@ENABLE_DYNAMIC_TRUE@                     rtpsession_priv.h \
+@ENABLE_DYNAMIC_TRUE@                     jitterctl.c jitterctl.h \
+@ENABLE_DYNAMIC_TRUE@                     rtpsignaltable.c  \
+@ENABLE_DYNAMIC_TRUE@                     rtptimer.c rtptimer.h \
+@ENABLE_DYNAMIC_TRUE@                     posixtimer.c \
+@ENABLE_DYNAMIC_TRUE@                     ortp.c \
+@ENABLE_DYNAMIC_TRUE@                     scheduler.c scheduler.h \
+@ENABLE_DYNAMIC_TRUE@                     avprofile.c  \
+@ENABLE_DYNAMIC_TRUE@                     sessionset.c  \
+@ENABLE_DYNAMIC_TRUE@                     telephonyevents.c  \
+@ENABLE_DYNAMIC_TRUE@                     payloadtype.c \
+@ENABLE_DYNAMIC_TRUE@                     rtpprofile.c \
+@ENABLE_DYNAMIC_TRUE@                     rtcp.c  \
+@ENABLE_DYNAMIC_TRUE@                     utils.c utils.h \
+@ENABLE_DYNAMIC_TRUE@                     rtcpparse.c \
+@ENABLE_DYNAMIC_TRUE@                     event.c \
+@ENABLE_DYNAMIC_TRUE@                     stun.c stun_udp.c \
+@ENABLE_DYNAMIC_TRUE@                     ortp_srtp.c \
+@ENABLE_DYNAMIC_TRUE@                     b64.c \
+@ENABLE_DYNAMIC_TRUE@                     zrtp.c \
+@ENABLE_DYNAMIC_TRUE@                     netsim.c
+
+@ENABLE_DYNAMIC_FALSE@lib_LIBRARIES = libortp.a
 # libortp_a_LIBADD= -lm -lpthread -lrt
 # to remove the automake complain:
 #         object 'foo.$(OBJEXT)' created both with libtool and without
-libortp_a_CFLAGS = $(AM_CFLAGS)
-libortp_a_SOURCES = str_utils.c \
-                    port.c \
-                    logging.c \
-                    rtpparse.c  \
-                    rtpsession.c \
-                    rtpsession_inet.c \
-                    rtpsession_priv.h \
-                    jitterctl.c jitterctl.h \
-                    rtpsignaltable.c  \
-                    rtptimer.c rtptimer.h \
-                    posixtimer.c \
-                    ortp.c \
-                    scheduler.c scheduler.h \
-                    avprofile.c  \
-                    sessionset.c  \
-                    telephonyevents.c  \
-                    payloadtype.c \
-                    rtpprofile.c \
-                    rtcp.c  \
-                    utils.c utils.h \
-                    rtcpparse.c \
-                    event.c \
-                    stun.c stun_udp.c \
-                    ortp_srtp.c \
-                    b64.c \
-                    zrtp.c \
-                    netsim.c
-
-LIB_AC = 1
-LIB_REV = 0
-LIB_ANC = 1
-libortp_la_LIBADD = -lm -lpthread -lrt
-lib_LTLIBRARIES = libortp.la
-libortp_la_CFLAGS = $(AM_CFLAGS)
-libortp_la_LDFLAGS = -version-info ${LIB_AC}:${LIB_REV}:${LIB_ANC}
-libortp_la_SOURCES = str_utils.c \
-                     port.c \
-                     logging.c \
-                     rtpparse.c  \
-                     rtpsession.c \
-                     rtpsession_inet.c \
-                     rtpsession_priv.h \
-                     jitterctl.c jitterctl.h \
-                     rtpsignaltable.c  \
-                     rtptimer.c rtptimer.h \
-                     posixtimer.c \
-                     ortp.c \
-                     scheduler.c scheduler.h \
-                     avprofile.c  \
-                     sessionset.c  \
-                     telephonyevents.c  \
-                     payloadtype.c \
-                     rtpprofile.c \
-                     rtcp.c  \
-                     utils.c utils.h \
-                     rtcpparse.c \
-                     event.c \
-                     stun.c stun_udp.c \
-                     ortp_srtp.c \
-                     b64.c \
-                     zrtp.c \
-                     netsim.c
+@ENABLE_DYNAMIC_FALSE@libortp_a_CFLAGS = $(AM_CFLAGS)
+@ENABLE_DYNAMIC_FALSE@libortp_a_SOURCES = str_utils.c \
+@ENABLE_DYNAMIC_FALSE@                    port.c \
+@ENABLE_DYNAMIC_FALSE@                    logging.c \
+@ENABLE_DYNAMIC_FALSE@                    rtpparse.c  \
+@ENABLE_DYNAMIC_FALSE@                    rtpsession.c \
+@ENABLE_DYNAMIC_FALSE@                    rtpsession_inet.c \
+@ENABLE_DYNAMIC_FALSE@                    rtpsession_priv.h \
+@ENABLE_DYNAMIC_FALSE@                    jitterctl.c jitterctl.h \
+@ENABLE_DYNAMIC_FALSE@                    rtpsignaltable.c  \
+@ENABLE_DYNAMIC_FALSE@                    rtptimer.c rtptimer.h \
+@ENABLE_DYNAMIC_FALSE@                    posixtimer.c \
+@ENABLE_DYNAMIC_FALSE@                    ortp.c \
+@ENABLE_DYNAMIC_FALSE@                    scheduler.c scheduler.h \
+@ENABLE_DYNAMIC_FALSE@                    avprofile.c  \
+@ENABLE_DYNAMIC_FALSE@                    sessionset.c  \
+@ENABLE_DYNAMIC_FALSE@                    telephonyevents.c  \
+@ENABLE_DYNAMIC_FALSE@                    payloadtype.c \
+@ENABLE_DYNAMIC_FALSE@                    rtpprofile.c \
+@ENABLE_DYNAMIC_FALSE@                    rtcp.c  \
+@ENABLE_DYNAMIC_FALSE@                    utils.c utils.h \
+@ENABLE_DYNAMIC_FALSE@                    rtcpparse.c \
+@ENABLE_DYNAMIC_FALSE@                    event.c \
+@ENABLE_DYNAMIC_FALSE@                    stun.c stun_udp.c \
+@ENABLE_DYNAMIC_FALSE@                    ortp_srtp.c \
+@ENABLE_DYNAMIC_FALSE@                    b64.c \
+@ENABLE_DYNAMIC_FALSE@                    zrtp.c \
+@ENABLE_DYNAMIC_FALSE@                    netsim.c
 
 all: all-am
 
@@ -422,7 +459,7 @@ clean-libLTLIBRARIES:
 	  rm -f "$${dir}/so_locations"; \
 	done
 libortp.la: $(libortp_la_OBJECTS) $(libortp_la_DEPENDENCIES) $(EXTRA_libortp_la_DEPENDENCIES) 
-	$(libortp_la_LINK) -rpath $(libdir) $(libortp_la_OBJECTS) $(libortp_la_LIBADD) $(LIBS)
+	$(libortp_la_LINK) $(am_libortp_la_rpath) $(libortp_la_OBJECTS) $(libortp_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)

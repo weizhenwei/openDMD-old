@@ -124,6 +124,19 @@ AS_IF([test "x$enable_gcov" = "xyes"], [CFLAGS+="-fprofile-arcs -ftest-coverage 
 #       )
 # AM_CONDITIONAL([HAVE_JIT], [test "x$enable_jit" = xyes])
 
+# add --enable-dynamic option.
+AC_ARG_ENABLE( [dynamic], 
+          AS_HELP_STRING([--enable-dynamic], [openDMD linked with dynamic
+                          library(default=no)]),
+          [],
+          [enable_dynamic=no]
+          )
+AS_IF([test "x$enable_dynamic" = "xyes"], [LDFLAGS+=" "],
+      [test "x$enable_dynamic" = "xno"], [LDFLAGS+="-static "],
+      [echo "enable-dynamic with wrong value"]
+      )
+AM_CONDITIONAL([ENABLE_DYNAMIC], [test "x$enable_dynamic" = xyes])
+
 # choose specific host architecture
 AM_CONDITIONAL([HAVE_X86_64], [test "x$host_cpu" = xx86_64])
 AM_CONDITIONAL([HAVE_ARM], [test "x$host_cpu" = xarm])

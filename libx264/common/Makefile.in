@@ -50,23 +50,44 @@ LIBRARIES = $(noinst_LIBRARIES)
 ARFLAGS = cru
 libcommon_a_AR = $(AR) $(ARFLAGS)
 libcommon_a_LIBADD =
-am_libcommon_a_OBJECTS = libcommon_a-bitstream.$(OBJEXT) \
-	libcommon_a-cabac.$(OBJEXT) libcommon_a-common.$(OBJEXT) \
-	libcommon_a-cpu.$(OBJEXT) libcommon_a-dct.$(OBJEXT) \
-	libcommon_a-deblock.$(OBJEXT) libcommon_a-frame.$(OBJEXT) \
-	libcommon_a-macroblock.$(OBJEXT) libcommon_a-mc.$(OBJEXT) \
-	libcommon_a-mvpred.$(OBJEXT) libcommon_a-osdep.$(OBJEXT) \
-	libcommon_a-pixel.$(OBJEXT) libcommon_a-predict.$(OBJEXT) \
-	libcommon_a-quant.$(OBJEXT) libcommon_a-rectangle.$(OBJEXT) \
-	libcommon_a-set.$(OBJEXT) libcommon_a-vlc.$(OBJEXT)
+am__libcommon_a_SOURCES_DIST = bitstream.h bitstream.c cabac.h cabac.c \
+	common.h common.c cpu.h cpu.c dct.h dct.c deblock.c frame.h \
+	frame.c macroblock.h macroblock.c mc.h mc.c mvpred.c osdep.h \
+	osdep.c pixel.h pixel.c predict.h predict.c quant.h quant.c \
+	rectangle.h rectangle.c set.h set.c threadpool.h vlc.c
+@ENABLE_DYNAMIC_FALSE@am_libcommon_a_OBJECTS =  \
+@ENABLE_DYNAMIC_FALSE@	libcommon_a-bitstream.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libcommon_a-cabac.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libcommon_a-common.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libcommon_a-cpu.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libcommon_a-dct.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libcommon_a-deblock.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libcommon_a-frame.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libcommon_a-macroblock.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libcommon_a-mc.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libcommon_a-mvpred.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libcommon_a-osdep.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libcommon_a-pixel.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libcommon_a-predict.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libcommon_a-quant.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libcommon_a-rectangle.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libcommon_a-set.$(OBJEXT) \
+@ENABLE_DYNAMIC_FALSE@	libcommon_a-vlc.$(OBJEXT)
 libcommon_a_OBJECTS = $(am_libcommon_a_OBJECTS)
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libcommon_la_LIBADD =
-am_libcommon_la_OBJECTS = bitstream.lo cabac.lo common.lo cpu.lo \
-	dct.lo deblock.lo frame.lo macroblock.lo mc.lo mvpred.lo \
-	osdep.lo pixel.lo predict.lo quant.lo rectangle.lo set.lo \
-	vlc.lo
+am__libcommon_la_SOURCES_DIST = bitstream.h bitstream.c cabac.h \
+	cabac.c common.h common.c cpu.h cpu.c dct.h dct.c deblock.c \
+	frame.h frame.c macroblock.h macroblock.c mc.h mc.c mvpred.c \
+	osdep.h osdep.c pixel.h pixel.c predict.h predict.c quant.h \
+	quant.c rectangle.h rectangle.c set.h set.c threadpool.h vlc.c
+@ENABLE_DYNAMIC_TRUE@am_libcommon_la_OBJECTS = bitstream.lo cabac.lo \
+@ENABLE_DYNAMIC_TRUE@	common.lo cpu.lo dct.lo deblock.lo \
+@ENABLE_DYNAMIC_TRUE@	frame.lo macroblock.lo mc.lo mvpred.lo \
+@ENABLE_DYNAMIC_TRUE@	osdep.lo pixel.lo predict.lo quant.lo \
+@ENABLE_DYNAMIC_TRUE@	rectangle.lo set.lo vlc.lo
 libcommon_la_OBJECTS = $(am_libcommon_la_OBJECTS)
+@ENABLE_DYNAMIC_TRUE@am_libcommon_la_rpath =
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -81,7 +102,8 @@ LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 SOURCES = $(libcommon_a_SOURCES) $(libcommon_la_SOURCES)
-DIST_SOURCES = $(libcommon_a_SOURCES) $(libcommon_la_SOURCES)
+DIST_SOURCES = $(am__libcommon_a_SOURCES_DIST) \
+	$(am__libcommon_la_SOURCES_DIST)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -208,46 +230,46 @@ AUTOMAKE_OPTIONS = foreign
 INCLUDES = -I$(top_srcdir)/libx264 -I$(top_srcdir)/libx264/common \
            -I$(top_srcdir)/libx264/encoder
 
-noinst_LIBRARIES = libcommon.a
+@ENABLE_DYNAMIC_TRUE@noinst_LTLIBRARIES = libcommon.la
+@ENABLE_DYNAMIC_TRUE@libcommon_la_SOURCES = bitstream.h bitstream.c \
+@ENABLE_DYNAMIC_TRUE@                       cabac.h cabac.c \
+@ENABLE_DYNAMIC_TRUE@                       common.h common.c \
+@ENABLE_DYNAMIC_TRUE@                       cpu.h cpu.c \
+@ENABLE_DYNAMIC_TRUE@                       dct.h dct.c \
+@ENABLE_DYNAMIC_TRUE@                       deblock.c \
+@ENABLE_DYNAMIC_TRUE@                       frame.h frame.c \
+@ENABLE_DYNAMIC_TRUE@                       macroblock.h macroblock.c \
+@ENABLE_DYNAMIC_TRUE@                       mc.h mc.c \
+@ENABLE_DYNAMIC_TRUE@                       mvpred.c \
+@ENABLE_DYNAMIC_TRUE@                       osdep.h osdep.c \
+@ENABLE_DYNAMIC_TRUE@                       pixel.h pixel.c \
+@ENABLE_DYNAMIC_TRUE@                       predict.h predict.c \
+@ENABLE_DYNAMIC_TRUE@                       quant.h quant.c \
+@ENABLE_DYNAMIC_TRUE@                       rectangle.h rectangle.c \
+@ENABLE_DYNAMIC_TRUE@                       set.h set.c \
+@ENABLE_DYNAMIC_TRUE@                       threadpool.h vlc.c
+
+@ENABLE_DYNAMIC_FALSE@noinst_LIBRARIES = libcommon.a
 # to remove the automake complain:
 #         object 'foo.$(OBJEXT)' created both with libtool and without
-libcommon_a_CFLAGS = $(AM_CFLAGS)
-libcommon_a_SOURCES = bitstream.h bitstream.c \
-                      cabac.h cabac.c \
-                      common.h common.c \
-                      cpu.h cpu.c \
-                      dct.h dct.c \
-                      deblock.c \
-                      frame.h frame.c \
-                      macroblock.h macroblock.c \
-                      mc.h mc.c \
-                      mvpred.c \
-                      osdep.h osdep.c \
-                      pixel.h pixel.c \
-                      predict.h predict.c \
-                      quant.h quant.c \
-                      rectangle.h rectangle.c \
-                      set.h set.c \
-                      threadpool.h vlc.c
-
-noinst_LTLIBRARIES = libcommon.la
-libcommon_la_SOURCES = bitstream.h bitstream.c \
-                       cabac.h cabac.c \
-                       common.h common.c \
-                       cpu.h cpu.c \
-                       dct.h dct.c \
-                       deblock.c \
-                       frame.h frame.c \
-                       macroblock.h macroblock.c \
-                       mc.h mc.c \
-                       mvpred.c \
-                       osdep.h osdep.c \
-                       pixel.h pixel.c \
-                       predict.h predict.c \
-                       quant.h quant.c \
-                       rectangle.h rectangle.c \
-                       set.h set.c \
-                       threadpool.h vlc.c
+@ENABLE_DYNAMIC_FALSE@libcommon_a_CFLAGS = $(AM_CFLAGS)
+@ENABLE_DYNAMIC_FALSE@libcommon_a_SOURCES = bitstream.h bitstream.c \
+@ENABLE_DYNAMIC_FALSE@                      cabac.h cabac.c \
+@ENABLE_DYNAMIC_FALSE@                      common.h common.c \
+@ENABLE_DYNAMIC_FALSE@                      cpu.h cpu.c \
+@ENABLE_DYNAMIC_FALSE@                      dct.h dct.c \
+@ENABLE_DYNAMIC_FALSE@                      deblock.c \
+@ENABLE_DYNAMIC_FALSE@                      frame.h frame.c \
+@ENABLE_DYNAMIC_FALSE@                      macroblock.h macroblock.c \
+@ENABLE_DYNAMIC_FALSE@                      mc.h mc.c \
+@ENABLE_DYNAMIC_FALSE@                      mvpred.c \
+@ENABLE_DYNAMIC_FALSE@                      osdep.h osdep.c \
+@ENABLE_DYNAMIC_FALSE@                      pixel.h pixel.c \
+@ENABLE_DYNAMIC_FALSE@                      predict.h predict.c \
+@ENABLE_DYNAMIC_FALSE@                      quant.h quant.c \
+@ENABLE_DYNAMIC_FALSE@                      rectangle.h rectangle.c \
+@ENABLE_DYNAMIC_FALSE@                      set.h set.c \
+@ENABLE_DYNAMIC_FALSE@                      threadpool.h vlc.c
 
 all: all-am
 
@@ -300,7 +322,7 @@ clean-noinstLTLIBRARIES:
 	  rm -f "$${dir}/so_locations"; \
 	done
 libcommon.la: $(libcommon_la_OBJECTS) $(libcommon_la_DEPENDENCIES) $(EXTRA_libcommon_la_DEPENDENCIES) 
-	$(LINK)  $(libcommon_la_OBJECTS) $(libcommon_la_LIBADD) $(LIBS)
+	$(LINK) $(am_libcommon_la_rpath) $(libcommon_la_OBJECTS) $(libcommon_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
