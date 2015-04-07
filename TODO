@@ -1,3 +1,14 @@
+2015.04.07:
+    new development of openDMD begin!
+    first to solve the following problems:
+    1. rewrite config parsing with flex and bison;
+    4. Urgent: websever remaining problems:
+               1). add signal handling to websever process.
+               2). add logout function on webpage;
+               3). make webpage more beautiful;
+               4). make project configurable through webpage;
+    5. jit code is frozen for next openDMD version;
+
 2014.10.09:
 The following problems remained to solve at next version!
     1. rewrite config parsing with flex and bison;
