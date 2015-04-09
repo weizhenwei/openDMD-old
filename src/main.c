@@ -454,7 +454,6 @@ int main(int argc, char *argv[]) {
     }
 
 end:
-
     // kill webserver process;
     if (start_webadmin == 1) {
         ret = kill(global.webserver_pid, SIGKILL);
